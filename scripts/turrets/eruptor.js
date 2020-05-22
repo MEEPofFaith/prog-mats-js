@@ -15,7 +15,7 @@ const heatRiser = extendContent(PowerTurret, "eruptor", {
     this.super$drawLayer(tile);
     entity = tile.ent();
     
-    back.trns(entity.rotation-90, 0, -entity.recoil);
+    back.trns(entity.rotation-90, 0, 0);
     
     Draw.rect(this.cells, entity.x + back.x, entity.y + back.y, entity.rotation-90);
     
@@ -28,19 +28,19 @@ const heatRiser = extendContent(PowerTurret, "eruptor", {
     }
     
     //sw
-    open.trns(entity.rotation-90, 0 - entity.recoil/4, -entity.recoil - entity.recoil/4);
+    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount(), -entity.getCellOpenAmount());
     Draw.rect(this.caps[0], entity.x + open.x, entity.y + open.y, entity.rotation-90);
     
     //se
-    open.trns(entity.rotation-90, 0 + entity.recoil/4, -entity.recoil - entity.recoil/4);
+    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount(), -entity.getCellOpenAmount());
     Draw.rect(this.caps[1], entity.x + open.x, entity.y + open.y, entity.rotation-90);
     
     //nw
-    open.trns(entity.rotation-90, 0 - entity.recoil/4, -entity.recoil + entity.recoil/4);
+    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount(), entity.getCellOpenAmount());
     Draw.rect(this.caps[2], entity.x + open.x, entity.y + open.y, entity.rotation-90);
     
     //nw
-    open.trns(entity.rotation-90, 0 + entity.recoil/4, -entity.recoil + entity.recoil/4);
+    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount(), entity.getCellOpenAmount());
     Draw.rect(this.caps[3], entity.x + open.x, entity.y + open.y, entity.rotation-90);
   },
   generateIcons(){
@@ -54,6 +54,8 @@ const heatRiser = extendContent(PowerTurret, "eruptor", {
 		
 		entity = tile.ent();
 		
+    entity.setCellOpenAmount(Mathf.lerpDelta(entity.getCellOpenAmount(), 0, this.restitution));
+    
 		if(entity.getBulletLife() > 0 && entity.getBullet() != null){
 			var entBullet = entity.getBullet();
       
@@ -64,7 +66,7 @@ const heatRiser = extendContent(PowerTurret, "eruptor", {
 			this.tr.trns(entity.rotation, this.size * Vars.tilesize / 2, 0);
 			entBullet.time(0);
 			entity.heat = 1;
-			entity.recoil = this.recoil;
+			entity.setCellOpenAmount(this.COA);
 			entity.setBulletLife(entity.getBulletLife() - Time.delta());
 			if(entity.getBulletLife() <= 0){
 				entity.setBullet(null);
@@ -119,10 +121,12 @@ const heatRiser = extendContent(PowerTurret, "eruptor", {
 const burnRadius = 18;
 
 heatRiser.shootDuration = 180;
+heatRiser.COA = 1;
 heatRiser.firingMoveFract = 1;
 heatRiser.shootEffect = Fx.none;
 heatRiser.smokeEffect = Fx.none;
 heatRiser.ammoUseEffect = Fx.none;
+heatRiser.restitution = 0.01;
 
 heatRiser.caps = [];
 
@@ -136,17 +140,26 @@ heatRiser.entityType = prov(() => {
 			return this._bullet;
 		},
 		
+		setBulletLife(a){
+			this._bulletlife = a;
+		},
+    
 		getBulletLife(){
 			return this._bulletlife;
 		},
+    
+    setCellOpenAmount(a){
+      this._cellOpenAmount = a;
+    },
 		
-		setBulletLife(a){
-			this._bulletlife = a;
-		}
+    getCellOpenAmount(){
+      return this._cellOpenAmount;
+    }
 	});
 	
 	entity.setBullet(null);
 	entity.setBulletLife(0);
+  entity.setCellOpenAmount(0);
 	
 	return entity;
 });
@@ -221,7 +234,9 @@ heatRiser.shootType = extend(BasicBulletType, {
 heatRiser.shootType.speed = 1;
 heatRiser.shootType.lifetime = 16;
 heatRiser.shootType.pierce = true;
-heatRiser.shootType.hitEffect = Fx.none;
 heatRiser.shootType.damage = 250;
-heatRiser.shootType.despawnEffect = Fx.none;
 heatRiser.shootType.collidesTiles = false;
+heatRiser.shootType.hitEffect = Fx.fireballsmoke;
+heatRiser.shootType.despawnEffect = Fx.none;
+heatRiser.shootType.shootEffect = Fx.none;
+heatRiser.shootType.smokeEffect = Fx.none;

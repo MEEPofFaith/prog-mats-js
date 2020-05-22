@@ -9,8 +9,7 @@ shootCone: 10
 shootSound: none
 targetAir: true
 targetGround: true
-recoil: 4
-restitution: 0.01
+recoil: 0
 cooldown: 0.01
 rotatespeed: 3
 shootSound: eruption
