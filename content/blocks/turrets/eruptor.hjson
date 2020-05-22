@@ -13,9 +13,6 @@ recoil: 4
 restitution: 0.01
 cooldown: 0.01
 rotatespeed: 3
-shootEffect: none
-smokeEffect: none
-ammoUseEffect: none
 shootSound: eruption
 activeSound: magma
 activeSoundVolume: 2

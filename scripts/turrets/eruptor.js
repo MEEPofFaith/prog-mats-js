@@ -117,13 +117,12 @@ const heatRiser = extendContent(PowerTurret, "eruptor", {
 	}
 });
 const burnRadius = 18;
-var fluidCostMultiplier = 2.5;
-
-heatRiser.consumes.add(new ConsumeLiquidFilter(boolf(liquid=>liquid.temperature<=0.5&&liquid.flammability<0.1), 0.5 * fluidCostMultiplier)).update(false);
-heatRiser.coolantMultiplier = 1 / fluidCostMultiplier;
 
 heatRiser.shootDuration = 180;
 heatRiser.firingMoveFract = 1;
+heatRiser.shootEffect = Fx.none;
+heatRiser.smokeEffect = Fx.none;
+heatRiser.ammoUseEffect = Fx.none;
 
 heatRiser.caps = [];
 
@@ -155,7 +154,7 @@ heatRiser.entityType = prov(() => {
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
 var colors = [Color.valueOf("a3570055"), Color.valueOf("bf6804aa"), Color.valueOf("db7909"), Color.valueOf("f08913")];
-var length = 24;
+var length = 12;
 
 //Stuff you probably shouldn't edit.
 //Width of each section of the beam from thickest to thinnest
@@ -175,7 +174,7 @@ heatRiser.shootType = extend(BasicBulletType, {
     if(b != null){
       if(b.getOwner().target != null){
         var target = Angles.angle(b.x, b.y, b.getOwner().target.getX(), b.getOwner().target.getY());
-        b.rot(Mathf.slerpDelta(b.rot(), target, 0.5));
+        b.rot(Mathf.slerpDelta(b.rot(), target, 0.15));
       }
       
       Damage.damage(b.getTeam(), b.x, b.y, burnRadius*2, this.damage, true);
@@ -206,7 +205,7 @@ heatRiser.shootType = extend(BasicBulletType, {
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time(), 1.0, 0.3)));
         Draw.alpha(b.fout());
         for(var i = 0; i < 4; i++){
-          var baseLen = length * b.fout() + (Mathf.absin(Time.time()/((i+1)*5), 0.8, 1.5)*3);
+          var baseLen = (length + (Mathf.absin(Time.time()/((i+1)*2), 0.8, 1.5)*10)) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * b.fout() * strokes[s] * tscales[i]);
           Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], CapStyle.none);
