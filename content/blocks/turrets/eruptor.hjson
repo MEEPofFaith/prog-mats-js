@@ -1,8 +1,8 @@
 localizedName: "[#d17000]Eruptor"
 description: Opens the Earth under enemies, blasting them with lava.
-size: 4 
+size: 3 
 range: 240
-reload: 180
+reload: 60
 health: 1800
 powerUse: 10
 shootCone: 10
@@ -10,8 +10,15 @@ shootSound: none
 targetAir: true
 targetGround: true
 recoil: 4
+restitution: 0.01
+cooldown: 0.01
 rotatespeed: 3
-firingMoveFract: 1
+shootEffect: none
+smokeEffect: none
+ammoUseEffect: none
+shootSound: eruption
+activeSound: magma
+activeSoundVolume: 2
 requirements: [
 ]
 category: turret
