@@ -2,13 +2,17 @@ const open = new Vec2();
 const back = new Vec2();
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
-const heatRiser = extendContent(PowerTurret, "eruptor", {
+const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "magmator", {
   load(){
     this.super$load();
-    this.cells = Core.atlas.find(this.name + "-cells");
-    this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
+    
+    for(i = 0; i < 2; i++){
+      this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
+      this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
+    }
     for(i = 0; i < 4; i++){
-      this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
+      this.capsA[i] = Core.atlas.find(this.name + "-caps-0-" + i);
+      this.capsB[i] = Core.atlas.find(this.name + "-caps-1-" + i);
     }
   },
   drawLayer(tile){
@@ -17,43 +21,71 @@ const heatRiser = extendContent(PowerTurret, "eruptor", {
     
     back.trns(entity.rotation-90, 0, 0);
     
-    Draw.rect(this.cells, entity.x + back.x, entity.y + back.y, entity.rotation-90);
+    //Bottom Layer Cells
+    Draw.rect(this.cells[0], entity.x + back.x, entity.y + back.y, entity.rotation-90);
     
     if(entity.heat > 0){
       Draw.blend(Blending.additive);
       Draw.color(Color.valueOf("f08913"), entity.heat);
-      Draw.rect(this.cellHeat, entity.x + back.x, entity.y + back.y, entity.rotation-90);
+      Draw.rect(this.cellHeats[0], entity.x + back.x, entity.y + back.y, entity.rotation-90);
       Draw.blend();
       Draw.color();
     }
     
     //sw
     open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount(), -entity.getCellOpenAmount());
-    Draw.rect(this.caps[0], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+    Draw.rect(this.capsA[0], entity.x + open.x, entity.y + open.y, entity.rotation-90);
     
     //se
     open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount(), -entity.getCellOpenAmount());
-    Draw.rect(this.caps[1], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+    Draw.rect(this.capsA[1], entity.x + open.x, entity.y + open.y, entity.rotation-90);
     
     //nw
     open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount(), entity.getCellOpenAmount());
-    Draw.rect(this.caps[2], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+    Draw.rect(this.capsA[2], entity.x + open.x, entity.y + open.y, entity.rotation-90);
     
     //nw
     open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount(), entity.getCellOpenAmount());
-    Draw.rect(this.caps[3], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+    Draw.rect(this.capsA[3], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+    
+    
+    //Top Layer Cells
+    Draw.rect(this.cells[1], entity.x + back.x, entity.y + back.y, entity.rotation-90);
+    
+    if(entity.heat > 0){
+      Draw.blend(Blending.additive);
+      Draw.color(Color.valueOf("f08913"), entity.heat);
+      Draw.rect(this.cellHeats[1], entity.x + back.x, entity.y + back.y, entity.rotation-90);
+      Draw.blend();
+      Draw.color();
+    }
+    
+    //sw
+    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount(), -entity.getCellOpenAmount());
+    Draw.rect(this.capsB[0], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+    
+    //se
+    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount(), -entity.getCellOpenAmount());
+    Draw.rect(this.capsB[1], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+    
+    //nw
+    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount(), entity.getCellOpenAmount());
+    Draw.rect(this.capsB[2], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+    
+    //nw
+    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount(), entity.getCellOpenAmount());
+    Draw.rect(this.capsB[3], entity.x + open.x, entity.y + open.y, entity.rotation-90);
   },
   generateIcons(){
     return [
-			Core.atlas.find("block-3"),
-			Core.atlas.find("definitely-not-advance-content-eruptor-icon")
+			Core.atlas.find("block-4"),
+			Core.atlas.find("definitely-not-advance-content-magmator-icon")
 		];
   },
   setStats(){
     this.super$setStats();
     
     this.stats.remove(BlockStat.damage);
-    //damages every 5 ticks, at least in meltdown's case
     this.stats.add(BlockStat.damage, this.shootType.damage * 60 / 5, StatUnit.perSecond);
   },
   update(tile){
@@ -125,19 +157,22 @@ const heatRiser = extendContent(PowerTurret, "eruptor", {
 		return entity.getBulletLife() > 0 && entity.getBullet() != null;
 	}
 });
-const burnRadius = 18;
+const burnRadius = 36;
 
-heatRiser.shootDuration = 180;
-heatRiser.COA = 0.9;
-heatRiser.firingMoveFract = 0.8;
-heatRiser.shootEffect = Fx.none;
-heatRiser.smokeEffect = Fx.none;
-heatRiser.ammoUseEffect = Fx.none;
-heatRiser.restitution = 0.01;
+allStatsUpPlsGetTheReference.shootDuration = 240;
+allStatsUpPlsGetTheReference.COA = 1.5;
+allStatsUpPlsGetTheReference.firingMoveFract = 0.8;
+allStatsUpPlsGetTheReference.shootEffect = Fx.none;
+allStatsUpPlsGetTheReference.smokeEffect = Fx.none;
+allStatsUpPlsGetTheReference.ammoUseEffect = Fx.none;
+allStatsUpPlsGetTheReference.restitution = 0.01;
 
-heatRiser.caps = [];
+allStatsUpPlsGetTheReference.cells = [];
+allStatsUpPlsGetTheReference.cellHeats = [];
+allStatsUpPlsGetTheReference.capsA = [];
+allStatsUpPlsGetTheReference.capsB = [];
 
-heatRiser.entityType = prov(() => {
+allStatsUpPlsGetTheReference.entityType = prov(() => {
 	entity = extend(Turret.TurretEntity, {
 		setBullet(a){
 			this._bullet = a;
@@ -174,7 +209,7 @@ heatRiser.entityType = prov(() => {
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
 var colors = [Color.valueOf("a3570055"), Color.valueOf("bf6804aa"), Color.valueOf("db7909"), Color.valueOf("f08913")];
-var length = 16;
+var length = 32;
 
 //Stuff you probably shouldn't edit.
 //Width of each section of the beam from thickest to thinnest
@@ -189,7 +224,7 @@ var lenscales = [1, 1.3, 1.6, 1.9];
 var tmpColor = new Color();
 const vec = new Vec2();
 
-heatRiser.shootType = extend(BasicBulletType, {
+allStatsUpPlsGetTheReference.shootType = extend(BasicBulletType, {
   update(b){
     if(b != null){
       if(b.getOwner().target != null){
@@ -227,7 +262,7 @@ heatRiser.shootType = extend(BasicBulletType, {
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time(), 1.0, 0.3)));
         Draw.alpha(b.fout());
         for(var i = 0; i < 4; i++){
-          var baseLen = (length + (Mathf.absin(Time.time()/((i+1)*2), 0.8, 1.5)*(length/1.5))) * b.fout();
+          var baseLen = (length + (Mathf.absin(b.getOwner().getBulletLife()/((i+1)*2.5), 0.8, 1.5)*(length/1.5))) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
           Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], CapStyle.none);
@@ -240,12 +275,12 @@ heatRiser.shootType = extend(BasicBulletType, {
   }
 });
 
-heatRiser.shootType.speed = 1;
-heatRiser.shootType.damage = 50;
-heatRiser.shootType.lifetime = 16;
-heatRiser.shootType.collides = false;
-heatRiser.shootType.collidesTiles = false;
-heatRiser.shootType.hitEffect = Fx.fireballsmoke;
-heatRiser.shootType.despawnEffect = Fx.none;
-heatRiser.shootType.shootEffect = Fx.none;
-heatRiser.shootType.smokeEffect = Fx.none;
+allStatsUpPlsGetTheReference.shootType.speed = 2;
+allStatsUpPlsGetTheReference.shootType.lifetime = 16;
+allStatsUpPlsGetTheReference.shootType.damage = 75;
+allStatsUpPlsGetTheReference.shootType.collides = false;
+allStatsUpPlsGetTheReference.shootType.collidesTiles = false;
+allStatsUpPlsGetTheReference.shootType.hitEffect = Fx.fireballsmoke;
+allStatsUpPlsGetTheReference.shootType.despawnEffect = Fx.none;
+allStatsUpPlsGetTheReference.shootType.shootEffect = Fx.none;
+allStatsUpPlsGetTheReference.shootType.smokeEffect = Fx.none;

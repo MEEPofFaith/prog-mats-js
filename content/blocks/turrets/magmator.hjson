@@ -1,15 +1,15 @@
-localizedName: "[#d17000]Eruptor"
+localizedName: "[#d17000]Magmator"
 description: 
   '''
-  Opens the Earth under enemies, blasting them with lava.
+  Opens even more of the Earth under enemies, blasting them with even more lava.
   
   [#d17000]Stray blasts may burn your defences.
   '''
-size: 3 
-range: 240
+size: 4
+range: 280
 reload: 60
 health: 1800
-powerUse: 10
+powerUse: 15
 shootCone: 10
 shootSound: none
 targetAir: true
@@ -23,4 +23,4 @@ activeSoundVolume: 2
 requirements: [
 ]
 category: turret
-research: fuse
+research: eruptor
