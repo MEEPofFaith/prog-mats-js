@@ -1,0 +1,6 @@
+type: material
+name: Technetium
+description: Wait, this isn't supposed to appear in nature.
+hardness: 3
+cost: 1.2
+color: B0BAC0

@@ -21,6 +21,12 @@ shootSound: eruption
 activeSound: magma
 activeSoundVolume: 2
 requirements: [
+  copper/350
+  lead/550
+  graphite/550
+  silicon/600
+  surge-alloy/350
+  technetium/200
 ]
 category: turret
 research: eruptor
