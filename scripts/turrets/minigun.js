@@ -89,14 +89,6 @@ const minigun = extendContent(ItemTurret, "minigun", {
     }
   }
 });
-
-minigun.ammo(
-  Items.copper, Bullets.standardCopper,
-  Items.graphite, Bullets.standardDense,
-  Items.pyratite, Bullets.standardIncendiary,
-  Items.silicon, Bullets.standardHoming,
-  Items.thorium, Bullets.standardThorium
-);
 minigun.turretRegions = [];
 minigun.heatRegions = [];
 
@@ -107,6 +99,64 @@ minigun.inaccuracy = 8;
 minigun.shootEffect = Fx.none;
 minigun.smokeEffect = Fx.none;
 minigun.ammoUseEffect = Fx.none;
+
+const MiniCopper = extend(BasicBulletType,{});
+MiniCopper.speed = 2.5;
+MiniCopper.damage = 9;
+MiniCopper.bulletWidth = 1;
+MiniCopper.bulletHeight = 3;
+MiniCopper.lifetime = 60;
+MiniCopper.shootEffect = Fx.shootSmall;
+MiniCopper.smokeEffect = Fx.shootSmallSmoke;
+MiniCopper.ammoMultiplier = 2;
+
+const MiniThorium = extend(BasicBulletType,{});
+MiniThorium.speed = 4;
+MiniThorium.damage = 29;
+MiniThorium.bulletWidth = 1;
+MiniThorium.bulletHeight = 4;
+MiniThorium.lifetime = 60;
+MiniThorium.shootEffect = Fx.shootSmall;
+MiniThorium.smokeEffect = Fx.shootSmallSmoke;
+MiniThorium.ammoMultiplier = 4;
+
+const MiniGraphite = extend(BasicBulletType,{});
+MiniGraphite.speed = 3.5;
+MiniGraphite.damage = 18;
+MiniGraphite.bulletWidth = 1;
+MiniGraphite.bulletHeight = 4;
+MiniGraphite.reloadMultiplier = 0.6;
+MiniGraphite.ammoMultiplier = 4;
+MiniGraphite.lifetime = 60;
+
+const MiniSilicon = extend(BasicBulletType,{});
+MiniSilicon.speed = 3;
+MiniSilicon.damage = 9;
+MiniSilicon.bulletWidth = 1;
+MiniSilicon.bulletHeight = 4;
+MiniSilicon.homingPower = 5;
+MiniSilicon.reloadMultiplier = 1.4;
+MiniSilicon.ammoMultiplier = 5;
+MiniSilicon.lifetime = 60;
+
+const MiniPyratite = extend(BasicBulletType,{});
+MiniPyratite.speed = 3.2;
+MiniPyratite.lifetime = 11;
+MiniPyratite.bulletWidth = 1;
+MiniPyratite.bulletHeight = 4;
+MiniPyratite.frontColor = Pal.lightishOrange;
+MiniPyratite.backColor = Pal.lightOrange;
+MiniPyratite.status = StatusEffects.burning;
+MiniPyratite.inaccuracy = 3;
+MiniPyratite.lifetime = 60;
+
+minigun.ammo(
+  Items.copper, MiniCopper,
+  Items.graphite, MiniGraphite,
+  Items.pyratite, MiniPyratite,
+  Items.silicon, MiniSilicon,
+  Items.thorium, MiniThorium
+);
 
 minigun.entityType = prov(() => {
   entity = extendContent(ItemTurret.ItemTurretEntity, minigun, {
