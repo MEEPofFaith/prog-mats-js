@@ -151,19 +151,19 @@ MiniPyratite.inaccuracy = 3;
 MiniPyratite.lifetime = 90;
 
 const MiniBlast = extend(BasicBulletType,{});
-MiniMiniBlast.speed = 3.5;
-MiniMiniBlast.damage = 4;
-MiniMiniBlast.bulletWidth = 2;
-MiniMiniBlast.bulletHeight = 6.5;
-MiniMiniBlast.frontColor = Pal.redDust;
-MiniMiniBlast.backColor = Pal.redderDust;
-MiniMiniBlast.hitEffet = Fx.explosion;
-MiniMiniBlast.despawnEffect = Fx.explosion;
-MiniMiniBlast.hitSound = Sounds.explosion;
-MiniMiniBlast.splashDamage = 28;
-MiniMiniBlast.splashDamageRadius = 8;
-MiniMiniBlast.inaccuracy = 3;
-MiniMiniBlast.lifetime = 90;
+MiniBlast.speed = 3.5;
+MiniBlast.damage = 4;
+MiniBlast.bulletWidth = 2;
+MiniBlast.bulletHeight = 6.5;
+MiniBlast.frontColor = Pal.redDust;
+MiniBlast.backColor = Pal.redderDust;
+MiniBlast.hitEffet = Fx.explosion;
+MiniBlast.despawnEffect = Fx.explosion;
+MiniBlast.hitSound = Sounds.explosion;
+MiniBlast.splashDamage = 28;
+MiniBlast.splashDamageRadius = 8;
+MiniBlast.inaccuracy = 3;
+MiniBlast.lifetime = 90;
 
 minigun.ammo(
   Items.copper, MiniCopper,
