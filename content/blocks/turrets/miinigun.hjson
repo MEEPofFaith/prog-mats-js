@@ -1,0 +1,22 @@
+localizedName: "Miinigun"
+description: 
+  '''
+  Two is better than one.
+  '''
+size: 4
+range: 150
+health: 1800
+shootCone: 20
+shootSound: shootBig
+targetAir: true
+targetGround: true
+rotatespeed: 2
+requirements: [
+  copper/350
+  graphite/300
+  titanium/175
+  thorium/80
+  technetium/80
+]
+category: turret
+research: minigun
