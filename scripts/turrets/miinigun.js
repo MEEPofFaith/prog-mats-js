@@ -47,7 +47,7 @@ const dualMinigun = extendContent(DoubleTurret, "miinigun", {
     this.super$update(tile);
     entity = tile.ent();
     
-    if(!this.validateTarget(tile) || !this.hasAmmo(tile)){
+    if(!this.validateTarget(tile) || entity.totalAmmo < 2){
       entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 0, 0.005));
     }
     
@@ -74,11 +74,11 @@ const dualMinigun = extendContent(DoubleTurret, "miinigun", {
   },
   updateShooting(tile){
     entity = tile.ent();
-    if(this.hasAmmo(tile)){
+    if(entity.totalAmmo >= 2){
       entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 1, 0.001 * this.peekAmmo(tile).reloadMultiplier));
     }
     
-    if(entity.getDFrame()==0 && entity.getDFrameSpeed() >= 0.1875 && entity.getDShouldShoot() == 1 && entity.ammo.size >= 2){
+    if(entity.getDFrame()==0 && entity.getDFrameSpeed() >= 0.1875 && entity.getDShouldShoot() == 1 && entity.totalAmmo >= 2){
       type = this.peekAmmo(tile);
       
       this.shoot(tile, type);
