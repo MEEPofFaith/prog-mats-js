@@ -104,59 +104,72 @@ dualMinigun.ammoUseEffect = Fx.none;
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.speed = 2.5;
-MiniCopper.damage = 9;
+MiniCopper.damage = 13.5;
 MiniCopper.bulletWidth = 2;
 MiniCopper.bulletHeight = 4.5;
-MiniCopper.lifetime = 60;
+MiniCopper.lifetime = 90;
 MiniCopper.shootEffect = Fx.shootSmall;
 MiniCopper.smokeEffect = Fx.shootSmallSmoke;
 MiniCopper.ammoMultiplier = 2;
 
 const MiniThorium = extend(BasicBulletType,{});
 MiniThorium.speed = 4;
-MiniThorium.damage = 29;
+MiniThorium.damage = 43.5;
 MiniThorium.bulletWidth = 2;
 MiniThorium.bulletHeight = 6.5;
-MiniThorium.lifetime = 60;
+MiniThorium.lifetime = 90;
 MiniThorium.shootEffect = Fx.shootSmall;
 MiniThorium.smokeEffect = Fx.shootSmallSmoke;
 MiniThorium.ammoMultiplier = 4;
 
 const MiniGraphite = extend(BasicBulletType,{});
 MiniGraphite.speed = 3.5;
-MiniGraphite.damage = 18;
+MiniGraphite.damage = 27;
 MiniGraphite.bulletWidth = 2;
 MiniGraphite.bulletHeight = 6;
 MiniGraphite.reloadMultiplier = 0.6;
 MiniGraphite.ammoMultiplier = 4;
-MiniGraphite.lifetime = 60;
+MiniGraphite.lifetime = 90;
 
 const MiniSilicon = extend(BasicBulletType,{});
 MiniSilicon.speed = 3;
-MiniSilicon.damage = 9;
+MiniSilicon.damage = 13.5;
 MiniSilicon.bulletWidth = 2;
 MiniSilicon.bulletHeight = 6;
 MiniSilicon.homingPower = 5;
 MiniSilicon.reloadMultiplier = 1.4;
 MiniSilicon.ammoMultiplier = 5;
-MiniSilicon.lifetime = 60;
+MiniSilicon.lifetime = 90;
 
 const MiniPyratite = extend(BasicBulletType,{});
 MiniPyratite.speed = 3.2;
-MiniPyratite.lifetime = 11;
+MiniPyratite.damage = 16.5;
 MiniPyratite.bulletWidth = 2;
 MiniPyratite.bulletHeight = 6;
 MiniPyratite.frontColor = Pal.lightishOrange;
 MiniPyratite.backColor = Pal.lightOrange;
 MiniPyratite.status = StatusEffects.burning;
 MiniPyratite.inaccuracy = 3;
-MiniPyratite.lifetime = 60;
+MiniPyratite.lifetime = 90;
+
+const MiniBlast = extend(BasicBulletType,{});
+MiniPyratite.speed = 3.5;
+MiniPyratite.damage = 4;
+MiniPyratite.bulletWidth = 2;
+MiniPyratite.bulletHeight = 6.5;
+MiniPyratite.frontColor = Pal.redDust;
+MiniPyratite.backColor = Pal.redderDust;
+MiniPyratite.splashDamage = 28;
+MiniPyratite.splashDamageRadius = 8;
+MiniPyratite.inaccuracy = 3;
+MiniPyratite.lifetime = 90;
 
 dualMinigun.ammo(
   Items.copper, MiniCopper,
   Items.graphite, MiniGraphite,
-  Items.pyratite, Bullets.standardIncendiary,
   Items.silicon, MiniSilicon,
+  Items.pyratite, MiniPyratite,
+  Items.blastCompound, MiniBlast,
   Items.thorium, MiniThorium
 );
 

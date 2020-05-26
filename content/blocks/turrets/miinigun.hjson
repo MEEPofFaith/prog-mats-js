@@ -4,7 +4,7 @@ description:
   Two is better than one.
   '''
 size: 4
-range: 150
+range: 225
 health: 1800
 shootCone: 20
 shootSound: shootBig

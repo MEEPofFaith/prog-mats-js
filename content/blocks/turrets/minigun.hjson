@@ -6,7 +6,7 @@ description:
   Overdriving does not increase firing speed because when I made it do that it started to spin so fast it stopped firing. Still effects rotation speed though.
   '''
 size: 4
-range: 150
+range: 225
 health: 1800
 shootCone: 20
 shootSound: shootBig
