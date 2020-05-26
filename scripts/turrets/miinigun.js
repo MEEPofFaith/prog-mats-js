@@ -54,7 +54,7 @@ const dualMinigun = extendContent(DoubleTurret, "miinigun", {
     entity.setDTrueFrame(entity.getDTrueFrame() + entity.getDFrameSpeed());
     entity.setDFrame(Mathf.round(entity.getDTrueFrame()) % 3);
     for(i = 0; i < 4; i++){
-      entity.setDHeatFrame(i, (Mathf.round(entity.getDTrueFrame()) % 12) + 6 - (i*3));
+      entity.setDHeatFrame(i, (Mathf.round(entity.getDTrueFrame()) % 12) + 3 - (i*3));
       if(entity.getDHeatFrame(i) < 0){
         entity.setDHeatFrame(i, 12 + entity.getDHeatFrame(i));
       }
@@ -106,7 +106,7 @@ const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.speed = 2.5;
 MiniCopper.damage = 9;
 MiniCopper.bulletWidth = 2;
-MiniCopper.bulletHeight = 3;
+MiniCopper.bulletHeight = 4.5;
 MiniCopper.lifetime = 60;
 MiniCopper.shootEffect = Fx.shootSmall;
 MiniCopper.smokeEffect = Fx.shootSmallSmoke;
@@ -116,7 +116,7 @@ const MiniThorium = extend(BasicBulletType,{});
 MiniThorium.speed = 4;
 MiniThorium.damage = 29;
 MiniThorium.bulletWidth = 2;
-MiniThorium.bulletHeight = 4;
+MiniThorium.bulletHeight = 6.5;
 MiniThorium.lifetime = 60;
 MiniThorium.shootEffect = Fx.shootSmall;
 MiniThorium.smokeEffect = Fx.shootSmallSmoke;
@@ -126,7 +126,7 @@ const MiniGraphite = extend(BasicBulletType,{});
 MiniGraphite.speed = 3.5;
 MiniGraphite.damage = 18;
 MiniGraphite.bulletWidth = 2;
-MiniGraphite.bulletHeight = 4;
+MiniGraphite.bulletHeight = 6;
 MiniGraphite.reloadMultiplier = 0.6;
 MiniGraphite.ammoMultiplier = 4;
 MiniGraphite.lifetime = 60;
@@ -135,7 +135,7 @@ const MiniSilicon = extend(BasicBulletType,{});
 MiniSilicon.speed = 3;
 MiniSilicon.damage = 9;
 MiniSilicon.bulletWidth = 2;
-MiniSilicon.bulletHeight = 4;
+MiniSilicon.bulletHeight = 6;
 MiniSilicon.homingPower = 5;
 MiniSilicon.reloadMultiplier = 1.4;
 MiniSilicon.ammoMultiplier = 5;
@@ -145,7 +145,7 @@ const MiniPyratite = extend(BasicBulletType,{});
 MiniPyratite.speed = 3.2;
 MiniPyratite.lifetime = 11;
 MiniPyratite.bulletWidth = 2;
-MiniPyratite.bulletHeight = 4;
+MiniPyratite.bulletHeight = 6;
 MiniPyratite.frontColor = Pal.lightishOrange;
 MiniPyratite.backColor = Pal.lightOrange;
 MiniPyratite.status = StatusEffects.burning;
@@ -155,7 +155,7 @@ MiniPyratite.lifetime = 60;
 dualMinigun.ammo(
   Items.copper, MiniCopper,
   Items.graphite, MiniGraphite,
-  Items.pyratite, MiniPyratite,
+  Items.pyratite, Bullets.standardIncendiary,
   Items.silicon, MiniSilicon,
   Items.thorium, MiniThorium
 );
