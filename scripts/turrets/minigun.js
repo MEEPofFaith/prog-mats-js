@@ -106,9 +106,6 @@ MiniCopper.damage = 13.5;
 MiniCopper.bulletWidth = 2;
 MiniCopper.bulletHeight = 4.5;
 MiniCopper.lifetime = 90;
-MiniCopper.shootEffect = Fx.shootSmall;
-MiniCopper.smokeEffect = Fx.shootSmallSmoke;
-MiniCopper.ammoMultiplier = 2;
 
 const MiniThorium = extend(BasicBulletType,{});
 MiniThorium.speed = 4;
@@ -116,8 +113,8 @@ MiniThorium.damage = 43.5;
 MiniThorium.bulletWidth = 2;
 MiniThorium.bulletHeight = 6.5;
 MiniThorium.lifetime = 90;
-MiniThorium.shootEffect = Fx.shootSmall;
-MiniThorium.smokeEffect = Fx.shootSmallSmoke;
+MiniThorium.shootEffect = Fx.shootBig;
+MiniThorium.smokeEffect = Fx.shootBigSmoke;
 MiniThorium.ammoMultiplier = 4;
 
 const MiniGraphite = extend(BasicBulletType,{});
@@ -157,13 +154,16 @@ MiniBlast.bulletWidth = 2;
 MiniBlast.bulletHeight = 6.5;
 MiniBlast.frontColor = Pal.redDust;
 MiniBlast.backColor = Pal.redderDust;
-MiniBlast.hitEffet = Fx.explosion;
-MiniBlast.despawnEffect = Fx.explosion;
+MiniBlast.hitEffect = Fx.blastExplosion;
+MiniBlast.despawnEffect = Fx.blastExplosion;
+MiniBlast.shootEffect = Fx.shootBig;
+MiniBlast.smokeEffect = Fx.shootBigSmoke;
 MiniBlast.hitSound = Sounds.explosion;
 MiniBlast.splashDamage = 28;
-MiniBlast.splashDamageRadius = 8;
+MiniBlast.splashDamageRadius = 12;
 MiniBlast.inaccuracy = 3;
 MiniBlast.lifetime = 90;
+MiniBlast.ammoMultiplier = 3;
 
 minigun.ammo(
   Items.copper, MiniCopper,
