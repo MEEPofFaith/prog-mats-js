@@ -3,7 +3,8 @@ description:
   '''
   It starts slow, but then i- DAKADAKADAKADAKADAKADAKADAKADAKA *ahem*
   
-  Overdriving does not increase firing speed because when I made it do that it started to spin so fast it stopped firing. Still effects rotation speed though.
+  Overdrive, firing speed multiplier, and liquid boosting effect how fast it spins up instead of firing speed.
+  Doesn't ever go above 1 shot/3 ticks because it'll stop firing correctly if it goes any faster.
   '''
 size: 4
 range: 225
