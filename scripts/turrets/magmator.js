@@ -2,7 +2,7 @@ const open = new Vec2();
 const back = new Vec2();
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
-const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "magmator", {
+const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "eruptor-ii", {
   load(){
     this.super$load();
     
@@ -79,7 +79,7 @@ const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "magmator", {
   generateIcons(){
     return [
 			Core.atlas.find("block-4"),
-			Core.atlas.find("definitely-not-advance-content-magmator-icon")
+			Core.atlas.find("definitely-not-advance-content-eruptor-ii-icon")
 		];
   },
   setStats(){

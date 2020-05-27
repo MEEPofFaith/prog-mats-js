@@ -1,4 +1,4 @@
-const minigun = extendContent(ItemTurret, "minigun", {
+const minigun = extendContent(ItemTurret, "minigun-i", {
   load(){
     for(i = 0; i < 3; i++){
       this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
@@ -11,7 +11,7 @@ const minigun = extendContent(ItemTurret, "minigun", {
   generateIcons(){
     return [
 			Core.atlas.find("block-4"),
-			Core.atlas.find("definitely-not-advance-content-minigun-icon")
+			Core.atlas.find("definitely-not-advance-content-minigun-i-icon")
 		];
   },
   drawLayer(tile){
