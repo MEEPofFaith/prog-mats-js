@@ -74,8 +74,11 @@ const dualMinigun = extendContent(DoubleTurret, "miinigun", {
   },
   updateShooting(tile){
     entity = tile.ent();
+    liquid = entity.liquids.current();
+    
     if(entity.totalAmmo >= 2){
-      entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 1, 0.001 * this.peekAmmo(tile).reloadMultiplier));
+      entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 1, 0.001 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier));
+      entity.liquids.remove(liquid, 0.2);
     }
     
     if(entity.getDFrame()==0 && entity.getDFrameSpeed() >= 0.1875 && entity.getDShouldShoot() == 1 && entity.totalAmmo >= 2){
