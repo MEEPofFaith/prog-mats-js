@@ -127,12 +127,13 @@ MiniThorium.ammoMultiplier = 4;
 const MiniGraphite = extend(BasicBulletType,{});
 MiniGraphite.bulletSprite = "definitely-not-advance-content-minigun-ball";
 MiniGraphite.speed = 3.5;
-MiniGraphite.damage = 40.5;
+MiniGraphite.damage = 2;
 MiniGraphite.bulletWidth = 2;
 MiniGraphite.bulletHeight = 2;
 MiniGraphite.reloadMultiplier = 0.6;
 MiniGraphite.ammoMultiplier = 4;
 MiniGraphite.lifetime = 90;
+MiniGraphite.pierce = true;
 
 const MiniSilicon = extend(BasicBulletType,{});
 MiniSilicon.bulletSprite = "definitely-not-advance-content-minigun-ball";
