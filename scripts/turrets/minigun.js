@@ -78,7 +78,9 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
     
     if(this.hasAmmo(tile)){
       entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 1, 0.00025 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));
-      entity.liquids.remove(liquid, 0.2);
+      if(entity.getFrameSpeed() < 1){
+        entity.liquids.remove(liquid, 0.2);
+      }
     }
     
     if(entity.getFrame()==0 && entity.getFrameSpeed() > 0.0166666667 && entity.getShouldShoot() == 1){
@@ -95,9 +97,9 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
 minigun.turretRegions = [];
 minigun.heatRegions = [];
 
-minigun.restitution = 0.01;
+minigun.restitution = 0.02;
 minigun.recoil = 3;
-minigun.cooldown = 0.01;
+minigun.cooldown = 0.06;
 minigun.inaccuracy = 8;
 minigun.shootEffect = Fx.none;
 minigun.smokeEffect = Fx.none;

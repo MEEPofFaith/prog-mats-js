@@ -78,7 +78,9 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     
     if(entity.totalAmmo >= 2){
       entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 1, 0.00025 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));
-      entity.liquids.remove(liquid, 0.2);
+      if(entity.getDFrameSpeed() < 1){
+        entity.liquids.remove(liquid, 0.2);
+      }
     }
     
     if(entity.getDFrame()==0 && entity.getDFrameSpeed() > 0.0166666667 && entity.getDShouldShoot() == 1 && entity.totalAmmo >= 2){
@@ -96,10 +98,10 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
 dualMinigun.turretRegions = [];
 dualMinigun.heatRegions = [];
 
-dualMinigun.restitution = 0.01;
+dualMinigun.restitution = 0.02;
 dualMinigun.shotWidth = 4;
 dualMinigun.recoil = 3;
-dualMinigun.cooldown = 0.01;
+dualMinigun.cooldown = 0.06;
 dualMinigun.inaccuracy = 8;
 dualMinigun.shootEffect = Fx.none;
 dualMinigun.smokeEffect = Fx.none;
