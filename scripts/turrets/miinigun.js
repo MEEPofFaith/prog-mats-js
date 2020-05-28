@@ -54,7 +54,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     entity.setDTrueFrame(entity.getDTrueFrame() + entity.getDFrameSpeed());
     entity.setDFrame(Mathf.round(entity.getDTrueFrame()) % 3);
     for(i = 0; i < 4; i++){
-      entity.setDHeatFrame(i, (Mathf.round(entity.getDTrueFrame()) % 12) + 3 - (i*3));
+      entity.setDHeatFrame(i, (Mathf.round(entity.getDTrueFrame()) % 12) - 3 - (i*3));
       if(entity.getDHeatFrame(i) < 0){
         entity.setDHeatFrame(i, 12 + entity.getDHeatFrame(i));
       }
@@ -77,11 +77,11 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     liquid = entity.liquids.current();
     
     if(entity.totalAmmo >= 2){
-      entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 1, 0.0005 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));
+      entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 1, 0.00025 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));
       entity.liquids.remove(liquid, 0.2);
     }
     
-    if(entity.getDFrame()==0 && entity.getDFrameSpeed() >= 0.1875 && entity.getDShouldShoot() == 1 && entity.totalAmmo >= 2){
+    if(entity.getDFrame()==0 && entity.getDFrameSpeed() > 0.0166666667 && entity.getDShouldShoot() == 1 && entity.totalAmmo >= 2){
       type = this.peekAmmo(tile);
       
       this.shoot(tile, type);
