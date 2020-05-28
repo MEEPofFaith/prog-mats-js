@@ -48,7 +48,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     entity = tile.ent();
     
     if(!this.validateTarget(tile) || entity.totalAmmo < 2){
-      entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 0, 0.005));
+      entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 0, 0.0125));
     }
     
     entity.setDTrueFrame(entity.getDTrueFrame() + entity.getDFrameSpeed());
@@ -78,7 +78,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     
     if(entity.totalAmmo >= 2){
       entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 1, 0.00025 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));
-      if(entity.getDFrameSpeed() < 0.999){
+      if(entity.getDFrameSpeed() < 0.95){
         entity.liquids.remove(liquid, 0.2);
       }
     }
@@ -108,46 +108,51 @@ dualMinigun.smokeEffect = Fx.none;
 dualMinigun.ammoUseEffect = Fx.none;
 
 const MiniCopper = extend(BasicBulletType,{});
+MiniCopper.bulletSprite = "definitely-not-advance-content-minigun-ball";
 MiniCopper.speed = 2.5;
 MiniCopper.damage = 13.5;
-MiniCopper.bulletWidth = 2;
-MiniCopper.bulletHeight = 4.5;
+MiniCopper.bulletWidth = 1;
+MiniCopper.bulletHeight = 1;
 MiniCopper.lifetime = 90;
 
 const MiniThorium = extend(BasicBulletType,{});
+MiniThorium.bulletSprite = "definitely-not-advance-content-minigun-ball";
 MiniThorium.speed = 4;
 MiniThorium.damage = 43.5;
 MiniThorium.bulletWidth = 2;
-MiniThorium.bulletHeight = 6.5;
+MiniThorium.bulletHeight = 2;
 MiniThorium.lifetime = 90;
 MiniThorium.shootEffect = Fx.shootBig;
 MiniThorium.smokeEffect = Fx.shootBigSmoke;
 MiniThorium.ammoMultiplier = 4;
 
 const MiniGraphite = extend(BasicBulletType,{});
+MiniGraphite.bulletSprite = "definitely-not-advance-content-minigun-ball";
 MiniGraphite.speed = 3.5;
 MiniGraphite.damage = 27;
-MiniGraphite.bulletWidth = 2;
-MiniGraphite.bulletHeight = 6;
+MiniGraphite.bulletWidth = 1.5;
+MiniGraphite.bulletHeight = 1.5;
 MiniGraphite.reloadMultiplier = 0.6;
 MiniGraphite.ammoMultiplier = 4;
 MiniGraphite.lifetime = 90;
 
 const MiniSilicon = extend(BasicBulletType,{});
+MiniSilicon.bulletSprite = "definitely-not-advance-content-minigun-ball";
 MiniSilicon.speed = 3;
 MiniSilicon.damage = 13.5;
-MiniSilicon.bulletWidth = 2;
-MiniSilicon.bulletHeight = 6;
+MiniSilicon.bulletWidth = 1;
+MiniSilicon.bulletHeight = 1;
 MiniSilicon.homingPower = 5;
 MiniSilicon.reloadMultiplier = 1.4;
 MiniSilicon.ammoMultiplier = 5;
 MiniSilicon.lifetime = 90;
 
 const MiniPyratite = extend(BasicBulletType,{});
+MiniPyratite.bulletSprite = "definitely-not-advance-content-minigun-ball";
 MiniPyratite.speed = 3.2;
 MiniPyratite.damage = 16.5;
-MiniPyratite.bulletWidth = 2;
-MiniPyratite.bulletHeight = 6;
+MiniPyratite.bulletWidth = 1.5;
+MiniPyratite.bulletHeight = 1.5;
 MiniPyratite.frontColor = Pal.lightishOrange;
 MiniPyratite.backColor = Pal.lightOrange;
 MiniPyratite.status = StatusEffects.burning;
@@ -155,10 +160,11 @@ MiniPyratite.inaccuracy = 3;
 MiniPyratite.lifetime = 90;
 
 const MiniBlast = extend(BasicBulletType,{});
+MiniBlast.bulletSprite = "definitely-not-advance-content-minigun-ball";
 MiniBlast.speed = 3.5;
 MiniBlast.damage = 4;
 MiniBlast.bulletWidth = 2;
-MiniBlast.bulletHeight = 6.5;
+MiniBlast.bulletHeight = 2;
 MiniBlast.frontColor = Pal.redDust;
 MiniBlast.backColor = Pal.redderDust;
 MiniBlast.hitEffect = Fx.blastExplosion;
