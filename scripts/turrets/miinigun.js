@@ -78,7 +78,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     
     if(entity.totalAmmo >= 2){
       entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 1, 0.00025 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));
-      if(entity.getDFrameSpeed() < 1){
+      if(entity.getDFrameSpeed() < 0.999){
         entity.liquids.remove(liquid, 0.2);
       }
     }
