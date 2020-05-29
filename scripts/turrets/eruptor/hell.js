@@ -1,5 +1,6 @@
 const side = new Vec2();
 const open = new Vec2();
+const rangeloc = new Vec2();
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const burningHell = extendContent(PowerTurret, "eruptor-iii", {
@@ -32,7 +33,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
     Draw.rect(this.cells[2], entity.x, entity.y, entity.rotation-90);
     if(entity.heat > 0){
       Draw.blend(Blending.additive);
-      Draw.color(Color.valueOf("f08913"), entity.heat);
+      Draw.color(Color.valueOf("ffbe73"), entity.heat);
       Draw.rect(this.cellHeats[2], entity.x, entity.y, entity.rotation-90);
       Draw.blend();
       Draw.color();
@@ -94,7 +95,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
 		if(entity.getBulletLife() > 0){
 			entity.heat = 1;
 			entity.setCellOpenAmount(this.COA * 1+(Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)/3));
-      entity.setSideOpenAmount(this.SOA * 1+(Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)/2));
+      entity.setSideOpenAmount(this.SOA + (Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)*2));
 			entity.setBulletLife(entity.getBulletLife() - Time.delta());
 		}
   },
@@ -127,18 +128,30 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
 	},
   shoot(tile, type){
     var entity = tile.ent();
-    var radius = this.range;
-    var hasShot = false;
-    Units.nearbyEnemies(tile.getTeam(), tile.drawx() - radius, tile.drawy() - radius, radius * 2, radius * 2, cons(unit => {
-      if(unit.withinDst(tile.drawx(), tile.drawy(), radius)){
+    Units.nearbyEnemies(tile.getTeam(), tile.drawx() - this.range, tile.drawy() - this.range, this.range*2, this.range*2, cons(unit => {
+      if(unit.withinDst(tile.drawx(), tile.drawy(), this.range)){
         if(!unit.isDead() && unit instanceof HealthTrait){
           Calls.createBullet(this.shootType, tile.getTeam(), unit.x, unit.y, 0, 1, 1);
-          if(!hasShot){
-            hasShot = true;
-          }
         }
       }
     }));
+    
+    //reset oofed
+    var oofed = [];
+    for(a = 0; a < 360; a++){
+      for(l = this.range/8; l > 0; l--){
+        rangeloc.trns(a, 0, l);
+        if(Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y) != null){
+          other = Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y);
+          
+          if(other.getTeam() != tile.getTeam() && other.ent() != null && oofed.indexOf(other) == -1){
+            Calls.createBullet(this.shootType, tile.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
+            //add to oofed so the same thing doesn't get oofed twice.
+            oofed.push(other);
+          }
+        }
+      }
+    }
   },
   shouldTurn(tile){
     return false;
@@ -149,14 +162,15 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
 		return entity.getBulletLife() > 0;
 	}
 });
-const burnRadius = 27;
+const burnRadius = 8;
+const oofDuration = 30;
 
-burningHell.shootDuration = 90;
+burningHell.shootDuration = oofDuration;
 burningHell.range = 200;
 burningHell.shootCone = 360;
 burningHell.rotationSpeed = 0;
 burningHell.COA = 0.9;
-burningHell.SOA = 4;
+burningHell.SOA = 3;
 burningHell.firingMoveFract = 0.8;
 burningHell.shootEffect = Fx.none;
 burningHell.smokeEffect = Fx.none;
@@ -206,7 +220,7 @@ burningHell.entityType = prov(() => {
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
 var colors = [Color.valueOf("a3570055"), Color.valueOf("bf6804aa"), Color.valueOf("db7909"), Color.valueOf("f08913")];
-var length = 16;
+var length = 8;
 
 //Stuff you probably shouldn't edit.
 //Width of each section of the beam from thickest to thinnest
@@ -229,7 +243,7 @@ burningHell.shootType = extend(BasicBulletType, {
       }
       
       Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 10000);
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 1000);
+      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 9000);
     }
   },
   draw(b){
@@ -269,7 +283,7 @@ burningHell.shootType = extend(BasicBulletType, {
 
 burningHell.shootType.speed = 0.000000001;
 burningHell.shootType.damage = 62.5;
-burningHell.shootType.lifetime = 90;
+burningHell.shootType.lifetime = oofDuration;
 burningHell.shootType.collides = false;
 burningHell.shootType.collidesTiles = false;
 burningHell.shootType.hitEffect = Fx.fireballsmoke;

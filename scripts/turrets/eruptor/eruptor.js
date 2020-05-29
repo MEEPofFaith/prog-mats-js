@@ -203,8 +203,8 @@ heatRiser.shootType = extend(BasicBulletType, {
         Damage.damage(b.getTeam(), b.x, b.y, burnRadius*2, this.damage, true);
       }
       
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 10000);
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 1000);
+      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 20000);
+      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 19000);
     }
   },
   draw(b){

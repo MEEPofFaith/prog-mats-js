@@ -1,10 +1,10 @@
-localizedName: "[#d17000]BURNING HELL"
+localizedName: "[#d17000]BURNING HECC"
 description: 
   '''
-  THE WORLD MUST BURN
+  Say hi to Satan for me while you're burning to death for me, thx.
   '''
 size: 4
-reload: 45
+reload: 90
 health: 1800
 powerUse: 15
 targetAir: true
@@ -15,12 +15,14 @@ shootSound: eruption
 activeSound: magma
 activeSoundVolume: 2
 requirements: [
-  copper/350
-  lead/550
-  graphite/550
-  silicon/600
-  surge-alloy/350
-  technetium/200
+  copper/700
+  lead/950
+  graphite/750
+  silicon/800
+  titanium/400
+  thorium/500
+  surge-alloy/650
+  technetium/400
 ]
 category: turret
 research: eruptor-ii
