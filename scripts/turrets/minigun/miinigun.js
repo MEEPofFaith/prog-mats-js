@@ -49,6 +49,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     
     if(!this.validateTarget(tile) || entity.totalAmmo < 2){
       entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 0, 0.0125));
+      entity.setDBarrel(9);
     }
     
     entity.setDTrueFrame(entity.getDTrueFrame() + entity.getDFrameSpeed());

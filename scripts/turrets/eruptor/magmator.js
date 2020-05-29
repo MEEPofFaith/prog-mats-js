@@ -93,7 +93,9 @@ const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "eruptor-ii", {
 		
 		entity = tile.ent();
 		
-    entity.setCellOpenAmount(Mathf.lerpDelta(entity.getCellOpenAmount(), 0, this.restitution));
+    if(entity.getBulletLife() <= 0 && entity.getBullet() == null){
+      entity.setCellOpenAmount(Mathf.lerpDelta(entity.getCellOpenAmount(), 0, this.restitution));
+    }
     
 		if(entity.getBulletLife() > 0 && entity.getBullet() != null){
 			var entBullet = entity.getBullet();

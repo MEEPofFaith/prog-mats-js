@@ -1,0 +1,26 @@
+localizedName: "[#d17000]BURNING HELL"
+description: 
+  '''
+  THE WORLD MUST BURN
+  '''
+size: 4
+reload: 45
+health: 1800
+powerUse: 15
+targetAir: true
+targetGround: true
+recoil: 0
+cooldown: 0.01
+shootSound: eruption
+activeSound: magma
+activeSoundVolume: 2
+requirements: [
+  copper/350
+  lead/550
+  graphite/550
+  silicon/600
+  surge-alloy/350
+  technetium/200
+]
+category: turret
+research: eruptor-ii
