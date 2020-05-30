@@ -103,7 +103,7 @@ minigun.heatRegions = [];
 
 minigun.restitution = 0.02;
 minigun.recoil = 3;
-minigun.cooldown = 0.06;
+minigun.cooldown = 0.11;
 minigun.inaccuracy = 8;
 minigun.shootEffect = Fx.none;
 minigun.smokeEffect = Fx.none;
