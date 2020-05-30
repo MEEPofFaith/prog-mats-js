@@ -49,7 +49,7 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
     
     if(!this.validateTarget(tile) || !this.hasAmmo(tile)){
       entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 0, 0.0125));
-      entity.setBarrel(9);
+      entity.setBarrel(0);
     }
     
     entity.setTrueFrame(entity.getTrueFrame() + entity.getFrameSpeed());
