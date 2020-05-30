@@ -34,7 +34,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
     if(entity.heat > 0){
       Draw.blend(Blending.additive);
       Draw.color(Color.valueOf("ffbe73"), entity.heat);
-      Draw.rect(this.cellHeats[2], entity.x, entity.y, entity.rotation-90);
+      Draw.rect(this.cellHeats[2], entity.x + Mathf.range(1 * entity.heat), entity.y + Mathf.range(1 * entity.heat), entity.rotation-90);
       Draw.blend();
       Draw.color();
     }
