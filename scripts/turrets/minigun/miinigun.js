@@ -14,6 +14,10 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
 			Core.atlas.find("definitely-not-advance-content-minigun-ii-icon")
 		];
   },
+  setStats(){
+    this.stats.remove(BlockStat.shots);
+    this.stats.add(BlockStat.shots, 2, StatUnit.none);
+  }
   drawLayer(tile){
     const vec = new Vec2();
     entity = tile.ent();

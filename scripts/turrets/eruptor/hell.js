@@ -78,6 +78,9 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
   setStats(){
     this.super$setStats();
     
+    this.stats.remove(BlockStat.inaccuracy);
+    this.stats.remove(BlockStat.shots);
+    this.stats.add(BlockStat.shots, "The number of enemies in range");
     this.stats.remove(BlockStat.damage);
     //damages every 5 ticks, at least in meltdown's case
     this.stats.add(BlockStat.damage, this.shootType.damage * 60 / 5, StatUnit.perSecond);
