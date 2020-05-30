@@ -49,7 +49,6 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
     
     if(!this.validateTarget(tile) || !this.hasAmmo(tile)){
       entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 0, 0.0125));
-      entity.setBarrel(0);
     }
     
     entity.setTrueFrame(entity.getTrueFrame() + entity.getFrameSpeed());
@@ -69,8 +68,14 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
       entity.setBheat(i, Mathf.lerpDelta(entity.getBheat(i), 0, this.cooldown));
     }
     
-    if(entity.getFrame() == 2){
+    if(entity.getFrame() != 0){
       entity.setShouldShoot(1);
+      entity.setShouldBarrel(1);
+    }
+    
+    if(entity.getFrame() == 0 && entity.getShouldBarrel() == 1){
+      entity.setBarrel(entity.getBarrel() + 1);
+      entity.setShouldBarrel(0);
     }
   },
   updateShooting(tile){
@@ -83,15 +88,13 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
         entity.liquids.remove(liquid, 0.2);
       }
     }
-    
-    if(entity.getFrame()==0 && entity.getFrameSpeed() > 0.0166666667 && entity.getShouldShoot() == 1){
+    if(entity.getFrame() == 0 && entity.getShouldShoot() == 1 && entity.getFrameSpeed() > 0.0166666667){
       type = this.peekAmmo(tile);
       
       this.shoot(tile, type);
       
       entity.setShouldShoot(0);
       entity.setBheat(entity.getBarrel() % 4, 1);
-      entity.setBarrel(entity.getBarrel() + 1);
     }
   }
 });
@@ -252,14 +255,24 @@ minigun.entityType = prov(() => {
     
     getShouldShoot(){
       return this._ss;
+    },
+    
+    //Can change barrel
+    setShouldBarrel(a){
+      this._SB = a;
+    },
+    
+    getShouldBarrel(){
+      return this._SB;
     }
   });
   
   entity.setFrame(0);
   entity.setTrueFrame(0);
   entity.setFrameSpeed(0);
-  entity.setBarrel(0);
+  entity.setBarrel(-1);
   entity.setShouldShoot(0);
+  entity.setShouldBarrel(0);
   for(i = 0; i < 4; i++){
     entity.setBheat(i, 0);
     entity.setHeatFrame(i, 0);

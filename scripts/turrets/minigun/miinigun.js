@@ -15,35 +15,37 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
 		];
   },
   setStats(){
+    this.super$setStats();
+    
     this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, 2, StatUnit.none);
-  }
+    this.stats.add(BlockStat.shots, "2");
+  },
   drawLayer(tile){
     const vec = new Vec2();
     entity = tile.ent();
     
     vec.trns(entity.rotation, -entity.recoil);
     
-    Draw.rect(this.turretRegions[entity.getDFrame()], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+    Draw.rect(this.turretRegions[entity.getFrame()], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
     
     for(i = 0; i < 4; i++){
-      if(entity.getDBheat(i) > 0){
+      if(entity.getBheat(i) > 0){
         Draw.blend(Blending.additive);
-        Draw.color(Color.valueOf("f7956a"), entity.getDBheat(i));
-        Draw.rect(this.heatRegions[entity.getDHeatFrame(i)], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+        Draw.color(Color.valueOf("f7956a"), entity.getBheat(i));
+        Draw.rect(this.heatRegions[entity.getHeatFrame(i)], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
         Draw.blend();
         Draw.color();
       }
     }
     
-    if(entity.getDFrameSpeed() > 0 && 9 * entity.getDFrameSpeed() > 0.25){
+    if(entity.getFrameSpeed() > 0 && 9 * entity.getFrameSpeed() > 0.25){
       Draw.color(Color.valueOf("F7956A"));
       vec.trns(entity.rotation+90, 4, 10+entity.recoil);
       Lines.stroke(1);
-      Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getDFrameSpeed());
+      Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());
       vec.trns(entity.rotation+90, -4, 10+entity.recoil);
       Lines.stroke(1);
-      Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getDFrameSpeed());
+      Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());
       Draw.color();
     }
   },
@@ -52,29 +54,34 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     entity = tile.ent();
     
     if(!this.validateTarget(tile) || entity.totalAmmo < 2){
-      entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 0, 0.0125));
-      entity.setDBarrel(0);
+      entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 0, 0.0125));
     }
     
-    entity.setDTrueFrame(entity.getDTrueFrame() + entity.getDFrameSpeed());
-    entity.setDFrame(Mathf.round(entity.getDTrueFrame()) % 3);
+    entity.setTrueFrame(entity.getTrueFrame() + entity.getFrameSpeed());
+    entity.setFrame(Mathf.round(entity.getTrueFrame()) % 3);
     for(i = 0; i < 4; i++){
-      entity.setDHeatFrame(i, (Mathf.round(entity.getDTrueFrame()) % 12) - 3 - (i*3));
-      if(entity.getDHeatFrame(i) < 0){
-        entity.setDHeatFrame(i, 12 + entity.getDHeatFrame(i));
+      entity.setHeatFrame(i, (Mathf.round(entity.getTrueFrame()) % 12) - 3 - (i*3));
+      if(entity.getHeatFrame(i) < 0){
+        entity.setHeatFrame(i, 12 + entity.getHeatFrame(i));
       }
-      if(entity.getDHeatFrame(i) > 11){
-        entity.setDHeatFrame(i, -12 + entity.getDHeatFrame(i));
+      if(entity.getHeatFrame(i) > 11){
+        entity.setHeatFrame(i, -12 + entity.getHeatFrame(i));
       }
     }
     
     entity.recoil = Mathf.lerpDelta(entity.recoil, 0, this.restitution);
     for(i = 0; i < 4; i++){
-      entity.setDBheat(i, Mathf.lerpDelta(entity.getDBheat(i), 0, this.cooldown));
+      entity.setBheat(i, Mathf.lerpDelta(entity.getBheat(i), 0, this.cooldown));
     }
     
-    if(entity.getDFrame() == 2){
-      entity.setDShouldShoot(1);
+    if(entity.getFrame() != 0){
+      entity.setShouldShoot(1);
+      entity.setShouldBarrel(1);
+    }
+    
+    if(entity.getFrame() == 0 && entity.getShouldBarrel() == 1){
+      entity.setBarrel(entity.getBarrel() + 1);
+      entity.setShouldBarrel(0);
     }
   },
   updateShooting(tile){
@@ -82,21 +89,19 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     liquid = entity.liquids.current();
     
     if(entity.totalAmmo >= 2){
-      entity.setDFrameSpeed(Mathf.lerpDelta(entity.getDFrameSpeed(), 1, 0.000125 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));
-      if(entity.getDFrameSpeed() < 0.95){
+      entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 1, 0.000125 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));
+      if(entity.getFrameSpeed() < 0.95){
         entity.liquids.remove(liquid, 0.2);
       }
     }
-    
-    if(entity.getDFrame()==0 && entity.getDFrameSpeed() > 0.0166666667 && entity.getDShouldShoot() == 1 && entity.totalAmmo >= 2){
+    if(entity.getFrame() == 0 && entity.getShouldShoot() == 1 && entity.getFrameSpeed() > 0.0166666667){
       type = this.peekAmmo(tile);
       
       this.shoot(tile, type);
       this.shoot(tile, type);
       
-      entity.setDShouldShoot(0);
-      entity.setDBheat(entity.getDBarrel() % 4, 1);
-      entity.setDBarrel(entity.getDBarrel() + 1);
+      entity.setShouldShoot(0);
+      entity.setBheat(entity.getBarrel() % 4, 1);
     }
   }
 });
@@ -195,80 +200,90 @@ dualMinigun.ammo(
 
 dualMinigun.entityType = prov(() => {
   entity = extendContent(ItemTurret.ItemTurretEntity, dualMinigun, {
-    _DDBarrelHeat:[],
+    _BarrelHeat:[],
     //DBarrel heat
-    setDBheat(n, v){
-      this._DDBarrelHeat[n] = v;
+    setBheat(n, v){
+      this._BarrelHeat[n] = v;
     },
     
-    getDBheat(n){
-      return this._DDBarrelHeat[n];
+    getBheat(n){
+      return this._BarrelHeat[n];
     },
     
     //Current frame
-    setDFrame(a){
-      this._Dframe = a;
+    setFrame(a){
+      this._frame = a;
     },
     
-    getDFrame(){
-      return this._Dframe;
+    getFrame(){
+      return this._frame;
     },
     
-    _Dhframe:[],
+    _hframe:[],
     //Current heat frame
-    setDHeatFrame(n, v){
-      this._Dhframe[n] = v;
+    setHeatFrame(n, v){
+      this._hframe[n] = v;
     },
     
-    getDHeatFrame(n){
-      return this._Dhframe[n];
+    getHeatFrame(n){
+      return this._hframe[n];
     },
     
     //Time between frames
-    setDFrameSpeed(a){
-      this._DframeSpd = a;
+    setFrameSpeed(a){
+      this._frameSpd = a;
     },
     
-    getDFrameSpeed(){
-      return this._DframeSpd;
+    getFrameSpeed(){
+      return this._frameSpd;
     },
     
     //True frame
-    setDTrueFrame(a){
-      this._Dtframe = a;
+    setTrueFrame(a){
+      this._tframe = a;
     },
     
-    getDTrueFrame(){
-      return this._Dtframe;
+    getTrueFrame(){
+      return this._tframe;
     },
     
     //Current DBarrel
-    setDBarrel(a){
-      this._DDBarrel = a;
+    setBarrel(a){
+      this._Barrel = a;
     },
     
-    getDBarrel(){
-      return this._DDBarrel;
+    getBarrel(){
+      return this._Barrel;
     },
     
     //Can shoot
-    setDShouldShoot(a){
-      this._Dss = a;
+    setShouldShoot(a){
+      this._SS = a;
     },
     
-    getDShouldShoot(){
-      return this._Dss;
+    getShouldShoot(){
+      return this._SS;
+    },
+    
+    //Can change barrel
+    setShouldBarrel(a){
+      this._SB = a;
+    },
+    
+    getShouldBarrel(){
+      return this._SB;
     }
   });
   
-  entity.setDFrame(0);
-  entity.setDTrueFrame(0);
-  entity.setDFrameSpeed(0);
-  entity.setDBarrel(0);
-  entity.setDShouldShoot(0);
+  entity.setFrame(0);
+  entity.setTrueFrame(0);
+  entity.setFrameSpeed(0);
+  entity.setBarrel(-1);
+  entity.setShouldShoot(0);
+  entity.setShouldBarrel(0);
   for(i = 0; i < 4; i++){
-    entity.setDBheat(i, 0);
-    entity.setDHeatFrame(i, 0);
+    entity.setBheat(i, 0);
+    entity.setHeatFrame(i, 0);
   }
   
   return entity;
