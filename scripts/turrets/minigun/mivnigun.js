@@ -1,4 +1,4 @@
-const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
+const quadMinigun = extendContent(DoubleTurret, "minigun-iii", {
   load(){
     for(i = 0; i < 3; i++){
       this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
@@ -11,7 +11,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
   generateIcons(){
     return [
 			Core.atlas.find("block-4"),
-			Core.atlas.find("definitely-not-advance-content-minigun-ii-icon")
+			Core.atlas.find("definitely-not-advance-content-minigun-iii-icon")
 		];
   },
   setStats(){
@@ -103,52 +103,49 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
   shoot(tile, type){
     const tr = new Vec2();
     entity = tile.ent();
+    const shootLoc = [-7.5, -2.5, 2.5,7.5];
     
     entity.setShouldShoot(0);
     entity.setBheat(entity.getBarrel() % 4, 1);
     
-    tr.trns(entity.rotation - 90, -this.shotWidth, 16);
-    Calls.createBullet(type, entity.getTeam(), entity.x + tr.x, entity.y + tr.y, entity.rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);
-    
-    tr.trns(entity.rotation - 90, this.shotWidth, 16);
-    Calls.createBullet(type, entity.getTeam(), entity.x + tr.x, entity.y + tr.y, entity.rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);
+    for(i = 0; i < 4; i ++){
+      tr.trns(entity.rotation - 90, shootLoc[i], 16);
+      Calls.createBullet(type, entity.getTeam(), entity.x + tr.x, entity.y + tr.y, entity.rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);
+    }
     
     this.effects(tile);
     this.useAmmo(tile);
   },
   effects(tile){
     const tr = new Vec2();
+    const shootLoc = [-7.5, -2.5, 2.5,7.5];
     shootEffect = this.shootEffect == Fx.none ? this.peekAmmo(tile).shootEffect : this.shootEffect;
     smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo(tile).smokeEffect : this.smokeEffect;
 
     entity = tile.ent();
     
-    tr.trns(entity.rotation - 90, -this.shotWidth, 16);
-    Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
-    Effects.effect(smokeEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
-    this.shootSound.at(tile, Mathf.random(0.9, 1.1));
-
-    tr.trns(entity.rotation - 90, this.shotWidth, 16);
-    Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
-    Effects.effect(smokeEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
-    this.shootSound.at(tile, Mathf.random(0.9, 1.1));
+    for(i = 0; i < 4; i ++){
+      tr.trns(entity.rotation - 90, shootLoc[i], 16);
+      Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+      Effects.effect(smokeEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+      this.shootSound.at(tile, Mathf.random(0.9, 1.1));
+    }
     
     entity.recoil = this.recoil;
   }
 });
-dualMinigun.turretRegions = [];
-dualMinigun.heatRegions = [];
+quadMinigun.turretRegions = [];
+quadMinigun.heatRegions = [];
 
-dualMinigun.size = 4;
-dualMinigun.restitution = 0.02;
-dualMinigun.shotWidth = 4;
-dualMinigun.recoil = 3;
-dualMinigun.cooldown = 0.11;
-dualMinigun.inaccuracy = 8;
-dualMinigun.shootEffect = Fx.none;
-dualMinigun.smokeEffect = Fx.none;
-dualMinigun.ammoUseEffect = Fx.none;
-dualMinigun.shootSound = Sounds.shootBig;
+quadMinigun.size = 4;
+quadMinigun.restitution = 0.02;
+quadMinigun.recoil = 3;
+quadMinigun.cooldown = 0.11;
+quadMinigun.inaccuracy = 8;
+quadMinigun.shootEffect = Fx.none;
+quadMinigun.smokeEffect = Fx.none;
+quadMinigun.ammoUseEffect = Fx.none;
+quadMinigun.shootSound = Sounds.shootBig;
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.bulletSprite = "definitely-not-advance-content-minigun-ball";
@@ -222,7 +219,7 @@ MiniBlast.inaccuracy = 3;
 MiniBlast.lifetime = 90;
 MiniBlast.ammoMultiplier = 3;
 
-dualMinigun.ammo(
+quadMinigun.ammo(
   Items.copper, MiniCopper,
   Items.graphite, MiniGraphite,
   Items.silicon, MiniSilicon,
@@ -231,8 +228,8 @@ dualMinigun.ammo(
   Items.thorium, MiniThorium
 );
 
-dualMinigun.entityType = prov(() => {
-  entity = extendContent(ItemTurret.ItemTurretEntity, dualMinigun, {
+quadMinigun.entityType = prov(() => {
+  entity = extendContent(ItemTurret.ItemTurretEntity, quadMinigun, {
     _BarrelHeat:[],
     //DBarrel heat
     setBheat(n, v){
