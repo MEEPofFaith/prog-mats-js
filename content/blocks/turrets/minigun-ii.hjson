@@ -6,11 +6,9 @@ description:
   Overdrive, firing speed multiplier, and liquid boosting effect how fast it spins up instead of firing speed.
   Doesn't ever go above 1 shot/3 ticks because it'll stop firing correctly if it goes any faster.
   '''
-size: 4
 range: 225
 health: 1800
 shootCone: 20
-shootSound: shootBig
 targetAir: true
 targetGround: true
 rotatespeed: 2

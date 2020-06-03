@@ -98,16 +98,49 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
       type = this.peekAmmo(tile);
       
       this.shoot(tile, type);
-      this.shoot(tile, type);
-      
-      entity.setShouldShoot(0);
-      entity.setBheat(entity.getBarrel() % 4, 1);
     }
+  },
+  shoot(tile, type){
+    const tr = new Vec2();
+    entity = tile.ent();
+    
+    entity.setShouldShoot(0);
+    entity.setBheat(entity.getBarrel() % 4, 1);
+    
+    tr.trns(entity.rotation - 90, -this.shotWidth, 16);
+    Calls.createBullet(type, entity.getTeam(), entity.x + tr.x, entity.y + tr.y, entity.rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);
+    this.effects(tile);
+    
+    tr.trns(entity.rotation - 90, this.shotWidth, 16);
+    Calls.createBullet(type, entity.getTeam(), entity.x + tr.x, entity.y + tr.y, entity.rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);
+    this.effects(tile);
+    
+    this.useAmmo(tile);
+  },
+  effects(tile){
+    const tr = new Vec2();
+    shootEffect = this.shootEffect == Fx.none ? this.peekAmmo(tile).shootEffect : this.shootEffect;
+    smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo(tile).smokeEffect : this.smokeEffect;
+
+    entity = tile.ent();
+    
+    tr.trns(entity.rotation - 90, -this.shotWidth, 16);
+    Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+    Effects.effect(smokeEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+    this.shootSound.at(tile, Mathf.random(0.9, 1.1));
+
+    tr.trns(entity.rotation - 90, this.shotWidth, 16);
+    Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+    Effects.effect(smokeEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+    this.shootSound.at(tile, Mathf.random(0.9, 1.1));
+    
+    entity.recoil = this.recoil;
   }
 });
 dualMinigun.turretRegions = [];
 dualMinigun.heatRegions = [];
 
+dualMinigun.size = 4;
 dualMinigun.restitution = 0.02;
 dualMinigun.shotWidth = 4;
 dualMinigun.recoil = 3;
@@ -116,6 +149,7 @@ dualMinigun.inaccuracy = 8;
 dualMinigun.shootEffect = Fx.none;
 dualMinigun.smokeEffect = Fx.none;
 dualMinigun.ammoUseEffect = Fx.none;
+dualMinigun.shootSound = Sounds.shootBig;
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.bulletSprite = "definitely-not-advance-content-minigun-ball";
