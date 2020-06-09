@@ -18,7 +18,7 @@ const quadMinigun = extendContent(DoubleTurret, "minigun-iii", {
     this.super$setStats();
     
     this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, "2");
+    this.stats.add(BlockStat.shots, "4");
   },
   drawLayer(tile){
     const vec = new Vec2();

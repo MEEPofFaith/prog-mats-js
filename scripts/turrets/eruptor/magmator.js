@@ -85,7 +85,9 @@ const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "eruptor-ii", {
   setStats(){
     this.super$setStats();
     
+    this.stats.remove(BlockStat.inaccuracy);
     this.stats.remove(BlockStat.damage);
+    //damages every 5 ticks
     this.stats.add(BlockStat.damage, this.shootType.damage * 60 / 5, StatUnit.perSecond);
   },
   update(tile){

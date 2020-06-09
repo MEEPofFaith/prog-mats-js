@@ -52,8 +52,9 @@ const heatRiser = extendContent(PowerTurret, "eruptor-i", {
   setStats(){
     this.super$setStats();
     
+    this.stats.remove(BlockStat.inaccuracy);
     this.stats.remove(BlockStat.damage);
-    //damages every 5 ticks, at least in meltdown's case
+    //damages every 5 ticks
     this.stats.add(BlockStat.damage, this.shootType.damage * 60 / 5, StatUnit.perSecond);
   },
   update(tile){
