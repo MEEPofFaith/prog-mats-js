@@ -22,7 +22,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
   },
   drawLayer(tile){
     const vec = new Vec2();
-    entity = tile.ent();
+    const entity = tile.ent();
     
     vec.trns(entity.rotation, -entity.recoil);
     
@@ -51,7 +51,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
   },
   update(tile){
     this.super$update(tile);
-    entity = tile.ent();
+    const entity = tile.ent();
     
     if(!this.validateTarget(tile) || entity.totalAmmo < 2){
       entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 0, 0.0125));
@@ -85,7 +85,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     }
   },
   updateShooting(tile){
-    entity = tile.ent();
+    const entity = tile.ent();
     liquid = entity.liquids.current();
     
     if(entity.totalAmmo >= 2){
@@ -102,7 +102,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
   },
   shoot(tile, type){
     const tr = new Vec2();
-    entity = tile.ent();
+    const entity = tile.ent();
     
     entity.setShouldShoot(0);
     entity.setBheat(entity.getBarrel() % 4, 1);
@@ -121,7 +121,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     shootEffect = this.shootEffect == Fx.none ? this.peekAmmo(tile).shootEffect : this.shootEffect;
     smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo(tile).smokeEffect : this.smokeEffect;
 
-    entity = tile.ent();
+    const entity = tile.ent();
     
     tr.trns(entity.rotation - 90, -this.shotWidth, 16);
     Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);

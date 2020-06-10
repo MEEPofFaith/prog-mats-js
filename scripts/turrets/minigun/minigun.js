@@ -16,7 +16,7 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
   },
   drawLayer(tile){
     const vec = new Vec2();
-    entity = tile.ent();
+    const entity = tile.ent();
     
     vec.trns(entity.rotation, -entity.recoil);
     
@@ -45,7 +45,7 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
   },
   update(tile){
     this.super$update(tile);
-    entity = tile.ent();
+    const entity = tile.ent();
     
     if(!this.validateTarget(tile) || !this.hasAmmo(tile)){
       entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 0, 0.0125));
@@ -79,7 +79,7 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
     }
   },
   updateShooting(tile){
-    entity = tile.ent();
+    const entity = tile.ent();
     liquid = entity.liquids.current();
     
     if(this.hasAmmo(tile)){

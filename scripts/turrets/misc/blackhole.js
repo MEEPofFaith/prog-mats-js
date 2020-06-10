@@ -46,9 +46,8 @@ const charge = newEffect(38, e => {
 const blackhole = extendContent(ChargeTurret, "blackhole-i", {
   shoot(tile, type){
     const vec = new Vec2();
-    entity = tile.ent();
+    const const entity = tile.ent();
     this.useAmmo(tile);
-
 
     vec.trns(entity.rotation, 9 - entity.recoil);
     Effects.effect(this.chargeBeginEffect, entity.x + vec.x, entity.y + vec.y, entity.rotation);
@@ -64,7 +63,7 @@ const blackhole = extendContent(ChargeTurret, "blackhole-i", {
     Time.run(this.chargeTime, run(() => {
       entity.recoil = this.recoil;
       entity.heat = 1;
-      Calls.createBullet(this.shootType, entity.getTeam(), entity.x + vec.x, entity.y + vec.y, entity.rotation, 1, 1);
+      Calls.createBullet(type, entity.getTeam(), entity.x + vec.x, entity.y + vec.y, entity.rotation, 1, 1);
       entity.shooting = false;
     }));
   }
@@ -76,9 +75,10 @@ blackhole.chargeTime = 50;
 blackhole.chargeMaxDelay = 30;
 blackhole.chargeEffects = 16;
 blackhole.recoil = 2;
-blackhole.heatColor = Colors.valueOf("000000");
+blackhole.heatColor = Color.valueOf("000000");
 blackhole.restitution = 0.015;
 blackhole.cooldown = 0.015;
+blackhole.expanded = true;
 
 blackhole.shootType = extend(BasicBulletType, {
   load(){

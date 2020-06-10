@@ -20,7 +20,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
     }
   },
   drawLayer(tile){
-    entity = tile.ent();
+    const entity = tile.ent();
     
     for(i = 0; i < 2; i++){
       side.trns(entity.rotation-90, entity.getSideOpenAmount() * ((i-0.5)*2), 0);
@@ -88,7 +88,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
   update(tile){
     this.super$update(tile);
 		
-		entity = tile.ent();
+		const entity = tile.ent();
 		
     if(entity.getBulletLife() <= 0){
       entity.setCellOpenAmount(Mathf.lerpDelta(entity.getCellOpenAmount(), 0, this.restitution));
@@ -103,7 +103,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
 		}
   },
 	updateShooting(tile){
-		entity = tile.ent();
+		const entity = tile.ent();
 		
 		if(entity.getBulletLife() > 0){
 			return;
@@ -130,7 +130,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
 		}
 	},
   shoot(tile, type){
-    var entity = tile.ent();
+    const entity = tile.ent();
     Units.nearbyEnemies(tile.getTeam(), tile.drawx() - this.range, tile.drawy() - this.range, this.range*2, this.range*2, cons(unit => {
       if(unit.withinDst(tile.drawx(), tile.drawy(), this.range)){
         if(!unit.isDead() && unit instanceof HealthTrait){
@@ -160,7 +160,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
     return false;
   },
 	shouldActiveSound(tile){
-		entity = tile.ent();
+		const entity = tile.ent();
 
 		return entity.getBulletLife() > 0;
 	}

@@ -22,7 +22,7 @@ const quadMinigun = extendContent(DoubleTurret, "minigun-iii", {
   },
   drawLayer(tile){
     const vec = new Vec2();
-    entity = tile.ent();
+    const entity = tile.ent();
     
     vec.trns(entity.rotation, -entity.recoil);
     
@@ -51,7 +51,7 @@ const quadMinigun = extendContent(DoubleTurret, "minigun-iii", {
   },
   update(tile){
     this.super$update(tile);
-    entity = tile.ent();
+    const entity = tile.ent();
     
     if(!this.validateTarget(tile) || entity.totalAmmo < 2){
       entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 0, 0.0125));
@@ -85,7 +85,7 @@ const quadMinigun = extendContent(DoubleTurret, "minigun-iii", {
     }
   },
   updateShooting(tile){
-    entity = tile.ent();
+    const entity = tile.ent();
     liquid = entity.liquids.current();
     
     if(entity.totalAmmo >= 2){
@@ -102,7 +102,7 @@ const quadMinigun = extendContent(DoubleTurret, "minigun-iii", {
   },
   shoot(tile, type){
     const tr = new Vec2();
-    entity = tile.ent();
+    const entity = tile.ent();
     const shootLoc = [-7.5, -2.5, 2.5,7.5];
     
     entity.setShouldShoot(0);
@@ -122,7 +122,7 @@ const quadMinigun = extendContent(DoubleTurret, "minigun-iii", {
     shootEffect = this.shootEffect == Fx.none ? this.peekAmmo(tile).shootEffect : this.shootEffect;
     smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo(tile).smokeEffect : this.smokeEffect;
 
-    entity = tile.ent();
+    const entity = tile.ent();
     
     for(i = 0; i < 4; i ++){
       tr.trns(entity.rotation - 90, shootLoc[i], 16);

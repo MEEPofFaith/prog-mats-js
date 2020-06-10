@@ -17,7 +17,7 @@ const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "eruptor-ii", {
   },
   drawLayer(tile){
     this.super$drawLayer(tile);
-    entity = tile.ent();
+    const entity = tile.ent();
     
     back.trns(entity.rotation-90, 0, 0);
     
@@ -93,7 +93,7 @@ const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "eruptor-ii", {
   update(tile){
     this.super$update(tile);
 		
-		entity = tile.ent();
+		const entity = tile.ent();
 		
     if(entity.getBulletLife() <= 0 && entity.getBullet() == null){
       entity.setCellOpenAmount(Mathf.lerpDelta(entity.getCellOpenAmount(), 0, this.restitution));
@@ -117,7 +117,7 @@ const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "eruptor-ii", {
 		}
   },
 	updateShooting(tile){
-		entity = tile.ent();
+		const entity = tile.ent();
 		
 		if(entity.getBulletLife() > 0 && entity.getBullet() != null){
 			return;
@@ -144,19 +144,19 @@ const allStatsUpPlsGetTheReference = extendContent(PowerTurret, "eruptor-ii", {
 		}
 	},
   bullet(tile, type, angle){
-		entity = tile.ent();
+		const entity = tile.ent();
 		bullet = Bullet.create(type, entity, tile.getTeam(), tile.drawx() + this.tr.x, tile.drawy() + this.tr.y, angle);
 		
 		entity.setBullet(bullet);
 		entity.setBulletLife(this.shootDuration);
 	},
 	turnToTarget(tile, targetRot){
-		entity = tile.ent();
+		const entity = tile.ent();
 
 		entity.rotation = Angles.moveToward(entity.rotation, targetRot, this.rotatespeed * entity.delta() * (entity.getBulletLife() > 0 ? this.firingMoveFract : 1));
 	},
 	shouldActiveSound(tile){
-		entity = tile.ent();
+		const entity = tile.ent();
 
 		return entity.getBulletLife() > 0 && entity.getBullet() != null;
 	}
