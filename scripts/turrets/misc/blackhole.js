@@ -1,3 +1,5 @@
+const blackholeSize = 6;
+
 const swirl = newEffect(90, e => {
   const loc = new Vec2();
   const endX = Mathf.sinDeg(e.rotation+90) * 45;
@@ -30,7 +32,7 @@ const poof = newEffect(24, e => {
 
 const chargeBegin = newEffect(50, e => {
   Draw.color(Color.valueOf("000000"));
-  Fill.circle(e.x, e.y, e.fin()*6);
+  Fill.circle(e.x, e.y, e.fin()*(blackholeSize/2));
 });
 
 const charge = newEffect(38, e => {
@@ -41,10 +43,42 @@ const charge = newEffect(38, e => {
   Angles.randLenVectors(e.id, 2, 1 + 40 * e.fout(), e.rotation, 180, ln);
 });
 
-const blackhole = extendContent(ChargeTurret, "blackhole-i", {});
+const blackhole = extendContent(ChargeTurret, "blackhole-i", {
+  shoot(tile, type){
+    const vec = new Vec2();
+    entity = tile.ent();
+    this.useAmmo(tile);
+
+
+    vec.trns(entity.rotation, 9 - entity.recoil);
+    Effects.effect(this.chargeBeginEffect, entity.x + vec.x, entity.y + vec.y, entity.rotation);
+    
+    for(i = 0; i < this.chargeEffects; i++){
+      Time.run(Mathf.random(this.chargeMaxDelay), run(() => {
+        Effects.effect(this.chargeEffect, entity.x + vec.x, entity.y + vec.y, entity.rotation);
+      }));
+    }
+    
+    entity.shooting = true;
+
+    Time.run(this.chargeTime, run(() => {
+      entity.recoil = this.recoil;
+      entity.heat = 1;
+      Calls.createBullet(this.shootType, entity.getTeam(), entity.x + vec.x, entity.y + vec.y, entity.rotation, 1, 1);
+      entity.shooting = false;
+    }));
+  }
+});
 
 blackhole.chargeEffect = charge;
 blackhole.chargeBeginEffect = chargeBegin;
+blackhole.chargeTime = 50;
+blackhole.chargeMaxDelay = 30;
+blackhole.chargeEffects = 16;
+blackhole.recoil = 2;
+blackhole.heatColor = Colors.valueOf("000000");
+blackhole.restitution = 0.015;
+blackhole.cooldown = 0.015;
 
 blackhole.shootType = extend(BasicBulletType, {
   load(){
@@ -90,7 +124,7 @@ blackhole.shootType = extend(BasicBulletType, {
             if(Mathf.within(b.x, b.y, e.x, e.y, radius) && e != b && e.getTeam() != b.getTeam()){
               var target = Angles.angle(e.x, e.y, b.x, b.y);
               e.rot(Mathf.slerpDelta(b.rot(), target, 0.9));
-              if(Mathf.within(b.x, b.y, e.x, e.y, 12)){
+              if(Mathf.within(b.x, b.y, e.x, e.y, blackholeSize/2)){
                 e.remove();
               }
             }
@@ -111,20 +145,20 @@ blackhole.shootType = extend(BasicBulletType, {
   },
   draw(b){
     Draw.color(this.backColor);
-    Draw.rect(this.backRegion, b.x, b.y, 0);
+    Draw.rect(this.backRegion, b.x, b.y, blackholeSize, blackholeSize, 0);
     
     var f = Mathf.round(b.time()/5);
     if(f%3 == 0){
       Draw.color(this.frontColor);
-      Draw.rect(this.front0, b.x, b.y, 0);
+      Draw.rect(this.front0, b.x, b.y, blackholeSize, blackholeSize,  0);
     }
     if(f%3 == 1){
       Draw.color(this.frontColor);
-      Draw.rect(this.front1, b.x, b.y, 0);
+      Draw.rect(this.front1, b.x, b.y, blackholeSize, blackholeSize,  0);
     }
     if(f%3 == 2){
       Draw.color(this.frontColor);
-      Draw.rect(this.front2, b.x, b.y, 0);
+      Draw.rect(this.front2, b.x, b.y, blackholeSize, blackholeSize,  0);
     } 
   }
 });

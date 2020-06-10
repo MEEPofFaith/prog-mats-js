@@ -3,12 +3,9 @@ description: Fires a small black hole that sucks in units.
 size: 4
 range: 128
 health: 800
-reload: 210
+reload: 240
 shootEffect: none
 smokeEffect: none
-chargeTime: 50
-chargeMaxDelay: 30
-chargeEffects: 16
 shootSound: release
 requirements: []
 category: turret
