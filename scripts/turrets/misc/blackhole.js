@@ -17,7 +17,7 @@ const swirl = newEffect(90, e => {
 const poof = newEffect(24, e => {
   Draw.color(Color.valueOf("353535"), Color.valueOf("000000"), e.fin());
   
-  e.scaled(12, Cons(s => {
+  e.scaled(12, cons(s => {
     Lines.stroke(0.5 + s.fout());
     Lines.circle(e.x, e.y, s.fin() * 10);
   }))
@@ -44,9 +44,30 @@ const charge = newEffect(38, e => {
 });
 
 const blackhole = extendContent(ChargeTurret, "blackhole-i", {
+  load(){
+    this.topRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i");
+    this.heatRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i-heat");
+    this.baseRegion = Core.atlas.find("block-4");
+  },
+  drawLayer(tile){
+    const vec = new Vec2();
+    const entity = tile.ent();
+    
+    vec.trns(entity.rotation, -entity.recoil);
+    
+    Draw.rect(this.topRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+    
+    if(entity.heat > 0){
+      Draw.blend(Blending.additive);
+      Draw.color(this.heatColor, entity.heat);
+      Draw.rect(this.heatRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+      Draw.blend();
+      Draw.color();
+    }
+  },
   shoot(tile, type){
     const vec = new Vec2();
-    const const entity = tile.ent();
+    const entity = tile.ent();
     this.useAmmo(tile);
 
     vec.trns(entity.rotation, 9 - entity.recoil);
@@ -66,6 +87,12 @@ const blackhole = extendContent(ChargeTurret, "blackhole-i", {
       Calls.createBullet(type, entity.getTeam(), entity.x + vec.x, entity.y + vec.y, entity.rotation, 1, 1);
       entity.shooting = false;
     }));
+  },
+  generateIcons(){
+    return [
+      Core.atlas.find("block-4"),
+      Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")
+    ];
   }
 });
 

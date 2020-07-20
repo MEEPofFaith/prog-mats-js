@@ -25,7 +25,7 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
     for(i = 0; i < 4; i++){
       if(entity.getBheat(i) > 0){
         Draw.blend(Blending.additive);
-        Draw.color(Color.valueOf("f7956a"), entity.getBheat(i));
+        Draw.color(this.heatColor, entity.getBheat(i));
         Draw.rect(this.heatRegions[entity.getHeatFrame(i)], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
         Draw.blend();
         Draw.color();
@@ -108,6 +108,7 @@ minigun.inaccuracy = 8;
 minigun.shootEffect = Fx.none;
 minigun.smokeEffect = Fx.none;
 minigun.ammoUseEffect = Fx.none;
+minigun.heatColor = Color.valueOf("f7956a");
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.bulletSprite = "definitely-not-advance-content-minigun-ball";

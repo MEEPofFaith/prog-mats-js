@@ -31,7 +31,7 @@ const dualMinigun = extendContent(DoubleTurret, "minigun-ii", {
     for(i = 0; i < 4; i++){
       if(entity.getBheat(i) > 0){
         Draw.blend(Blending.additive);
-        Draw.color(Color.valueOf("f7956a"), entity.getBheat(i));
+        Draw.color(this.heatColor, entity.getBheat(i));
         Draw.rect(this.heatRegions[entity.getHeatFrame(i)], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
         Draw.blend();
         Draw.color();
@@ -149,6 +149,7 @@ dualMinigun.shootEffect = Fx.none;
 dualMinigun.smokeEffect = Fx.none;
 dualMinigun.ammoUseEffect = Fx.none;
 dualMinigun.shootSound = Sounds.shootBig;
+dualMinigun.heatColor = Color.valueOf("f7956a");
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.bulletSprite = "definitely-not-advance-content-minigun-ball";

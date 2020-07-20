@@ -7,6 +7,7 @@ reload: 240
 shootEffect: none
 smokeEffect: none
 shootSound: release
+outlineIcon: false
 requirements: []
 category: turret
 research: fuse

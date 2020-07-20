@@ -263,10 +263,10 @@ allStatsUpPlsGetTheReference.shootType = extend(BasicBulletType, {
       //"fountain" of lava
       Draw.blend(Blending.additive);
       for(var s = 0; s < 4; s++){
-        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time(), 1.0, 0.3)));
+        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
         Draw.alpha(b.fout());
         for(var i = 0; i < 4; i++){
-          var baseLen = (length + (Mathf.absin(b.getOwner().getBulletLife()/((i+1)*2.5), 0.8, 1.5)*(length/1.5))) * b.fout();
+          var baseLen = (length + (Mathf.absin(b.getOwner().getBulletLife()/((i+1)*2.5) + b.id, 0.8, 1.5)*(length/1.5))) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
           Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], CapStyle.none);
