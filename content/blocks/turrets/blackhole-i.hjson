@@ -8,6 +8,14 @@ shootEffect: none
 smokeEffect: none
 shootSound: release
 outlineIcon: false
-requirements: []
+requirements: [
+  titanium/100
+  thorium/150
+  surge-alloy/250
+  plastanium/250
+  silicon/800
+  phase-fabric/500
+  technetium/500
+]
 category: turret
 research: fuse
