@@ -3,168 +3,7 @@ const open = new Vec2();
 const rangeloc = new Vec2();
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
-const burningHell = extendContent(PowerTurret, "eruptor-iii", {
-  load(){
-    this.baseRegion = Core.atlas.find("block-4");
-    this.bottomRegion = Core.atlas.find(this.name + "-bottom");
-    for(i = 0; i < 2; i++){
-      this.sides[i] = Core.atlas.find(this.name + "-sides-" + i);
-      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
-    }
-    for(i = 0; i < 3; i++){
-      this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
-      this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
-    }
-    for(i = 0; i < 4; i++){
-      this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
-    }
-  },
-  drawLayer(tile){
-    const entity = tile.ent();
-    
-    for(i = 0; i < 2; i++){
-      side.trns(entity.rotation-90, entity.getSideOpenAmount() * ((i-0.5)*2), 0);
-      Draw.rect(this.outlines[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
-    }
-    
-    Draw.rect(this.bottomRegion, entity.x, entity.y, entity.rotation-90);
-    
-    //inside big cell
-    Draw.rect(this.cells[2], entity.x, entity.y, entity.rotation-90);
-    if(entity.heat > 0){
-      Draw.blend(Blending.additive);
-      Draw.color(Color.valueOf("ffbe73"), entity.heat);
-      Draw.rect(this.cellHeats[2], entity.x + Mathf.range(1 * entity.heat), entity.y + Mathf.range(1 * entity.heat), entity.rotation-90);
-      Draw.blend();
-      Draw.color();
-    }
-    
-    //sides and cells
-    for(i = 0; i < 2; i ++){
-      side.trns(entity.rotation-90, entity.getSideOpenAmount() * ((i-0.5)*2), 0);
-      Draw.rect(this.sides[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
-      Draw.rect(this.cells[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
-      if(entity.heat > 0){
-        Draw.blend(Blending.additive);
-        Draw.color(Color.valueOf("f08913"), entity.heat);
-        Draw.rect(this.cellHeats[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
-        Draw.blend();
-        Draw.color();
-      }
-    }
-    
-    //sw
-    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount() - entity.getSideOpenAmount(), -entity.getCellOpenAmount());
-    Draw.rect(this.caps[0], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-    
-    //se
-    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount() + entity.getSideOpenAmount(), -entity.getCellOpenAmount());
-    Draw.rect(this.caps[1], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-    
-    //nw
-    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount() - entity.getSideOpenAmount(), entity.getCellOpenAmount());
-    Draw.rect(this.caps[2], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-    
-    //ne
-    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount() + entity.getSideOpenAmount(), entity.getCellOpenAmount());
-    Draw.rect(this.caps[3], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-  },
-  generateIcons(){
-    return [
-			Core.atlas.find("block-4"),
-			Core.atlas.find("definitely-not-advance-content-eruptor-iii-icon")
-		];
-  },
-  setStats(){
-    this.super$setStats();
-    
-    this.stats.remove(BlockStat.inaccuracy);
-    this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, "The number of enemies in range (oh no)");
-    this.stats.remove(BlockStat.damage);
-    //damages every 5 ticks, at least in meltdown's case
-    this.stats.add(BlockStat.damage, this.shootType.damage * 60 / 5, StatUnit.perSecond);
-  },
-  update(tile){
-    this.super$update(tile);
-		
-		const entity = tile.ent();
-		
-    if(entity.getBulletLife() <= 0){
-      entity.setCellOpenAmount(Mathf.lerpDelta(entity.getCellOpenAmount(), 0, this.restitution));
-      entity.setSideOpenAmount(Mathf.lerpDelta(entity.getSideOpenAmount(), 0, this.restitution));
-    }
-    
-		if(entity.getBulletLife() > 0){
-			entity.heat = 1;
-			entity.setCellOpenAmount(this.COA * 1+(Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)/3));
-      entity.setSideOpenAmount(this.SOA + (Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)*2));
-			entity.setBulletLife(entity.getBulletLife() - Time.delta());
-		}
-  },
-	updateShooting(tile){
-		const entity = tile.ent();
-		
-		if(entity.getBulletLife() > 0){
-			return;
-		};
-		
-		if(entity.reload >= this.reload){
-			type = this.peekAmmo(tile);
-			
-			this.shoot(tile, type);
-			
-			entity.reload = 0;
-      entity.setBulletLife(this.shootDuration);
-		}else{
-			liquid = entity.liquids.current();
-			maxUsed = this.consumes.get(ConsumeType.liquid).amount;
-			
-			used = this.baseReloadSpeed(tile) * (tile.isEnemyCheat() ? maxUsed : Math.min(entity.liquids.get(liquid), maxUsed * Time.delta())) * liquid.heatCapacity * this.coolantMultiplier;
-			entity.reload += Math.max(used, 1 * Time.delta()) * entity.power.status;
-			entity.liquids.remove(liquid, used);
-			
-			if(Mathf.chance(0.06 * used)){
-				Effects.effect(this.coolEffect, tile.drawx() + Mathf.range(this.size * Vars.tilesize / 2), tile.drawy() + Mathf.range(this.size * Vars.tilesize / 2));
-			}
-		}
-	},
-  shoot(tile, type){
-    const entity = tile.ent();
-    Units.nearbyEnemies(tile.getTeam(), tile.drawx() - this.range, tile.drawy() - this.range, this.range*2, this.range*2, cons(unit => {
-      if(unit.withinDst(tile.drawx(), tile.drawy(), this.range)){
-        if(!unit.isDead() && unit instanceof HealthTrait){
-          Calls.createBullet(this.shootType, tile.getTeam(), unit.x, unit.y, 0, 1, 1);
-        }
-      }
-    }));
-    
-    //reset oofed
-    var oofed = [];
-    for(a = 0; a < 360; a++){
-      for(l = this.range/8; l > 0; l--){
-        rangeloc.trns(a, 0, l);
-        if(Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y) != null){
-          other = Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y);
-          
-          if(other.getTeam() != tile.getTeam() && other.ent() != null && oofed.indexOf(other) == -1){
-            Calls.createBullet(this.shootType, tile.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
-            //add to oofed so the same thing doesn't get oofed twice.
-            oofed.push(other);
-          }
-        }
-      }
-    }
-  },
-  shouldTurn(tile){
-    return false;
-  },
-	shouldActiveSound(tile){
-		const entity = tile.ent();
-
-		return entity.getBulletLife() > 0;
-	}
-});
+const burningHell = extendContent(PowerTurret, "eruptor-iii", {});
 const burnRadius = 8;
 const oofDuration = 30;
 
@@ -186,8 +25,8 @@ burningHell.cells = [];
 burningHell.cellHeats = [];
 burningHell.outlines = [];
 
-burningHell.entityType = prov(() => {
-	entity = extend(Turret.TurretEntity, {
+burningHell.entityType = () => {
+	var hellEntity = extendContent(PowerTurret.PowerTurretEntity, burningHell, {
 		setBulletLife(a){
 			this._bulletlife = a;
 		},
@@ -210,6 +49,167 @@ burningHell.entityType = prov(() => {
 		
     getSideOpenAmount(){
       return this._cellSideAmount;
+    },
+    
+    load(){
+      this.baseRegion = Core.atlas.find("block-4");
+      this.bottomRegion = Core.atlas.find(this.name + "-bottom");
+      for(i = 0; i < 2; i++){
+        this.sides[i] = Core.atlas.find(this.name + "-sides-" + i);
+        this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
+      }
+      for(i = 0; i < 3; i++){
+        this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
+        this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
+      }
+      for(i = 0; i < 4; i++){
+        this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
+      }
+    },
+    drawLayer(tile){
+      const entity = tile.ent();
+      
+      for(i = 0; i < 2; i++){
+        side.trns(entity.rotation-90, entity.getSideOpenAmount() * ((i-0.5)*2), 0);
+        Draw.rect(this.outlines[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
+      }
+      
+      Draw.rect(this.bottomRegion, entity.x, entity.y, entity.rotation-90);
+      
+      //inside big cell
+      Draw.rect(this.cells[2], entity.x, entity.y, entity.rotation-90);
+      if(entity.heat > 0){
+        Draw.blend(Blending.additive);
+        Draw.color(Color.valueOf("ffbe73"), entity.heat);
+        Draw.rect(this.cellHeats[2], entity.x + Mathf.range(1 * entity.heat), entity.y + Mathf.range(1 * entity.heat), entity.rotation-90);
+        Draw.blend();
+        Draw.color();
+      }
+      
+      //sides and cells
+      for(i = 0; i < 2; i ++){
+        side.trns(entity.rotation-90, entity.getSideOpenAmount() * ((i-0.5)*2), 0);
+        Draw.rect(this.sides[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
+        Draw.rect(this.cells[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
+        if(entity.heat > 0){
+          Draw.blend(Blending.additive);
+          Draw.color(Color.valueOf("f08913"), entity.heat);
+          Draw.rect(this.cellHeats[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
+          Draw.blend();
+          Draw.color();
+        }
+      }
+      
+      //sw
+      open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount() - entity.getSideOpenAmount(), -entity.getCellOpenAmount());
+      Draw.rect(this.caps[0], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+      
+      //se
+      open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount() + entity.getSideOpenAmount(), -entity.getCellOpenAmount());
+      Draw.rect(this.caps[1], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+      
+      //nw
+      open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount() - entity.getSideOpenAmount(), entity.getCellOpenAmount());
+      Draw.rect(this.caps[2], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+      
+      //ne
+      open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount() + entity.getSideOpenAmount(), entity.getCellOpenAmount());
+      Draw.rect(this.caps[3], entity.x + open.x, entity.y + open.y, entity.rotation-90);
+    },
+    icons(){
+      return [
+        Core.atlas.find("block-4"),
+        Core.atlas.find("definitely-not-advance-content-eruptor-iii-icon")
+      ];
+    },
+    setStats(){
+      this.super$setStats();
+      
+      this.stats.remove(BlockStat.inaccuracy);
+      this.stats.remove(BlockStat.shots);
+      this.stats.add(BlockStat.shots, "The number of enemies in range (oh no)");
+      this.stats.remove(BlockStat.damage);
+      //damages every 5 ticks, at least in meltdown's case
+      this.stats.add(BlockStat.damage, this.shootType.damage * 60 / 5, StatUnit.perSecond);
+    },
+    update(tile){
+      this.super$update(tile);
+      
+      const entity = tile.ent();
+      
+      if(entity.getBulletLife() <= 0){
+        entity.setCellOpenAmount(Mathf.lerpDelta(entity.getCellOpenAmount(), 0, this.restitution));
+        entity.setSideOpenAmount(Mathf.lerpDelta(entity.getSideOpenAmount(), 0, this.restitution));
+      }
+      
+      if(entity.getBulletLife() > 0){
+        entity.heat = 1;
+        entity.setCellOpenAmount(this.COA * 1+(Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)/3));
+        entity.setSideOpenAmount(this.SOA + (Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)*2));
+        entity.setBulletLife(entity.getBulletLife() - Time.delta());
+      }
+    },
+    updateShooting(tile){
+      const entity = tile.ent();
+      
+      if(entity.getBulletLife() > 0){
+        return;
+      };
+      
+      if(entity.reload >= this.reload){
+        type = this.peekAmmo(tile);
+        
+        this.shoot(tile, type);
+        
+        entity.reload = 0;
+        entity.setBulletLife(this.shootDuration);
+      }else{
+        liquid = entity.liquids.current();
+        maxUsed = this.consumes.get(ConsumeType.liquid).amount;
+        
+        used = this.baseReloadSpeed(tile) * (tile.isEnemyCheat() ? maxUsed : Math.min(entity.liquids.get(liquid), maxUsed * Time.delta())) * liquid.heatCapacity * this.coolantMultiplier;
+        entity.reload += Math.max(used, 1 * Time.delta()) * entity.power.status;
+        entity.liquids.remove(liquid, used);
+        
+        if(Mathf.chance(0.06 * used)){
+          Effects.effect(this.coolEffect, tile.drawx() + Mathf.range(this.size * Vars.tilesize / 2), tile.drawy() + Mathf.range(this.size * Vars.tilesize / 2));
+        }
+      }
+    },
+    shoot(tile, type){
+      const entity = tile.ent();
+      Units.nearbyEnemies(tile.getTeam(), tile.drawx() - this.range, tile.drawy() - this.range, this.range*2, this.range*2, cons(unit => {
+        if(unit.withinDst(tile.drawx(), tile.drawy(), this.range)){
+          if(!unit.isDead() && unit instanceof HealthTrait){
+            Calls.createBullet(this.shootType, tile.getTeam(), unit.x, unit.y, 0, 1, 1);
+          }
+        }
+      }));
+      
+      //reset oofed
+      var oofed = [];
+      for(a = 0; a < 360; a++){
+        for(l = this.range/8; l > 0; l--){
+          rangeloc.trns(a, 0, l);
+          if(Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y) != null){
+            other = Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y);
+            
+            if(other.getTeam() != tile.getTeam() && other.ent() != null && oofed.indexOf(other) == -1){
+              Calls.createBullet(this.shootType, tile.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
+              //add to oofed so the same thing doesn't get oofed twice.
+              oofed.push(other);
+            }
+          }
+        }
+      }
+    },
+    shouldTurn(tile){
+      return false;
+    },
+    shouldActiveSound(tile){
+      const entity = tile.ent();
+
+      return entity.getBulletLife() > 0;
     }
 	});
 	
@@ -217,8 +217,8 @@ burningHell.entityType = prov(() => {
   entity.setCellOpenAmount(0);
   entity.setSideOpenAmount(0);
 	
-	return entity;
-});
+	return hellEntity;
+};
 
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
@@ -267,10 +267,10 @@ burningHell.shootType = extend(BasicBulletType, {
       
       //"fountain" of lava
       Draw.blend(Blending.additive);
-      for(var s = 0; s < 4; s++){
+      for(s = 0; s < 4; s++){
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
         Draw.alpha(b.fout());
-        for(var i = 0; i < 4; i++){
+        for(i = 0; i < 4; i++){
           var baseLen = (length + (Mathf.absin(Time.time()/((i+1)*2) + b.id, 0.8, 1.5)*(length/1.5))) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
@@ -282,7 +282,7 @@ burningHell.shootType = extend(BasicBulletType, {
       Draw.reset();
     }
   }
-});
+};
 
 burningHell.shootType.speed = 0.000000001;
 burningHell.shootType.damage = 62.5;

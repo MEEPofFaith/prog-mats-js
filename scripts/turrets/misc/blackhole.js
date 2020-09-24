@@ -43,58 +43,7 @@ const charge = newEffect(38, e => {
   Angles.randLenVectors(e.id, 2, 1 + 40 * e.fout(), e.rotation, 180, ln);
 });
 
-const blackhole = extendContent(ChargeTurret, "blackhole-i", {
-  load(){
-    this.topRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i");
-    this.heatRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i-heat");
-    this.baseRegion = Core.atlas.find("block-4");
-  },
-  drawLayer(tile){
-    const vec = new Vec2();
-    const entity = tile.ent();
-    
-    vec.trns(entity.rotation, -entity.recoil);
-    
-    Draw.rect(this.topRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
-    
-    if(entity.heat > 0){
-      Draw.blend(Blending.additive);
-      Draw.color(this.heatColor, entity.heat);
-      Draw.rect(this.heatRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
-      Draw.blend();
-      Draw.color();
-    }
-  },
-  shoot(tile, type){
-    const vec = new Vec2();
-    const entity = tile.ent();
-    this.useAmmo(tile);
-
-    vec.trns(entity.rotation, 9 - entity.recoil);
-    Effects.effect(this.chargeBeginEffect, entity.x + vec.x, entity.y + vec.y, entity.rotation);
-    
-    for(i = 0; i < this.chargeEffects; i++){
-      Time.run(Mathf.random(this.chargeMaxDelay), run(() => {
-        Effects.effect(this.chargeEffect, entity.x + vec.x, entity.y + vec.y, entity.rotation);
-      }));
-    }
-    
-    entity.shooting = true;
-
-    Time.run(this.chargeTime, run(() => {
-      entity.recoil = this.recoil;
-      entity.heat = 1;
-      Calls.createBullet(type, entity.getTeam(), entity.x + vec.x, entity.y + vec.y, entity.rotation, 1, 1);
-      entity.shooting = false;
-    }));
-  },
-  generateIcons(){
-    return [
-      Core.atlas.find("block-4"),
-      Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")
-    ];
-  }
-});
+const blackhole = extendContent(ChargeTurret, "blackhole-i", {});
 
 blackhole.chargeEffect = charge;
 blackhole.chargeBeginEffect = chargeBegin;
@@ -106,6 +55,61 @@ blackhole.heatColor = Color.valueOf("000000");
 blackhole.restitution = 0.015;
 blackhole.cooldown = 0.015;
 blackhole.expanded = true;
+
+blackhole.entityType = () => {
+  var succEntity = extendContent(ChargeTurret.ChargeTurretBuild, blackhole, {
+    load(){
+      this.topRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i");
+      this.heatRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i-heat");
+      this.baseRegion = Core.atlas.find("block-4");
+    },
+    drawLayer(tile){
+      const vec = new Vec2();
+      const entity = tile.ent();
+      
+      vec.trns(entity.rotation, -entity.recoil);
+      
+      Draw.rect(this.topRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+      
+      if(entity.heat > 0){
+        Draw.blend(Blending.additive);
+        Draw.color(this.heatColor, entity.heat);
+        Draw.rect(this.heatRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+        Draw.blend();
+        Draw.color();
+      }
+    },
+    shoot(tile, type){
+      const vec = new Vec2();
+      const entity = tile.ent();
+      this.useAmmo(tile);
+
+      vec.trns(entity.rotation, 9 - entity.recoil);
+      Effects.effect(this.chargeBeginEffect, entity.x + vec.x, entity.y + vec.y, entity.rotation);
+      
+      for(i = 0; i < this.chargeEffects; i++){
+        Time.run(Mathf.random(this.chargeMaxDelay), run(() => {
+          Effects.effect(this.chargeEffect, entity.x + vec.x, entity.y + vec.y, entity.rotation);
+        }));
+      }
+      
+      entity.shooting = true;
+
+      Time.run(this.chargeTime, run(() => {
+        entity.recoil = this.recoil;
+        entity.heat = 1;
+        Calls.createBullet(type, entity.getTeam(), entity.x + vec.x, entity.y + vec.y, entity.rotation, 1, 1);
+        entity.shooting = false;
+      }));
+    },
+    icons(){
+      return [
+        Core.atlas.find("block-4"),
+        Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")
+      ];
+    }
+  });
+};
 
 blackhole.shootType = extend(BasicBulletType, {
   load(){
