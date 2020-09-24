@@ -11,8 +11,8 @@ targetAir: true
 targetGround: true
 recoil: 0
 cooldown: 0.01
-shootSound: eruption
-activeSound: magma
+shootSound: none
+activeSound: beam
 activeSoundVolume: 2
 requirements: [
   copper/700
