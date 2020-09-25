@@ -160,43 +160,41 @@ blackhole.buildType = () => {
       this.heatRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i-heat");
       this.baseRegion = Core.atlas.find("block-4");
     },
-    drawLayer(tile){
+    draw(){
       const vec = new Vec2();
-      const entity = tile.ent();
       
-      vec.trns(entity.rotation, -entity.recoilAmount);
+      vec.trns(tile.bc().rotation, -tile.bc().recoilAmount);
       
-      Draw.rect(this.topRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+      Draw.rect(this.topRegion, tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation-90);
       
-      if(entity.heat > 0){
+      if(tile.bc().heat > 0){
         Draw.blend(Blending.additive);
-        Draw.color(this.heatColor, entity.heat);
-        Draw.rect(this.heatRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+        Draw.color(this.heatColor, tile.bc().heat);
+        Draw.rect(this.heatRegion, tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation-90);
         Draw.blend();
         Draw.color();
       }
     },
     shoot(tile, type){
       const vec = new Vec2();
-      const entity = tile.ent();
       this.useAmmo(tile);
 
-      vec.trns(entity.rotation, 9 - entity.recoilAmount);
-      this.chargeBeginEffect.at(entity.x + vec.x, entity.y + vec.y, entity.rotation);
+      vec.trns(tile.bc().rotation, 9 - tile.bc().recoilAmount);
+      this.chargeBeginEffect.at(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation);
       
       for(i = 0; i < this.chargeEffects; i++){
         Time.run(Mathf.random(this.chargeMaxDelay), run(() => {
-          this.chargeEffect.at(entity.x + vec.x, entity.y + vec.y, entity.rotation);
+          this.chargeEffect.at(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation);
         }));
       }
       
-      entity.shooting = true;
+      tile.bc().shooting = true;
 
       Time.run(this.chargeTime, run(() => {
-        entity.recoilAmount = this.recoilAmount;
-        entity.heat = 1;
-        Calls.createBullet(type, entity.getTeam(), entity.x + vec.x, entity.y + vec.y, entity.rotation, 1, 1);
-        entity.shooting = false;
+        tile.bc().recoilAmount = this.recoilAmount;
+        tile.bc().heat = 1;
+        Calls.createBullet(type, tile.bc().getTeam(), tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation, 1, 1);
+        tile.bc().shooting = false;
       }));
     },
     icons(){

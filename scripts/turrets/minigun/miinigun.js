@@ -192,81 +192,78 @@ dualMinigun.buildType = () => {
       this.stats.remove(BlockStat.shots);
       this.stats.add(BlockStat.shots, "2");
     },
-    drawLayer(tile){
+    draw(){
       const vec = new Vec2();
-      const entity = tile.ent();
       
-      vec.trns(entity.rotation, -entity.recoilAmount);
+      vec.trns(tile.bc().rotation, -tile.bc().recoilAmount);
       
-      Draw.rect(this.turretRegions[entity.getFrame()], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+      Draw.rect(this.turretRegions[tile.bc().getFrame()], tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation-90);
       
       for(i = 0; i < 4; i++){
-        if(entity.getBheat(i) > 0){
+        if(tile.bc().getBheat(i) > 0){
           Draw.blend(Blending.additive);
-          Draw.color(this.heatColor, entity.getBheat(i));
-          Draw.rect(this.heatRegions[entity.getHeatFrame(i)], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+          Draw.color(this.heatColor, tile.bc().getBheat(i));
+          Draw.rect(this.heatRegions[tile.bc().getHeatFrame(i)], tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation-90);
           Draw.blend();
           Draw.color();
         }
       }
       
-      if(entity.getFrameSpeed() > 0 && 9 * entity.getFrameSpeed() > 0.25){
+      if(tile.bc().getFrameSpeed() > 0 && 9 * tile.bc().getFrameSpeed() > 0.25){
         Draw.color(Color.valueOf("F7956A"));
-        vec.trns(entity.rotation+90, 4, 10+entity.recoilAmount);
+        vec.trns(tile.bc().rotation+90, 4, 10+tile.bc().recoilAmount);
         Lines.stroke(1);
-        Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());
-        vec.trns(entity.rotation+90, -4, 10+entity.recoilAmount);
+        Lines.lineAngle(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation, 9 * tile.bc().getFrameSpeed());
+        vec.trns(tile.bc().rotation+90, -4, 10+tile.bc().recoilAmount);
         Lines.stroke(1);
-        Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());
+        Lines.lineAngle(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation, 9 * tile.bc().getFrameSpeed());
         Draw.color();
       }
     },
-    update(tile){
-      this.super$update(tile);
-      const entity = tile.ent();
+    updateTile(){
+      this.super$updateTile();
       
-      if(!this.validateTarget(tile) || entity.totalAmmo < 2){
-        entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 0, 0.0125));
+      if(!this.validateTarget(tile) || tile.bc().totalAmmo < 2){
+        tile.bc().setFrameSpeed(Mathf.lerpDelta(tile.bc().getFrameSpeed(), 0, 0.0125));
       }
       
-      entity.setTrueFrame(entity.getTrueFrame() + entity.getFrameSpeed());
-      entity.setFrame(Mathf.round(entity.getTrueFrame()) % 3);
+      tile.bc().setTrueFrame(tile.bc().getTrueFrame() + tile.bc().getFrameSpeed());
+      tile.bc().setFrame(Mathf.round(tile.bc().getTrueFrame()) % 3);
       for(i = 0; i < 4; i++){
-        entity.setHeatFrame(i, (Mathf.round(entity.getTrueFrame()) % 12) - 3 - (i*3));
-        if(entity.getHeatFrame(i) < 0){
-          entity.setHeatFrame(i, 12 + entity.getHeatFrame(i));
+        tile.bc().setHeatFrame(i, (Mathf.round(tile.bc().getTrueFrame()) % 12) - 3 - (i*3));
+        if(tile.bc().getHeatFrame(i) < 0){
+          tile.bc().setHeatFrame(i, 12 + tile.bc().getHeatFrame(i));
         }
-        if(entity.getHeatFrame(i) > 11){
-          entity.setHeatFrame(i, -12 + entity.getHeatFrame(i));
+        if(tile.bc().getHeatFrame(i) > 11){
+          tile.bc().setHeatFrame(i, -12 + tile.bc().getHeatFrame(i));
         }
       }
       
-      entity.recoilAmount = Mathf.lerpDelta(entity.recoilAmount, 0, this.restitution);
+      tile.bc().recoilAmount = Mathf.lerpDelta(tile.bc().recoilAmount, 0, this.restitution);
       for(i = 0; i < 4; i++){
-        entity.setBheat(i, Mathf.lerpDelta(entity.getBheat(i), 0, this.cooldown));
+        tile.bc().setBheat(i, Mathf.lerpDelta(tile.bc().getBheat(i), 0, this.cooldown));
       }
       
-      if(entity.getFrame() != 0){
-        entity.setShouldShoot(1);
-        entity.setShouldBarrel(1);
+      if(tile.bc().getFrame() != 0){
+        tile.bc().setShouldShoot(1);
+        tile.bc().setShouldBarrel(1);
       }
       
-      if(entity.getFrame() == 0 && entity.getShouldBarrel() == 1){
-        entity.setBarrel(entity.getBarrel() + 1);
-        entity.setShouldBarrel(0);
+      if(tile.bc().getFrame() == 0 && tile.bc().getShouldBarrel() == 1){
+        tile.bc().setBarrel(tile.bc().getBarrel() + 1);
+        tile.bc().setShouldBarrel(0);
       }
     },
     updateShooting(tile){
-      const entity = tile.ent();
-      liquid = entity.liquids.current();
+      liquid = tile.bc().liquids.current();
       
-      if(entity.totalAmmo >= 2){
-        entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 1, 0.000125 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));
-        if(entity.getFrameSpeed() < 0.95){
-          entity.liquids.remove(liquid, 0.2);
+      if(tile.bc().totalAmmo >= 2){
+        tile.bc().setFrameSpeed(Mathf.lerpDelta(tile.bc().getFrameSpeed(), 1, 0.000125 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * tile.bc().delta()));
+        if(tile.bc().getFrameSpeed() < 0.95){
+          tile.bc().liquids.remove(liquid, 0.2);
         }
       }
-      if(entity.getFrame() == 0 && entity.getShouldShoot() == 1 && entity.getFrameSpeed() > 0.0166666667){
+      if(tile.bc().getFrame() == 0 && tile.bc().getShouldShoot() == 1 && tile.bc().getFrameSpeed() > 0.0166666667){
         type = this.peekAmmo(tile);
         
         this.shoot(tile, type);
@@ -274,16 +271,15 @@ dualMinigun.buildType = () => {
     },
     shoot(tile, type){
       const tr = new Vec2();
-      const entity = tile.ent();
       
-      entity.setShouldShoot(0);
-      entity.setBheat(entity.getBarrel() % 4, 1);
+      tile.bc().setShouldShoot(0);
+      tile.bc().setBheat(tile.bc().getBarrel() % 4, 1);
       
-      tr.trns(entity.rotation - 90, -this.shotWidth, 16);
-      Calls.createBullet(type, entity.getTeam(), entity.x + tr.x, entity.y + tr.y, entity.rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);
+      tr.trns(tile.bc().rotation - 90, -this.shotWidth, 16);
+      Calls.createBullet(type, tile.bc().getTeam(), tile.bc().x + tr.x, tile.bc().y + tr.y, tile.bc().rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);
       
-      tr.trns(entity.rotation - 90, this.shotWidth, 16);
-      Calls.createBullet(type, entity.getTeam(), entity.x + tr.x, entity.y + tr.y, entity.rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);
+      tr.trns(tile.bc().rotation - 90, this.shotWidth, 16);
+      Calls.createBullet(type, tile.bc().getTeam(), tile.bc().x + tr.x, tile.bc().y + tr.y, tile.bc().rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);
       
       this.effects(tile);
       this.useAmmo(tile);
@@ -293,19 +289,17 @@ dualMinigun.buildType = () => {
       shootEffect = this.shootEffect == Fx.none ? this.peekAmmo(tile).shootEffect : this.shootEffect;
       smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo(tile).smokeEffect : this.smokeEffect;
 
-      const entity = tile.ent();
-      
-      tr.trns(entity.rotation - 90, -this.shotWidth, 16);
-      shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
-      smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+      tr.trns(tile.bc().rotation - 90, -this.shotWidth, 16);
+      shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, tile.bc().rotation);
+      smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, tile.bc().rotation);
       this.shootSound.at(tile, Mathf.random(0.9, 1.1));
 
-      tr.trns(entity.rotation - 90, this.shotWidth, 16);
-      shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
-      smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+      tr.trns(tile.bc().rotation - 90, this.shotWidth, 16);
+      shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, tile.bc().rotation);
+      smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, tile.bc().rotation);
       this.shootSound.at(tile, Mathf.random(0.9, 1.1));
       
-      entity.recoilAmount = this.recoilAmount;
+      tile.bc().recoilAmount = this.recoilAmount;
     }
   });
   
