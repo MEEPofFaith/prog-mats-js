@@ -235,7 +235,7 @@ lavaRiser.buildType = () => {
         }
       }
     },
-    updateShooting(tile){
+    updateShooting(){
       if(tile.bc().getBulletLife() > 0 && tile.bc().getBullet() != null){
         return;
       };
@@ -260,16 +260,16 @@ lavaRiser.buildType = () => {
         }
       }
     },
-    bullet(tile, type, angle){
+    bullet(type, angle){
       bullet = Bullet.create(type, entity, tile.getTeam(), tile.drawx() + this.tr.x, tile.drawy() + this.tr.y, angle);
       
       tile.bc().setBullet(bullet);
       tile.bc().setBulletLife(this.shootDuration);
     },
-    turnToTarget(tile, targetRot){
+    turnToTarget(targetRot){
       tile.bc().rotation = Angles.moveToward(tile.bc().rotation, targetRot, this.rotateSpeed * tile.bc().delta() * (tile.bc().getBulletLife() > 0 ? this.firingMoveFract : 1));
     },
-    shouldActiveSound(tile){
+    shouldActiveSound(){
       return tile.bc().getBulletLife() > 0 && tile.bc().getBullet() != null;
     }
 	});

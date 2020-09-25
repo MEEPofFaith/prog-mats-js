@@ -245,7 +245,7 @@ minigun.buildType = () => {
         tile.bc().setShouldBarrel(0);
       }
     },
-    updateShooting(tile){
+    updateShooting(){
       liquid = tile.bc().liquids.current();
       
       if(this.hasAmmo(tile)){

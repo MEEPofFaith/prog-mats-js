@@ -222,7 +222,7 @@ burningHell.buildType = () => {
         tile.bc().setBulletLife(tile.bc().getBulletLife() - Time.delta());
       }
     },
-    updateShooting(tile){
+    updateShooting(){
       if(tile.bc().getBulletLife() > 0){
         return;
       };
@@ -276,7 +276,7 @@ burningHell.buildType = () => {
     shouldTurn(tile){
       return false;
     },
-    shouldActiveSound(tile){
+    shouldActiveSound(){
       return tile.bc().getBulletLife() > 0;
     }
 	});

@@ -131,33 +131,33 @@ heatRiser.buildType = () => {
     },
     draw(){
       this.super$draw();
-      back.trns(tile.bc()rotation-90, 0, 0);
+      back.trns(tile.bc().rotation-90, 0, 0);
       
-      Draw.rect(this.cells, tile.bc()x + back.x, tile.bc()y + back.y, tile.bc()rotation-90);
+      Draw.rect(this.cells, tile.bc().x + back.x, tile.bc().y + back.y, tile.bc().rotation-90);
       
-      if(tile.bc()heat > 0){
+      if(tile.bc().heat > 0){
         Draw.blend(Blending.additive);
-        Draw.color(Color.valueOf("f08913"), tile.bc()heat);
-        Draw.rect(this.cellHeat, tile.bc()x + back.x, tile.bc()y + back.y, tile.bc()rotation-90);
+        Draw.color(Color.valueOf("f08913"), tile.bc().heat);
+        Draw.rect(this.cellHeat, tile.bc().x + back.x, tile.bc().y + back.y, tile.bc().rotation-90);
         Draw.blend();
         Draw.color();
       }
       
       //sw
-      open.trns(tile.bc()rotation-90, 0 - tile.bc()getCellOpenAmount(), -tile.bc()getCellOpenAmount());
-      Draw.rect(this.caps[0], tile.bc()x + open.x, tile.bc()y + open.y, tile.bc()rotation-90);
+      open.trns(tile.bc().rotation-90, 0 - tile.bc().getCellOpenAmount(), -tile.bc().getCellOpenAmount());
+      Draw.rect(this.caps[0], tile.bc().x + open.x, tile.bc().y + open.y, tile.bc().rotation-90);
       
       //se
-      open.trns(tile.bc()rotation-90, 0 + tile.bc()getCellOpenAmount(), -tile.bc()getCellOpenAmount());
-      Draw.rect(this.caps[1], tile.bc()x + open.x, tile.bc()y + open.y, tile.bc()rotation-90);
+      open.trns(tile.bc().rotation-90, 0 + tile.bc().getCellOpenAmount(), -tile.bc().getCellOpenAmount());
+      Draw.rect(this.caps[1], tile.bc().x + open.x, tile.bc().y + open.y, tile.bc().rotation-90);
       
       //nw
-      open.trns(tile.bc()rotation-90, 0 - tile.bc()getCellOpenAmount(), tile.bc()getCellOpenAmount());
-      Draw.rect(this.caps[2], tile.bc()x + open.x, tile.bc()y + open.y, tile.bc()rotation-90);
+      open.trns(tile.bc().rotation-90, 0 - tile.bc().getCellOpenAmount(), tile.bc().getCellOpenAmount());
+      Draw.rect(this.caps[2], tile.bc().x + open.x, tile.bc().y + open.y, tile.bc().rotation-90);
       
       //nw
-      open.trns(tile.bc()rotation-90, 0 + tile.bc()getCellOpenAmount(), tile.bc()getCellOpenAmount());
-      Draw.rect(this.caps[3], tile.bc()x + open.x, tile.bc()y + open.y, tile.bc()rotation-90);
+      open.trns(tile.bc().rotation-90, 0 + tile.bc().getCellOpenAmount(), tile.bc().getCellOpenAmount());
+      Draw.rect(this.caps[3], tile.bc().x + open.x, tile.bc().y + open.y, tile.bc().rotation-90);
     },
     icons(){
       return [
@@ -176,63 +176,63 @@ heatRiser.buildType = () => {
     updateTile(){
       this.super$updateTile();
       
-      if(tile.bc()getBulletLife() <= 0 && tile.bc()getBullet() == null){
-        tile.bc()setCellOpenAmount(Mathf.lerpDelta(tile.bc()getCellOpenAmount(), 0, this.restitution));
+      if(tile.bc().getBulletLife() <= 0 && tile.bc().getBullet() == null){
+        tile.bc().setCellOpenAmount(Mathf.lerpDelta(tile.bc().getCellOpenAmount(), 0, this.restitution));
       }
       
-      if(tile.bc()getBulletLife() > 0 && tile.bc()getBullet() != null){
-        var entBullet = tile.bc()getBullet();
+      if(tile.bc().getBulletLife() > 0 && tile.bc().getBullet() != null){
+        var entBullet = tile.bc().getBullet();
         
-        if(tile.bc()getBulletLife() >= this.shootDuration){
-          entBullet.set(tile.tile.bc()target.getX(), tile.tile.bc()target.getY());
+        if(tile.bc().getBulletLife() >= this.shootDuration){
+          entBullet.set(tile.tile.bc().target.getX(), tile.tile.bc().target.getY());
         }
         
-        this.tr.trns(tile.bc()rotation, this.size * Vars.tilesize / 2, 0);
+        this.tr.trns(tile.bc().rotation, this.size * Vars.tilesize / 2, 0);
         entBullet.time(0);
-        tile.bc()heat = 1;
-        tile.bc()setCellOpenAmount(this.COA * 1+(Mathf.absin(tile.bc()getBulletLife()/3, 0.8, 1.5)/3));
-        tile.bc()setBulletLife(tile.bc()getBulletLife() - Time.delta());
-        if(tile.bc()getBulletLife() <= 0){
-          tile.bc()setBullet(null);
+        tile.bc().heat = 1;
+        tile.bc().setCellOpenAmount(this.COA * 1+(Mathf.absin(tile.bc().getBulletLife()/3, 0.8, 1.5)/3));
+        tile.bc().setBulletLife(tile.bc().getBulletLife() - Time.delta());
+        if(tile.bc().getBulletLife() <= 0){
+          tile.bc().setBullet(null);
         }
       }
     },
-    updateShooting(tile){
-      if(tile.bc()getBulletLife() > 0 && tile.bc()getBullet() != null){
+    updateShooting(){
+      if(tile.bc().getBulletLife() > 0 && tile.bc().getBullet() != null){
         return;
       };
       
-      if(tile.bc()reloadTime >= this.reloadTime){
+      if(tile.bc().reloadTime >= this.reloadTime){
         type = this.peekAmmo(tile);
         
         this.shoot(tile, type);
         
-        tile.bc()reloadTime = 0;
+        tile.bc().reloadTime = 0;
       }
       else{
-        liquid = tile.bc()liquids.current();
+        liquid = tile.bc().liquids.current();
         maxUsed = this.consumes.get(ConsumeType.liquid).amount;
         
-        used = this.basereloadTimeSpeed(tile) * (tile.isEnemyCheat() ? maxUsed : Math.min(tile.bc()liquids.get(liquid), maxUsed * Time.delta())) * liquid.heatCapacity * this.coolantMultiplier;
-        tile.bc()reloadTime += Math.max(used, 1 * Time.delta()) * tile.bc()power.status;
-        tile.bc()liquids.remove(liquid, used);
+        used = this.basereloadTimeSpeed(tile) * (tile.isEnemyCheat() ? maxUsed : Math.min(tile.bc().liquids.get(liquid), maxUsed * Time.delta())) * liquid.heatCapacity * this.coolantMultiplier;
+        tile.bc().reloadTime += Math.max(used, 1 * Time.delta()) * tile.bc().power.status;
+        tile.bc().liquids.remove(liquid, used);
         
         if(Mathf.chance(0.06 * used)){
           this.coolEffect.at(tile.drawx() + Mathf.range(this.size * Vars.tilesize / 2), tile.drawy() + Mathf.range(this.size * Vars.tilesize / 2), 0);
         }
       }
     },
-    bullet(tile, type, angle){
+    bullet(type, angle){
       bullet = Bullet.create(type, entity, tile.getTeam(), tile.drawx() + this.tr.x, tile.drawy() + this.tr.y, angle);
       
-      tile.bc()setBullet(bullet);
-      tile.bc()setBulletLife(this.shootDuration);
+      tile.bc().setBullet(bullet);
+      tile.bc().setBulletLife(this.shootDuration);
     },
-    turnToTarget(tile, targetRot){
-      tile.bc()rotation = Angles.moveToward(tile.bc()rotation, targetRot, this.rotateSpeed * tile.bc()delta() * (tile.bc()getBulletLife() > 0 ? this.firingMoveFract : 1));
+    turnToTarget(targetRot){
+      tile.bc().rotation = Angles.moveToward(tile.bc().rotation, targetRot, this.rotateSpeed * tile.bc().delta() * (tile.bc().getBulletLife() > 0 ? this.firingMoveFract : 1));
     },
-    shouldActiveSound(tile){
-      return tile.bc()getBulletLife() > 0 && tile.bc()getBullet() != null;
+    shouldActiveSound(){
+      return tile.bc().getBulletLife() > 0 && tile.bc().getBullet() != null;
     }
 	});
 	
