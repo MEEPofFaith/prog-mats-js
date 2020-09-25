@@ -1,6 +1,6 @@
 const blackholeSize = 6;
 
-const swirl = newEffect(90, e => {
+const swirl = new Effect(90, e => {
   const loc = new Vec2();
   const endX = Mathf.sinDeg(e.rotation+90) * 45;
   const endY = Mathf.cosDeg(e.rotation-90) * 45;
@@ -14,7 +14,7 @@ const swirl = newEffect(90, e => {
 	Draw.blend();
 });
 
-const poof = newEffect(24, e => {
+const poof = new Effect(24, e => {
   Draw.color(Color.valueOf("353535"), Color.valueOf("000000"), e.fin());
   
   e.scaled(12, cons(s => {
@@ -30,12 +30,12 @@ const poof = newEffect(24, e => {
   Angles.randLenVectors(e.id, 8, e.fin() * 30, e.rotation, 180, ln);
 });
 
-const chargeBegin = newEffect(50, e => {
+const chargeBegin = new Effect(50, e => {
   Draw.color(Color.valueOf("000000"));
   Fill.circle(e.x, e.y, e.fin()*(blackholeSize/2));
 });
 
-const charge = newEffect(38, e => {
+const charge = new Effect(38, e => {
   Draw.color(Color.valueOf("000000"));
   const ln = new Floatc2({get(x, y){
     Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 3 + 1);
@@ -43,75 +43,7 @@ const charge = newEffect(38, e => {
   Angles.randLenVectors(e.id, 2, 1 + 40 * e.fout(), e.rotation, 180, ln);
 });
 
-const blackhole = extendContent(ChargeTurret, "blackhole-i", {});
-
-blackhole.chargeEffect = charge;
-blackhole.chargeBeginEffect = chargeBegin;
-blackhole.chargeTime = 50;
-blackhole.chargeMaxDelay = 30;
-blackhole.chargeEffects = 16;
-blackhole.recoil = 2;
-blackhole.heatColor = Color.valueOf("000000");
-blackhole.restitution = 0.015;
-blackhole.cooldown = 0.015;
-blackhole.expanded = true;
-
-blackhole.entityType = () => {
-  var succEntity = extendContent(ChargeTurret.ChargeTurretBuild, blackhole, {
-    load(){
-      this.topRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i");
-      this.heatRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i-heat");
-      this.baseRegion = Core.atlas.find("block-4");
-    },
-    drawLayer(tile){
-      const vec = new Vec2();
-      const entity = tile.ent();
-      
-      vec.trns(entity.rotation, -entity.recoil);
-      
-      Draw.rect(this.topRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
-      
-      if(entity.heat > 0){
-        Draw.blend(Blending.additive);
-        Draw.color(this.heatColor, entity.heat);
-        Draw.rect(this.heatRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
-        Draw.blend();
-        Draw.color();
-      }
-    },
-    shoot(tile, type){
-      const vec = new Vec2();
-      const entity = tile.ent();
-      this.useAmmo(tile);
-
-      vec.trns(entity.rotation, 9 - entity.recoil);
-      Effects.effect(this.chargeBeginEffect, entity.x + vec.x, entity.y + vec.y, entity.rotation);
-      
-      for(i = 0; i < this.chargeEffects; i++){
-        Time.run(Mathf.random(this.chargeMaxDelay), run(() => {
-          Effects.effect(this.chargeEffect, entity.x + vec.x, entity.y + vec.y, entity.rotation);
-        }));
-      }
-      
-      entity.shooting = true;
-
-      Time.run(this.chargeTime, run(() => {
-        entity.recoil = this.recoil;
-        entity.heat = 1;
-        Calls.createBullet(type, entity.getTeam(), entity.x + vec.x, entity.y + vec.y, entity.rotation, 1, 1);
-        entity.shooting = false;
-      }));
-    },
-    icons(){
-      return [
-        Core.atlas.find("block-4"),
-        Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")
-      ];
-    }
-  });
-};
-
-blackhole.shootType = extend(BasicBulletType, {
+const ballOfSucc = extend(BasicBulletType, {
   load(){
     this.backRegion = Core.atlas.find("definitely-not-advance-content-backhole-back"); //not funny
     this.front0 = Core.atlas.find("definitely-not-advance-content-backhole-0");
@@ -169,7 +101,7 @@ blackhole.shootType = extend(BasicBulletType, {
         var endY = Mathf.cosDeg(b.rot()-90) * dist;
         
         if(b.time() <= this.lifetime - 90){
-          Effects.effect(swirl, b.x, b.y, b.rot());
+          swirl.at(b.x, b.y, b.rot());
         }
       }
     }
@@ -194,15 +126,86 @@ blackhole.shootType = extend(BasicBulletType, {
   }
 });
 
-blackhole.shootType.damage = 1500;
-blackhole.shootType.speed = 0.5;
-blackhole.shootType.lifetime = 384;
-blackhole.shootType.collides = false;
-blackhole.shootType.collidesTiles = false;
-blackhole.shootType.hitEffect = poof;
-blackhole.shootType.despawnEffect = poof;
-blackhole.shootType.shootEffect = Fx.none;
-blackhole.shootType.smokeEffect = Fx.none;
+ballOfSucc.damage = 1500;
+ballOfSucc.speed = 0.5;
+ballOfSucc.lifetime = 384;
+ballOfSucc.collides = false;
+ballOfSucc.collidesTiles = false;
+ballOfSucc.hitEffect = poof;
+ballOfSucc.despawnEffect = poof;
+ballOfSucc.shootEffect = Fx.none;
+ballOfSucc.smokeEffect = Fx.none;
 
-blackhole.shootType.backColor = Color.valueOf("000000");
-blackhole.shootType.frontColor = Color.valueOf("353535");
+ballOfSucc.backColor = Color.valueOf("000000");
+ballOfSucc.frontColor = Color.valueOf("353535");
+
+const blackhole = extendContent(ChargeTurret, "blackhole-i", {});
+
+blackhole.shootType = ballOfSucc;
+blackhole.chargeEffect = charge;
+blackhole.chargeBeginEffect = chargeBegin;
+blackhole.chargeTime = 50;
+blackhole.chargeMaxDelay = 30;
+blackhole.chargeEffects = 16;
+blackhole.recoilAmount = 2;
+blackhole.heatColor = Color.valueOf("000000");
+blackhole.restitution = 0.015;
+blackhole.cooldown = 0.015;
+blackhole.expanded = true;
+
+blackhole.buildType = () => {
+  var succEntity = extendContent(ChargeTurret.ChargeTurretBuild, blackhole, {
+    load(){
+      this.topRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i");
+      this.heatRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i-heat");
+      this.baseRegion = Core.atlas.find("block-4");
+    },
+    drawLayer(tile){
+      const vec = new Vec2();
+      const entity = tile.ent();
+      
+      vec.trns(entity.rotation, -entity.recoilAmount);
+      
+      Draw.rect(this.topRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+      
+      if(entity.heat > 0){
+        Draw.blend(Blending.additive);
+        Draw.color(this.heatColor, entity.heat);
+        Draw.rect(this.heatRegion, entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
+        Draw.blend();
+        Draw.color();
+      }
+    },
+    shoot(tile, type){
+      const vec = new Vec2();
+      const entity = tile.ent();
+      this.useAmmo(tile);
+
+      vec.trns(entity.rotation, 9 - entity.recoilAmount);
+      this.chargeBeginEffect.at(entity.x + vec.x, entity.y + vec.y, entity.rotation);
+      
+      for(i = 0; i < this.chargeEffects; i++){
+        Time.run(Mathf.random(this.chargeMaxDelay), run(() => {
+          this.chargeEffect.at(entity.x + vec.x, entity.y + vec.y, entity.rotation);
+        }));
+      }
+      
+      entity.shooting = true;
+
+      Time.run(this.chargeTime, run(() => {
+        entity.recoilAmount = this.recoilAmount;
+        entity.heat = 1;
+        Calls.createBullet(type, entity.getTeam(), entity.x + vec.x, entity.y + vec.y, entity.rotation, 1, 1);
+        entity.shooting = false;
+      }));
+    },
+    icons(){
+      return [
+        Core.atlas.find("block-4"),
+        Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")
+      ];
+    }
+  });
+  
+  return succEntity;
+};

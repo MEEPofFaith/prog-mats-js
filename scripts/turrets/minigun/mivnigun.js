@@ -1,10 +1,10 @@
-const quadMinigun = extendContent(DoubleTurret, "minigun-iii", {});
+const quadMinigun = extendContent(ItemTurret, "minigun-iii", {});
 quadMinigun.turretRegions = [];
 quadMinigun.heatRegions = [];
 
 quadMinigun.size = 4;
 quadMinigun.restitution = 0.02;
-quadMinigun.recoil = 3;
+quadMinigun.recoilAmount = 3;
 quadMinigun.cooldown = 0.11;
 quadMinigun.inaccuracy = 8;
 quadMinigun.shootEffect = Fx.none;
@@ -94,7 +94,7 @@ quadMinigun.ammo(
   Items.thorium, MiniThorium
 );
 
-quadMinigun.entityType = () => {
+quadMinigun.buildType = () => {
   var IVEntity = extendContent(ItemTurret.ItemTurretEntity, quadMinigun, {
     _BarrelHeat:[],
     //DBarrel heat
@@ -195,7 +195,7 @@ quadMinigun.entityType = () => {
       const vec = new Vec2();	
       const entity = tile.ent();	
 
-      vec.trns(entity.rotation, -entity.recoil);	
+      vec.trns(entity.rotation, -entity.recoilAmount);	
 
       Draw.rect(this.turretRegions[entity.getFrame()], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);	
 
@@ -211,10 +211,10 @@ quadMinigun.entityType = () => {
 
       if(entity.getFrameSpeed() > 0 && 9 * entity.getFrameSpeed() > 0.25){	
         Draw.color(Color.valueOf("F7956A"));	
-        vec.trns(entity.rotation+90, 4, 10+entity.recoil);	
+        vec.trns(entity.rotation+90, 4, 10+entity.recoilAmount);	
         Lines.stroke(1);	
         Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());	
-        vec.trns(entity.rotation+90, -4, 10+entity.recoil);	
+        vec.trns(entity.rotation+90, -4, 10+entity.recoilAmount);	
         Lines.stroke(1);	
         Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());	
         Draw.color();	
@@ -240,7 +240,7 @@ quadMinigun.entityType = () => {
         }	
       }	
 
-      entity.recoil = Mathf.lerpDelta(entity.recoil, 0, this.restitution);	
+      entity.recoilAmount = Mathf.lerpDelta(entity.recoilAmount, 0, this.restitution);	
       for(i = 0; i < 4; i++){	
         entity.setBheat(i, Mathf.lerpDelta(entity.getBheat(i), 0, this.cooldown));	
       }	
@@ -297,24 +297,24 @@ quadMinigun.entityType = () => {
 
       for(i = 0; i < 4; i ++){	
         tr.trns(entity.rotation - 90, shootLoc[i], 16);	
-        Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);	
-        Effects.effect(smokeEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);	
+        shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);	
+        smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);	
         this.shootSound.at(tile, Mathf.random(0.9, 1.1));	
       }	
 
-      entity.recoil = this.recoil;	
+      entity.recoilAmount = this.recoilAmount;	
     }
   });
   
-  entity.setFrame(0);
-  entity.setTrueFrame(0);
-  entity.setFrameSpeed(0);
-  entity.setBarrel(-1);
-  entity.setShouldShoot(0);
-  entity.setShouldBarrel(0);
+  IVEntity.setFrame(0);
+  IVEntity.setTrueFrame(0);
+  IVEntity.setFrameSpeed(0);
+  IVEntity.setBarrel(-1);
+  IVEntity.setShouldShoot(0);
+  IVEntity.setShouldBarrel(0);
   for(i = 0; i < 4; i++){
-    entity.setBheat(i, 0);
-    entity.setHeatFrame(i, 0);
+    IVEntity.setBheat(i, 0);
+    IVEntity.setHeatFrame(i, 0);
   }
   
   return IVEntity;

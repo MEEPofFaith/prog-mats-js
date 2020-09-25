@@ -13,7 +13,7 @@ shootCone: 20
 shootSound: shootBig
 targetAir: true
 targetGround: true
-rotatespeed: 2
+rotateSpeed: 2
 requirements: [
   copper/200
   graphite/175

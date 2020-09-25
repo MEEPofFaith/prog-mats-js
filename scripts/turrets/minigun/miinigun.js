@@ -5,7 +5,7 @@ dualMinigun.heatRegions = [];
 dualMinigun.size = 4;
 dualMinigun.restitution = 0.02;
 dualMinigun.shotWidth = 4;
-dualMinigun.recoil = 3;
+dualMinigun.recoilAmount = 3;
 dualMinigun.cooldown = 0.11;
 dualMinigun.inaccuracy = 8;
 dualMinigun.shootEffect = Fx.none;
@@ -95,7 +95,7 @@ dualMinigun.ammo(
   Items.thorium, MiniThorium
 );
 
-dualMinigun.entityType = () => {
+dualMinigun.buildType = () => {
   var IIEntity = extendContent(ItemTurret.ItemTurretEntity, dualMinigun, {
     _BarrelHeat:[],
     //DBarrel heat
@@ -196,7 +196,7 @@ dualMinigun.entityType = () => {
       const vec = new Vec2();
       const entity = tile.ent();
       
-      vec.trns(entity.rotation, -entity.recoil);
+      vec.trns(entity.rotation, -entity.recoilAmount);
       
       Draw.rect(this.turretRegions[entity.getFrame()], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
       
@@ -212,10 +212,10 @@ dualMinigun.entityType = () => {
       
       if(entity.getFrameSpeed() > 0 && 9 * entity.getFrameSpeed() > 0.25){
         Draw.color(Color.valueOf("F7956A"));
-        vec.trns(entity.rotation+90, 4, 10+entity.recoil);
+        vec.trns(entity.rotation+90, 4, 10+entity.recoilAmount);
         Lines.stroke(1);
         Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());
-        vec.trns(entity.rotation+90, -4, 10+entity.recoil);
+        vec.trns(entity.rotation+90, -4, 10+entity.recoilAmount);
         Lines.stroke(1);
         Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());
         Draw.color();
@@ -241,7 +241,7 @@ dualMinigun.entityType = () => {
         }
       }
       
-      entity.recoil = Mathf.lerpDelta(entity.recoil, 0, this.restitution);
+      entity.recoilAmount = Mathf.lerpDelta(entity.recoilAmount, 0, this.restitution);
       for(i = 0; i < 4; i++){
         entity.setBheat(i, Mathf.lerpDelta(entity.getBheat(i), 0, this.cooldown));
       }
@@ -296,29 +296,29 @@ dualMinigun.entityType = () => {
       const entity = tile.ent();
       
       tr.trns(entity.rotation - 90, -this.shotWidth, 16);
-      Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
-      Effects.effect(smokeEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+      shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+      smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
       this.shootSound.at(tile, Mathf.random(0.9, 1.1));
 
       tr.trns(entity.rotation - 90, this.shotWidth, 16);
-      Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
-      Effects.effect(smokeEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+      shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
+      smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);
       this.shootSound.at(tile, Mathf.random(0.9, 1.1));
       
-      entity.recoil = this.recoil;
+      entity.recoilAmount = this.recoilAmount;
     }
   });
   
-  entity.setFrame(0);
-  entity.setTrueFrame(0);
-  entity.setFrameSpeed(0);
-  entity.setBarrel(-1);
-  entity.setShouldShoot(0);
-  entity.setShouldBarrel(0);
+  IIEntity.setFrame(0);
+  IIEntity.setTrueFrame(0);
+  IIEntity.setFrameSpeed(0);
+  IIEntity.setBarrel(-1);
+  IIEntity.setShouldShoot(0);
+  IIEntity.setShouldBarrel(0);
   for(i = 0; i < 4; i++){
-    entity.setBheat(i, 0);
-    entity.setHeatFrame(i, 0);
+    IIEntity.setBheat(i, 0);
+    IIEntity.setHeatFrame(i, 0);
   }
   
   return IIEntity;
-});
+};

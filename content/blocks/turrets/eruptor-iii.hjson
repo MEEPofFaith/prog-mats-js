@@ -4,12 +4,12 @@ description:
   Say hi to Satan for me while you're burning to death k thx.
   '''
 size: 4
-reload: 90
+reloadTime: 90
 health: 1800
 powerUse: 15
 targetAir: true
 targetGround: true
-recoil: 0
+recoilAmount: 0
 cooldown: 0.01
 shootSound: none
 activeSound: beam

@@ -7,15 +7,15 @@ description:
   '''
 size: 4
 range: 280
-reload: 60
+reloadTime: 60
 health: 1800
 powerUse: 15
 shootCone: 10
 targetAir: true
 targetGround: true
-recoil: 0
+recoilAmount: 0
 cooldown: 0.01
-rotatespeed: 3
+rotateSpeed: 3
 shootSound: none
 activeSound: beam
 activeSoundVolume: 2

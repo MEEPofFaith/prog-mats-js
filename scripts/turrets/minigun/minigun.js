@@ -3,7 +3,7 @@ minigun.turretRegions = [];
 minigun.heatRegions = [];
 
 minigun.restitution = 0.02;
-minigun.recoil = 3;
+minigun.recoilAmount = 3;
 minigun.cooldown = 0.11;
 minigun.inaccuracy = 8;
 minigun.shootEffect = Fx.none;
@@ -92,7 +92,7 @@ minigun.ammo(
   Items.thorium, MiniThorium
 );
 
-minigun.entityType = () => {
+minigun.buildType = () => {
   var IEntity = extendContent(ItemTurret.ItemTurretBuild, minigun, {
     _BarrelHeat:[],
     //Barrel heat
@@ -187,7 +187,7 @@ minigun.entityType = () => {
       const vec = new Vec2();
       const entity = tile.ent();
       
-      vec.trns(entity.rotation, -entity.recoil);
+      vec.trns(entity.rotation, -entity.recoilAmount);
       
       Draw.rect(this.turretRegions[entity.getFrame()], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);
       
@@ -203,10 +203,10 @@ minigun.entityType = () => {
       
       if(entity.getFrameSpeed() > 0 && 9 * entity.getFrameSpeed() > 0.25){
         Draw.color(Color.valueOf("F7956A"));
-        vec.trns(entity.rotation+90, 4, 10+entity.recoil);
+        vec.trns(entity.rotation+90, 4, 10+entity.recoilAmount);
         Lines.stroke(1);
         Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());
-        vec.trns(entity.rotation+90, -4, 10+entity.recoil);
+        vec.trns(entity.rotation+90, -4, 10+entity.recoilAmount);
         Lines.stroke(1);
         Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());
         Draw.color();
@@ -232,7 +232,7 @@ minigun.entityType = () => {
         }
       }
       
-      entity.recoil = Mathf.lerpDelta(entity.recoil, 0, this.restitution);
+      entity.recoilAmount = Mathf.lerpDelta(entity.recoilAmount, 0, this.restitution);
       for(i = 0; i < 4; i++){
         entity.setBheat(i, Mathf.lerpDelta(entity.getBheat(i), 0, this.cooldown));
       }
@@ -268,15 +268,15 @@ minigun.entityType = () => {
     }
   });
   
-  entity.setFrame(0);
-  entity.setTrueFrame(0);
-  entity.setFrameSpeed(0);
-  entity.setBarrel(-1);
-  entity.setShouldShoot(0);
-  entity.setShouldBarrel(0);
+  IEntity.setFrame(0);
+  IEntity.setTrueFrame(0);
+  IEntity.setFrameSpeed(0);
+  IEntity.setBarrel(-1);
+  IEntity.setShouldShoot(0);
+  IEntity.setShouldBarrel(0);
   for(i = 0; i < 4; i++){
-    entity.setBheat(i, 0);
-    entity.setHeatFrame(i, 0);
+    IEntity.setBheat(i, 0);
+    IEntity.setHeatFrame(i, 0);
   }
   
   return IEntity;

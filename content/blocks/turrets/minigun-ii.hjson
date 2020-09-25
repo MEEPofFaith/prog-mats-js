@@ -11,7 +11,7 @@ health: 1800
 shootCone: 20
 targetAir: true
 targetGround: true
-rotatespeed: 2
+rotateSpeed: 2
 requirements: [
   copper/350
   graphite/300
