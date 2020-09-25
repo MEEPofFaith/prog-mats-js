@@ -168,6 +168,141 @@ quadMinigun.entityType = () => {
     
     getShouldBarrel(){
       return this._SB;
+    },
+    
+    load(){	
+      for(i = 0; i < 3; i++){	
+        this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);	
+      }	
+      this.baseRegion = Core.atlas.find("block-4");	
+      for(i = 0; i < 12; i++){	
+        this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);	
+      }	
+    },	
+    icons(){	
+      return [	
+        Core.atlas.find("block-4"),	
+        Core.atlas.find("definitely-not-advance-content-minigun-iii-icon")	
+      ];	
+    },	
+    setStats(){	
+      this.super$setStats();	
+
+      this.stats.remove(BlockStat.shots);	
+      this.stats.add(BlockStat.shots, "4");	
+    },	
+    drawLayer(tile){	
+      const vec = new Vec2();	
+      const entity = tile.ent();	
+
+      vec.trns(entity.rotation, -entity.recoil);	
+
+      Draw.rect(this.turretRegions[entity.getFrame()], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);	
+
+      for(i = 0; i < 4; i++){	
+        if(entity.getBheat(i) > 0){	
+          Draw.blend(Blending.additive);	
+          Draw.color(this.heatColor, entity.getBheat(i));	
+          Draw.rect(this.heatRegions[entity.getHeatFrame(i)], entity.x + vec.x, entity.y + vec.y, entity.rotation-90);	
+          Draw.blend();	
+          Draw.color();	
+        }	
+      }	
+
+      if(entity.getFrameSpeed() > 0 && 9 * entity.getFrameSpeed() > 0.25){	
+        Draw.color(Color.valueOf("F7956A"));	
+        vec.trns(entity.rotation+90, 4, 10+entity.recoil);	
+        Lines.stroke(1);	
+        Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());	
+        vec.trns(entity.rotation+90, -4, 10+entity.recoil);	
+        Lines.stroke(1);	
+        Lines.lineAngle(entity.x + vec.x, entity.y + vec.y, entity.rotation, 9 * entity.getFrameSpeed());	
+        Draw.color();	
+      }	
+    },	
+    update(tile){	
+      this.super$update(tile);	
+      const entity = tile.ent();	
+
+      if(!this.validateTarget(tile) || entity.totalAmmo < 2){	
+        entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 0, 0.0125));	
+      }	
+
+      entity.setTrueFrame(entity.getTrueFrame() + entity.getFrameSpeed());	
+      entity.setFrame(Mathf.round(entity.getTrueFrame()) % 3);	
+      for(i = 0; i < 4; i++){	
+        entity.setHeatFrame(i, (Mathf.round(entity.getTrueFrame()) % 12) - 3 - (i*3));	
+        if(entity.getHeatFrame(i) < 0){	
+          entity.setHeatFrame(i, 12 + entity.getHeatFrame(i));	
+        }	
+        if(entity.getHeatFrame(i) > 11){	
+          entity.setHeatFrame(i, -12 + entity.getHeatFrame(i));	
+        }	
+      }	
+
+      entity.recoil = Mathf.lerpDelta(entity.recoil, 0, this.restitution);	
+      for(i = 0; i < 4; i++){	
+        entity.setBheat(i, Mathf.lerpDelta(entity.getBheat(i), 0, this.cooldown));	
+      }	
+
+      if(entity.getFrame() != 0){	
+        entity.setShouldShoot(1);	
+        entity.setShouldBarrel(1);	
+      }	
+
+      if(entity.getFrame() == 0 && entity.getShouldBarrel() == 1){	
+        entity.setBarrel(entity.getBarrel() + 1);	
+        entity.setShouldBarrel(0);	
+      }	
+    },	
+    updateShooting(tile){	
+      const entity = tile.ent();	
+      liquid = entity.liquids.current();	
+
+      if(entity.totalAmmo >= 2){	
+        entity.setFrameSpeed(Mathf.lerpDelta(entity.getFrameSpeed(), 1, 0.000125 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * entity.delta()));	
+        if(entity.getFrameSpeed() < 0.95){	
+          entity.liquids.remove(liquid, 0.2);	
+        }	
+      }	
+      if(entity.getFrame() == 0 && entity.getShouldShoot() == 1 && entity.getFrameSpeed() > 0.0166666667){	
+        type = this.peekAmmo(tile);	
+
+        this.shoot(tile, type);	
+      }	
+    },	
+    shoot(tile, type){	
+      const tr = new Vec2();	
+      const entity = tile.ent();	
+      const shootLoc = [-7.5, -2.5, 2.5,7.5];	
+
+      entity.setShouldShoot(0);	
+      entity.setBheat(entity.getBarrel() % 4, 1);	
+
+      for(i = 0; i < 4; i ++){	
+        tr.trns(entity.rotation - 90, shootLoc[i], 16);	
+        Calls.createBullet(type, entity.getTeam(), entity.x + tr.x, entity.y + tr.y, entity.rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);	
+      }	
+
+      this.effects(tile);	
+      this.useAmmo(tile);	
+    },	
+    effects(tile){	
+      const tr = new Vec2();	
+      const shootLoc = [-7.5, -2.5, 2.5,7.5];	
+      shootEffect = this.shootEffect == Fx.none ? this.peekAmmo(tile).shootEffect : this.shootEffect;	
+      smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo(tile).smokeEffect : this.smokeEffect;	
+
+      const entity = tile.ent();	
+
+      for(i = 0; i < 4; i ++){	
+        tr.trns(entity.rotation - 90, shootLoc[i], 16);	
+        Effects.effect(shootEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);	
+        Effects.effect(smokeEffect, tile.drawx() + tr.x, tile.drawy() + tr.y, entity.rotation);	
+        this.shootSound.at(tile, Mathf.random(0.9, 1.1));	
+      }	
+
+      entity.recoil = this.recoil;	
     }
   });
   
