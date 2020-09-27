@@ -1,6 +1,23 @@
-const dualMinigun = extendContent(ItemTurret, "minigun-ii", {});
-dualMinigun.turretRegions = [];
-dualMinigun.heatRegions = [];
+const dualMinigun = extendContent(ItemTurret, "minigun-ii", {
+  load(){
+    this.turretRegions = [];
+    this.heatRegions = [];
+
+    for(i = 0; i < 3; i++){
+      this.turretRegions.push(Core.atlas.find(this.name + "-f-" + i));
+    }
+    this.baseRegion = Core.atlas.find("block-4");
+    for(i = 0; i < 12; i++){
+      this.heatRegions.push(Core.atlas.find(this.name + "-heat-" + i));
+    }
+  },
+  icons(){
+    return [
+      Core.atlas.find("block-4"),
+      Core.atlas.find("definitely-not-advance-content-minigun-ii-icon")
+    ];
+  }
+});
 
 dualMinigun.size = 4;
 dualMinigun.restitution = 0.02;
@@ -170,22 +187,6 @@ dualMinigun.buildType = () => {
     getShouldBarrel(){
       return this._SB;
     },
-    
-    load(){
-      for(i = 0; i < 3; i++){
-        this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
-      }
-      this.baseRegion = Core.atlas.find("block-4");
-      for(i = 0; i < 12; i++){
-        this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
-      }
-    },
-    icons(){
-      return [
-        Core.atlas.find("block-4"),
-        Core.atlas.find("definitely-not-advance-content-minigun-ii-icon")
-      ];
-    },
     setStats(){
       this.super$setStats();
       
@@ -195,63 +196,63 @@ dualMinigun.buildType = () => {
     draw(){
       const vec = new Vec2();
       
-      vec.trns(tile.bc().rotation, -tile.bc().recoilAmount);
+      vec.trns(this.rotation, -this.recoil);
       
-      Draw.rect(this.turretRegions[tile.bc().getFrame()], tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation-90);
+      Draw.rect(this.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
       
       for(i = 0; i < 4; i++){
-        if(tile.bc().getBheat(i) > 0){
+        if(this.getBheat(i) > 0){
           Draw.blend(Blending.additive);
-          Draw.color(this.heatColor, tile.bc().getBheat(i));
-          Draw.rect(this.heatRegions[tile.bc().getHeatFrame(i)], tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation-90);
+          Draw.color(this.heatColor, this.getBheat(i));
+          Draw.rect(this.heatRegions[this.getHeatFrame(i)], this.x + vec.x, this.y + vec.y, this.rotation-90);
           Draw.blend();
           Draw.color();
         }
       }
       
-      if(tile.bc().getFrameSpeed() > 0 && 9 * tile.bc().getFrameSpeed() > 0.25){
+      if(this.getFrameSpeed() > 0 && 9 * this.getFrameSpeed() > 0.25){
         Draw.color(Color.valueOf("F7956A"));
-        vec.trns(tile.bc().rotation+90, 4, 10+tile.bc().recoilAmount);
+        vec.trns(this.rotation+90, 4, 10+this.recoilAmount);
         Lines.stroke(1);
-        Lines.lineAngle(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation, 9 * tile.bc().getFrameSpeed());
-        vec.trns(tile.bc().rotation+90, -4, 10+tile.bc().recoilAmount);
+        Lines.lineAngle(this.x + vec.x, this.y + vec.y, this.rotation, 9 * this.getFrameSpeed());
+        vec.trns(this.rotation+90, -4, 10+this.recoilAmount);
         Lines.stroke(1);
-        Lines.lineAngle(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation, 9 * tile.bc().getFrameSpeed());
+        Lines.lineAngle(this.x + vec.x, this.y + vec.y, this.rotation, 9 * this.getFrameSpeed());
         Draw.color();
       }
     },
     updateTile(){
       this.super$updateTile();
       
-      if(!this.validateTarget(tile) || tile.bc().totalAmmo < 2){
-        tile.bc().setFrameSpeed(Mathf.lerpDelta(tile.bc().getFrameSpeed(), 0, 0.0125));
+      if(!this.validateTarget(tile) || this.totalAmmo < 2){
+        this.setFrameSpeed(Mathf.lerpDelta(this.getFrameSpeed(), 0, 0.0125));
       }
       
-      tile.bc().setTrueFrame(tile.bc().getTrueFrame() + tile.bc().getFrameSpeed());
-      tile.bc().setFrame(Mathf.round(tile.bc().getTrueFrame()) % 3);
+      this.setTrueFrame(this.getTrueFrame() + this.getFrameSpeed());
+      this.setFrame(Mathf.round(this.getTrueFrame()) % 3);
       for(i = 0; i < 4; i++){
-        tile.bc().setHeatFrame(i, (Mathf.round(tile.bc().getTrueFrame()) % 12) - 3 - (i*3));
-        if(tile.bc().getHeatFrame(i) < 0){
-          tile.bc().setHeatFrame(i, 12 + tile.bc().getHeatFrame(i));
+        this.setHeatFrame(i, (Mathf.round(this.getTrueFrame()) % 12) - 3 - (i*3));
+        if(this.getHeatFrame(i) < 0){
+          this.setHeatFrame(i, 12 + this.getHeatFrame(i));
         }
-        if(tile.bc().getHeatFrame(i) > 11){
-          tile.bc().setHeatFrame(i, -12 + tile.bc().getHeatFrame(i));
+        if(this.getHeatFrame(i) > 11){
+          this.setHeatFrame(i, -12 + this.getHeatFrame(i));
         }
       }
       
-      tile.bc().recoilAmount = Mathf.lerpDelta(tile.bc().recoilAmount, 0, this.restitution);
+      this.recoilAmount = Mathf.lerpDelta(this.recoilAmount, 0, this.restitution);
       for(i = 0; i < 4; i++){
-        tile.bc().setBheat(i, Mathf.lerpDelta(tile.bc().getBheat(i), 0, this.cooldown));
+        this.setBheat(i, Mathf.lerpDelta(this.getBheat(i), 0, this.cooldown));
       }
       
-      if(tile.bc().getFrame() != 0){
-        tile.bc().setShouldShoot(1);
-        tile.bc().setShouldBarrel(1);
+      if(this.getFrame() != 0){
+        this.setShouldShoot(1);
+        this.setShouldBarrel(1);
       }
       
-      if(tile.bc().getFrame() == 0 && tile.bc().getShouldBarrel() == 1){
-        tile.bc().setBarrel(tile.bc().getBarrel() + 1);
-        tile.bc().setShouldBarrel(0);
+      if(this.getFrame() == 0 && this.getShouldBarrel() == 1){
+        this.setBarrel(this.getBarrel() + 1);
+        this.setShouldBarrel(0);
       }
     },
     updateShooting(){

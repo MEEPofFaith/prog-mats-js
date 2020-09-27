@@ -82,7 +82,23 @@ lavaPool.shootEffect = Fx.none;
 lavaPool.smokeEffect = Fx.none;
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
-const heatRiser = extendContent(PowerTurret, "eruptor-i", {});
+const heatRiser = extendContent(PowerTurret, "eruptor-i", {
+  load(){
+    this.super$load();
+    this.cells = Core.atlas.find(this.name + "-cells");
+    this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
+    this.caps = [];
+    for(var i = 0; i < 4; i++){
+      this.caps.push(Core.atlas.find(this.name + "-caps-" + i));
+    }
+  },
+  icons(){
+    return [
+      Core.atlas.find("block-3"),
+      Core.atlas.find("definitely-not-advance-content-eruptor-i-icon")
+    ];
+  }
+});
 
 heatRiser.shootType = lavaPool;
 heatRiser.shootDuration = 180;
@@ -92,8 +108,6 @@ heatRiser.shootEffect = Fx.none;
 heatRiser.smokeEffect = Fx.none;
 heatRiser.ammoUseEffect = Fx.none;
 heatRiser.restitution = 0.01;
-
-heatRiser.caps = [];
 
 heatRiser.buildType = () => {
 	var eruptEntity = extendContent(PowerTurret.PowerTurretBuild, heatRiser, {
@@ -120,50 +134,35 @@ heatRiser.buildType = () => {
     getCellOpenAmount(){
       return this._cellOpenAmount;
     },
-    
-    load(){
-      this.super$load();
-      this.cells = Core.atlas.find(this.name + "-cells");
-      this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
-      for(i = 0; i < 4; i++){
-        this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
-      }
-    },
     draw(){
       this.super$draw();
-      back.trns(tile.bc().rotation-90, 0, 0);
+      back.trns(this.rotation-90, 0, 0);
       
-      Draw.rect(this.cells, tile.bc().x + back.x, tile.bc().y + back.y, tile.bc().rotation-90);
+      Draw.rect(this.cells, this.x + back.x, this.y + back.y, this.rotation-90);
       
-      if(tile.bc().heat > 0){
+      if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
-        Draw.color(Color.valueOf("f08913"), tile.bc().heat);
-        Draw.rect(this.cellHeat, tile.bc().x + back.x, tile.bc().y + back.y, tile.bc().rotation-90);
+        Draw.color(Color.valueOf("f08913"), this.heat);
+        Draw.rect(this.cellHeat, this.x + back.x, this.y + back.y, this.rotation-90);
         Draw.blend();
         Draw.color();
       }
       
       //sw
-      open.trns(tile.bc().rotation-90, 0 - tile.bc().getCellOpenAmount(), -tile.bc().getCellOpenAmount());
-      Draw.rect(this.caps[0], tile.bc().x + open.x, tile.bc().y + open.y, tile.bc().rotation-90);
+      open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), -this.getCellOpenAmount());
+      Draw.rect(this.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
-      open.trns(tile.bc().rotation-90, 0 + tile.bc().getCellOpenAmount(), -tile.bc().getCellOpenAmount());
-      Draw.rect(this.caps[1], tile.bc().x + open.x, tile.bc().y + open.y, tile.bc().rotation-90);
+      open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), -this.getCellOpenAmount());
+      Draw.rect(this.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
-      open.trns(tile.bc().rotation-90, 0 - tile.bc().getCellOpenAmount(), tile.bc().getCellOpenAmount());
-      Draw.rect(this.caps[2], tile.bc().x + open.x, tile.bc().y + open.y, tile.bc().rotation-90);
+      open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), this.getCellOpenAmount());
+      Draw.rect(this.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
-      open.trns(tile.bc().rotation-90, 0 + tile.bc().getCellOpenAmount(), tile.bc().getCellOpenAmount());
-      Draw.rect(this.caps[3], tile.bc().x + open.x, tile.bc().y + open.y, tile.bc().rotation-90);
-    },
-    icons(){
-      return [
-        Core.atlas.find("block-3"),
-        Core.atlas.find("definitely-not-advance-content-eruptor-i-icon")
-      ];
+      open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), this.getCellOpenAmount());
+      Draw.rect(this.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
     setStats(){
       this.super$setStats();
@@ -171,68 +170,59 @@ heatRiser.buildType = () => {
       this.stats.remove(BlockStat.inaccuracy);
       this.stats.remove(BlockStat.damage);
       //damages every 5 ticks
-      this.stats.add(BlockStat.damage, this.shootType.damage * 60 / 5, StatUnit.perSecond);
+      this.stats.add(BlockStat.damage, tile.bc().shootType.damage * 60 / 5, StatUnit.perSecond);
     },
     updateTile(){
       this.super$updateTile();
       
-      if(tile.bc().getBulletLife() <= 0 && tile.bc().getBullet() == null){
-        tile.bc().setCellOpenAmount(Mathf.lerpDelta(tile.bc().getCellOpenAmount(), 0, this.restitution));
+      if(this.getBulletLife() <= 0 && this.getBullet() == null){
+        this.setCellOpenAmount(Mathf.lerpDelta(this.getCellOpenAmount(), 0, this.block.restitution));
       }
       
-      if(tile.bc().getBulletLife() > 0 && tile.bc().getBullet() != null){
-        var entBullet = tile.bc().getBullet();
+      if(this.getBulletLife() > 0 && this.getBullet() != null){
+        var entBullet = this.getBullet();
         
-        if(tile.bc().getBulletLife() >= this.shootDuration){
-          entBullet.set(tile.tile.bc().target.getX(), tile.tile.bc().target.getY());
+        if(this.getBulletLife() >= this.shootDuration){
+          entBullet.set(tile.this.target.getX(), tile.this.target.getY());
         }
         
-        this.tr.trns(tile.bc().rotation, this.size * Vars.tilesize / 2, 0);
+        this.tr.trns(this.rotation, this.block.size * Vars.tilesize / 2, 0);
         entBullet.time(0);
-        tile.bc().heat = 1;
-        tile.bc().setCellOpenAmount(this.COA * 1+(Mathf.absin(tile.bc().getBulletLife()/3, 0.8, 1.5)/3));
-        tile.bc().setBulletLife(tile.bc().getBulletLife() - Time.delta());
-        if(tile.bc().getBulletLife() <= 0){
-          tile.bc().setBullet(null);
+        this.heat = 1;
+        this.setCellOpenAmount(this.COA * 1+(Mathf.absin(this.getBulletLife()/3, 0.8, 1.5)/3));
+        this.setBulletLife(this.getBulletLife() - Time.delta());
+        if(this.getBulletLife() <= 0){
+          this.setBullet(null);
         }
       }
     },
     updateShooting(){
-      if(tile.bc().getBulletLife() > 0 && tile.bc().getBullet() != null){
+      if(this.getBulletLife() > 0 && this.getBullet() != null){
         return;
       };
       
-      if(tile.bc().reloadTime >= this.reloadTime){
+      if(this.reload >= this.block.reloadTime){
         type = this.peekAmmo(tile);
         
-        this.shoot(tile, type);
+        this.shoot(type);
         
-        tile.bc().reloadTime = 0;
+        this.reloadTime = 0;
       }
       else{
-        liquid = tile.bc().liquids.current();
-        maxUsed = this.consumes.get(ConsumeType.liquid).amount;
-        
-        used = this.basereloadTimeSpeed(tile) * (tile.isEnemyCheat() ? maxUsed : Math.min(tile.bc().liquids.get(liquid), maxUsed * Time.delta())) * liquid.heatCapacity * this.coolantMultiplier;
-        tile.bc().reloadTime += Math.max(used, 1 * Time.delta()) * tile.bc().power.status;
-        tile.bc().liquids.remove(liquid, used);
-        
-        if(Mathf.chance(0.06 * used)){
-          this.coolEffect.at(tile.drawx() + Mathf.range(this.size * Vars.tilesize / 2), tile.drawy() + Mathf.range(this.size * Vars.tilesize / 2), 0);
-        }
+        this.reload += this.delta() * this.baseReloadSpeed();
       }
     },
     bullet(type, angle){
-      bullet = Bullet.create(type, entity, tile.getTeam(), tile.drawx() + this.tr.x, tile.drawy() + this.tr.y, angle);
+      bullet = type.create(this, this.getTeam(), this.drawx() + this.tr.x, this.drawy() + this.tr.y, angle);
       
-      tile.bc().setBullet(bullet);
-      tile.bc().setBulletLife(this.shootDuration);
+      this.setBullet(bullet);
+      this.setBulletLife(this.shootDuration);
     },
     turnToTarget(targetRot){
-      tile.bc().rotation = Angles.moveToward(tile.bc().rotation, targetRot, this.rotateSpeed * tile.bc().delta() * (tile.bc().getBulletLife() > 0 ? this.firingMoveFract : 1));
+      this.rotation = Angles.moveToward(this.rotation, targetRot, this.rotateSpeed * this.delta() * (this.getBulletLife() > 0 ? this.firingMoveFract : 1));
     },
     shouldActiveSound(){
-      return tile.bc().getBulletLife() > 0 && tile.bc().getBullet() != null;
+      return this.getBulletLife() > 0 && this.getBullet() != null;
     }
 	});
 	

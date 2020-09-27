@@ -139,7 +139,19 @@ ballOfSucc.smokeEffect = Fx.none;
 ballOfSucc.backColor = Color.valueOf("000000");
 ballOfSucc.frontColor = Color.valueOf("353535");
 
-const blackhole = extendContent(ChargeTurret, "blackhole-i", {});
+const blackhole = extendContent(ChargeTurret, "blackhole-i", {
+  load(){
+    this.topRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i");
+    this.heatRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i-heat");
+    this.baseRegion = Core.atlas.find("block-4");
+  },
+  icons(){
+    return [
+      Core.atlas.find("block-4"),
+      Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")
+    ];
+  }
+});
 
 blackhole.shootType = ballOfSucc;
 blackhole.chargeEffect = charge;
@@ -155,22 +167,17 @@ blackhole.expanded = true;
 
 blackhole.buildType = () => {
   var succEntity = extendContent(ChargeTurret.ChargeTurretBuild, blackhole, {
-    load(){
-      this.topRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i");
-      this.heatRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i-heat");
-      this.baseRegion = Core.atlas.find("block-4");
-    },
     draw(){
       const vec = new Vec2();
       
-      vec.trns(tile.bc().rotation, -tile.bc().recoilAmount);
+      vec.trns(this.rotation, -this.recoilAmount);
       
-      Draw.rect(this.topRegion, tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation-90);
+      Draw.rect(this.topRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
       
-      if(tile.bc().heat > 0){
+      if(this.heat > 0){
         Draw.blend(Blending.additive);
-        Draw.color(this.heatColor, tile.bc().heat);
-        Draw.rect(this.heatRegion, tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation-90);
+        Draw.color(this.heatColor, this.heat);
+        Draw.rect(this.heatRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
         Draw.blend();
         Draw.color();
       }
@@ -196,12 +203,6 @@ blackhole.buildType = () => {
         Calls.createBullet(type, tile.bc().getTeam(), tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation, 1, 1);
         tile.bc().shooting = false;
       }));
-    },
-    icons(){
-      return [
-        Core.atlas.find("block-4"),
-        Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")
-      ];
     }
   });
   
