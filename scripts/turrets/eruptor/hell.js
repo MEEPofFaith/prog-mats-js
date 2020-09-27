@@ -148,8 +148,6 @@ burningHell.buildType = () => {
       return this._cellSideAmount;
     },
     draw(){
-      const entity = tile.ent();
-      
       for(var i = 0; i < 2; i++){
         side.trns(this.rotation-90, this.getSideOpenAmount() * ((i-0.5)*2), 0);
         Draw.rect(hellRiser.outlines[i], this.x + side.x, this.y + side.y, this.rotation-90);
