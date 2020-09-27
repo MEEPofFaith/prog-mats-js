@@ -57,7 +57,7 @@ const lavaPool = extend(BasicBulletType, {
       for(s = 0; s < 4; s++){
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
         Draw.alpha(b.fout());
-        for(i = 0; i < 4; i++){
+        for(var i = 0; i < 4; i++){
           var baseLen = (length + (Mathf.absin(Time.time()/((i+1)*2) + b.id, 0.8, 1.5)*(length/1.5))) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
@@ -84,12 +84,13 @@ lavaPool.smokeEffect = Fx.none;
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const heatRiser = extendContent(PowerTurret, "eruptor-i", {
   load(){
-    this.super$load();
+    this.baseRegion = Core.atlas.find("block-3");
+    this.region =  Core.atlas.find("definitely-not-advance-content-eruptor-i");
     this.cells = Core.atlas.find(this.name + "-cells");
     this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
     this.caps = [];
     for(var i = 0; i < 4; i++){
-      this.caps.push(Core.atlas.find(this.name + "-caps-" + i));
+      this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
     }
   },
   icons(){
@@ -138,31 +139,31 @@ heatRiser.buildType = () => {
       this.super$draw();
       back.trns(this.rotation-90, 0, 0);
       
-      Draw.rect(this.cells, this.x + back.x, this.y + back.y, this.rotation-90);
+      Draw.rect(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation-90);
       
       if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
         Draw.color(Color.valueOf("f08913"), this.heat);
-        Draw.rect(this.cellHeat, this.x + back.x, this.y + back.y, this.rotation-90);
+        Draw.rect(heatRiser.cellHeat, this.x + back.x, this.y + back.y, this.rotation-90);
         Draw.blend();
         Draw.color();
       }
       
       //sw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(this.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(heatRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(this.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(heatRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(this.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(heatRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(this.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(heatRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
     setStats(){
       this.super$setStats();

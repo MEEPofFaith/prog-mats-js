@@ -57,7 +57,7 @@ const magmaPool = extend(BasicBulletType, {
       for(s = 0; s < 4; s++){
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
         Draw.alpha(b.fout());
-        for(i = 0; i < 4; i++){
+        for(var i = 0; i < 4; i++){
           var baseLen = (length + (Mathf.absin(b.getOwner().getBulletLife()/((i+1)*2.5) + b.id, 0.8, 1.5)*(length/1.5))) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
@@ -90,13 +90,13 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
     this.capsA = [];
     this.capsB = [];
     
-    for(i = 0; i < 2; i++){
-      this.cells.push(Core.atlas.find(this.name + "-cells-" + i));
-      this.cellHeats.push(Core.atlas.find(this.name + "-cells-heat-" + i));
+    for(var i = 0; i < 2; i++){
+      this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
+      this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
     }
-    for(i = 0; i < 4; i++){
-      this.capsA.push(Core.atlas.find(this.name + "-caps-0-" + i));
-      this.capsB.push(Core.atlas.find(this.name + "-caps-1-" + i));
+    for(var i = 0; i < 4; i++){
+      this.capsA[i] = Core.atlas.find(this.name + "-caps-0-" + i);
+      this.capsB[i] = Core.atlas.find(this.name + "-caps-1-" + i);
     }
   },
   icons(){
@@ -148,59 +148,59 @@ lavaRiser.buildType = () => {
       back.trns(this.rotation-90, 0, 0);
       
       //Bottom Layer Cells
-      Draw.rect(this.cells[0], this.x + back.x, this.y + back.y, this.rotation-90);
+      Draw.rect(lavaRiser.cells[0], this.x + back.x, this.y + back.y, this.rotation-90);
       
       if(this.heat > 0){
         Draw.blend(Blending.additive);
         Draw.color(Color.valueOf("f08913"), this.heat);
-        Draw.rect(this.cellHeats[0], this.x + back.x, this.y + back.y, this.rotation-90);
+        Draw.rect(lavaRiser.cellHeats[0], this.x + back.x, this.y + back.y, this.rotation-90);
         Draw.blend();
         Draw.color();
       }
       
       //sw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(this.capsA[0], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(lavaRiser.capsA[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(this.capsA[1], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(lavaRiser.capsA[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(this.capsA[2], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(lavaRiser.capsA[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(this.capsA[3], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(lavaRiser.capsA[3], this.x + open.x, this.y + open.y, this.rotation-90);
       
       
       //Top Layer Cells
-      Draw.rect(this.cells[1], this.x + back.x, this.y + back.y, this.rotation-90);
+      Draw.rect(lavaRiser.cells[1], this.x + back.x, this.y + back.y, this.rotation-90);
       
       if(this.heat > 0){
         Draw.blend(Blending.additive);
         Draw.color(Color.valueOf("f08913"), this.heat);
-        Draw.rect(this.cellHeats[1], this.x + back.x, this.y + back.y, this.rotation-90);
+        Draw.rect(lavaRiser.cellHeats[1], this.x + back.x, this.y + back.y, this.rotation-90);
         Draw.blend();
         Draw.color();
       }
       
       //sw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(this.capsB[0], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(lavaRiser.capsB[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(this.capsB[1], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(lavaRiser.capsB[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(this.capsB[2], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(lavaRiser.capsB[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(this.capsB[3], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(lavaRiser.capsB[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
     setStats(){
       this.super$setStats();

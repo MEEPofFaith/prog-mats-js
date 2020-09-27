@@ -172,12 +172,12 @@ blackhole.buildType = () => {
       
       vec.trns(this.rotation, -this.recoilAmount);
       
-      Draw.rect(this.topRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
+      Draw.rect(blackhole.topRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
       
       if(this.heat > 0){
         Draw.blend(Blending.additive);
-        Draw.color(this.heatColor, this.heat);
-        Draw.rect(this.heatRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
+        Draw.color(blackhole.heatColor, this.heat);
+        Draw.rect(blackhole.heatRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
         Draw.blend();
         Draw.color();
       }
@@ -189,7 +189,7 @@ blackhole.buildType = () => {
       vec.trns(tile.bc().rotation, 9 - tile.bc().recoilAmount);
       this.chargeBeginEffect.at(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation);
       
-      for(i = 0; i < this.chargeEffects; i++){
+      for(var i = 0; i < this.chargeEffects; i++){
         Time.run(Mathf.random(this.chargeMaxDelay), run(() => {
           this.chargeEffect.at(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation);
         }));

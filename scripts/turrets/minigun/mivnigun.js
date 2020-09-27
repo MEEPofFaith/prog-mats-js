@@ -1,10 +1,10 @@
 const quadMinigun = extendContent(ItemTurret, "minigun-iii", {
   load(){	
-    for(i = 0; i < 3; i++){	
+    for(var i = 0; i < 3; i++){	
       this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);	
     }	
     this.baseRegion = Core.atlas.find("block-4");	
-    for(i = 0; i < 12; i++){	
+    for(var i = 0; i < 12; i++){	
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);	
     }	
   },	
@@ -196,13 +196,13 @@ quadMinigun.buildType = () => {
       
       vec.trns(this.rotation, -this.recoilAmount);	
 
-      Draw.rect(this.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);	
+      Draw.rect(quadMinigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);	
 
-      for(i = 0; i < 4; i++){	
+      for(var i = 0; i < 4; i++){	
         if(this.getBheat(i) > 0){	
           Draw.blend(Blending.additive);	
-          Draw.color(this.heatColor, this.getBheat(i));	
-          Draw.rect(this.heatRegions[this.getHeatFrame(i)], this.x + vec.x, this.y + vec.y, this.rotation-90);	
+          Draw.color(quadMinigun.heatColor, this.getBheat(i));	
+          Draw.rect(quadMinigun.heatRegions[this.getHeatFrame(i)], this.x + vec.x, this.y + vec.y, this.rotation-90);	
           Draw.blend();	
           Draw.color();	
         }	
@@ -228,7 +228,7 @@ quadMinigun.buildType = () => {
 
       this.setTrueFrame(this.getTrueFrame() + this.getFrameSpeed());	
       this.setFrame(Mathf.round(this.getTrueFrame()) % 3);	
-      for(i = 0; i < 4; i++){	
+      for(var i = 0; i < 4; i++){	
         this.setHeatFrame(i, (Mathf.round(this.getTrueFrame()) % 12) - 3 - (i*3));	
         if(this.getHeatFrame(i) < 0){	
           this.setHeatFrame(i, 12 + this.getHeatFrame(i));	
@@ -239,7 +239,7 @@ quadMinigun.buildType = () => {
       }	
 
       this.recoilAmount = Mathf.lerpDelta(this.recoilAmount, 0, this.restitution);	
-      for(i = 0; i < 4; i++){	
+      for(var i = 0; i < 4; i++){	
         this.setBheat(i, Mathf.lerpDelta(this.getBheat(i), 0, this.cooldown));	
       }	
 
@@ -275,7 +275,7 @@ quadMinigun.buildType = () => {
       tile.bc().setShouldShoot(0);	
       tile.bc().setBheat(tile.bc().getBarrel() % 4, 1);	
 
-      for(i = 0; i < 4; i ++){	
+      for(var i = 0; i < 4; i ++){	
         tr.trns(tile.bc().rotation - 90, shootLoc[i], 16);	
         Calls.createBullet(type, tile.bc().getTeam(), tile.bc().x + tr.x, tile.bc().y + tr.y, tile.bc().rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);	
       }	
@@ -289,7 +289,7 @@ quadMinigun.buildType = () => {
       shootEffect = this.shootEffect == Fx.none ? this.peekAmmo(tile).shootEffect : this.shootEffect;	
       smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo(tile).smokeEffect : this.smokeEffect;	
 
-      for(i = 0; i < 4; i ++){	
+      for(var i = 0; i < 4; i ++){	
         tr.trns(tile.bc().rotation - 90, shootLoc[i], 16);	
         shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, tile.bc().rotation);	
         smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, tile.bc().rotation);	
@@ -306,7 +306,7 @@ quadMinigun.buildType = () => {
   IVEntity.setBarrel(-1);
   IVEntity.setShouldShoot(0);
   IVEntity.setShouldBarrel(0);
-  for(i = 0; i < 4; i++){
+  for(var i = 0; i < 4; i++){
     IVEntity.setBheat(i, 0);
     IVEntity.setHeatFrame(i, 0);
   }

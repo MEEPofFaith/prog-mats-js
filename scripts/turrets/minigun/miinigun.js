@@ -3,12 +3,12 @@ const dualMinigun = extendContent(ItemTurret, "minigun-ii", {
     this.turretRegions = [];
     this.heatRegions = [];
 
-    for(i = 0; i < 3; i++){
-      this.turretRegions.push(Core.atlas.find(this.name + "-f-" + i));
+    for(var i = 0; i < 3; i++){
+      this.turretRegions[i] = (Core.atlas.find(this.name + "-f-" + i);
     }
     this.baseRegion = Core.atlas.find("block-4");
-    for(i = 0; i < 12; i++){
-      this.heatRegions.push(Core.atlas.find(this.name + "-heat-" + i));
+    for(var i = 0; i < 12; i++){
+      this.heatRegions[i] = (Core.atlas.find(this.name + "-heat-" + i);
     }
   },
   icons(){
@@ -198,13 +198,13 @@ dualMinigun.buildType = () => {
       
       vec.trns(this.rotation, -this.recoil);
       
-      Draw.rect(this.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
+      Draw.rect(dualMinigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
       
-      for(i = 0; i < 4; i++){
+      for(var i = 0; i < 4; i++){
         if(this.getBheat(i) > 0){
           Draw.blend(Blending.additive);
-          Draw.color(this.heatColor, this.getBheat(i));
-          Draw.rect(this.heatRegions[this.getHeatFrame(i)], this.x + vec.x, this.y + vec.y, this.rotation-90);
+          Draw.color(dualMinigun.heatColor, this.getBheat(i));
+          Draw.rect(dualMinigun.heatRegions[this.getHeatFrame(i)], this.x + vec.x, this.y + vec.y, this.rotation-90);
           Draw.blend();
           Draw.color();
         }
@@ -230,7 +230,7 @@ dualMinigun.buildType = () => {
       
       this.setTrueFrame(this.getTrueFrame() + this.getFrameSpeed());
       this.setFrame(Mathf.round(this.getTrueFrame()) % 3);
-      for(i = 0; i < 4; i++){
+      for(var i = 0; i < 4; i++){
         this.setHeatFrame(i, (Mathf.round(this.getTrueFrame()) % 12) - 3 - (i*3));
         if(this.getHeatFrame(i) < 0){
           this.setHeatFrame(i, 12 + this.getHeatFrame(i));
@@ -241,7 +241,7 @@ dualMinigun.buildType = () => {
       }
       
       this.recoilAmount = Mathf.lerpDelta(this.recoilAmount, 0, this.restitution);
-      for(i = 0; i < 4; i++){
+      for(var i = 0; i < 4; i++){
         this.setBheat(i, Mathf.lerpDelta(this.getBheat(i), 0, this.cooldown));
       }
       
@@ -310,7 +310,7 @@ dualMinigun.buildType = () => {
   IIEntity.setBarrel(-1);
   IIEntity.setShouldShoot(0);
   IIEntity.setShouldBarrel(0);
-  for(i = 0; i < 4; i++){
+  for(var i = 0; i < 4; i++){
     IIEntity.setBheat(i, 0);
     IIEntity.setHeatFrame(i, 0);
   }

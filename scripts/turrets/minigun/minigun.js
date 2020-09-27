@@ -1,10 +1,10 @@
 const minigun = extendContent(ItemTurret, "minigun-i", {
   load(){
-    for(i = 0; i < 3; i++){
+    for(var i = 0; i < 3; i++){
       this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
     }
     this.baseRegion = Core.atlas.find("block-4");
-    for(i = 0; i < 12; i++){
+    for(var i = 0; i < 12; i++){
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
   },
@@ -188,13 +188,13 @@ minigun.buildType = () => {
       
       vec.trns(this.rotation, -this.recoil);
       
-      Draw.rect(this.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
+      Draw.rect(minigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
       
-      for(i = 0; i < 4; i++){
+      for(var i = 0; i < 4; i++){
         if(this.getBheat(i) > 0){
           Draw.blend(Blending.additive);
-          Draw.color(this.heatColor, this.getBheat(i));
-          Draw.rect(this.heatRegions[this.getHeatFrame(i)], this.x + vec.x, this.y + vec.y, this.rotation-90);
+          Draw.color(minigun.heatColor, this.getBheat(i));
+          Draw.rect(minigun.heatRegions[this.getHeatFrame(i)], this.x + vec.x, this.y + vec.y, this.rotation-90);
           Draw.blend();
           Draw.color();
         }
@@ -220,7 +220,7 @@ minigun.buildType = () => {
       
       this.setTrueFrame(this.getTrueFrame() + this.getFrameSpeed());
       this.setFrame(Mathf.round(this.getTrueFrame()) % 3);
-      for(i = 0; i < 4; i++){
+      for(var i = 0; i < 4; i++){
         this.setHeatFrame(i, (Mathf.round(this.getTrueFrame()) % 12) - 3 - (i*3));
         if(this.getHeatFrame(i) < 0){
           this.setHeatFrame(i, 12 + this.getHeatFrame(i));
@@ -231,7 +231,7 @@ minigun.buildType = () => {
       }
       
       this.recoil = Mathf.lerpDelta(this.block.recoilAmount, 0, this.block.restitution);
-      for(i = 0; i < 4; i++){
+      for(var i = 0; i < 4; i++){
         this.setBheat(i, Mathf.lerpDelta(this.getBheat(i), 0, this.block.cooldown));
       }
       
@@ -271,7 +271,7 @@ minigun.buildType = () => {
   IEntity.setBarrel(-1);
   IEntity.setShouldShoot(0);
   IEntity.setShouldBarrel(0);
-  for(i = 0; i < 4; i++){
+  for(var i = 0; i < 4; i++){
     IEntity.setBheat(i, 0);
     IEntity.setHeatFrame(i, 0);
   }

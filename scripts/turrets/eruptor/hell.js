@@ -21,7 +21,7 @@ var lenscales = [1, 1.3, 1.6, 1.9];
 var tmpColor = new Color();
 const vec = new Vec2();
 
-const hellPool = extend(BasicBulletType, {
+const hellRiser = extend(BasicBulletType, {
   update(b){
     if(b != null){
       if(b.timer.get(1, 5)){
@@ -53,7 +53,7 @@ const hellPool = extend(BasicBulletType, {
       for(s = 0; s < 4; s++){
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
         Draw.alpha(b.fout());
-        for(i = 0; i < 4; i++){
+        for(var i = 0; i < 4; i++){
           var baseLen = (length + (Mathf.absin(Time.time()/((i+1)*2) + b.id, 0.8, 1.5)*(length/1.5))) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
@@ -68,15 +68,15 @@ const hellPool = extend(BasicBulletType, {
 });
 const oofDuration = 30;
 
-hellPool.speed = 0.000000001;
-hellPool.damage = 62.5;
-hellPool.lifetime = oofDuration;
-hellPool.collides = false;
-hellPool.collidesTiles = false;
-hellPool.hitEffect = Fx.fireballsmoke;
-hellPool.despawnEffect = Fx.none;
-hellPool.shootEffect = Fx.none;
-hellPool.smokeEffect = Fx.none;
+hellRiser.speed = 0.000000001;
+hellRiser.damage = 62.5;
+hellRiser.lifetime = oofDuration;
+hellRiser.collides = false;
+hellRiser.collidesTiles = false;
+hellRiser.hitEffect = Fx.fireballsmoke;
+hellRiser.despawnEffect = Fx.none;
+hellRiser.shootEffect = Fx.none;
+hellRiser.smokeEffect = Fx.none;
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const burningHell = extendContent(PowerTurret, "eruptor-iii", {
@@ -89,16 +89,16 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
     
     this.baseRegion = Core.atlas.find("block-4");
     this.bottomRegion = Core.atlas.find(this.name + "-bottom");
-    for(i = 0; i < 2; i++){
-      this.sides.push(Core.atlas.find(this.name + "-sides-" + i));
-      this.outlines.push(Core.atlas.find(this.name + "-outline-" + i));
+    for(var i = 0; i < 2; i++){
+      this.sides[i] = Core.atlas.find(this.name + "-sides-" + i);
+      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
     }
-    for(i = 0; i < 3; i++){
-      this.cells.push(Core.atlas.find(this.name + "-cells-" + i);
-      this.cellHeats.push(Core.atlas.find(this.name + "-cells-heat-" + i));
+    for(var i = 0; i < 3; i++){
+      this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
+      this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
     }
-    for(i = 0; i < 4; i++){
-      this.caps.push(Core.atlas.find(this.name + "-caps-" + i));
+    for(var i = 0; i < 4; i++){
+      this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
     }
   },
   icons(){
@@ -109,7 +109,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
   }
 });
 
-burningHell.shootType = hellPool;
+burningHell.shootType = hellRiser;
 burningHell.shootDuration = oofDuration;
 burningHell.range = 200;
 burningHell.shootCone = 360;
@@ -150,32 +150,32 @@ burningHell.buildType = () => {
     draw(){
       const entity = tile.ent();
       
-      for(i = 0; i < 2; i++){
+      for(var i = 0; i < 2; i++){
         side.trns(this.rotation-90, this.getSideOpenAmount() * ((i-0.5)*2), 0);
-        Draw.rect(this.outlines[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        Draw.rect(hellRiser.outlines[i], this.x + side.x, this.y + side.y, this.rotation-90);
       }
       
-      Draw.rect(this.bottomRegion, this.x, this.y, this.rotation-90);
+      Draw.rect(hellRiser.bottomRegion, this.x, this.y, this.rotation-90);
       
       //inside big cell
-      Draw.rect(this.cells[2], this.x, this.y, this.rotation-90);
+      Draw.rect(hellRiser.cells[2], this.x, this.y, this.rotation-90);
       if(this.heat > 0){
         Draw.blend(Blending.additive);
         Draw.color(Color.valueOf("ffbe73"), this.heat);
-        Draw.rect(this.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation-90);
+        Draw.rect(hellRiser.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation-90);
         Draw.blend();
         Draw.color();
       }
       
       //sides and cells
-      for(i = 0; i < 2; i ++){
+      for(var i = 0; i < 2; i ++){
         side.trns(this.rotation-90, this.getSideOpenAmount() * ((i-0.5)*2), 0);
-        Draw.rect(this.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
-        Draw.rect(this.cells[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        Draw.rect(hellRiser.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        Draw.rect(hellRiser.cells[i], this.x + side.x, this.y + side.y, this.rotation-90);
         if(this.heat > 0){
           Draw.blend(Blending.additive);
           Draw.color(Color.valueOf("f08913"), this.heat);
-          Draw.rect(this.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation-90);
+          Draw.rect(hellRiser.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation-90);
           Draw.blend();
           Draw.color();
         }
@@ -183,19 +183,19 @@ burningHell.buildType = () => {
       
       //sw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount() - this.getSideOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(this.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(hellRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount() + this.getSideOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(this.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(hellRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount() - this.getSideOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(this.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(hellRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //ne
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount() + this.getSideOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(this.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(hellRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
     setStats(){
       this.super$setStats();
@@ -259,7 +259,7 @@ burningHell.buildType = () => {
             if(other.getTeam() != tile.getTeam() && other.ent() != null && oofed.indexOf(other) == -1){
               Calls.createBullet(this.shootType, tile.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
               //add to oofed so the same thing doesn't get oofed twice.
-              oofed.push(other);
+              oofed[i] = (other);
             }
           }
         }
