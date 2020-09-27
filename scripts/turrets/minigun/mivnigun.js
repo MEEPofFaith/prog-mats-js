@@ -260,13 +260,13 @@ quadMinigun.buildType = () => {
       liquid = this.liquids.current();	
 
       if(this.totalAmmo >= 2){	
-        this.setFrameSpeed(Mathf.lerpDelta(this.getFrameSpeed(), 1, 0.000125 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * this.delta()));	
+        this.setFrameSpeed(Mathf.lerpDelta(this.getFrameSpeed(), 1, 0.000125 * this.peekAmmo().reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * this.delta()));	
         if(this.getFrameSpeed() < 0.95){	
           this.liquids.remove(liquid, 0.2);	
         }	
       }	
       if(this.getFrame() == 0 && this.getShouldShoot() == 1 && this.getFrameSpeed() > 0.0166666667){	
-        type = this.peekAmmo(tile);	
+        type = this.peekAmmo();	
 
         this.shoot(tile, type);	
       }	
@@ -289,8 +289,8 @@ quadMinigun.buildType = () => {
     effects(tile){	
       const tr = new Vec2();	
       const shootLoc = [-7.5, -2.5, 2.5,7.5];	
-      shootEffect = this.shootEffect == Fx.none ? this.peekAmmo(tile).shootEffect : this.shootEffect;	
-      smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo(tile).smokeEffect : this.smokeEffect;	
+      shootEffect = this.shootEffect == Fx.none ? this.peekAmmo().shootEffect : this.shootEffect;	
+      smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo().smokeEffect : this.smokeEffect;	
 
       for(var i = 0; i < 4; i ++){	
         tr.trns(this.rotation - 90, shootLoc[i], 16);	

@@ -150,17 +150,17 @@ burningHell.buildType = () => {
     draw(){
       for(var i = 0; i < 2; i++){
         side.trns(this.rotation-90, this.getSideOpenAmount() * ((i-0.5)*2), 0);
-        Draw.rect(hellRiser.outlines[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        Draw.rect(burningHell.outlines[i], this.x + side.x, this.y + side.y, this.rotation-90);
       }
       
-      Draw.rect(hellRiser.bottomRegion, this.x, this.y, this.rotation-90);
+      Draw.rect(burningHell.bottomRegion, this.x, this.y, this.rotation-90);
       
       //inside big cell
-      Draw.rect(hellRiser.cells[2], this.x, this.y, this.rotation-90);
+      Draw.rect(burningHell.cells[2], this.x, this.y, this.rotation-90);
       if(this.heat > 0){
         Draw.blend(Blending.additive);
         Draw.color(Color.valueOf("ffbe73"), this.heat);
-        Draw.rect(hellRiser.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation-90);
+        Draw.rect(burningHell.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation-90);
         Draw.blend();
         Draw.color();
       }
@@ -168,12 +168,12 @@ burningHell.buildType = () => {
       //sides and cells
       for(var i = 0; i < 2; i ++){
         side.trns(this.rotation-90, this.getSideOpenAmount() * ((i-0.5)*2), 0);
-        Draw.rect(hellRiser.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
-        Draw.rect(hellRiser.cells[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        Draw.rect(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        Draw.rect(burningHell.cells[i], this.x + side.x, this.y + side.y, this.rotation-90);
         if(this.heat > 0){
           Draw.blend(Blending.additive);
           Draw.color(Color.valueOf("f08913"), this.heat);
-          Draw.rect(hellRiser.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation-90);
+          Draw.rect(burningHell.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation-90);
           Draw.blend();
           Draw.color();
         }
@@ -181,19 +181,19 @@ burningHell.buildType = () => {
       
       //sw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount() - this.getSideOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(hellRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount() + this.getSideOpenAmount(), -this.getCellOpenAmount());
-      Draw.rect(hellRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount() - this.getSideOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(hellRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //ne
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount() + this.getSideOpenAmount(), this.getCellOpenAmount());
-      Draw.rect(hellRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
+      Draw.rect(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
     setStats(){
       this.super$setStats();
@@ -226,7 +226,7 @@ burningHell.buildType = () => {
       };
       
       if(this.reload >= this.block.reloadTime){
-        type = this.peekAmmo(tile);
+        type = this.peekAmmo();
         
         this.shoot(tile, type);
         

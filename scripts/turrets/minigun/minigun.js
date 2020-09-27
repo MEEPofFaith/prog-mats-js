@@ -252,13 +252,13 @@ minigun.buildType = () => {
       liquid = this.liquids.current();
       
       if(this.hasAmmo(tile)){
-        this.setFrameSpeed(Mathf.lerpDelta(this.getFrameSpeed(), 1, 0.000125 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.block.coolantMultiplier * this.delta()));
+        this.setFrameSpeed(Mathf.lerpDelta(this.getFrameSpeed(), 1, 0.000125 * this.peekAmmo().reloadMultiplier * liquid.heatCapacity * this.block.coolantMultiplier * this.delta()));
         if(this.getFrameSpeed() < 0.95){
           this.liquids.remove(liquid, 0.2);
         }
       }
       if(this.getFrame() == 0 && this.getShouldShoot() == 1 && this.getFrameSpeed() > 0.0166666667){
-        type = this.peekAmmo(tile);
+        type = this.peekAmmo();
         
         this.shoot(tile, type);
         
