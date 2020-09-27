@@ -123,7 +123,7 @@ burningHell.ammoUseEffect = Fx.none;
 burningHell.restitution = 0.01;
 
 burningHell.buildType = () => {
-	var hellEntity = extendContent(PowerTurret.PowerTurretEntity, burningHell, {
+	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, burningHell, {
 		setBulletLife(a){
 			this._bulletlife = a;
 		},

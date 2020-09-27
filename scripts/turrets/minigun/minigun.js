@@ -1,5 +1,8 @@
 const minigun = extendContent(ItemTurret, "minigun-i", {
   load(){
+    this.turretRegions = [];
+    this.heatRegions = [];
+    
     for(var i = 0; i < 3; i++){
       this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
     }

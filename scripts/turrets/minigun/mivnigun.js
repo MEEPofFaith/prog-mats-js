@@ -1,5 +1,8 @@
 const quadMinigun = extendContent(ItemTurret, "minigun-iii", {
-  load(){	
+  load(){
+    this.turretRegions = [];
+    this.heatRegions = [];
+    
     for(var i = 0; i < 3; i++){	
       this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);	
     }	
@@ -111,7 +114,7 @@ quadMinigun.ammo(
 );
 
 quadMinigun.buildType = () => {
-  var IVEntity = extendContent(ItemTurret.ItemTurretEntity, quadMinigun, {
+  var IVEntity = extendContent(ItemTurret.ItemTurretBuild, quadMinigun, {
     _BarrelHeat:[],
     //DBarrel heat
     setBheat(n, v){

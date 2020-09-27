@@ -4,11 +4,11 @@ const dualMinigun = extendContent(ItemTurret, "minigun-ii", {
     this.heatRegions = [];
 
     for(var i = 0; i < 3; i++){
-      this.turretRegions[i] = (Core.atlas.find(this.name + "-f-" + i);
+      this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
     }
     this.baseRegion = Core.atlas.find("block-4");
     for(var i = 0; i < 12; i++){
-      this.heatRegions[i] = (Core.atlas.find(this.name + "-heat-" + i);
+      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
   },
   icons(){
@@ -113,7 +113,7 @@ dualMinigun.ammo(
 );
 
 dualMinigun.buildType = () => {
-  var IIEntity = extendContent(ItemTurret.ItemTurretEntity, dualMinigun, {
+  var IIEntity = extendContent(ItemTurret.ItemTurretBuild, dualMinigun, {
     _BarrelHeat:[],
     //DBarrel heat
     setBheat(n, v){
