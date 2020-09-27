@@ -226,9 +226,9 @@ burningHell.buildType = () => {
       };
       
       if(this.reload >= this.block.reloadTime){
-        type = this.peekAmmo();
+        var type = this.peekAmmo();
         
-        this.shoot(tile, type);
+        this.shoot(type);
         
         this.reload = 0;
         this.setBulletLife(this.shootDuration);
@@ -237,7 +237,7 @@ burningHell.buildType = () => {
         this.reload += this.delta() * this.baseReloadSpeed();
       }
     },
-    shoot(tile, type){
+    shoot(type){
       Units.nearbyEnemies(tile.getTeam(), tile.drawx() - this.range, tile.drawy() - this.range, this.range*2, this.range*2, cons(unit => {
         if(unit.withinDst(tile.drawx(), tile.drawy(), this.range)){
           if(!unit.isDead() && unit instanceof HealthTrait){
@@ -263,7 +263,7 @@ burningHell.buildType = () => {
         }
       }
     },
-    shouldTurn(tile){
+    shouldTurn(){
       return false;
     },
     shouldActiveSound(){

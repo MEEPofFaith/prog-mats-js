@@ -182,7 +182,7 @@ blackhole.buildType = () => {
         Draw.color();
       }
     },
-    shoot(tile, type){
+    shoot(type){
       const vec = new Vec2();
       this.useAmmo(tile);
 

@@ -203,7 +203,7 @@ heatRiser.buildType = () => {
       };
       
       if(this.reload >= this.block.reloadTime){
-        type = this.peekAmmo();
+        var type = this.peekAmmo();
         
         this.shoot(type);
         

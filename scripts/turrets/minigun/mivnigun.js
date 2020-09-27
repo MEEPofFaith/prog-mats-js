@@ -266,12 +266,12 @@ quadMinigun.buildType = () => {
         }	
       }	
       if(this.getFrame() == 0 && this.getShouldShoot() == 1 && this.getFrameSpeed() > 0.0166666667){	
-        type = this.peekAmmo();	
+        var type = this.peekAmmo();	
 
-        this.shoot(tile, type);	
+        this.shoot(type);	
       }	
     },	
-    shoot(tile, type){	
+    shoot(type){	
       const tr = new Vec2();	
       const shootLoc = [-7.5, -2.5, 2.5,7.5];	
 
