@@ -205,14 +205,14 @@ burningHell.buildType = () => {
       this.stats.add(BlockStat.shots, "The number of enemies in range (oh no)");
       this.stats.remove(BlockStat.damage);
       //damages every 5 ticks, at least in meltdown's case
-      this.stats.add(BlockStat.damage, this.shootType.damage * 12, StatUnit.perSecond);
+      this.stats.add(BlockStat.damage, tile.bc().shootType.damage * 12, StatUnit.perSecond);
     },
     updateTile(){
       this.super$updateTile();
       
       if(this.getBulletLife() <= 0){
-        this.setCellOpenAmount(Mathf.lerpDelta(this.getCellOpenAmount(), 0, this.restitution));
-        this.setSideOpenAmount(Mathf.lerpDelta(this.getSideOpenAmount(), 0, this.restitution));
+        this.setCellOpenAmount(Mathf.lerpDelta(this.getCellOpenAmount(), 0, this.block.restitution));
+        this.setSideOpenAmount(Mathf.lerpDelta(this.getSideOpenAmount(), 0, this.block.restitution));
       }
       
       if(this.getBulletLife() > 0){
@@ -223,17 +223,17 @@ burningHell.buildType = () => {
       }
     },
     updateShooting(){
-      if(tile.bc().getBulletLife() > 0){
+      if(this.getBulletLife() > 0){
         return;
       };
       
-      if(tile.bc().reloadTime >= this.reloadTime){
+      if(this.reload >= this.block.reloadTime){
         type = this.peekAmmo(tile);
         
         this.shoot(tile, type);
         
-        tile.bc().reloadTime = 0;
-        tile.bc().setBulletLife(this.shootDuration);
+        this.reload = 0;
+        this.setBulletLife(this.shootDuration);
       }
       else{
         this.reload += this.delta() * this.baseReloadSpeed();

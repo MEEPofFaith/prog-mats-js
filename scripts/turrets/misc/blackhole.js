@@ -186,22 +186,22 @@ blackhole.buildType = () => {
       const vec = new Vec2();
       this.useAmmo(tile);
 
-      vec.trns(tile.bc().rotation, 9 - tile.bc().recoilAmount);
-      this.chargeBeginEffect.at(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation);
+      vec.trns(this.rotation, 9 - this.recoilAmount);
+      this.chargeBeginEffect.at(this.x + vec.x, this.y + vec.y, this.rotation);
       
       for(var i = 0; i < this.chargeEffects; i++){
         Time.run(Mathf.random(this.chargeMaxDelay), run(() => {
-          this.chargeEffect.at(tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation);
+          this.chargeEffect.at(this.x + vec.x, this.y + vec.y, this.rotation);
         }));
       }
       
-      tile.bc().shooting = true;
+      this.shooting = true;
 
       Time.run(this.chargeTime, run(() => {
-        tile.bc().recoilAmount = this.recoilAmount;
-        tile.bc().heat = 1;
-        Calls.createBullet(type, tile.bc().getTeam(), tile.bc().x + vec.x, tile.bc().y + vec.y, tile.bc().rotation, 1, 1);
-        tile.bc().shooting = false;
+        this.recoilAmount = this.recoilAmount;
+        this.heat = 1;
+        Calls.createBullet(type, this.getTeam(), this.x + vec.x, this.y + vec.y, this.rotation, 1, 1);
+        this.shooting = false;
       }));
     }
   });

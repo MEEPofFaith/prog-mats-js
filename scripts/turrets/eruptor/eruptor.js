@@ -207,7 +207,7 @@ heatRiser.buildType = () => {
         
         this.shoot(type);
         
-        this.reloadTime = 0;
+        this.reload = 0;
       }
       else{
         this.reload += this.delta() * this.baseReloadSpeed();

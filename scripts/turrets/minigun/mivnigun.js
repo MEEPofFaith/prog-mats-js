@@ -241,7 +241,7 @@ quadMinigun.buildType = () => {
         }	
       }	
 
-      this.recoilAmount = Mathf.lerpDelta(this.recoilAmount, 0, this.restitution);	
+      this.recoilAmount = Mathf.lerpDelta(this.recoilAmount, 0, this.block.restitution);	
       for(var i = 0; i < 4; i++){	
         this.setBheat(i, Mathf.lerpDelta(this.getBheat(i), 0, this.cooldown));	
       }	
@@ -257,15 +257,15 @@ quadMinigun.buildType = () => {
       }	
     },	
     updateShooting(){	
-      liquid = tile.bc().liquids.current();	
+      liquid = this.liquids.current();	
 
-      if(tile.bc().totalAmmo >= 2){	
-        tile.bc().setFrameSpeed(Mathf.lerpDelta(tile.bc().getFrameSpeed(), 1, 0.000125 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * tile.bc().delta()));	
-        if(tile.bc().getFrameSpeed() < 0.95){	
-          tile.bc().liquids.remove(liquid, 0.2);	
+      if(this.totalAmmo >= 2){	
+        this.setFrameSpeed(Mathf.lerpDelta(this.getFrameSpeed(), 1, 0.000125 * this.peekAmmo(tile).reloadMultiplier * liquid.heatCapacity * this.coolantMultiplier * this.delta()));	
+        if(this.getFrameSpeed() < 0.95){	
+          this.liquids.remove(liquid, 0.2);	
         }	
       }	
-      if(tile.bc().getFrame() == 0 && tile.bc().getShouldShoot() == 1 && tile.bc().getFrameSpeed() > 0.0166666667){	
+      if(this.getFrame() == 0 && this.getShouldShoot() == 1 && this.getFrameSpeed() > 0.0166666667){	
         type = this.peekAmmo(tile);	
 
         this.shoot(tile, type);	
@@ -275,12 +275,12 @@ quadMinigun.buildType = () => {
       const tr = new Vec2();	
       const shootLoc = [-7.5, -2.5, 2.5,7.5];	
 
-      tile.bc().setShouldShoot(0);	
-      tile.bc().setBheat(tile.bc().getBarrel() % 4, 1);	
+      this.setShouldShoot(0);	
+      this.setBheat(this.getBarrel() % 4, 1);	
 
       for(var i = 0; i < 4; i ++){	
-        tr.trns(tile.bc().rotation - 90, shootLoc[i], 16);	
-        Calls.createBullet(type, tile.bc().getTeam(), tile.bc().x + tr.x, tile.bc().y + tr.y, tile.bc().rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);	
+        tr.trns(this.rotation - 90, shootLoc[i], 16);	
+        Calls.createBullet(type, this.getTeam(), this.x + tr.x, this.y + tr.y, this.rotation + Mathf.range(this.inaccuracy + type.inaccuracy), 1, 1);	
       }	
 
       this.effects(tile);	
@@ -293,13 +293,13 @@ quadMinigun.buildType = () => {
       smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo(tile).smokeEffect : this.smokeEffect;	
 
       for(var i = 0; i < 4; i ++){	
-        tr.trns(tile.bc().rotation - 90, shootLoc[i], 16);	
-        shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, tile.bc().rotation);	
-        smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, tile.bc().rotation);	
+        tr.trns(this.rotation - 90, shootLoc[i], 16);	
+        shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, this.rotation);	
+        smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, this.rotation);	
         this.shootSound.at(tile, Mathf.random(0.9, 1.1));	
       }	
 
-      tile.bc().recoilAmount = this.recoilAmount;	
+      this.recoilAmount = this.recoilAmount;	
     }
   });
   
