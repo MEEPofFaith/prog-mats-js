@@ -184,7 +184,7 @@ heatRiser.buildType = () => {
         var entBullet = this.getBullet();
         
         if(this.getBulletLife() >= this.shootDuration){
-          entBullet.set(tile.this.target.getX(), tile.this.target.getY());
+          entBullet.set(this.target.getX(), this.target.getY());
         }
         
         this.tr.trns(this.rotation, this.block.size * Vars.tilesize / 2, 0);
