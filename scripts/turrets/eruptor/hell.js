@@ -268,7 +268,7 @@ burningHell.buildType = () => {
             }
           }
         }*/
-        BlockIndexer.eachBlock(!this.getTeam(), this.block.range/8, null, other -> {
+        BlockIndexer.eachBlock(!this.getTeam(), this.block.range/8, other.isValid(), other -> {
           this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
         });
       }
