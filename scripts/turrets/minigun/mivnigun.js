@@ -3,13 +3,13 @@ const quadMinigun = extendContent(ItemTurret, "minigun-iii", {
     this.turretRegions = [];
     this.heatRegions = [];
     
-    for(var i = 0; i < 3; i++){	
-      this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);	
-    }	
-    this.baseRegion = Core.atlas.find("block-4");	
-    for(var i = 0; i < 12; i++){	
-      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);	
-    }	
+    this.baseRegion = Core.atlas.find("block-4");
+    for(var i = 0; i < 3; i++){
+      this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
+    }
+    for(var i = 0; i < 12; i++){
+      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
+    }
   },	
   icons(){	
     return [	
@@ -197,8 +197,13 @@ quadMinigun.buildType = () => {
     draw(){	
       const vec = new Vec2();	
       
+      Draw.rect(quadMinigun.baseRegion, this.x, this.y, 0);
+      
+      Draw.z(Layer.turret);
+      
       vec.trns(this.rotation, -this.recoilAmount);	
-
+      
+      Draw.rect(quadMinigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
       Draw.rect(quadMinigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);	
 
       for(var i = 0; i < 4; i++){	
@@ -294,8 +299,8 @@ quadMinigun.buildType = () => {
 
       for(var i = 0; i < 4; i ++){	
         tr.trns(this.rotation - 90, shootLoc[i], 16);	
-        shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, this.rotation);	
-        smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, this.rotation);	
+        shootEffect.at(tile.x + tr.x, tile.y + tr.y, this.rotation);	
+        smokeEffect.at(tile.x + tr.x, tile.y + tr.y, this.rotation);	
         this.shootSound.at(tile, Mathf.random(0.9, 1.1));	
       }	
 

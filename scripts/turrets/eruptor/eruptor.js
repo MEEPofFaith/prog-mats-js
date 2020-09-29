@@ -84,8 +84,9 @@ lavaPool.smokeEffect = Fx.none;
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const heatRiser = extendContent(PowerTurret, "eruptor-i", {
   load(){
-    this.baseRegion = Core.atlas.find("block-3");
-    this.region =  Core.atlas.find("definitely-not-advance-content-eruptor-i");
+    //this.baseRegion = Core.atlas.find("block-3");
+    //this.region =  Core.atlas.find("definitely-not-advance-content-eruptor-i");
+    this.super$load();
     this.cells = Core.atlas.find(this.name + "-cells");
     this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
     this.caps = [];
@@ -136,9 +137,16 @@ heatRiser.buildType = () => {
       return this._cellOpenAmount;
     },
     draw(){
-      this.super$draw();
+      Draw.rect(heatRiser.baseRegion, this.x, this.y, 0);
+      
+      Draw.z(Layer.turret);
+      
+      Drawf.shadow(heatRiser.region, this.x, this.y, this.rotation-90);
+      Draw.rect(heatRiser.region, this.x, this.y, this.rotation-90);
+      
       back.trns(this.rotation-90, 0, 0);
       
+      Drawf.shadow(heatRiser.cells, this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation-90);
       
       if(this.heat > 0.00001){
@@ -151,18 +159,22 @@ heatRiser.buildType = () => {
       
       //sw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), -this.getCellOpenAmount());
+      Drawf.shadow(heatRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(heatRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), -this.getCellOpenAmount());
+      Drawf.shadow(heatRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(heatRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), this.getCellOpenAmount());
+      Drawf.shadow(heatRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(heatRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), this.getCellOpenAmount());
+      Drawf.shadow(heatRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(heatRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
     setStats(){
@@ -214,7 +226,7 @@ heatRiser.buildType = () => {
       }
     },
     bullet(type, angle){
-      bullet = type.create(this, this.getTeam(), this.drawx() + this.tr.x, this.drawy() + this.tr.y, angle);
+      bullet = type.create(this, this.getTeam(), this.x + this.tr.x, this.y + this.tr.y, angle);
       
       this.setBullet(bullet);
       this.setBulletLife(this.shootDuration);

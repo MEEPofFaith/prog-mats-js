@@ -142,12 +142,17 @@ lavaRiser.buildType = () => {
       return this._cellOpenAmount;
     },
     draw(){
-      this.super$draw();
+      Draw.rect(lavaRiser.baseRegion, this.x, this.y, 0);
       
+      Draw.z(Layer.turret);
+      
+      Drawf.shadow(lavaRiser.region, this.x, this.y, this.rotation-90);
+      Draw.rect(lavaRiser.region, this.x, this.y, this.rotation-90);
       
       back.trns(this.rotation-90, 0, 0);
       
       //Bottom Layer Cells
+      Drawf.shadow(lavaRiser.cells[0], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.cells[0], this.x + back.x, this.y + back.y, this.rotation-90);
       
       if(this.heat > 0){
@@ -160,22 +165,27 @@ lavaRiser.buildType = () => {
       
       //sw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), -this.getCellOpenAmount());
+      Drawf.shadow(lavaRiser.capsA[0], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsA[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), -this.getCellOpenAmount());
+      Drawf.shadow(lavaRiser.capsA[1], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsA[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), this.getCellOpenAmount());
+      Drawf.shadow(lavaRiser.capsA[2], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsA[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), this.getCellOpenAmount());
+      Drawf.shadow(lavaRiser.capsA[3], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsA[3], this.x + open.x, this.y + open.y, this.rotation-90);
       
       
       //Top Layer Cells
+      Drawf.shadow(lavaRiser.cells[1], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.cells[1], this.x + back.x, this.y + back.y, this.rotation-90);
       
       if(this.heat > 0){
@@ -188,18 +198,22 @@ lavaRiser.buildType = () => {
       
       //sw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), -this.getCellOpenAmount());
+      Drawf.shadow(lavaRiser.capsB[0], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsB[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), -this.getCellOpenAmount());
+      Drawf.shadow(lavaRiser.capsB[1], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsB[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), this.getCellOpenAmount());
+      Drawf.shadow(lavaRiser.capsB[2], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsB[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), this.getCellOpenAmount());
+      Drawf.shadow(lavaRiser.capsB[3], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsB[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
     setStats(){
@@ -251,7 +265,7 @@ lavaRiser.buildType = () => {
       }
     },
     bullet(type, angle){
-      bullet = type.create(this, this.getTeam(), this.drawx() + this.tr.x, this.drawy() + this.tr.y, angle);
+      bullet = type.create(this, this.getTeam(), this.x + this.tr.x, this.y + this.tr.y, angle);
       
       this.setBullet(bullet);
       this.setBulletLife(this.shootDuration);

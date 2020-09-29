@@ -3,10 +3,10 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
     this.turretRegions = [];
     this.heatRegions = [];
     
+    this.baseRegion = Core.atlas.find("block-4");
     for(var i = 0; i < 3; i++){
       this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
     }
-    this.baseRegion = Core.atlas.find("block-4");
     for(var i = 0; i < 12; i++){
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
@@ -189,8 +189,13 @@ minigun.buildType = () => {
     draw(){
       const vec = new Vec2();
       
+      Draw.rect(minigun.baseRegion, this.x, this.y, 0);
+      
+      Draw.z(Layer.turret);
+      
       vec.trns(this.rotation, -this.recoil);
       
+      Draw.rect(minigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
       Draw.rect(minigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
       
       for(var i = 0; i < 4; i++){

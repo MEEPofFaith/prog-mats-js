@@ -170,8 +170,13 @@ blackhole.buildType = () => {
     draw(){
       const vec = new Vec2();
       
+      Draw.rect(blackhole.baseRegion, this.x, this.y, 0);
+      
+      Draw.z(Layer.turret);
+      
       vec.trns(this.rotation, -this.recoilAmount);
       
+      Drawf.shadow(blackhole.topRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
       Draw.rect(blackhole.topRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
       
       if(this.heat > 0){

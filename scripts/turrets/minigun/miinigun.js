@@ -3,10 +3,10 @@ const dualMinigun = extendContent(ItemTurret, "minigun-ii", {
     this.turretRegions = [];
     this.heatRegions = [];
 
+    this.baseRegion = Core.atlas.find("block-4");
     for(var i = 0; i < 3; i++){
       this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
     }
-    this.baseRegion = Core.atlas.find("block-4");
     for(var i = 0; i < 12; i++){
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
@@ -196,8 +196,13 @@ dualMinigun.buildType = () => {
     draw(){
       const vec = new Vec2();
       
+      Draw.rect(dualMinigun.baseRegion, this.x, this.y, 0);
+      
+      Draw.z(Layer.turret);
+      
       vec.trns(this.rotation, -this.recoil);
       
+      Drawf.shadow(dualMinigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
       Draw.rect(dualMinigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
       
       for(var i = 0; i < 4; i++){
@@ -291,13 +296,13 @@ dualMinigun.buildType = () => {
       smokeEffect = this.smokeEffect == Fx.none ? this.peekAmmo().smokeEffect : this.smokeEffect;
 
       tr.trns(this.rotation - 90, -this.shotWidth, 16);
-      shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, this.rotation);
-      smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, this.rotation);
+      shootEffect.at(tile.x + tr.x, tile.y + tr.y, this.rotation);
+      smokeEffect.at(tile.x + tr.x, tile.y + tr.y, this.rotation);
       this.shootSound.at(tile, Mathf.random(0.9, 1.1));
 
       tr.trns(this.rotation - 90, this.shotWidth, 16);
-      shootEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, this.rotation);
-      smokeEffect.at(tile.drawx() + tr.x, tile.drawy() + tr.y, this.rotation);
+      shootEffect.at(tile.x + tr.x, tile.y + tr.y, this.rotation);
+      smokeEffect.at(tile.x + tr.x, tile.y + tr.y, this.rotation);
       this.shootSound.at(tile, Mathf.random(0.9, 1.1));
       
       this.recoilAmount = this.recoilAmount;

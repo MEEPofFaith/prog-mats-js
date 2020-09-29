@@ -66,11 +66,11 @@ const hellRiser = extend(BasicBulletType, {
     }
   }
 });
-const oofDuration = 30;
+const burnDuration = 30;
 
 hellRiser.speed = 0.000000001;
 hellRiser.damage = 62.5;
-hellRiser.lifetime = oofDuration;
+hellRiser.lifetime = burnDuration;
 hellRiser.collides = false;
 hellRiser.collidesTiles = false;
 hellRiser.hitEffect = Fx.fireballsmoke;
@@ -81,13 +81,15 @@ hellRiser.smokeEffect = Fx.none;
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const burningHell = extendContent(PowerTurret, "eruptor-iii", {
   load(){
+    this.super$load();
     this.caps = [];
     this.sides = [];
     this.cells = [];
     this.cellHeats = [];
     this.outlines = [];
     
-    this.baseRegion = Core.atlas.find("block-4");
+    //this.baseRegion = Core.atlas.find("block-4");
+    
     this.bottomRegion = Core.atlas.find(this.name + "-bottom");
     for(var i = 0; i < 2; i++){
       this.sides[i] = Core.atlas.find(this.name + "-sides-" + i);
@@ -110,7 +112,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
 });
 
 burningHell.shootType = hellRiser;
-burningHell.shootDuration = oofDuration;
+burningHell.shootDuration = burnDuration;
 burningHell.range = 200;
 burningHell.shootCone = 360;
 burningHell.rotationSpeed = 0;
@@ -124,13 +126,6 @@ burningHell.restitution = 0.01;
 
 burningHell.buildType = () => {
 	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, burningHell, {
-		setBulletLife(a){
-			this._bulletlife = a;
-		},
-    
-		getBulletLife(){
-			return this._bulletlife;
-		},
     
     setCellOpenAmount(a){
       this._cellOpenAmount = a;
@@ -148,11 +143,17 @@ burningHell.buildType = () => {
       return this._cellSideAmount;
     },
     draw(){
+      Draw.rect(heatRiser.baseRegion, this.x, this.y, 0);
+      
+      Draw.z(Layer.turret);
+      
       for(var i = 0; i < 2; i++){
         side.trns(this.rotation-90, this.getSideOpenAmount() * ((i-0.5)*2), 0);
+        Drawf.shadow(burningHell.outlines[i], this.x, this.y, this.rotation-90);
         Draw.rect(burningHell.outlines[i], this.x + side.x, this.y + side.y, this.rotation-90);
       }
       
+      Drawf.shadow(burningHell.bottomRegion, this.x, this.y, this.rotation-90);
       Draw.rect(burningHell.bottomRegion, this.x, this.y, this.rotation-90);
       
       //inside big cell
@@ -168,7 +169,10 @@ burningHell.buildType = () => {
       //sides and cells
       for(var i = 0; i < 2; i ++){
         side.trns(this.rotation-90, this.getSideOpenAmount() * ((i-0.5)*2), 0);
+        Drawf.shadow(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
         Draw.rect(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        
+        Drawf.shadow(burningHell.cells[i], this.x + side.x, this.y + side.y, this.rotation-90);
         Draw.rect(burningHell.cells[i], this.x + side.x, this.y + side.y, this.rotation-90);
         if(this.heat > 0){
           Draw.blend(Blending.additive);
@@ -181,18 +185,22 @@ burningHell.buildType = () => {
       
       //sw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount() - this.getSideOpenAmount(), -this.getCellOpenAmount());
+      Drawf.shadow(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount() + this.getSideOpenAmount(), -this.getCellOpenAmount());
+      Drawf.shadow(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
       open.trns(this.rotation-90, 0 - this.getCellOpenAmount() - this.getSideOpenAmount(), this.getCellOpenAmount());
+      Drawf.shadow(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //ne
       open.trns(this.rotation-90, 0 + this.getCellOpenAmount() + this.getSideOpenAmount(), this.getCellOpenAmount());
+      Drawf.shadow(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
     setStats(){
@@ -217,7 +225,6 @@ burningHell.buildType = () => {
         this.heat = 1;
         this.setCellOpenAmount(this.COA * 1+(Mathf.absin(this.getBulletLife()/3, 0.8, 1.5)/3));
         this.setSideOpenAmount(this.SOA + (Mathf.absin(this.getBulletLife()/3, 0.8, 1.5)*2));
-        this.setBulletLife(this.getBulletLife() - Time.delta());
       }
     },
     updateShooting(){
@@ -238,16 +245,16 @@ burningHell.buildType = () => {
       }
     },
     shoot(type){
-      Units.nearbyEnemies(this.getTeam(), this.drawx() - this.block.range, this.drawy() - this.block.range, this.block.range*2, this.block.range*2, cons(unit => {
-        if(unit.withinDst(this.drawx(), this.drawy(), this.block.range)){
+      Units.nearbyEnemies(this.getTeam(), this.x - this.block.range, this.y - this.block.range, this.block.range*2, this.block.range*2, cons(unit => {
+        if(unit.withinDst(this.x, this.y, this.block.range)){
           if(!unit.isDead() && unit instanceof HealthTrait){
-            this.block.shootType.create(this, this.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
+            this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
           }
         }
       }));
       
       //reset oofed
-      var oofed = [];
+      /*var oofed = [];
       for(a = 0; a < 360; a++){
         for(l = this.block.range/8; l > 0; l--){
           rangeloc.trns(a, 0, l);
@@ -255,12 +262,15 @@ burningHell.buildType = () => {
             other = Vars.world.ltile(this.x + rangeloc.x, this.y + rangeloc.y);
             
             if(other.getTeam() != this.getTeam() && other.ent() != null && oofed.indexOf(other) == -1){
-              this.block.shootType.create(this, this.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
+              this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
               //add to oofed so the same thing doesn't get oofed twice.
-              oofed[i] = (other);
+              oofed.push(other);
             }
           }
-        }
+        }*/
+        BlockIndexer.eachBlock(!this.getTeam(), this.block.range/8, null, other -> {
+          this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
+        });
       }
     },
     shouldTurn(){
