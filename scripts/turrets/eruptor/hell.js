@@ -238,10 +238,10 @@ burningHell.buildType = () => {
       }
     },
     shoot(type){
-      Units.nearbyEnemies(tile.getTeam(), tile.drawx() - this.range, tile.drawy() - this.range, this.range*2, this.range*2, cons(unit => {
-        if(unit.withinDst(tile.drawx(), tile.drawy(), this.range)){
+      Units.nearbyEnemies(this.getTeam(), this.drawx() - this.block.range, this.drawy() - this.block.range, this.block.range*2, this.block.range*2, cons(unit => {
+        if(unit.withinDst(this.drawx(), this.drawy(), this.block.range)){
           if(!unit.isDead() && unit instanceof HealthTrait){
-            Calls.createBullet(this.shootType, tile.getTeam(), unit.x, unit.y, 0, 1, 1);
+            this.block.shootType.create(this, this.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
           }
         }
       }));
@@ -249,13 +249,13 @@ burningHell.buildType = () => {
       //reset oofed
       var oofed = [];
       for(a = 0; a < 360; a++){
-        for(l = this.range/8; l > 0; l--){
+        for(l = this.block.range/8; l > 0; l--){
           rangeloc.trns(a, 0, l);
-          if(Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y) != null){
-            other = Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y);
+          if(Vars.world.ltile(this.x + rangeloc.x, this.y + rangeloc.y) != null){
+            other = Vars.world.ltile(this.x + rangeloc.x, this.y + rangeloc.y);
             
-            if(other.getTeam() != tile.getTeam() && other.ent() != null && oofed.indexOf(other) == -1){
-              Calls.createBullet(this.shootType, tile.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
+            if(other.getTeam() != this.getTeam() && other.ent() != null && oofed.indexOf(other) == -1){
+              this.block.shootType.create(this, this.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
               //add to oofed so the same thing doesn't get oofed twice.
               oofed[i] = (other);
             }
