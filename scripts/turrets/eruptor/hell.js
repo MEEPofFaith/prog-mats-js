@@ -127,6 +127,14 @@ burningHell.restitution = 0.01;
 burningHell.buildType = () => {
 	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, burningHell, {
     
+    setBulletLife(a){
+      this._BulletLife = a;
+    },
+		
+    getBulletLife(){
+      return this._BulletLife;
+    },
+    
     setCellOpenAmount(a){
       this._cellOpenAmount = a;
     },
@@ -143,7 +151,7 @@ burningHell.buildType = () => {
       return this._cellSideAmount;
     },
     draw(){
-      Draw.rect(heatRiser.baseRegion, this.x, this.y, 0);
+      Draw.rect(burningHell.baseRegion, this.x, this.y, 0);
       
       Draw.z(Layer.turret);
       
@@ -245,7 +253,7 @@ burningHell.buildType = () => {
       }
     },
     shoot(type){
-      Units.nearbyEnemies(this.getTeam(), this.x - this.block.range, this.y - this.block.range, this.block.range*2, this.block.range*2, cons(unit => {
+      Units.nearbyEnemies(this.team(), this.x - this.block.range, this.y - this.block.range, this.block.range*2, this.block.range*2, cons(unit => {
         if(unit.withinDst(this.x, this.y, this.block.range)){
           if(!unit.isDead() && unit instanceof HealthTrait){
             this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
@@ -268,10 +276,9 @@ burningHell.buildType = () => {
             }
           }
         }*/
-        BlockIndexer.eachBlock(!this.getTeam(), this.block.range/8, other.isValid(), other -> {
-          this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
-        });
-      }
+      Vars.indexer.eachBlock(!this.team(), this.block.range/8, other => other.isValid(), other => {
+        this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
+      });
     },
     shouldTurn(){
       return false;
