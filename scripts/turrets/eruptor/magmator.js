@@ -26,14 +26,14 @@ const magmaPool = extend(BasicBulletType, {
       if(b.getOwner().target != null){
         var target = Angles.angle(b.x, b.y, b.getOwner().target.getX(), b.getOwner().target.getY());
         b.rot(Mathf.slerpDelta(b.rot(), target, 0.15));
-      }
+      };
       
       if(b.timer.get(1, 5)){
-        Damage.damage(b.getTeam(), b.x, b.y, burnRadius, this.damage, true);
-      }
+        Damage.damage(b.team, b.x, b.y, burnRadius, this.damage, true);
+      };
       
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 100000);
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 99000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 100000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 99000);
     }
   },
   draw(b){
@@ -62,12 +62,12 @@ const magmaPool = extend(BasicBulletType, {
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
           Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], CapStyle.none);
-        }
-      }
+        };
+      };
       Draw.blend();
       Draw.color();
       Draw.reset();
-    }
+    };
   }
 });
 
@@ -93,11 +93,11 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
     for(var i = 0; i < 2; i++){
       this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
       this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
-    }
+    };
     for(var i = 0; i < 4; i++){
       this.capsA[i] = Core.atlas.find(this.name + "-caps-0-" + i);
       this.capsB[i] = Core.atlas.find(this.name + "-caps-1-" + i);
-    }
+    };
   },
   icons(){
     return [
@@ -118,29 +118,11 @@ lavaRiser.restitution = 0.01;
 
 lavaRiser.buildType = () => {
 	var magmaEntity = extendContent(PowerTurret.PowerTurretBuild, lavaRiser, {
-		setBullet(a){
-			this._bullet = a;
-		},
-		
-		getBullet(){
-			return this._bullet;
-		},
-		
-		setBulletLife(a){
-			this._bulletlife = a;
-		},
-    
-		getBulletLife(){
-			return this._bulletlife;
-		},
-    
-    setCellOpenAmount(a){
-      this._cellOpenAmount = a;
-    },
-		
-    getCellOpenAmount(){
-      return this._cellOpenAmount;
-    },
+		setEff(){
+			this._bullet = null;
+			this._bulletLife = 0;
+      this._cellOpenAmount = 0;
+  },
     draw(){
       Draw.rect(lavaRiser.baseRegion, this.x, this.y, 0);
       
@@ -161,25 +143,25 @@ lavaRiser.buildType = () => {
         Draw.rect(lavaRiser.cellHeats[0], this.x + back.x, this.y + back.y, this.rotation-90);
         Draw.blend();
         Draw.color();
-      }
+      };
       
       //sw
-      open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), -this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 - this._cellOpenAmount, -this._cellOpenAmount);
       Drawf.shadow(lavaRiser.capsA[0], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsA[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
-      open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), -this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 + this._cellOpenAmount, -this._cellOpenAmount);
       Drawf.shadow(lavaRiser.capsA[1], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsA[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
-      open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 - this._cellOpenAmount, this._cellOpenAmount);
       Drawf.shadow(lavaRiser.capsA[2], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsA[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
-      open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 + this._cellOpenAmount, this._cellOpenAmount);
       Drawf.shadow(lavaRiser.capsA[3], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsA[3], this.x + open.x, this.y + open.y, this.rotation-90);
       
@@ -194,25 +176,25 @@ lavaRiser.buildType = () => {
         Draw.rect(lavaRiser.cellHeats[1], this.x + back.x, this.y + back.y, this.rotation-90);
         Draw.blend();
         Draw.color();
-      }
+      };
       
       //sw
-      open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), -this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 - this._cellOpenAmount, -this._cellOpenAmount);
       Drawf.shadow(lavaRiser.capsB[0], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsB[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
-      open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), -this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 + this._cellOpenAmount, -this._cellOpenAmount);
       Drawf.shadow(lavaRiser.capsB[1], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsB[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
-      open.trns(this.rotation-90, 0 - this.getCellOpenAmount(), this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 - this._cellOpenAmount, this._cellOpenAmount);
       Drawf.shadow(lavaRiser.capsB[2], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsB[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
-      open.trns(this.rotation-90, 0 + this.getCellOpenAmount(), this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 + this._cellOpenAmount, this._cellOpenAmount);
       Drawf.shadow(lavaRiser.capsB[3], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(lavaRiser.capsB[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
@@ -222,65 +204,58 @@ lavaRiser.buildType = () => {
       this.stats.remove(BlockStat.inaccuracy);
       this.stats.remove(BlockStat.damage);
       //damages every 5 ticks
-      this.stats.add(BlockStat.damage, tile.bc().shootType.damage * 60 / 5, StatUnit.perSecond);
+      this.stats.add(BlockStat.damage, lavaRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
     },
     updateTile(){
       this.super$updateTile();
       
-      if(this.getBulletLife() <= 0 && this.getBullet() == null){
-        this.setCellOpenAmount(Mathf.lerpDelta(this.getCellOpenAmount(), 0, this.block.restitution));
-      }
+      if(this._bulletLife <= 0 && this._bullet == null){
+        this._cellOpenAmount = Mathf.lerpDelta(this._cellOpenAmount, 0, lavaRiser.restitution);
+      };
       
-      if(this.getBulletLife() > 0 && this.getBullet() != null){
-        var entBullet = this.getBullet();
+      if(this._bulletLife > 0 && this._bullet != null){
+        if(this._bulletLife >= lavaRiser.shootDuration){
+          this._bullet.set(this.target.getX(), this.target.getY());
+        };
         
-        if(this.getBulletLife() >= this.shootDuration){
-          entBullet.set(this.target.getX(), this.target.getY());
-        }
-        
-        this.tr.trns(this.rotation, this.block.size * Vars.tilesize / 2, 0);
-        entBullet.time(0);
+        this.tr.trns(this.rotation, lavaRiser.size * Vars.tilesize / 2, 0);
+        this._bullet.time(0);
         this.heat = 1;
-        this.setCellOpenAmount(this.COA * 1+(Mathf.absin(this.getBulletLife()/3, 0.8, 1.5)/3));
-        this.setBulletLife(this.getBulletLife() - Time.delta());
-        if(this.getBulletLife() <= 0){
-          this.setBullet(null);
-        }
-      }
+        this._cellOpenAmount = lavaRiser.COA * 1+(Mathf.absin(this._bulletLife/3, 0.8, 1.5)/3);
+        this._bulletLife = this._bulletLife - Time.delta();
+        if(this._bulletLife <= 0){
+          this._bullet = null;
+        };
+      };
     },
     updateShooting(){
-      if(this.getBulletLife() > 0 && this.getBullet() != null){
+      if(this._bulletLife > 0 && this._bullet != null){
         return;
       };
       
-      if(this.reload >= this.block.reloadTime){
+      if(this.reload >= lavaRiser.reloadTime){
         var type = this.peekAmmo();
         
         this.shoot(type);
         
         this.reload = 0;
-      }
-      else{
+      }else{
         this.reload += this.delta() * this.baseReloadSpeed();
-      }
+      };
     },
     bullet(type, angle){
-      bullet = type.create(this, this.getTeam(), this.x + this.tr.x, this.y + this.tr.y, angle);
+      bullet = type.create(this, this.team, this.x + this.tr.x, this.y + this.tr.y, angle);
       
-      this.setBullet(bullet);
-      this.setBulletLife(this.shootDuration);
+      this._bullet = bullet;
+      this._bulletLife = lavaRiser.shootDuration;
     },
     turnToTarget(targetRot){
-      this.rotation = Angles.moveToward(this.rotation, targetRot, this.rotateSpeed * this.delta() * (this.getBulletLife() > 0 ? this.firingMoveFract : 1));
+      this.rotation = Angles.moveToward(this.rotation, targetRot, this.rotateSpeed * this.delta() * (this._bulletLife > 0 ? this.firingMoveFract : 1));
     },
     shouldActiveSound(){
-      return this.getBulletLife() > 0 && this.getBullet() != null;
+      return this._bulletLife > 0 && this._bullet != null;
     }
 	});
-	
-	magmaEntity.setBullet(null);
-	magmaEntity.setBulletLife(0);
-  magmaEntity.setCellOpenAmount(0);
-	
+	magmaEntity.setEff();
 	return magmaEntity;
 };

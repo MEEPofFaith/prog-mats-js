@@ -237,7 +237,7 @@ burningHell.buildType = () => {
     shoot(type){
       Units.nearbyEnemies(this.team, this.x - burningHell.range, this.y - burningHell.range, burningHell.range * 2, burningHell.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, burningHell.range) && !e.dead){
-            burningHell.shootType.create(this, this.team, other.x, other.y, 0, 1, 1);
+            burningHell.shootType.create(this, this.team, e.x, e.y, 0, 1, 1);
         };
       });
       
