@@ -20,16 +20,17 @@ var lenscales = [1, 1.3, 1.6, 1.9];
 
 var tmpColor = new Color();
 const vec = new Vec2();
+const collidedBlocks = new IntSet(127);
 
 const hellRiser = extend(BasicBulletType, {
   update(b){
     if(b != null){
       if(b.timer.get(1, 5)){
-        Damage.damage(b.getTeam(), b.x, b.y, burnRadius, this.damage, true);
+        Damage.damage(b.team, b.x, b.y, burnRadius, this.damage, true);
       }
       
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 10000);
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 9000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 10000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 9000);
     }
   },
   draw(b){
@@ -50,20 +51,20 @@ const hellRiser = extend(BasicBulletType, {
       
       //"fountain" of lava
       Draw.blend(Blending.additive);
-      for(s = 0; s < 4; s++){
+      for(var s = 0; s < 4; s++){
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
         Draw.alpha(b.fout());
         for(var i = 0; i < 4; i++){
           var baseLen = (length + (Mathf.absin(Time.time()/((i+1)*2) + b.id, 0.8, 1.5)*(length/1.5))) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
-          Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], CapStyle.none);
-        }
-      }
+          Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], false);
+        };
+      };
       Draw.blend();
       Draw.color();
       Draw.reset();
-    }
+    };
   }
 });
 const burnDuration = 30;
@@ -126,29 +127,10 @@ burningHell.restitution = 0.01;
 
 burningHell.buildType = () => {
 	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, burningHell, {
-    
-    setBulletLife(a){
-      this._BulletLife = a;
-    },
-		
-    getBulletLife(){
-      return this._BulletLife;
-    },
-    
-    setCellOpenAmount(a){
-      this._cellOpenAmount = a;
-    },
-		
-    getCellOpenAmount(){
-      return this._cellOpenAmount;
-    },
-    
-    setSideOpenAmount(a){
-      this._cellSideAmount = a;
-    },
-		
-    getSideOpenAmount(){
-      return this._cellSideAmount;
+    setEff(){
+      this._bulletLife = 0;
+      this._cellOpenAmount = 0;
+      this._cellSideAmount = 0;
     },
     draw(){
       Draw.rect(burningHell.baseRegion, this.x, this.y, 0);
@@ -156,10 +138,10 @@ burningHell.buildType = () => {
       Draw.z(Layer.turret);
       
       for(var i = 0; i < 2; i++){
-        side.trns(this.rotation-90, this.getSideOpenAmount() * ((i-0.5)*2), 0);
+        side.trns(this.rotation-90, this._cellSideAmount * ((i-0.5)*2), 0);
         Drawf.shadow(burningHell.outlines[i], this.x, this.y, this.rotation-90);
         Draw.rect(burningHell.outlines[i], this.x + side.x, this.y + side.y, this.rotation-90);
-      }
+      };
       
       Drawf.shadow(burningHell.bottomRegion, this.x, this.y, this.rotation-90);
       Draw.rect(burningHell.bottomRegion, this.x, this.y, this.rotation-90);
@@ -172,11 +154,11 @@ burningHell.buildType = () => {
         Draw.rect(burningHell.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation-90);
         Draw.blend();
         Draw.color();
-      }
+      };
       
       //sides and cells
       for(var i = 0; i < 2; i ++){
-        side.trns(this.rotation-90, this.getSideOpenAmount() * ((i-0.5)*2), 0);
+        side.trns(this.rotation-90, this._cellSideAmount * ((i-0.5)*2), 0);
         Drawf.shadow(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
         Draw.rect(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
         
@@ -188,26 +170,26 @@ burningHell.buildType = () => {
           Draw.rect(burningHell.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation-90);
           Draw.blend();
           Draw.color();
-        }
-      }
+        };
+      };
       
       //sw
-      open.trns(this.rotation-90, 0 - this.getCellOpenAmount() - this.getSideOpenAmount(), -this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 - this._cellOpenAmount - this._cellSideAmount, -this._cellOpenAmount);
       Drawf.shadow(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //se
-      open.trns(this.rotation-90, 0 + this.getCellOpenAmount() + this.getSideOpenAmount(), -this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 + this._cellOpenAmount + this._cellSideAmount, -this._cellOpenAmount);
       Drawf.shadow(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //nw
-      open.trns(this.rotation-90, 0 - this.getCellOpenAmount() - this.getSideOpenAmount(), this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 - this._cellOpenAmount - this._cellSideAmount, this._cellOpenAmount);
       Drawf.shadow(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
       
       //ne
-      open.trns(this.rotation-90, 0 + this.getCellOpenAmount() + this.getSideOpenAmount(), this.getCellOpenAmount());
+      open.trns(this.rotation-90, 0 + this._cellOpenAmount + this._cellSideAmount, this._cellOpenAmount);
       Drawf.shadow(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
       Draw.rect(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
     },
@@ -219,78 +201,75 @@ burningHell.buildType = () => {
       this.stats.add(BlockStat.shots, "The number of enemies in range (oh no)");
       this.stats.remove(BlockStat.damage);
       //damages every 5 ticks, at least in meltdown's case
-      this.stats.add(BlockStat.damage, tile.bc().shootType.damage * 12, StatUnit.perSecond);
+      this.stats.add(BlockStat.damage, burningHell.shootType.damage * 12, StatUnit.perSecond);
     },
     updateTile(){
       this.super$updateTile();
       
-      if(this.getBulletLife() <= 0){
-        this.setCellOpenAmount(Mathf.lerpDelta(this.getCellOpenAmount(), 0, this.block.restitution));
-        this.setSideOpenAmount(Mathf.lerpDelta(this.getSideOpenAmount(), 0, this.block.restitution));
-      }
+      if(this._bulletLife <= 0){
+        this._cellOpenAmount = Mathf.lerpDelta(this._cellOpenAmount, 0, burningHell.restitution);
+        this._cellSideAmount = Mathf.lerpDelta(this._cellSideAmount, 0, burningHell.restitution);
+      };
       
-      if(this.getBulletLife() > 0){
+      if(this._bulletLife > 0){
         this.heat = 1;
-        this.setCellOpenAmount(this.COA * 1+(Mathf.absin(this.getBulletLife()/3, 0.8, 1.5)/3));
-        this.setSideOpenAmount(this.SOA + (Mathf.absin(this.getBulletLife()/3, 0.8, 1.5)*2));
-      }
+        this._cellOpenAmount = burningHell.COA * 1+(Mathf.absin(this._bulletLife/3, 0.8, 1.5)/3);
+        this._cellSideAmount = burningHell.SOA + (Mathf.absin(this._bulletLife/3, 0.8, 1.5)*2);
+        this._bulletLife = this._bulletLife - Time.delta;
+      };
     },
     updateShooting(){
-      if(this.getBulletLife() > 0){
+      if(this._bulletLife > 0){
         return;
       };
       
-      if(this.reload >= this.block.reloadTime){
+      if(this.reload >= burningHell.reloadTime){
         var type = this.peekAmmo();
         
         this.shoot(type);
         
         this.reload = 0;
-        this.setBulletLife(this.shootDuration);
-      }
-      else{
+        this._bulletLife = burningHell.shootDuration;
+      }else{
         this.reload += this.delta() * this.baseReloadSpeed();
-      }
+      };
     },
     shoot(type){
-      Units.nearbyEnemies(this.team(), this.x - this.block.range, this.y - this.block.range, this.block.range*2, this.block.range*2, cons(unit => {
-        if(unit.withinDst(this.x, this.y, this.block.range)){
-          if(!unit.isDead() && unit instanceof HealthTrait){
-            this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
-          }
-        }
-      }));
-      
-      //reset oofed
-      /*var oofed = [];
-      for(a = 0; a < 360; a++){
-        for(l = this.block.range/8; l > 0; l--){
-          rangeloc.trns(a, 0, l);
-          if(Vars.world.ltile(this.x + rangeloc.x, this.y + rangeloc.y) != null){
-            other = Vars.world.ltile(this.x + rangeloc.x, this.y + rangeloc.y);
-            
-            if(other.getTeam() != this.getTeam() && other.ent() != null && oofed.indexOf(other) == -1){
-              this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
-              //add to oofed so the same thing doesn't get oofed twice.
-              oofed.push(other);
-            }
-          }
-        }*/
-      Vars.indexer.eachBlock(!this.team(), this.block.range/8, other => other.isValid(), other => {
-        this.block.shootType.create(this, this.getTeam(), other.x, other.y, 0, 1, 1);
+      Units.nearbyEnemies(this.team, this.x - burningHell.range, this.y - burningHell.range, burningHell.range * 2, burningHell.range * 2, e => {
+				if(Mathf.within(this.x, this.y, e.x, e.y, burningHell.range) && !e.dead){
+            burningHell.shootType.create(this, this.team, other.x, other.y, 0, 1, 1);
+        };
       });
+      
+      //I am once again stealing End Game code for this.
+      collidedBlocks.clear();
+      var tx = Vars.world.toTile(this.x);
+      var ty = Vars.world.toTile(this.y);
+      
+      var tileRange = Mathf.floorPositive(burningHell.range / Vars.tilesize + 1);
+      
+      for(var x = -tileRange + tx; x <= tileRange + tx; x++){
+        yGroup:
+        for(var y = -tileRange + ty; y <= tileRange + ty; y++){
+          if(!Mathf.within(x * Vars.tilesize, y * Vars.tilesize, this.x, this.y, burningHell.range)) continue yGroup;
+          var other = Vars.world.build(x, y);
+          if(other == null) continue yGroup;
+          if(!collidedBlocks.contains(other.pos())){
+            if(other.team != this.team && !other.dead){
+              burningHell.shootType.create(this, this.team, other.x, other.y, 0, 1, 1);
+            };
+            collidedBlocks.add(other.pos());
+          };
+        };
+      };
     },
     shouldTurn(){
       return false;
     },
     shouldActiveSound(){
-      return this.getBulletLife() > 0;
+      return this._bulletLife > 0;
     }
 	});
-	
-	hellEntity.setBulletLife(0);
-  hellEntity.setCellOpenAmount(0);
-  hellEntity.setSideOpenAmount(0);
-	
+	hellEntity.setEff();
 	return hellEntity;
 };
