@@ -128,19 +128,7 @@ ballOfSucc.smokeEffect = Fx.none;
 ballOfSucc.backColor = Color.valueOf("000000");
 ballOfSucc.frontColor = Color.valueOf("353535");
 
-const blackhole = extendContent(ChargeTurret, "blackhole-i", {
-  load(){
-    this.topRegion = Core.atlas.find(this.name);
-    this.heatRegion = Core.atlas.find(this.name + "-heat");
-    this.baseRegion = Core.atlas.find("block-4");
-  },
-  icons(){
-    return [
-      Core.atlas.find("block-4"),
-      Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")
-    ];
-  }
-});
+const blackhole = extendContent(ChargeTurret, "blackhole-i", {});
 
 blackhole.shootType = ballOfSucc;
 blackhole.chargeEffect = charge;
@@ -165,13 +153,13 @@ blackhole.buildType = () => {
       
       vec.trns(this.rotation, -this.recoil);
       
-      Drawf.shadow(blackhole.topRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
-      Draw.rect(blackhole.topRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
+      Drawf.shadow(blackhole.region, this.x + vec.x, this.y + vec.y, this.rotation - 90);
+      Draw.rect(blackhole.region, this.x + vec.x, this.y + vec.y, this.rotation - 90);
       
       if(this.heat > 0){
         Draw.blend(Blending.additive);
         Draw.color(blackhole.heatColor, this.heat);
-        Draw.rect(blackhole.heatRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
+        Draw.rect(blackhole.heatRegion, this.x + vec.x, this.y + vec.y, this.rotation - 90);
         Draw.blend();
         Draw.color();
       }

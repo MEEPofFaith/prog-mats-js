@@ -1,6 +1,3 @@
-const open = new Vec2();
-const back = new Vec2();
-
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
 var colors = [Color.valueOf("a3570055"), Color.valueOf("bf6804aa"), Color.valueOf("db7909"), Color.valueOf("f08913")];
@@ -23,9 +20,9 @@ const vec = new Vec2();
 const lavaPool = extend(BasicBulletType, {
   update(b){
     if(b != null){
-      if(b.getOwner().target != null){
-        var target = Angles.angle(b.x, b.y, b.getOwner().target.getX(), b.getOwner().target.getY());
-        b.rot(Mathf.slerpDelta(b.rot(), target, 0.15));
+      if(b.owner.target != null){
+        var target = Angles.angle(b.x, b.y, b.owner.targetPos.x, b.owner.targetPos.y);
+        b.rotation(Mathf.slerpDelta(b.rotation(), target, 0.15));
       };
       
       if(b.timer.get(1, 5)){
@@ -54,14 +51,14 @@ const lavaPool = extend(BasicBulletType, {
       
       //"fountain" of lava
       Draw.blend(Blending.additive);
-      for(s = 0; s < 4; s++){
+      for(var s = 0; s < 4; s++){
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
         Draw.alpha(b.fout());
         for(var i = 0; i < 4; i++){
-          var baseLen = (length + (Mathf.absin(Time.time() / ((i + 1) * 2) + b.id, 0.8, 1.5)*(length / 1.5))) * b.fout();
+          var baseLen = (length + (Mathf.absin(b.owner._bulletLife / ((i + 1) * 2) + b.id, 0.8, 1.5) * (length / 1.5))) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
-          Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], CapStyle.none);
+          Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], false);
         };
       };
       Draw.blend();
@@ -87,7 +84,6 @@ const heatRiser = extendContent(PowerTurret, "eruptor-i", {
     this.super$load();
     this.caps = [];
     
-    this.topRegion = Core.atlas.find(this.name + "-top");
     this.cells = Core.atlas.find(this.name + "-cells");
     this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
     for(var i = 0; i < 4; i++){
@@ -116,14 +112,17 @@ heatRiser.buildType = () => {
       this._cellOpenAmount = 0;
     },
     draw(){
+      const open = new Vec2();
+      const back = new Vec2();
+      
       Draw.rect(heatRiser.baseRegion, this.x, this.y, 0);
       
       Draw.z(Layer.turret);
       
-      back.trns(this.rotation - 90, 0, 0);
+      back.trns(this.rotation - 90, 0, -this.recoil);
       
-      Drawf.shadow(heatRiser.topRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
-      Draw.rect(heatRiser.topRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Drawf.shadow(heatRiser.region, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Draw.rect(heatRiser.region, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       Drawf.shadow(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation - 90);
       Draw.rect(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation - 90);
@@ -172,14 +171,10 @@ heatRiser.buildType = () => {
       };
       
       if(this._bulletLife > 0 && this._bullet != null){
-        if(this._bulletLife >= heatRiser.shootDuration){
-          this._bullet.set(this.target.getX(), this.target.getY());
-        };
-        
-        this.tr.trns(this.rotation, heatRiser.size * Vars.tilesize / 2, 0);
-        this._bullet.time(0);
+        this._bullet.time = 0;
         this.heat = 1;
-        this._cellOpenAmount = heatRiser.COA * 1 + (Mathf.absin(this._bulletLife/3, 0.8, 1.5) / 3);
+        this.recoil = heatRiser.recoilAmount;
+        this._cellOpenAmount = heatRiser.COA * 1 + (Mathf.absin(this._bulletLife / 3, 0.8, 1.5) / 3);
         this._bulletLife = this._bulletLife - Time.delta;
         if(this._bulletLife <= 0){
           this._bullet = null;
@@ -203,12 +198,12 @@ heatRiser.buildType = () => {
       };
     },
     bullet(type, angle){
-      const bullet = type.create(this.build, this.team, this.x + this.tr.x, this.y + this.tr.y, angle);
+      const bullet = type.create(this, this.team, this.targetPos.x, this.targetPos.y, angle);
       
       this._bullet = bullet;
     },
     turnToTarget(targetRot){
-      this.rotation = Angles.moveToward(this.rotation, targetRot, this.rotateSpeed * this.delta() * (this._bulletLife > 0 ? this.firingMoveFract : 1));
+      this.rotation = Angles.moveToward(this.rotation, targetRot, this.efficiency() * heatRiser.rotateSpeed * this.delta() * (this._bulletLife > 0 ? heatRiser.firingMoveFract : 1));
     },
     shouldActiveSound(){
       return this._bulletLife > 0 && this._bullet != null;
