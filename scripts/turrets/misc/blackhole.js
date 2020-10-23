@@ -1,11 +1,12 @@
 const blackholeSize = 6;
+const succRadius = 64;
 
 const swirl = new Effect(90, e => {
   const loc = new Vec2();
-  const endX = Mathf.sinDeg(e.rotation+90) * 45;
-  const endY = Mathf.cosDeg(e.rotation-90) * 45;
+  const endX = Mathf.sinDeg(e.rotation + 90) * 45;
+  const endY = Mathf.cosDeg(e.rotation - 90) * 45;
   
-  loc.trns(e.id + (480 * e.fin()), 48 * e.fout());
+  loc.trns(Mathf.randomSeedRange(e.id, 360) + (480 * e.fin()), succRadius / 2 * e.fout());
   
 	Draw.blend(Blending.normal);
   Draw.color(Color.valueOf("000000"));
@@ -32,7 +33,7 @@ const poof = new Effect(24, e => {
 
 const chargeBegin = new Effect(50, e => {
   Draw.color(Color.valueOf("000000"));
-  Fill.circle(e.x, e.y, e.fin()*(blackholeSize/2));
+  Fill.circle(e.x, e.y, e.fin() * (blackholeSize / 2));
 });
 
 const charge = new Effect(38, e => {
@@ -46,9 +47,11 @@ const charge = new Effect(38, e => {
 const ballOfSucc = extend(BasicBulletType, {
   load(){
     this.backRegion = Core.atlas.find("definitely-not-advance-content-backhole-back"); //not funny
-    this.front0 = Core.atlas.find("definitely-not-advance-content-backhole-0");
-    this.front1 = Core.atlas.find("definitely-not-advance-content-backhole-1");
-    this.front2 = Core.atlas.find("definitely-not-advance-content-backhole-2");
+    this.front = [];
+    
+    for(var i = 0; i < 3; i++){
+      this.front[i] = Core.atlas.find("definitely-not-advance-content-backhole-" + i);
+    }
   },
   setStats(){
     this.super$setStats();
@@ -59,49 +62,41 @@ const ballOfSucc = extend(BasicBulletType, {
   },
   update(b){
     const succ = new Vec2();
-    const radius = 48;
     
     if(b != null){
-      if(b.timer.get(1, 2)){
+      if(b.timer.get(1, 5)){
         //Adapted from Graviton from AdvanceContent
-        Units.nearbyEnemies(b.getTeam(), b.x - radius, b.y - radius, radius * 2, radius * 2, cons(unit => {
-          if(unit.withinDst(b.x, b.y, radius)){
-            if(unit instanceof SolidEntity){
-              var targetMass = 0;
-              
-              if(unit instanceof BaseUnit) targetMass = unit.getType().mass;
-              if(unit instanceof Player) targetMass = unit.mech.mass;
-              
-              var angle = Angles.angle(unit.x, unit.y, b.x, b.y);
-              succ.trns(angle, 16 / (targetMass / 5 + 1));
-              
-              unit.velocity().add(succ.x, succ.y);
-            }
+        Units.nearbyEnemies(b.team, b.x - succRadius, b.y - succRadius, succRadius * 2, succRadius * 2, cons(unit => {
+          if(unit.within(b.x, b.y, succRadius)){
+            var targetMass = unit.mass();
+            var angle = Angles.angle(unit.x, unit.y, b.x, b.y);
+            succ.trns(angle, 11 / (targetMass / 5 + 1));
+            unit.vel.add(succ);
           };
         }));
         
         //Adapted from Point Defence from AdvanceContent
-        Vars.bulletGroup.intersect(b.x - radius, b.y - radius, radius * 2, radius * 2, cons(e => {
+        Groups.bullet.intersect(b.x - succRadius, b.y - succRadius, succRadius, succRadius, cons(e => {
           if(e != null){
             var dst2 = Mathf.dst2(e.x, e.y, b.x, b.y);
-            if(Mathf.within(b.x, b.y, e.x, e.y, radius) && e != b && e.getTeam() != b.getTeam()){
+            if(Mathf.within(b.x, b.y, e.x, e.y, succRadius) && e != b && e.team != b.team){
               var target = Angles.angle(e.x, e.y, b.x, b.y);
-              e.rot(Mathf.slerpDelta(b.rot(), target, 0.9));
-              if(Mathf.within(b.x, b.y, e.x, e.y, blackholeSize/2)){
+              e.rotation(Mathf.slerpDelta(b.rotation(), target, 0.7));
+              if(Mathf.within(b.x, b.y, e.x, e.y, blackholeSize)){
                 e.remove();
               }
             }
           }
         }));
         
-        Damage.damage(b.getTeam(), b.x, b.y, 24, this.damage/30, true);
+        Damage.damage(b.team, b.x, b.y, 24, this.damage/12, true);
         
-        var dist = (this.lifetime - b.time()) * this.speed;
-        var endX = Mathf.sinDeg(b.rot()+90) * dist;
-        var endY = Mathf.cosDeg(b.rot()-90) * dist;
+        var dist = (this.lifetime - b.time) * this.speed;
+        var endX = Mathf.sinDeg(b.rotation() + 90) * dist;
+        var endY = Mathf.cosDeg(b.rotation() - 90) * dist;
         
-        if(b.time() <= this.lifetime - 90){
-          swirl.at(b.x, b.y, b.rot());
+        if(b.time <= this.lifetime - 90){
+          swirl.at(b.x, b.y, b.rotation());
         }
       }
     }
@@ -110,19 +105,13 @@ const ballOfSucc = extend(BasicBulletType, {
     Draw.color(this.backColor);
     Draw.rect(this.backRegion, b.x, b.y, blackholeSize, blackholeSize, 0);
     
-    var f = Mathf.round(b.time()/5);
-    if(f%3 == 0){
-      Draw.color(this.frontColor);
-      Draw.rect(this.front0, b.x, b.y, blackholeSize, blackholeSize,  0);
+    var f = Mathf.round(b.time/5);
+    for(var i = 0; i < 2; i++){
+      if(f % 3 == i){
+        Draw.color(this.frontColor);
+        Draw.rect(this.front[i], b.x, b.y, blackholeSize, blackholeSize,  0);
+      }
     }
-    if(f%3 == 1){
-      Draw.color(this.frontColor);
-      Draw.rect(this.front1, b.x, b.y, blackholeSize, blackholeSize,  0);
-    }
-    if(f%3 == 2){
-      Draw.color(this.frontColor);
-      Draw.rect(this.front2, b.x, b.y, blackholeSize, blackholeSize,  0);
-    } 
   }
 });
 
@@ -141,8 +130,8 @@ ballOfSucc.frontColor = Color.valueOf("353535");
 
 const blackhole = extendContent(ChargeTurret, "blackhole-i", {
   load(){
-    this.topRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i");
-    this.heatRegion = Core.atlas.find("definitely-not-advance-content-blackhole-i-heat");
+    this.topRegion = Core.atlas.find(this.name);
+    this.heatRegion = Core.atlas.find(this.name + "-heat");
     this.baseRegion = Core.atlas.find("block-4");
   },
   icons(){
@@ -174,7 +163,7 @@ blackhole.buildType = () => {
       
       Draw.z(Layer.turret);
       
-      vec.trns(this.rotation, -this.recoilAmount);
+      vec.trns(this.rotation, -this.recoil);
       
       Drawf.shadow(blackhole.topRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
       Draw.rect(blackhole.topRegion, this.x + vec.x, this.y + vec.y, this.rotation-90);
@@ -189,23 +178,23 @@ blackhole.buildType = () => {
     },
     shoot(type){
       const vec = new Vec2();
-      this.useAmmo(tile);
+      this.useAmmo();
 
-      vec.trns(this.rotation, 9 - this.recoilAmount);
-      this.chargeBeginEffect.at(this.x + vec.x, this.y + vec.y, this.rotation);
+      vec.trns(this.rotation, 9 - this.recoil);
+      blackhole.chargeBeginEffect.at(this.x + vec.x, this.y + vec.y, this.rotation);
       
-      for(var i = 0; i < this.chargeEffects; i++){
-        Time.run(Mathf.random(this.chargeMaxDelay), run(() => {
-          this.chargeEffect.at(this.x + vec.x, this.y + vec.y, this.rotation);
+      for(var i = 0; i < blackhole.chargeEffects; i++){
+        Time.run(Mathf.random(blackhole.chargeMaxDelay), run(() => {
+          blackhole.chargeEffect.at(this.x + vec.x, this.y + vec.y, this.rotation);
         }));
       }
       
       this.shooting = true;
 
-      Time.run(this.chargeTime, run(() => {
-        this.recoilAmount = this.recoilAmount;
+      Time.run(blackhole.chargeTime, run(() => {
+        this.recoil = blackhole.recoilAmount;
         this.heat = 1;
-        Calls.createBullet(type, this.getTeam(), this.x + vec.x, this.y + vec.y, this.rotation, 1, 1);
+        type.create(this, this.team, this.x + vec.x, this.y + vec.y, this.rotation, 1, 1);
         this.shooting = false;
       }));
     }
