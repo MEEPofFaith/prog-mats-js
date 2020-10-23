@@ -55,7 +55,7 @@ const hellRiser = extend(BasicBulletType, {
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
         Draw.alpha(b.fout());
         for(var i = 0; i < 4; i++){
-          var baseLen = (length + (Mathf.absin(Time.time()/((i+1)*2) + b.id, 0.8, 1.5)*(length/1.5))) * b.fout();
+          var baseLen = (length + (Mathf.absin(Time.time()/((i + 1) *2) + b.id, 0.8, 1.5)*(length / 1.5))) * b.fout();
           Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
           Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], false);
@@ -69,7 +69,7 @@ const hellRiser = extend(BasicBulletType, {
 });
 const burnDuration = 30;
 
-hellRiser.speed = 0.000000001;
+hellRiser.speed = 0.0001;
 hellRiser.damage = 62.5;
 hellRiser.lifetime = burnDuration;
 hellRiser.collides = false;
@@ -119,7 +119,6 @@ burningHell.shootCone = 360;
 burningHell.rotationSpeed = 0;
 burningHell.COA = 0.9;
 burningHell.SOA = 3;
-burningHell.firingMoveFract = 0.8;
 burningHell.shootEffect = Fx.none;
 burningHell.smokeEffect = Fx.none;
 burningHell.ammoUseEffect = Fx.none;
@@ -138,60 +137,60 @@ burningHell.buildType = () => {
       Draw.z(Layer.turret);
       
       for(var i = 0; i < 2; i++){
-        side.trns(this.rotation-90, this._cellSideAmount * ((i-0.5)*2), 0);
-        Drawf.shadow(burningHell.outlines[i], this.x, this.y, this.rotation-90);
-        Draw.rect(burningHell.outlines[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        side.trns(this.rotation - 90, this._cellSideAmount * ((i-0.5)*2), 0);
+        Drawf.shadow(burningHell.outlines[i], this.x, this.y, this.rotation - 90);
+        Draw.rect(burningHell.outlines[i], this.x + side.x, this.y + side.y, this.rotation - 90);
       };
       
-      Drawf.shadow(burningHell.bottomRegion, this.x, this.y, this.rotation-90);
-      Draw.rect(burningHell.bottomRegion, this.x, this.y, this.rotation-90);
+      Drawf.shadow(burningHell.bottomRegion, this.x, this.y, this.rotation - 90);
+      Draw.rect(burningHell.bottomRegion, this.x, this.y, this.rotation - 90);
       
       //inside big cell
-      Draw.rect(burningHell.cells[2], this.x, this.y, this.rotation-90);
+      Draw.rect(burningHell.cells[2], this.x, this.y, this.rotation - 90);
       if(this.heat > 0){
         Draw.blend(Blending.additive);
         Draw.color(Color.valueOf("ffbe73"), this.heat);
-        Draw.rect(burningHell.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation-90);
+        Draw.rect(burningHell.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation - 90);
         Draw.blend();
         Draw.color();
       };
       
       //sides and cells
       for(var i = 0; i < 2; i ++){
-        side.trns(this.rotation-90, this._cellSideAmount * ((i-0.5)*2), 0);
-        Drawf.shadow(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
-        Draw.rect(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        side.trns(this.rotation - 90, this._cellSideAmount * ((i-0.5)*2), 0);
+        Drawf.shadow(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation - 90);
+        Draw.rect(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation - 90);
         
-        Drawf.shadow(burningHell.cells[i], this.x + side.x, this.y + side.y, this.rotation-90);
-        Draw.rect(burningHell.cells[i], this.x + side.x, this.y + side.y, this.rotation-90);
+        Drawf.shadow(burningHell.cells[i], this.x + side.x, this.y + side.y, this.rotation - 90);
+        Draw.rect(burningHell.cells[i], this.x + side.x, this.y + side.y, this.rotation - 90);
         if(this.heat > 0){
           Draw.blend(Blending.additive);
           Draw.color(Color.valueOf("f08913"), this.heat);
-          Draw.rect(burningHell.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation-90);
+          Draw.rect(burningHell.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation - 90);
           Draw.blend();
           Draw.color();
         };
       };
       
       //sw
-      open.trns(this.rotation-90, 0 - this._cellOpenAmount - this._cellSideAmount, -this._cellOpenAmount);
-      Drawf.shadow(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
-      Draw.rect(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation-90);
+      open.trns(this.rotation - 90, 0 - this._cellOpenAmount - this._cellSideAmount, -this._cellOpenAmount);
+      Drawf.shadow(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Draw.rect(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation - 90);
       
       //se
-      open.trns(this.rotation-90, 0 + this._cellOpenAmount + this._cellSideAmount, -this._cellOpenAmount);
-      Drawf.shadow(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
-      Draw.rect(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation-90);
+      open.trns(this.rotation - 90, 0 + this._cellOpenAmount + this._cellSideAmount, -this._cellOpenAmount);
+      Drawf.shadow(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Draw.rect(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation - 90);
       
       //nw
-      open.trns(this.rotation-90, 0 - this._cellOpenAmount - this._cellSideAmount, this._cellOpenAmount);
-      Drawf.shadow(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
-      Draw.rect(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation-90);
+      open.trns(this.rotation - 90, 0 - this._cellOpenAmount - this._cellSideAmount, this._cellOpenAmount);
+      Drawf.shadow(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Draw.rect(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation - 90);
       
       //ne
-      open.trns(this.rotation-90, 0 + this._cellOpenAmount + this._cellSideAmount, this._cellOpenAmount);
-      Drawf.shadow(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
-      Draw.rect(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation-90);
+      open.trns(this.rotation - 90, 0 + this._cellOpenAmount + this._cellSideAmount, this._cellOpenAmount);
+      Drawf.shadow(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Draw.rect(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation - 90);
     },
     setStats(){
       this.super$setStats();
@@ -213,8 +212,8 @@ burningHell.buildType = () => {
       
       if(this._bulletLife > 0){
         this.heat = 1;
-        this._cellOpenAmount = burningHell.COA * 1+(Mathf.absin(this._bulletLife/3, 0.8, 1.5)/3);
-        this._cellSideAmount = burningHell.SOA + (Mathf.absin(this._bulletLife/3, 0.8, 1.5)*2);
+        this._cellOpenAmount = burningHell.COA * 1+(Mathf.absin(this._bulletLife/3, 0.8, 1.5) / 3);
+        this._cellSideAmount = burningHell.SOA + (Mathf.absin(this._bulletLife/3, 0.8, 1.5) * 2);
         this._bulletLife = this._bulletLife - Time.delta;
       };
     },
