@@ -5,9 +5,7 @@ description:
   
   [#d17000]Stray blasts may burn your defences.
   '''
-size: 3 
-range: 240
-reloadTime: 60
+size: 3
 health: 1800
 powerUse: 10
 shootCone: 10
@@ -15,7 +13,6 @@ targetAir: true
 targetGround: true
 recoilAmount: 0
 cooldown: 0.01
-rotateSpeed: 3
 shootSound: none
 activeSound: beam
 activeSoundVolume: 2

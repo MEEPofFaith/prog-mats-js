@@ -90,25 +90,23 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
     this.capsA = [];
     this.capsB = [];
     
+    this.topRegion = Core.atlas.find(this.name + "-top");
     for(var i = 0; i < 2; i++){
       this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
       this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
-    };
+    }
     for(var i = 0; i < 4; i++){
       this.capsA[i] = Core.atlas.find(this.name + "-caps-0-" + i);
       this.capsB[i] = Core.atlas.find(this.name + "-caps-1-" + i);
-    };
-  },
-  icons(){
-    return [
-      Core.atlas.find("block-4"),
-      Core.atlas.find("definitely-not-advance-content-eruptor-ii-icon")
-    ];
+    }
   }
 });
 
 lavaRiser.shootType = magmaPool;
 lavaRiser.shootDuration = 240;
+lavaRiser.range = 280;
+lavaRiser.reloadTime = 90;
+lavaRiser.rotateSpeed = 2.25;
 lavaRiser.COA = 1.5;
 lavaRiser.firingMoveFract = 0.8;
 lavaRiser.shootEffect = Fx.none;
@@ -128,13 +126,13 @@ lavaRiser.buildType = () => {
       
       Draw.z(Layer.turret);
       
-      Drawf.shadow(lavaRiser.region, this.x, this.y, this.rotation - 90);
-      Draw.rect(lavaRiser.region, this.x, this.y, this.rotation - 90);
-      
       back.trns(this.rotation - 90, 0, 0);
       
+      Drawf.shadow(lavaRiser.topRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Draw.rect(lavaRiser.topRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
+      
       //Bottom Layer Cells
-      Drawf.shadow(lavaRiser.cells[0], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Drawf.shadow(lavaRiser.cells[0], this.x + back.x, this.y + back.y, this.rotation - 90);
       Draw.rect(lavaRiser.cells[0], this.x + back.x, this.y + back.y, this.rotation - 90);
       
       if(this.heat > 0){

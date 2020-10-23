@@ -87,23 +87,21 @@ const heatRiser = extendContent(PowerTurret, "eruptor-i", {
     this.super$load();
     this.caps = [];
     
+    this.topRegion = Core.atlas.find(this.name + "-top");
     this.cells = Core.atlas.find(this.name + "-cells");
     this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
     for(var i = 0; i < 4; i++){
       this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
-    };
-  },
-  icons(){
-    return [
-      Core.atlas.find("block-3"),
-      Core.atlas.find("definitely-not-advance-content-eruptor-i-icon")
-    ];
+    }
   }
 });
 
 heatRiser.shootType = lavaPool;
 heatRiser.shootDuration = 180;
+heatRiser.range = 240;
+heatRiser.reloadTime = 60;
 heatRiser.COA = 0.9;
+heatRiser.rotateSpeed = 3;
 heatRiser.firingMoveFract = 0.8;
 heatRiser.shootEffect = Fx.none;
 heatRiser.smokeEffect = Fx.none;
@@ -124,8 +122,8 @@ heatRiser.buildType = () => {
       
       back.trns(this.rotation - 90, 0, 0);
       
-      Drawf.shadow(heatRiser.region, this.x + back.x, this.y + back.y, this.rotation - 90);
-      Draw.rect(heatRiser.region, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Drawf.shadow(heatRiser.topRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Draw.rect(heatRiser.topRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       Drawf.shadow(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation - 90);
       Draw.rect(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation - 90);

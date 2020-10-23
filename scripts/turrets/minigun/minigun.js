@@ -113,78 +113,15 @@ minigun.ammo(
 
 minigun.buildType = () => {
   var IEntity = extendContent(ItemTurret.ItemTurretBuild, minigun, {
-    _BarrelHeat:[],
-    //Barrel heat
-    setBheat(n, v){
-      this._BarrelHeat[n] = v;
-    },
-    
-    getBheat(n){
-      return this._BarrelHeat[n];
-    },
-    
-    //Current frame
-    setFrame(a){
-      this._frame = a;
-    },
-    
-    getFrame(){
-      return this._frame;
-    },
-    
-    _hframe:[],
-    //Current heat frame
-    setHeatFrame(n, v){
-      this._hframe[n] = v;
-    },
-    
-    getHeatFrame(n){
-      return this._hframe[n];
-    },
-    
-    //Time between frames
-    setFrameSpeed(a){
-      this._frameSpd = a;
-    },
-    
-    getFrameSpeed(){
-      return this._frameSpd;
-    },
-    
-    //True frame
-    setTrueFrame(a){
-      this._tframe = a;
-    },
-    
-    getTrueFrame(){
-      return this._tframe;
-    },
-    
-    //Current barrel
-    setBarrel(a){
-      this._barrel = a;
-    },
-    
-    getBarrel(){
-      return this._barrel;
-    },
-    
-    //Can shoot
-    setShouldShoot(a){
-      this._ss = a;
-    },
-    
-    getShouldShoot(){
-      return this._ss;
-    },
-    
-    //Can change barrel
-    setShouldBarrel(a){
-      this._SB = a;
-    },
-    
-    getShouldBarrel(){
-      return this._SB;
+    setEffs(){
+      this._barrelHeat = [0, 0, 0, 0];
+      this._frame = 0;
+      this._heatFrame = [0, 0, 0, 0];
+      this._frameSpeed = 0;
+      this._trueFrame = 0;
+      this._barrel = -1;
+      this._shouldShoot = false;
+      this._shouldBarrel = false;
     },
     draw(){
       const vec = new Vec2();
@@ -195,94 +132,84 @@ minigun.buildType = () => {
       
       vec.trns(this.rotation, -this.recoil);
       
-      Draw.rect(minigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
-      Draw.rect(minigun.turretRegions[this.getFrame()], this.x + vec.x, this.y + vec.y, this.rotation-90);
+      Draw.rect(minigun.turretRegions[this._frame], this.x + vec.x, this.y + vec.y, this.rotation - 90);
+      Draw.rect(minigun.turretRegions[this._frame], this.x + vec.x, this.y + vec.y, this.rotation - 90);
       
       for(var i = 0; i < 4; i++){
-        if(this.getBheat(i) > 0){
+        if(this._barrelHeat[i] > 0){
           Draw.blend(Blending.additive);
-          Draw.color(minigun.heatColor, this.getBheat(i));
-          Draw.rect(minigun.heatRegions[this.getHeatFrame(i)], this.x + vec.x, this.y + vec.y, this.rotation-90);
+          Draw.color(minigun.heatColor, this._barrelHeat[i]);
+          Draw.rect(minigun.heatRegions[this._heatFrame[i]], this.x + vec.x, this.y + vec.y, this.rotation - 90);
           Draw.blend();
           Draw.color();
         }
       }
       
-      if(this.getFrameSpeed() > 0 && 9 * this.getFrameSpeed() > 0.25){
+      if(this._frameSpeed > 0 && 9 * this._frameSpeed > 0.25){
         Draw.color(Color.valueOf("F7956A"));
-        vec.trns(this.rotation+90, 4, 10+this.recoilAmount);
+        vec.trns(this.rotation + 90, 4, 10 + this.recoil);
         Lines.stroke(1);
-        Lines.lineAngle(this.x + vec.x, this.y + vec.y, this.rotation, 9 * this.getFrameSpeed());
-        vec.trns(this.rotation+90, -4, 10+this.recoilAmount);
+        Lines.lineAngle(this.x + vec.x, this.y + vec.y, this.rotation, 9 * this._frameSpeed);
+        vec.trns(this.rotation + 90, -4, 10 + this.recoil);
         Lines.stroke(1);
-        Lines.lineAngle(this.x + vec.x, this.y + vec.y, this.rotation, 9 * this.getFrameSpeed());
+        Lines.lineAngle(this.x + vec.x, this.y + vec.y, this.rotation, 9 * this._frameSpeed);
         Draw.color();
       }
     },
     updateTile(){
       this.super$updateTile();
       
-      if(!this.validateTarget(tile) || !this.hasAmmo(tile)){
-        this.setFrameSpeed(Mathf.lerpDelta(this.getFrameSpeed(), 0, 0.0125));
+      if(!this.validateTarget() || !this.hasAmmo()){
+        this._frameSpeed = Mathf.lerpDelta(this._frameSpeed, 0, 0.0125);
       }
       
-      this.setTrueFrame(this.getTrueFrame() + this.getFrameSpeed());
-      this.setFrame(Mathf.round(this.getTrueFrame()) % 3);
+      this._trueFrame = this._trueFrame + this._frameSpeed;
+      this._frame = Mathf.floor(this._trueFrame % 3);
       for(var i = 0; i < 4; i++){
-        this.setHeatFrame(i, (Mathf.round(this.getTrueFrame()) % 12) - 3 - (i*3));
-        if(this.getHeatFrame(i) < 0){
-          this.setHeatFrame(i, 12 + this.getHeatFrame(i));
+        this._heatFrame[i] = Mathf.floor(this._trueFrame % 12) - 3 - (i * 3);
+        if(this._heatFrame[i] < 0){
+          this._heatFrame[i] = 12 + this._heatFrame[i];
         }
-        if(this.getHeatFrame(i) > 11){
-          this.setHeatFrame(i, -12 + this.getHeatFrame(i));
+        if(this._heatFrame[i] > 11){
+          this._heatFrame[i] = -12 + this._heatFrame[i];
         }
       }
       
-      this.recoil = Mathf.lerpDelta(this.block.recoilAmount, 0, this.block.restitution);
+      this.recoil = Mathf.lerpDelta(this.recoil, 0, minigun.restitution);
       for(var i = 0; i < 4; i++){
-        this.setBheat(i, Mathf.lerpDelta(this.getBheat(i), 0, this.block.cooldown));
+        this._barrelHeat[i] = Mathf.lerpDelta(this._barrelHeat[i], 0, minigun.cooldown);
       }
       
-      if(this.getFrame() != 0){
-        this.setShouldShoot(1);
-        this.setShouldBarrel(1);
+      if(this._frame != 0){
+        this._shouldShoot = true;
+        this._shouldBarrel = true;
       }
       
-      if(this.getFrame() == 0 && this.getShouldBarrel() == 1){
-        this.setBarrel(this.getBarrel() + 1);
-        this.setShouldBarrel(0);
+      if(this._frame == 0 && this._shouldBarrel){
+        this._barrel = this._barrel + 1;
+        this._shouldBarrel = false;
       }
     },
     updateShooting(){
-      liquid = this.liquids.current();
+      const liquid = this.liquids.current();
       
-      if(this.hasAmmo(tile)){
-        this.setFrameSpeed(Mathf.lerpDelta(this.getFrameSpeed(), 1, 0.000125 * this.peekAmmo().reloadMultiplier * liquid.heatCapacity * this.block.coolantMultiplier * this.delta()));
-        if(this.getFrameSpeed() < 0.95){
+      if(this.hasAmmo()){
+        this._frameSpeed = Mathf.lerpDelta(this._frameSpeed, 1, 0.000125 * this.peekAmmo().reloadMultiplier * liquid.heatCapacity * minigun.coolantMultiplier * this.delta());
+        if(this._frameSpeed < 0.95){
           this.liquids.remove(liquid, 0.2);
         }
       }
-      if(this.getFrame() == 0 && this.getShouldShoot() == 1 && this.getFrameSpeed() > 0.0166666667){
+      if(this._frame == 0 && this._shouldShoot && this._frameSpeed > 0.0166666667){
         var type = this.peekAmmo();
         
         this.shoot(type);
         
-        this.setShouldShoot(0);
-        this.setBheat(this.getBarrel() % 4, 1);
+        this._shouldShoot = false;
+        this._barrelHeat[this._barrel % 4] = 1;
       }
     }
   });
   
-  IEntity.setFrame(0);
-  IEntity.setTrueFrame(0);
-  IEntity.setFrameSpeed(0);
-  IEntity.setBarrel(-1);
-  IEntity.setShouldShoot(0);
-  IEntity.setShouldBarrel(0);
-  for(var i = 0; i < 4; i++){
-    IEntity.setBheat(i, 0);
-    IEntity.setHeatFrame(i, 0);
-  }
-  
+  IEntity.setEffs();
   return IEntity;
 };

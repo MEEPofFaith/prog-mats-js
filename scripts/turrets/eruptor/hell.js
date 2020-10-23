@@ -89,8 +89,6 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
     this.cellHeats = [];
     this.outlines = [];
     
-    //this.baseRegion = Core.atlas.find("block-4");
-    
     this.bottomRegion = Core.atlas.find(this.name + "-bottom");
     for(var i = 0; i < 2; i++){
       this.sides[i] = Core.atlas.find(this.name + "-sides-" + i);
@@ -115,6 +113,7 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
 burningHell.shootType = hellRiser;
 burningHell.shootDuration = burnDuration;
 burningHell.range = 200;
+burningHell.reloadTime = 90;
 burningHell.shootCone = 360;
 burningHell.rotationSpeed = 0;
 burningHell.COA = 0.9;
@@ -137,7 +136,7 @@ burningHell.buildType = () => {
       Draw.z(Layer.turret);
       
       for(var i = 0; i < 2; i++){
-        side.trns(this.rotation - 90, this._cellSideAmount * ((i-0.5)*2), 0);
+        side.trns(this.rotation - 90, this._cellSideAmount * ((i - 0.5) * 2), 0);
         Drawf.shadow(burningHell.outlines[i], this.x, this.y, this.rotation - 90);
         Draw.rect(burningHell.outlines[i], this.x + side.x, this.y + side.y, this.rotation - 90);
       };
