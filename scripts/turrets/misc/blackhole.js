@@ -128,7 +128,14 @@ ballOfSucc.smokeEffect = Fx.none;
 ballOfSucc.backColor = Color.valueOf("000000");
 ballOfSucc.frontColor = Color.valueOf("353535");
 
-const blackhole = extendContent(ChargeTurret, "blackhole-i", {});
+const blackhole = extendContent(ChargeTurret, "blackhole-i", {
+  icons(){	
+    return [	
+      Core.atlas.find("block-4"),	
+      Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")	
+    ];	
+  }
+});
 
 blackhole.shootType = ballOfSucc;
 blackhole.chargeEffect = charge;
