@@ -1,13 +1,13 @@
 const dualMinigun = extendContent(ItemTurret, "minigun-ii", {
   load(){
     this.turretRegions = [];
-    this.shadowRegions = [];
+    this.outlineRegions = [];
     this.heatRegions = [];
     
     this.baseRegion = Core.atlas.find("block-4");
     for(var i = 0; i < 3; i++){
-      this.turretRegions[i] = Core.atlas.find(this.name + "-f-" + i);
-      this.shadowRegions[i] = Core.atlas.find(this.name + "-s-" + i);
+      this.turretRegions[i] = Core.atlas.find(this.name + "-frame-" + i);
+      this.outlineRegions[i] = Core.atlas.find(this.name + "-outline-" + i);
     }
     for(var i = 0; i < 12; i++){
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
@@ -16,7 +16,7 @@ const dualMinigun = extendContent(ItemTurret, "minigun-ii", {
   icons(){
     return [
       Core.atlas.find("block-4"),
-      Core.atlas.find("definitely-not-advance-content-minigun-ii-icon")
+      Core.atlas.find("definitely-not-advance-content-minigun-ii-frame-0")
     ];
   }
 });
@@ -140,7 +140,8 @@ dualMinigun.buildType = () => {
       
       vec.trns(this.rotation, -this.recoil);
       
-      Drawf.shadow(dualMinigun.shadowRegions[this._frame], this.x + vec.x - (dualMinigun.size / 2), this.y + vec.y - (dualMinigun.size / 2), this.rotation - 90);
+      Drawf.shadow(dualMinigun.turretRegions[this._frame], this.x + vec.x - (dualMinigun.size / 2), this.y + vec.y - (dualMinigun.size / 2), this.rotation - 90);
+      Draw.rect(dualMinigun.outlineRegions[this._frame], this.x + vec.x, this.y + vec.y, this.rotation - 90);
       Draw.rect(dualMinigun.turretRegions[this._frame], this.x + vec.x, this.y + vec.y, this.rotation - 90);
       
       for(var i = 0; i < 4; i++){
