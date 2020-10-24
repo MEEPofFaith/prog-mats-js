@@ -22,7 +22,7 @@ var tmpColor = new Color();
 const vec = new Vec2();
 const collidedBlocks = new IntSet(127);
 
-const hellRiser = extend(BasicBulletType, {
+const hellPool = extend(BasicBulletType, {
   update(b){
     if(b != null){
       if(b.timer.get(1, 5)){
@@ -69,18 +69,18 @@ const hellRiser = extend(BasicBulletType, {
 });
 const burnDuration = 30;
 
-hellRiser.speed = 0.0001;
-hellRiser.damage = 62.5;
-hellRiser.lifetime = burnDuration;
-hellRiser.collides = false;
-hellRiser.collidesTiles = false;
-hellRiser.hitEffect = Fx.fireballsmoke;
-hellRiser.despawnEffect = Fx.none;
-hellRiser.shootEffect = Fx.none;
-hellRiser.smokeEffect = Fx.none;
+hellPool.speed = 0.0001;
+hellPool.damage = 62.5;
+hellPool.lifetime = burnDuration;
+hellPool.collides = false;
+hellPool.collidesTiles = false;
+hellPool.hitEffect = Fx.fireballsmoke;
+hellPool.despawnEffect = Fx.none;
+hellPool.shootEffect = Fx.none;
+hellPool.smokeEffect = Fx.none;
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
-const burningHell = extendContent(PowerTurret, "eruptor-iii", {
+const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
   load(){
     this.super$load();
     this.caps = [];
@@ -110,46 +110,46 @@ const burningHell = extendContent(PowerTurret, "eruptor-iii", {
   }
 });
 
-burningHell.shootType = hellRiser;
-burningHell.shootDuration = burnDuration;
-burningHell.range = 200;
-burningHell.reloadTime = 90;
-burningHell.shootCone = 360;
-burningHell.rotationSpeed = 0;
-burningHell.COA = 0.9;
-burningHell.SOA = 3;
-burningHell.shootEffect = Fx.none;
-burningHell.smokeEffect = Fx.none;
-burningHell.ammoUseEffect = Fx.none;
-burningHell.restitution = 0.01;
+hellRiser.shootType = hellPool;
+hellRiser.shootDuration = burnDuration;
+hellRiser.range = 200;
+hellRiser.reloadTime = 90;
+hellRiser.shootCone = 360;
+hellRiser.rotationSpeed = 0;
+hellRiser.COA = 0.9;
+hellRiser.SOA = 3;
+hellRiser.shootEffect = Fx.none;
+hellRiser.smokeEffect = Fx.none;
+hellRiser.ammoUseEffect = Fx.none;
+hellRiser.restitution = 0.01;
 
-burningHell.buildType = () => {
-	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, burningHell, {
+hellRiser.buildType = () => {
+	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, hellRiser, {
     setEff(){
       this._bulletLife = 0;
       this._cellOpenAmount = 0;
       this._cellSideAmount = 0;
     },
     draw(){
-      Draw.rect(burningHell.baseRegion, this.x, this.y, 0);
+      Draw.rect(hellRiser.baseRegion, this.x, this.y, 0);
       
       Draw.z(Layer.turret);
       
       for(var i = 0; i < 2; i++){
         side.trns(this.rotation - 90, this._cellSideAmount * ((i - 0.5) * 2), 0);
-        Drawf.shadow(burningHell.outlines[i], this.x, this.y, this.rotation - 90);
-        Draw.rect(burningHell.outlines[i], this.x + side.x, this.y + side.y, this.rotation - 90);
+        Drawf.shadow(hellRiser.outlines[i], this.x, this.y, this.rotation - 90);
+        Draw.rect(hellRiser.outlines[i], this.x + side.x, this.y + side.y, this.rotation - 90);
       };
       
-      Drawf.shadow(burningHell.bottomRegion, this.x, this.y, this.rotation - 90);
-      Draw.rect(burningHell.bottomRegion, this.x, this.y, this.rotation - 90);
+      Drawf.shadow(hellRiser.bottomRegion, this.x - (hellRiser.size / 2), this.y - (hellRiser.size / 2), this.rotation - 90);
+      Draw.rect(hellRiser.bottomRegion, this.x, this.y, this.rotation - 90);
       
       //inside big cell
-      Draw.rect(burningHell.cells[2], this.x, this.y, this.rotation - 90);
+      Draw.rect(hellRiser.cells[2], this.x, this.y, this.rotation - 90);
       if(this.heat > 0){
         Draw.blend(Blending.additive);
         Draw.color(Color.valueOf("ffbe73"), this.heat);
-        Draw.rect(burningHell.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation - 90);
+        Draw.rect(hellRiser.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation - 90);
         Draw.blend();
         Draw.color();
       };
@@ -157,15 +157,15 @@ burningHell.buildType = () => {
       //sides and cells
       for(var i = 0; i < 2; i ++){
         side.trns(this.rotation - 90, this._cellSideAmount * ((i-0.5)*2), 0);
-        Drawf.shadow(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation - 90);
-        Draw.rect(burningHell.sides[i], this.x + side.x, this.y + side.y, this.rotation - 90);
+        Drawf.shadow(hellRiser.sides[i], this.x + side.x - (hellRiser.size / 2), this.y + side.y - (hellRiser.size / 2), this.rotation - 90);
+        Draw.rect(hellRiser.sides[i], this.x + side.x, this.y + side.y, this.rotation - 90);
         
-        Drawf.shadow(burningHell.cells[i], this.x + side.x, this.y + side.y, this.rotation - 90);
-        Draw.rect(burningHell.cells[i], this.x + side.x, this.y + side.y, this.rotation - 90);
+        Drawf.shadow(hellRiser.cells[i], this.x + side.x - (hellRiser.size / 2), this.y + side.y - (hellRiser.size / 2), this.rotation - 90);
+        Draw.rect(hellRiser.cells[i], this.x + side.x, this.y + side.y, this.rotation - 90);
         if(this.heat > 0){
           Draw.blend(Blending.additive);
           Draw.color(Color.valueOf("f08913"), this.heat);
-          Draw.rect(burningHell.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation - 90);
+          Draw.rect(hellRiser.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation - 90);
           Draw.blend();
           Draw.color();
         };
@@ -173,23 +173,23 @@ burningHell.buildType = () => {
       
       //sw
       open.trns(this.rotation - 90, 0 - this._cellOpenAmount - this._cellSideAmount, -this._cellOpenAmount);
-      Drawf.shadow(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation - 90);
-      Draw.rect(burningHell.caps[0], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Drawf.shadow(hellRiser.caps[0], this.x + open.x - (hellRiser.size / 2), this.y + open.y - (hellRiser.size / 2), this.rotation - 90);
+      Draw.rect(hellRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation - 90);
       
       //se
       open.trns(this.rotation - 90, 0 + this._cellOpenAmount + this._cellSideAmount, -this._cellOpenAmount);
-      Drawf.shadow(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation - 90);
-      Draw.rect(burningHell.caps[1], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Drawf.shadow(hellRiser.caps[1], this.x + open.x - (hellRiser.size / 2), this.y + open.y - (hellRiser.size / 2), this.rotation - 90);
+      Draw.rect(hellRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation - 90);
       
       //nw
       open.trns(this.rotation - 90, 0 - this._cellOpenAmount - this._cellSideAmount, this._cellOpenAmount);
-      Drawf.shadow(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation - 90);
-      Draw.rect(burningHell.caps[2], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Drawf.shadow(hellRiser.caps[2], this.x + open.x - (hellRiser.size / 2), this.y + open.y - (hellRiser.size / 2), this.rotation - 90);
+      Draw.rect(hellRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation - 90);
       
       //ne
       open.trns(this.rotation - 90, 0 + this._cellOpenAmount + this._cellSideAmount, this._cellOpenAmount);
-      Drawf.shadow(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation - 90);
-      Draw.rect(burningHell.caps[3], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Drawf.shadow(hellRiser.caps[3], this.x + open.x - (hellRiser.size / 2), this.y + open.y - (hellRiser.size / 2), this.rotation - 90);
+      Draw.rect(hellRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation - 90);
     },
     setStats(){
       this.super$setStats();
@@ -199,20 +199,20 @@ burningHell.buildType = () => {
       this.stats.add(BlockStat.shots, "The number of enemies in range (oh no)");
       this.stats.remove(BlockStat.damage);
       //damages every 5 ticks, at least in meltdown's case
-      this.stats.add(BlockStat.damage, burningHell.shootType.damage * 12, StatUnit.perSecond);
+      this.stats.add(BlockStat.damage, hellRiser.shootType.damage * 12, StatUnit.perSecond);
     },
     updateTile(){
       this.super$updateTile();
       
       if(this._bulletLife <= 0){
-        this._cellOpenAmount = Mathf.lerpDelta(this._cellOpenAmount, 0, burningHell.restitution);
-        this._cellSideAmount = Mathf.lerpDelta(this._cellSideAmount, 0, burningHell.restitution);
+        this._cellOpenAmount = Mathf.lerpDelta(this._cellOpenAmount, 0, hellRiser.restitution);
+        this._cellSideAmount = Mathf.lerpDelta(this._cellSideAmount, 0, hellRiser.restitution);
       };
       
       if(this._bulletLife > 0){
         this.heat = 1;
-        this._cellOpenAmount = burningHell.COA * 1+(Mathf.absin(this._bulletLife/3, 0.8, 1.5) / 3);
-        this._cellSideAmount = burningHell.SOA + (Mathf.absin(this._bulletLife/3, 0.8, 1.5) * 2);
+        this._cellOpenAmount = hellRiser.COA * 1 + (Mathf.absin(this._bulletLife / 3, 0.8, 1.5) / 3);
+        this._cellSideAmount = hellRiser.SOA + (Mathf.absin(this._bulletLife / 3, 0.8, 1.5) * 2);
         this._bulletLife = this._bulletLife - Time.delta;
       };
     },
@@ -221,21 +221,21 @@ burningHell.buildType = () => {
         return;
       };
       
-      if(this.reload >= burningHell.reloadTime){
+      if(this.reload >= hellRiser.reloadTime){
         var type = this.peekAmmo();
         
         this.shoot(type);
         
         this.reload = 0;
-        this._bulletLife = burningHell.shootDuration;
+        this._bulletLife = hellRiser.shootDuration;
       }else{
         this.reload += this.delta() * this.baseReloadSpeed();
       };
     },
     shoot(type){
-      Units.nearbyEnemies(this.team, this.x - burningHell.range, this.y - burningHell.range, burningHell.range * 2, burningHell.range * 2, e => {
-				if(Mathf.within(this.x, this.y, e.x, e.y, burningHell.range) && !e.dead){
-            burningHell.shootType.create(this, this.team, e.x, e.y, 0, 1, 1);
+      Units.nearbyEnemies(this.team, this.x - hellRiser.range, this.y - hellRiser.range, hellRiser.range * 2, hellRiser.range * 2, e => {
+				if(Mathf.within(this.x, this.y, e.x, e.y, hellRiser.range) && !e.dead){
+            hellRiser.shootType.create(this, this.team, e.x, e.y, 0, 1, 1);
         };
       });
       
@@ -244,17 +244,17 @@ burningHell.buildType = () => {
       var tx = Vars.world.toTile(this.x);
       var ty = Vars.world.toTile(this.y);
       
-      var tileRange = Mathf.floorPositive(burningHell.range / Vars.tilesize + 1);
+      var tileRange = Mathf.floorPositive(hellRiser.range / Vars.tilesize + 1);
       
       for(var x = -tileRange + tx; x <= tileRange + tx; x++){
         yGroup:
         for(var y = -tileRange + ty; y <= tileRange + ty; y++){
-          if(!Mathf.within(x * Vars.tilesize, y * Vars.tilesize, this.x, this.y, burningHell.range)) continue yGroup;
+          if(!Mathf.within(x * Vars.tilesize, y * Vars.tilesize, this.x, this.y, hellRiser.range)) continue yGroup;
           var other = Vars.world.build(x, y);
           if(other == null) continue yGroup;
           if(!collidedBlocks.contains(other.pos())){
             if(other.team != this.team && !other.dead){
-              burningHell.shootType.create(this, this.team, other.x, other.y, 0, 1, 1);
+              hellRiser.shootType.create(this, this.team, other.x, other.y, 0, 1, 1);
             };
             collidedBlocks.add(other.pos());
           };

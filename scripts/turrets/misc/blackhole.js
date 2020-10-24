@@ -144,26 +144,6 @@ blackhole.expanded = true;
 
 blackhole.buildType = () => {
   var succEntity = extendContent(ChargeTurret.ChargeTurretBuild, blackhole, {
-    draw(){
-      const vec = new Vec2();
-      
-      Draw.rect(blackhole.baseRegion, this.x, this.y, 0);
-      
-      Draw.z(Layer.turret);
-      
-      vec.trns(this.rotation, -this.recoil);
-      
-      Drawf.shadow(blackhole.region, this.x + vec.x, this.y + vec.y, this.rotation - 90);
-      Draw.rect(blackhole.region, this.x + vec.x, this.y + vec.y, this.rotation - 90);
-      
-      if(this.heat > 0){
-        Draw.blend(Blending.additive);
-        Draw.color(blackhole.heatColor, this.heat);
-        Draw.rect(blackhole.heatRegion, this.x + vec.x, this.y + vec.y, this.rotation - 90);
-        Draw.blend();
-        Draw.color();
-      }
-    },
     shoot(type){
       const vec = new Vec2();
       this.useAmmo();

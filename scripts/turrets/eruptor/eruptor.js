@@ -121,10 +121,10 @@ heatRiser.buildType = () => {
       
       back.trns(this.rotation - 90, 0, -this.recoil);
       
-      Drawf.shadow(heatRiser.region, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Drawf.shadow(heatRiser.region, this.x + back.x - (heatRiser.size / 2), this.y + back.y - (heatRiser.size / 2), this.rotation - 90);
       Draw.rect(heatRiser.region, this.x + back.x, this.y + back.y, this.rotation - 90);
       
-      Drawf.shadow(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Drawf.shadow(heatRiser.cells, this.x + back.x - (heatRiser.size / 2), this.y + back.y - (heatRiser.size / 2), this.rotation - 90);
       Draw.rect(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       if(this.heat > 0.00001){
@@ -137,22 +137,22 @@ heatRiser.buildType = () => {
       
       //sw
       open.trns(this.rotation - 90, 0 - this._cellOpenAmount, -this._cellOpenAmount);
-      Drawf.shadow(heatRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Drawf.shadow(heatRiser.caps[0], this.x + open.x - (heatRiser.size / 2), this.y + open.y - (heatRiser.size / 2), this.rotation - 90);
       Draw.rect(heatRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation - 90);
       
       //se
       open.trns(this.rotation - 90, 0 + this._cellOpenAmount, -this._cellOpenAmount);
-      Drawf.shadow(heatRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Drawf.shadow(heatRiser.caps[1], this.x + open.x - (heatRiser.size / 2), this.y + open.y - (heatRiser.size / 2), this.rotation - 90);
       Draw.rect(heatRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation - 90);
       
       //nw
       open.trns(this.rotation - 90, 0 - this._cellOpenAmount, this._cellOpenAmount);
-      Drawf.shadow(heatRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Drawf.shadow(heatRiser.caps[2], this.x + open.x - (heatRiser.size / 2), this.y + open.y - (heatRiser.size / 2), this.rotation - 90);
       Draw.rect(heatRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation - 90);
       
       //nw
       open.trns(this.rotation - 90, 0 + this._cellOpenAmount, this._cellOpenAmount);
-      Drawf.shadow(heatRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation - 90);
+      Drawf.shadow(heatRiser.caps[3], this.x + open.x - (heatRiser.size / 2), this.y + open.y - (heatRiser.size / 2), this.rotation - 90);
       Draw.rect(heatRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation - 90);
     },
     setStats(){
