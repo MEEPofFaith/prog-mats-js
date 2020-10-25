@@ -46,11 +46,11 @@ const charge = new Effect(38, e => {
 
 const ballOfSucc = extend(BasicBulletType, {
   load(){
-    this.backRegion = Core.atlas.find("definitely-not-advance-content-backhole-back"); //not funny
+    this.backRegion = Core.atlas.find("prog-mats-backhole-back"); //not funny
     this.front = [];
     
     for(var i = 0; i < 3; i++){
-      this.front[i] = Core.atlas.find("definitely-not-advance-content-backhole-" + i);
+      this.front[i] = Core.atlas.find("prog-mats-backhole-" + i);
     }
   },
   setStats(){
@@ -132,7 +132,7 @@ const blackhole = extendContent(ChargeTurret, "blackhole-i", {
   icons(){	
     return [	
       Core.atlas.find("block-4"),	
-      Core.atlas.find("definitely-not-advance-content-blackhole-i-icon")	
+      Core.atlas.find("prog-mats-blackhole-i-icon")	
     ];	
   }
 });

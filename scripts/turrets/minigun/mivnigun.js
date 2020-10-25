@@ -16,7 +16,7 @@ const quadMinigun = extendContent(ItemTurret, "minigun-iii", {
   icons(){	
     return [	
       Core.atlas.find("block-4"),	
-      Core.atlas.find("definitely-not-advance-content-minigun-iii-frame-0")	
+      Core.atlas.find("prog-mats-minigun-iii-frame-0")	
     ];	
   }
 });
@@ -35,7 +35,7 @@ quadMinigun.shootSound = Sounds.shootBig;
 quadMinigun.heatColor = Color.valueOf("f7956a");
 
 const MiniCopper = extend(BasicBulletType,{});
-MiniCopper.sprite = "definitely-not-advance-content-minigun-ball";
+MiniCopper.sprite = "prog-mats-minigun-ball";
 MiniCopper.speed = 2.5;
 MiniCopper.damage = 21;
 MiniCopper.width = 1.5;
@@ -43,7 +43,7 @@ MiniCopper.height = 1.5;
 MiniCopper.lifetime = 90;
 
 const MiniThorium = extend(BasicBulletType,{});
-MiniThorium.sprite = "definitely-not-advance-content-minigun-ball";
+MiniThorium.sprite = "prog-mats-minigun-ball";
 MiniThorium.speed = 4;
 MiniThorium.damage = 46;
 MiniThorium.width = 2.5;
@@ -54,7 +54,7 @@ MiniThorium.smokeEffect = Fx.shootBigSmoke;
 MiniThorium.ammoMultiplier = 4;
 
 const MiniGraphite = extend(BasicBulletType,{});
-MiniGraphite.sprite = "definitely-not-advance-content-minigun-ball";
+MiniGraphite.sprite = "prog-mats-minigun-ball";
 MiniGraphite.speed = 3.5;
 MiniGraphite.damage = 28;
 MiniGraphite.width = 2;
@@ -65,7 +65,7 @@ MiniGraphite.lifetime = 90;
 MiniGraphite.pierce = true;
 
 const MiniSilicon = extend(BasicBulletType,{});
-MiniSilicon.sprite = "definitely-not-advance-content-minigun-ball";
+MiniSilicon.sprite = "prog-mats-minigun-ball";
 MiniSilicon.speed = 3;
 MiniSilicon.damage = 23;
 MiniSilicon.width = 1.5;
@@ -76,7 +76,7 @@ MiniSilicon.ammoMultiplier = 5;
 MiniSilicon.lifetime = 90;
 
 const MiniPyratite = extend(BasicBulletType,{});
-MiniPyratite.sprite = "definitely-not-advance-content-minigun-ball";
+MiniPyratite.sprite = "prog-mats-minigun-ball";
 MiniPyratite.speed = 3.2;
 MiniPyratite.damage = 25;
 MiniPyratite.width = 2;
@@ -88,7 +88,7 @@ MiniPyratite.inaccuracy = 3;
 MiniPyratite.lifetime = 90;
 
 const MiniBlast = extend(BasicBulletType,{});
-MiniBlast.sprite = "definitely-not-advance-content-minigun-ball";
+MiniBlast.sprite = "prog-mats-minigun-ball";
 MiniBlast.speed = 3.5;
 MiniBlast.damage = 24;
 MiniBlast.width = 2.5;

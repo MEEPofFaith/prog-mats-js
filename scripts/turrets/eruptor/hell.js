@@ -20,7 +20,6 @@ var lenscales = [1, 1.3, 1.6, 1.9];
 
 var tmpColor = new Color();
 const vec = new Vec2();
-const collidedBlocks = new IntSet(127);
 
 const hellPool = extend(BasicBulletType, {
   update(b){
@@ -79,6 +78,8 @@ hellPool.despawnEffect = Fx.none;
 hellPool.shootEffect = Fx.none;
 hellPool.smokeEffect = Fx.none;
 
+const collidedBlocks = new IntSet(127);
+
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
   load(){
@@ -105,7 +106,7 @@ const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
   icons(){
     return [
       Core.atlas.find("block-4"),
-      Core.atlas.find("definitely-not-advance-content-eruptor-iii-icon")
+      Core.atlas.find("prog-mats-eruptor-iii-icon")
     ];
   }
 });
