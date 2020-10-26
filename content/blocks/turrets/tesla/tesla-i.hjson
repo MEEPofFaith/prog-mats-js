@@ -1,0 +1,16 @@
+localizedName: Tesla Ring
+description: Zaps random targets in range.
+size: 1
+health: 260
+reloadTime: 70
+shootEffect: none
+smokeEffect: none
+shootSound: spark
+shootCone: 360
+requirements: [
+  copper/45
+  lead/60
+  silicon/10
+]
+category: turret
+research: arc

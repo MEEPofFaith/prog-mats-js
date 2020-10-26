@@ -1,0 +1,18 @@
+localizedName: Tesla Coil
+description: Zaps even more random targets in range with more damage.
+size: 1
+health: 870
+reloadTime: 60
+shootEffect: none
+smokeEffect: none
+shootSound: spark
+shootCone: 360
+size: 2
+requirements: [
+  copper/35
+  lead/85
+  graphite/25
+  silicon/55
+]
+category: turret
+research: tesla-i
