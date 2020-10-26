@@ -115,9 +115,9 @@ teslaStorm.buildType = () => {
       Draw.rect(teslaStorm.outlines[1], this.x, this.y, this.rotation - 90);
       
       Drawf.shadow(teslaStorm.rotator, this.x - (teslaStorm.size / 2), this.y - (teslaStorm.size / 2), this.rotation - 90);
-      Draw.rect(teslaStorm.rotator, this.x - (teslaStorm.size / 2), this.y - (teslaStorm.size / 2), this.rotation - 90);
+      Draw.rect(teslaStorm.rotator, this.x, this.y, this.rotation - 90);
       
-      Drawf.shadow(teslaStorm.region, this.x, this.y, 0);
+      Drawf.shadow(teslaStorm.region, this.x - (teslaStorm.size / 2), this.y - (teslaStorm.size / 2), 0);
       Draw.rect(teslaStorm.region, this.x, this.y, 0);
       
       print(this.heat);
