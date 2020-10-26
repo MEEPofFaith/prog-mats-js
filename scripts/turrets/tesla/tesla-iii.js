@@ -77,6 +77,7 @@ const teslaStorm = extendContent(PowerTurret, "tesla-iii", {
 });
 
 teslaStorm.shootType = stormZap;
+teslaStorm.size = 3;
 teslaStorm.range = 130;
 teslaStorm.arcs = 5;
 teslaStorm.zaps = 7;
@@ -113,8 +114,8 @@ teslaStorm.buildType = () => {
       Draw.rect(teslaStorm.outlines[0], this.x, this.y, 0);
       Draw.rect(teslaStorm.outlines[1], this.x, this.y, this.rotation - 90);
       
-      Drawf.shadow(teslaStorm.rotator, this.x, this.y, this.rotation - 90);
-      Draw.rect(teslaStorm.rotator, this.x, this.y, this.rotation - 90);
+      Drawf.shadow(teslaStorm.rotator, this.x - (teslaStorm.size / 2), this.y - (teslaStorm.size / 2), this.rotation - 90);
+      Draw.rect(teslaStorm.rotator, this.x - (teslaStorm.size / 2), this.y - (teslaStorm.size / 2), this.rotation - 90);
       
       Drawf.shadow(teslaStorm.region, this.x, this.y, 0);
       Draw.rect(teslaStorm.region, this.x, this.y, 0);
