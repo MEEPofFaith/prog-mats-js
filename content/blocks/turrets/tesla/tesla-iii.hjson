@@ -2,10 +2,7 @@ localizedName: Tesla Storm
 description: Zaps a ton more random targets in range with even more damage.
 size: 1
 health: 1540
-reloadTime: 50
-shootEffect: none
-smokeEffect: none
-shootSound: spark
+reloadTime: 45
 shootCone: 360
 size: 3
 requirements: [

@@ -77,6 +77,7 @@ hellPool.hitEffect = Fx.fireballsmoke;
 hellPool.despawnEffect = Fx.none;
 hellPool.shootEffect = Fx.none;
 hellPool.smokeEffect = Fx.none;
+hellPool.hittable = false;
 
 const collidedBlocks = new IntSet(127);
 

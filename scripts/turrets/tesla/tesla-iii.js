@@ -1,13 +1,13 @@
 const tV = new Vec2();
 const tV2 = new Vec2();
 
-//Stolen effect from [redacted] from [redacted]
+//Stolen effect from [redacted] from [redacted/redacted]
 //Why do I keep stealing things.
 const targetLightning = new Effect(10, 500, e => {
 	var length = e.data[0];
 	var tileLength = Mathf.round(length / 8);
 	
-	Lines.stroke(3 * e.fout());
+	Lines.stroke(5 * e.fout());
 	Draw.color(e.color, Color.white, e.fin());
 	
 	for(var i = 0; i < tileLength; i++){
@@ -28,34 +28,73 @@ const targetLightning = new Effect(10, 500, e => {
 		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
 		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
 	};
+  Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
+});
+
+const lightningSmoke = new Effect(30, e=> {
+  Angles.randLenVectors(e.id, 12, e.fin() * 36 + (e.fout() * 13), e.rotation, 15, (x, y) => {
+    var size = e.fout() * 2;
+    Draw.color(e.color);
+    Draw.alpha(e.fout());
+    Fill.circle(e.x + x, e.y + y, size);
+  });
 });
 
 const lightningLine = new Vec2();
 
 const stormZap = extend(LightningBulletType, {});
 
-const lightningCol = Pal.lancerLaser;
+const lightningCol = Pal.surge;
 
-stormZap.damage = 61; //Note: I'm making up these numbers as I go.
-stormZap.lightningLength = 8;
+stormZap.damage = 46; //Note: I'm making up these numbers as I go.
+stormZap.lightningLength = 7;
 stormZap.lightningLengthRand = 4;
 stormZap.lightningAngle = 0;
 stormZap.lightningColor = lightningCol;
 //stormZap.collidesTiles = false;
 stormZap.hittable = false;
 
-const teslaStorm = extendContent(PowerTurret, "tesla-iii", {});
+const teslaStorm = extendContent(PowerTurret, "tesla-iii", {
+  load(){
+    this.outlines = [];
+    
+    this.region = Core.atlas.find(this.name + "-top");
+    this.heatRegion = Core.atlas.find(this.name + "-heat");
+    this.baseRegion = Core.atlas.find("block-3");
+    
+    this.rotator = Core.atlas.find(this.name + "-rotator");
+    this.rotatorHeat = Core.atlas.find(this.name + "-rotator-heat");
+    for(var i = 0; i < 2; i++){
+      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
+    }
+  },
+  icons(){
+    return [
+      Core.atlas.find("block-3"),
+      Core.atlas.find(this.name + "-icon")
+    ];
+  }
+});
 
 teslaStorm.shootType = stormZap;
 teslaStorm.range = 130;
 teslaStorm.arcs = 5;
 teslaStorm.zaps = 7;
 teslaStorm.angleRand = 13;
+teslaStorm.rotateSpeed = 0.25;
 teslaStorm.lightningColor = lightningCol;
+teslaStorm.shootSound = Sounds.spark;
+teslaStorm.shootEffect = Fx.sparkShoot;
+teslaStorm.shootSmoke = lightningSmoke;
+teslaStorm.heatColor = Color.red;
+teslaStorm.coolantMultiplier = 1;
 
 const targetX = new Seq(255);
 const targetY = new Seq(255);
 const targets = new Seq(127);
+
+const shootLoc = new Vec2();
+const shootLoc2 = new Vec2();
 
 teslaStorm.buildType = () => {
   var teslaStormEntity = extendContent(PowerTurret.PowerTurretBuild, teslaStorm, {
@@ -64,6 +103,44 @@ teslaStorm.buildType = () => {
       this._currentTarget = 0;
       this._shootAngle = 0;
       this._dist = 0;
+      this._rotationSpeed = 0;
+    },
+    draw(){
+      Draw.rect(teslaStorm.baseRegion, this.x, this.y, 0);
+      
+      Draw.z(Layer.turret);
+      
+      Draw.rect(teslaStorm.outlines[0], this.x, this.y, 0);
+      Draw.rect(teslaStorm.outlines[1], this.x, this.y, this.rotation - 90);
+      
+      Drawf.shadow(teslaStorm.rotator, this.x, this.y, this.rotation - 90);
+      Draw.rect(teslaStorm.rotator, this.x, this.y, this.rotation - 90);
+      
+      Drawf.shadow(teslaStorm.region, this.x, this.y, 0);
+      Draw.rect(teslaStorm.region, this.x, this.y, 0);
+      
+      print(this.heat);
+      if(this.heat > 0){
+        Draw.blend(Blending.additive);
+        Draw.color(teslaStorm.heatColor, this.heat);
+        Draw.rect(teslaStorm.heatRegion, this.x, this.y, 0);
+        Draw.rect(teslaStorm.rotatorHeat, this.x, this.y, this.rotation - 90);
+        Draw.blend();
+        Draw.color();
+      }
+    },
+    updateTile(){
+      this.super$updateTile();
+      
+      if(!this.validateTarget() || !this.hasAmmo()){
+        this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, 0, 0.0125);
+      }
+      if(this.validateTarget() && this.hasAmmo()){
+        const liquid = this.liquids.current();
+        this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, 1, 0.005 * this.peekAmmo().reloadMultiplier * liquid.heatCapacity * teslaStorm.coolantMultiplier * this.delta());
+      }
+      
+      this.rotation = this.rotation - this._rotationSpeed * 6;
     },
     shoot(type){
       //I have ascended to stealing code from myself.
@@ -103,15 +180,36 @@ teslaStorm.buildType = () => {
       };
       
       if(this._targetCount >= 0){
+        this.heat = 1;
         for(var i = 0; i < teslaStorm.arcs; i++){
           this._currentTarget = Mathf.floor(Mathf.random(this._targetCount + 0.999));
           var targX = targetX.get(this._currentTarget);
           var targY = targetY.get(this._currentTarget);
           
-          this._shootAngle = Angles.angle(this.x, this.y, targX, targY);
-          this._dist = Mathf.dst(this.x, this.y, targX, targY);
+          var shootLocs = [1.25, 4, 7.25, 11, 11.25];
+          var arcSection = shootLocs[Mathf.round(Mathf.floor(3.999))];
+          if(arcSection < 8){
+            shootLoc.trns(Mathf.random(360), arcSection);
+            shootLoc2.trns(0, 0);
+          }else{
+            var angles = [0, 1, 2, 3];
+            if(arcSection == 11){
+              shootLoc.trns(angles[Mathf.round(Mathf.floor(3.999))] * 90 + this.rotation - 90, arcSection);
+              shootLoc.trns(Mathf.random(360), 4);
+            }
+            if(arcSection == 11.25){
+              shootLoc.trns(angles[Mathf.round(Mathf.floor(3.999))] * 90 + 45 + this.rotation - 90, arcSection);
+              shootLoc.trns(Mathf.random(360), 4.5);
+            }
+          }
           
-          targetLightning.at(this.x, this.y, this._shootAngle, teslaStorm.lightningColor, [this._dist]);
+          this._shootAngle = Angles.angle(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, targX, targY);
+          this._dist = Mathf.dst(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, targX, targY);
+          
+          targetLightning.at(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, this._shootAngle, teslaStorm.lightningColor, [this._dist]);
+          teslaStorm.shootSound.at(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, Mathf.random(0.9, 1.1));
+          teslaStorm.shootEffect.at(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, this._shootAngle, teslaStorm.lightningColor);
+          teslaStorm.shootSmoke.at(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, this._shootAngle, teslaStorm.lightningColor);
           
           for(var j = 0; j < teslaStorm.zaps; j++){
             teslaStorm.shootType.create(this, this.team, targX, targY, ((360 / teslaStorm.zaps) * j) + Mathf.range(teslaStorm.angleRand));

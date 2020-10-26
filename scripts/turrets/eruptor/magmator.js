@@ -77,6 +77,7 @@ magmaPool.hitEffect = Fx.fireballsmoke;
 magmaPool.despawnEffect = Fx.none;
 magmaPool.shootEffect = Fx.none;
 magmaPool.smokeEffect = Fx.none;
+magmaPool.hittable = false;
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {

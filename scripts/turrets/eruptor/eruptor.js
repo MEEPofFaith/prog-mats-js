@@ -77,6 +77,7 @@ lavaPool.hitEffect = Fx.fireballsmoke;
 lavaPool.despawnEffect = Fx.none;
 lavaPool.shootEffect = Fx.none;
 lavaPool.smokeEffect = Fx.none;
+lavaPool.hittable = false;
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const heatRiser = extendContent(PowerTurret, "eruptor-i", {
