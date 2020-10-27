@@ -7,7 +7,7 @@ const targetLightning = new Effect(10, 500, e => {
 	var length = e.data[0];
 	var tileLength = Mathf.round(length / 8);
 	
-	Lines.stroke(5 * e.fout());
+	Lines.stroke(4.5 * e.fout());
 	Draw.color(e.color, Color.white, e.fin());
 	
 	for(var i = 0; i < tileLength; i++){
@@ -58,7 +58,7 @@ const teslaRing = extendContent(PowerTurret, "tesla-i", {});
 
 teslaRing.shootType = ringZap;
 teslaRing.range = 72;
-teslaRing.arcs = 1;
+teslaRing.arcs = 2;
 teslaRing.zaps = 3;
 teslaRing.angleRand = 27;
 teslaRing.lightningColor = lightningCol;

@@ -7,7 +7,7 @@ const targetLightning = new Effect(10, 500, e => {
 	var length = e.data[0];
 	var tileLength = Mathf.round(length / 8);
 	
-	Lines.stroke(5 * e.fout());
+	Lines.stroke(4.5 * e.fout());
 	Draw.color(e.color, Color.white, e.fin());
 	
 	for(var i = 0; i < tileLength; i++){
@@ -57,15 +57,17 @@ stormZap.hittable = false;
 const teslaStorm = extendContent(PowerTurret, "tesla-iii", {
   load(){
     this.outlines = [];
+    this.rotators = [];
+    this.heatRegions = []
     
     this.region = Core.atlas.find(this.name + "-top");
-    this.heatRegion = Core.atlas.find(this.name + "-heat");
     this.baseRegion = Core.atlas.find("block-3");
-    
-    this.rotator = Core.atlas.find(this.name + "-rotator");
-    this.rotatorHeat = Core.atlas.find(this.name + "-rotator-heat");
     for(var i = 0; i < 2; i++){
+      this.rotators[i] = Core.atlas.find(this.name + "-rotator-" + i);
+    }
+    for(var i = 0; i < 3; i++){
       this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
+      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
   },
   icons(){
@@ -79,7 +81,7 @@ const teslaStorm = extendContent(PowerTurret, "tesla-iii", {
 teslaStorm.shootType = stormZap;
 teslaStorm.size = 3;
 teslaStorm.range = 130;
-teslaStorm.arcs = 5;
+teslaStorm.arcs = 2;
 teslaStorm.zaps = 7;
 teslaStorm.angleRand = 13;
 teslaStorm.rotateSpeed = 0.25;
@@ -87,7 +89,7 @@ teslaStorm.lightningColor = lightningCol;
 teslaStorm.shootSound = Sounds.spark;
 teslaStorm.shootEffect = Fx.sparkShoot;
 teslaStorm.shootSmoke = lightningSmoke;
-teslaStorm.heatColor = Color.red;
+teslaStorm.heatColor = Color.valueOf("fff694");
 teslaStorm.coolantMultiplier = 1;
 
 const targetX = new Seq(255);
@@ -112,20 +114,25 @@ teslaStorm.buildType = () => {
       Draw.z(Layer.turret);
       
       Draw.rect(teslaStorm.outlines[0], this.x, this.y, 0);
-      Draw.rect(teslaStorm.outlines[1], this.x, this.y, this.rotation - 90);
+      Draw.rect(teslaStorm.outlines[1], this.x, this.y, -this.rotation + 90);
+      Draw.rect(teslaStorm.outlines[2], this.x, this.y, this.rotation - 90);
       
-      Drawf.shadow(teslaStorm.rotator, this.x - (teslaStorm.size / 2), this.y - (teslaStorm.size / 2), this.rotation - 90);
-      Draw.rect(teslaStorm.rotator, this.x, this.y, this.rotation - 90);
+      Drawf.shadow(teslaStorm.rotators[0], this.x - (teslaStorm.size / 2), this.y - (teslaStorm.size / 2), -this.rotation + 90);
+      Draw.rect(teslaStorm.rotators[0], this.x, this.y, -this.rotation + 90);
+      
+      Drawf.shadow(teslaStorm.rotators[1], this.x - (teslaStorm.size / 2), this.y - (teslaStorm.size / 2), this.rotation - 90);
+      Draw.rect(teslaStorm.rotators[1], this.x, this.y, this.rotation - 90);
       
       Drawf.shadow(teslaStorm.region, this.x - (teslaStorm.size / 2), this.y - (teslaStorm.size / 2), 0);
       Draw.rect(teslaStorm.region, this.x, this.y, 0);
       
       print(this.heat);
-      if(this.heat > 0){
+      if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
         Draw.color(teslaStorm.heatColor, this.heat);
-        Draw.rect(teslaStorm.heatRegion, this.x, this.y, 0);
-        Draw.rect(teslaStorm.rotatorHeat, this.x, this.y, this.rotation - 90);
+        Draw.rect(teslaStorm.heatRegions[0], this.x, this.y, 0);
+        Draw.rect(teslaStorm.heatRegions[1], this.x, this.y, -this.rotation + 90);
+        Draw.rect(teslaStorm.heatRegions[2], this.x, this.y, this.rotation - 90);
         Draw.blend();
         Draw.color();
       }
@@ -138,10 +145,10 @@ teslaStorm.buildType = () => {
       }
       if(this.validateTarget() && this.hasAmmo()){
         const liquid = this.liquids.current();
-        this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, 1, 0.005 * this.peekAmmo().reloadMultiplier * liquid.heatCapacity * teslaStorm.coolantMultiplier * this.delta());
+        this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, 1, 0.0075 * this.peekAmmo().reloadMultiplier * liquid.heatCapacity * teslaStorm.coolantMultiplier * this.delta());
       }
       
-      this.rotation = this.rotation - this._rotationSpeed * 6;
+      this.rotation = this.rotation - this._rotationSpeed * 12;
     },
     shoot(type){
       //I have ascended to stealing code from myself.
@@ -187,20 +194,21 @@ teslaStorm.buildType = () => {
           var targX = targetX.get(this._currentTarget);
           var targY = targetY.get(this._currentTarget);
           
-          var shootLocs = [1.25, 4, 7.25, 11, 11.25];
-          var arcSection = shootLocs[Mathf.round(Mathf.floor(3.999))];
-          if(arcSection < 8){
-            shootLoc.trns(Mathf.random(360), arcSection);
+          var shootLocs = [0, 3.25, 6.75, 10.75, 11.25];
+          var arcSection = Mathf.floor(Mathf.random(4.999));
+          
+          if(arcSection <= 2){
+            shootLoc.trns(Mathf.random(360), shootLocs[arcSection]);
             shootLoc2.trns(0, 0);
           }else{
             var angles = [0, 1, 2, 3];
-            if(arcSection == 11){
-              shootLoc.trns(angles[Mathf.round(Mathf.floor(3.999))] * 90 + this.rotation - 90, arcSection);
-              shootLoc.trns(Mathf.random(360), 4);
+            if(arcSection == 3){
+              shootLoc.trns(angles[Mathf.round(Mathf.floor(3.999))] * 90 - this.rotation + 90, shootLocs[arcSection]);
+              shootLoc2.trns(Mathf.random(360), 0);
             }
-            if(arcSection == 11.25){
-              shootLoc.trns(angles[Mathf.round(Mathf.floor(3.999))] * 90 + 45 + this.rotation - 90, arcSection);
-              shootLoc.trns(Mathf.random(360), 4.5);
+            if(arcSection == 4){
+              shootLoc.trns(angles[Mathf.round(Mathf.floor(3.999))] * 90 + this.rotation - 90, shootLocs[arcSection]);
+              shootLoc2.trns(Mathf.random(360), 4.25);
             }
           }
           

@@ -96,6 +96,12 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
       this.capsA[i] = Core.atlas.find(this.name + "-caps-0-" + i);
       this.capsB[i] = Core.atlas.find(this.name + "-caps-1-" + i);
     }
+  },
+  icons(){
+    return [
+      Core.atlas.find("block-4"),
+      Core.atlas.find(this.name + "-icon")
+    ];
   }
 });
 
@@ -135,7 +141,7 @@ lavaRiser.buildType = () => {
       Drawf.shadow(lavaRiser.cells[0], this.x + back.x - (lavaRiser.size / 2), this.y + back.y - (lavaRiser.size / 2), this.rotation - 90);
       Draw.rect(lavaRiser.cells[0], this.x + back.x, this.y + back.y, this.rotation - 90);
       
-      if(this.heat > 0){
+      if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
         Draw.color(Color.valueOf("f08913"), this.heat);
         Draw.rect(lavaRiser.cellHeats[0], this.x + back.x, this.y + back.y, this.rotation - 90);

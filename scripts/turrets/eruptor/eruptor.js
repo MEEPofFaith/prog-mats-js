@@ -90,6 +90,12 @@ const heatRiser = extendContent(PowerTurret, "eruptor-i", {
     for(var i = 0; i < 4; i++){
       this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
     }
+  },
+  icons(){
+    return [
+      Core.atlas.find("block-3"),
+      Core.atlas.find(this.name + "-icon")
+    ];
   }
 });
 

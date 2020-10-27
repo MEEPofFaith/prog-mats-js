@@ -107,7 +107,7 @@ const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
   icons(){
     return [
       Core.atlas.find("block-4"),
-      Core.atlas.find("prog-mats-eruptor-iii-icon")
+      Core.atlas.find(this.name + "-icon")
     ];
   }
 });
@@ -148,7 +148,7 @@ hellRiser.buildType = () => {
       
       //inside big cell
       Draw.rect(hellRiser.cells[2], this.x, this.y, this.rotation - 90);
-      if(this.heat > 0){
+      if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
         Draw.color(Color.valueOf("ffbe73"), this.heat);
         Draw.rect(hellRiser.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation - 90);

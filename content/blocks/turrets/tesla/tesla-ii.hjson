@@ -4,7 +4,7 @@ size: 1
 health: 870
 reloadTime: 45
 shootCone: 360
-heatColor: ff0000
+heatColor: fff694
 size: 2
 requirements: [
   copper/35

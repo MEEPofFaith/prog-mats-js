@@ -2,9 +2,9 @@ localizedName: Tesla Ring
 description: Zaps random targets in range.
 size: 1
 health: 260
-reloadTime: 45
+reloadTime: 75
 shootCone: 360
-heatColor: ff0000
+heatColor: fff694
 requirements: [
   copper/45
   lead/60

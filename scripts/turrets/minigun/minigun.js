@@ -139,7 +139,7 @@ minigun.buildType = () => {
       Draw.rect(minigun.turretRegions[this._frame], this.x + vec.x, this.y + vec.y, this.rotation - 90);
       
       for(var i = 0; i < 4; i++){
-        if(this._barrelHeat[i] > 0){
+        if(this._barrelHeat[i] > 0.00001){
           Draw.blend(Blending.additive);
           Draw.color(minigun.heatColor, this._barrelHeat[i]);
           Draw.rect(minigun.heatRegions[this._heatFrame[i]], this.x + vec.x, this.y + vec.y, this.rotation - 90);

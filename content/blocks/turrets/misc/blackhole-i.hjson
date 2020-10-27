@@ -7,7 +7,6 @@ reloadTime: 240
 shootEffect: none
 smokeEffect: none
 shootSound: release
-outlineIcon: false
 requirements: [
   titanium/100
   thorium/150
