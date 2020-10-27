@@ -7,7 +7,7 @@ const targetLightning = new Effect(10, 500, e => {
 	var length = e.data[0];
 	var tileLength = Mathf.round(length / 8);
 	
-	Lines.stroke(4.5 * e.fout());
+	Lines.stroke(5 * e.fout());
 	Draw.color(e.color, Color.white, e.fin());
 	
 	for(var i = 0; i < tileLength; i++){
@@ -32,10 +32,10 @@ const targetLightning = new Effect(10, 500, e => {
 });
 
 const lightningSmoke = new Effect(30, e=> {
-  Angles.randLenVectors(e.id, 12, e.fin() * 36 + (e.fout() * 13), e.rotation, 15, (x, y) => {
+  Angles.randLenVectors(e.id, 12, e.finpow() * 36, e.rotation, 15, (x, y) => {
     var size = e.fout() * 2;
     Draw.color(e.color);
-    Draw.alpha(e.fout());
+    Draw.alpha(e.fslope());
     Fill.circle(e.x + x, e.y + y, size);
   });
 });
@@ -48,7 +48,7 @@ const lightningCol = Pal.surge;
 
 coilZap.damage = 22;
 coilZap.lightningLength = 6;
-coilZap.lightningLengthRand = 3;
+coilZap.lightningLengthRand = 4;
 coilZap.lightningAngle = 0;
 coilZap.lightningColor = lightningCol;
 //coilZap.collidesTiles = false;
@@ -58,8 +58,8 @@ const teslaCoil = extendContent(PowerTurret, "tesla-ii", {});
 
 teslaCoil.shootType = coilZap;
 teslaCoil.range = 130;
-teslaCoil.arcs = 2;
-teslaCoil.zaps = 5;
+teslaCoil.shots = 2;
+teslaCoil.zaps = 6;
 teslaCoil.angleRand = 19;
 teslaCoil.lightningColor = lightningCol;
 teslaCoil.shootSound = Sounds.spark;
@@ -119,7 +119,7 @@ teslaCoil.buildType = () => {
       
       if(this._targetCount >= 0){
         this.heat = 1;
-        for(var i = 0; i < teslaCoil.arcs; i++){
+        for(var i = 0; i < teslaCoil.shots; i++){
           this._currentTarget = Mathf.floor(Mathf.random(this._targetCount + 0.999));
           var targX = targetX.get(this._currentTarget);
           var targY = targetY.get(this._currentTarget);
@@ -135,9 +135,13 @@ teslaCoil.buildType = () => {
           teslaCoil.shootEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaCoil.lightningColor);
           teslaCoil.shootSmoke.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaCoil.lightningColor);
           
-          for(var j = 0; j < teslaCoil.zaps; j++){
-            teslaCoil.shootType.create(this, this.team, targX, targY, ((360 / teslaCoil.zaps) * j) + Mathf.range(teslaCoil.angleRand));
-          }
+          const thisX = targX;
+          const thisY = targY;
+          Time.run(3, () => {
+            for(var j = 0; j < teslaCoil.zaps; j++){
+              teslaCoil.shootType.create(this, this.team, thisX, thisY, ((360 / teslaCoil.zaps) * j) + Mathf.range(teslaCoil.angleRand));
+            }
+          });
         }
       }
     },

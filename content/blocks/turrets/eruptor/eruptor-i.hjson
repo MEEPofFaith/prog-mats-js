@@ -11,8 +11,8 @@ powerUse: 10
 shootCone: 10
 targetAir: true
 targetGround: true
-recoilAmount: 0
 cooldown: 0.01
+restitution: 0.01
 shootSound: none
 activeSound: beam
 activeSoundVolume: 2

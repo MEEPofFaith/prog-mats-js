@@ -103,24 +103,29 @@ heatRiser.shootType = lavaPool;
 heatRiser.shootDuration = 180;
 heatRiser.range = 240;
 heatRiser.reloadTime = 60;
-heatRiser.COA = 0.9;
+heatRiser.recoilAmount = 2;
+heatRiser.COA = 1;
 heatRiser.rotateSpeed = 3;
 heatRiser.firingMoveFract = 0.8;
 heatRiser.shootEffect = Fx.none;
 heatRiser.smokeEffect = Fx.none;
 heatRiser.ammoUseEffect = Fx.none;
-heatRiser.restitution = 0.01;
+heatRiser.capClosing = 0.01;
+heatRiser.heatColor = Color.valueOf("f08913");
 
 heatRiser.buildType = () => {
 	var eruptEntity = extendContent(PowerTurret.PowerTurretBuild, heatRiser, {
     setEff(){
       this._bullet = null;
       this._bulletLife = 0;
-      this._cellOpenAmount = 0;
+      this._cellOpenAmounts = [0, 0];
     },
     draw(){
       const open = new Vec2();
       const back = new Vec2();
+      const trnsX = [-1, 1, -1, 1];
+      const trnsY = [-1, -1, 1, 1];
+      const alternate = [1, 1, 0, 0];
       
       Draw.rect(heatRiser.baseRegion, this.x, this.y, 0);
       
@@ -132,35 +137,26 @@ heatRiser.buildType = () => {
       Draw.rect(heatRiser.region, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       Drawf.shadow(heatRiser.cells, this.x + back.x - (heatRiser.size / 2), this.y + back.y - (heatRiser.size / 2), this.rotation - 90);
+      
+      for(var i = 0; i < 4; i ++){
+      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
+        Drawf.shadow(heatRiser.caps[i], this.x + open.x + back.x - (heatRiser.size / 2), this.y + open.y + back.y - (heatRiser.size / 2), this.rotation - 90);
+      }
+      
       Draw.rect(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
-        Draw.color(Color.valueOf("f08913"), this.heat);
+        Draw.color(heatRiser.heatColor, this.heat);
         Draw.rect(heatRiser.cellHeat, this.x + back.x, this.y + back.y, this.rotation - 90);
         Draw.blend();
         Draw.color();
-      };
+      }
       
-      //sw
-      open.trns(this.rotation - 90, 0 - this._cellOpenAmount, -this._cellOpenAmount);
-      Drawf.shadow(heatRiser.caps[0], this.x + open.x - (heatRiser.size / 2), this.y + open.y - (heatRiser.size / 2), this.rotation - 90);
-      Draw.rect(heatRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation - 90);
-      
-      //se
-      open.trns(this.rotation - 90, 0 + this._cellOpenAmount, -this._cellOpenAmount);
-      Drawf.shadow(heatRiser.caps[1], this.x + open.x - (heatRiser.size / 2), this.y + open.y - (heatRiser.size / 2), this.rotation - 90);
-      Draw.rect(heatRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation - 90);
-      
-      //nw
-      open.trns(this.rotation - 90, 0 - this._cellOpenAmount, this._cellOpenAmount);
-      Drawf.shadow(heatRiser.caps[2], this.x + open.x - (heatRiser.size / 2), this.y + open.y - (heatRiser.size / 2), this.rotation - 90);
-      Draw.rect(heatRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation - 90);
-      
-      //nw
-      open.trns(this.rotation - 90, 0 + this._cellOpenAmount, this._cellOpenAmount);
-      Drawf.shadow(heatRiser.caps[3], this.x + open.x - (heatRiser.size / 2), this.y + open.y - (heatRiser.size / 2), this.rotation - 90);
-      Draw.rect(heatRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation - 90);
+      for(var i = 0; i < 4; i ++){
+      open.trns(this.rotation - 90, 0 + (this._cellOpenAmounts[alternate[i]] * trnsX[i]), this._cellOpenAmounts[alternate[i]] * trnsY[i]);
+        Draw.rect(heatRiser.caps[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      }
     },
     setStats(){
       this.super$setStats();
@@ -174,24 +170,27 @@ heatRiser.buildType = () => {
       this.super$updateTile();
       
       if(this._bulletLife <= 0 && this._bullet == null){
-        this._cellOpenAmount = Mathf.lerpDelta(this._cellOpenAmount, 0, heatRiser.restitution);
+        for(var i = 0; i < 2; i ++){
+          this._cellOpenAmounts[i] = Mathf.lerpDelta(this._cellOpenAmounts[i], 0, heatRiser.capClosing);
+        }
       };
       
       if(this._bulletLife > 0 && this._bullet != null){
         this._bullet.time = 0;
         this.heat = 1;
         this.recoil = heatRiser.recoilAmount;
-        this._cellOpenAmount = heatRiser.COA * 1 + (Mathf.absin(this._bulletLife / 3, 0.8, 1.5) / 3);
+        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], heatRiser.COA * Mathf.absin(this._bulletLife / 6 + this._bullet.id, 0.8, 1), 0.6);
+        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], heatRiser.COA * Mathf.absin(-this._bulletLife / 6 + this._bullet.id, 0.8, 1), 0.6);
         this._bulletLife = this._bulletLife - Time.delta;
         if(this._bulletLife <= 0){
           this._bullet = null;
-        };
-      };
+        }
+      }
     },
     updateShooting(){
       if(this._bulletLife > 0 && this._bullet != null){
         return;
-      };
+      }
       
       if(this.reload >= heatRiser.reloadTime){
         var type = this.peekAmmo();
@@ -202,7 +201,7 @@ heatRiser.buildType = () => {
         this._bulletLife = heatRiser.shootDuration;
       }else{
         this.reload += this.delta() * this.baseReloadSpeed();
-      };
+      }
     },
     bullet(type, angle){
       const bullet = type.create(this, this.team, this.targetPos.x, this.targetPos.y, angle);
