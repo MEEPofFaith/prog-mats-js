@@ -1,3 +1,39 @@
+const tV = new Vec2();
+const tV2 = new Vec2();
+
+//Stolen effect from [redacted] from [redacted/redacted]
+//Which I now just stole from myself.
+//Why do I keep stealing things.
+const targetLightning = new Effect(10, 500, e => {
+	var length = e.data[0];
+	var tileLength = Mathf.round(length / 8);
+	
+	Lines.stroke(6 * e.fout());
+	Draw.color(e.color, Color.white, e.fin());
+	
+	for(var i = 0; i < tileLength; i++){
+		var offsetXA = (i == 0) ? 0 : Mathf.randomSeed(e.id + (i * 6413), -4.5, 4.5);
+		var offsetYA = (length / tileLength) * i;
+		
+		var f = i + 1;
+		
+		var offsetXB = (f == tileLength) ? 0 : Mathf.randomSeed(e.id + (f * 6413), -4.5, 4.5);
+		var offsetYB = (length / tileLength) * f;
+		
+		tV.trns(e.rotation, offsetYA, offsetXA);
+		tV.add(e.x, e.y);
+		
+		tV2.trns(e.rotation, offsetYB, offsetXB);
+		tV2.add(e.x, e.y);
+		
+		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
+		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
+	};
+  Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
+});
+
+targetLightning.ground = true;
+
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
 var colors = [Color.valueOf("e69a2755"), Color.valueOf("eda332aa"), Color.valueOf("f2ac41"), Color.valueOf("ffbb54")];
@@ -106,7 +142,7 @@ lavaRiser.shootDuration = 240;
 lavaRiser.range = 280;
 lavaRiser.reloadTime = 90;
 lavaRiser.rotateSpeed = 2.25;
-lavaRiser.recoilAmount = 4;
+lavaRiser.recoilAmount = 6;
 lavaRiser.COA = 0.9;
 lavaRiser.cellHeight = 1;
 lavaRiser.firingMoveFract = 0.8;
@@ -115,6 +151,8 @@ lavaRiser.smokeEffect = Fx.none;
 lavaRiser.ammoUseEffect = Fx.none;
 lavaRiser.capClosing = 0.01;
 lavaRiser.heatColor = Color.valueOf("f08913");
+
+const shootLoc = new Vec2();
 
 lavaRiser.buildType = () => {
 	var magmaEntity = extendContent(PowerTurret.PowerTurretBuild, lavaRiser, {
@@ -134,7 +172,7 @@ lavaRiser.buildType = () => {
       
       Draw.z(Layer.turret);
       
-      back.trns(this.rotation - 90, 0, -this.recoil);
+      back.trns(this.rotation - 90, 0, this.recoil);
       
       Draw.rect(lavaRiser.outlines[0], this.x + back.x, this.y + back.y, this.rotation - 90);
       
@@ -231,7 +269,15 @@ lavaRiser.buildType = () => {
         this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], lavaRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
         this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], lavaRiser.COA * Mathf.absin(-this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
         this._bulletLife = this._bulletLife - Time.delta;
-        this.rotation = Mathf.lerpDelta(this.rotation, Angles.angle(this.x, this.y, this._bullet.x, this._bullet.y), 0.7);
+        this.rotation = Angles.moveToward(this.rotation, Angles.angle(this.x, this.y, this._bullet.x, this._bullet.y), 360);
+        
+        shootLoc.trns(this.rotation, lavaRiser.size * 4 + this.recoil);
+        
+        var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        
+        targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist]);
+        
         if(this._bulletLife <= 0){
           this._bullet = null;
         }

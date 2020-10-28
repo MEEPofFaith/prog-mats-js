@@ -1,3 +1,39 @@
+const tV = new Vec2();
+const tV2 = new Vec2();
+
+//Stolen effect from [redacted] from [redacted/redacted]
+//Which I now just stole from myself.
+//Why do I keep stealing things.
+const targetLightning = new Effect(10, 500, e => {
+	var length = e.data[0];
+	var tileLength = Mathf.round(length / 8);
+	
+	Lines.stroke(6 * e.fout());
+	Draw.color(e.color, Color.white, e.fin());
+	
+	for(var i = 0; i < tileLength; i++){
+		var offsetXA = (i == 0) ? 0 : Mathf.randomSeed(e.id + (i * 6413), -4.5, 4.5);
+		var offsetYA = (length / tileLength) * i;
+		
+		var f = i + 1;
+		
+		var offsetXB = (f == tileLength) ? 0 : Mathf.randomSeed(e.id + (f * 6413), -4.5, 4.5);
+		var offsetYB = (length / tileLength) * f;
+		
+		tV.trns(e.rotation, offsetYA, offsetXA);
+		tV.add(e.x, e.y);
+		
+		tV2.trns(e.rotation, offsetYB, offsetXB);
+		tV2.add(e.x, e.y);
+		
+		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
+		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
+	};
+  Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
+});
+
+targetLightning.ground = true;
+
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
 var colors = [Color.valueOf("e69a2755"), Color.valueOf("eda332aa"), Color.valueOf("f2ac41"), Color.valueOf("ffbb54")];
@@ -36,6 +72,13 @@ const lavaPool = extend(BasicBulletType, {
   },
   draw(b){
     if(b != null){
+      shootLoc.trns(b.owner.rotation, b.owner.size / 2 - b.owner.recoil);
+      
+      var dist = Mathf.dst(b.owner.x + shootLoc.x, b.owner.y + shootLoc.y, b.x, b.y);
+      var ang = Mathf.dst(b.owner.x + shootLoc.x, b.owner.y + shootLoc.y, b.x, b.y);
+      
+      targetLightning.at(b.owner.x + shootLoc.x, b.owner.y + shootLoc.y, ang, colors[2], [dist]);
+      
       //ring
       Draw.color(Color.valueOf("e3931b"));
       Draw.alpha(b.fout());
@@ -102,7 +145,7 @@ heatRiser.shootType = lavaPool;
 heatRiser.shootDuration = 180;
 heatRiser.range = 240;
 heatRiser.reloadTime = 60;
-heatRiser.recoilAmount = 2;
+heatRiser.recoilAmount = 4;
 heatRiser.COA = 0.75;
 heatRiser.cellHeight = 1;
 heatRiser.rotateSpeed = 3;
@@ -112,6 +155,8 @@ heatRiser.smokeEffect = Fx.none;
 heatRiser.ammoUseEffect = Fx.none;
 heatRiser.capClosing = 0.01;
 heatRiser.heatColor = Color.valueOf("f08913");
+
+const shootLoc = new Vec2();
 
 heatRiser.buildType = () => {
 	var eruptEntity = extendContent(PowerTurret.PowerTurretBuild, heatRiser, {
@@ -131,7 +176,7 @@ heatRiser.buildType = () => {
       
       Draw.z(Layer.turret);
       
-      back.trns(this.rotation - 90, 0, -this.recoil);
+      back.trns(this.rotation - 90, 0, this.recoil);
       
       Draw.rect(heatRiser.outlines[0], this.x + back.x, this.y + back.y, this.rotation - 90);
       for(var i = 0; i < 4; i ++){
@@ -196,7 +241,15 @@ heatRiser.buildType = () => {
         this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], heatRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
         this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], heatRiser.COA * Mathf.absin(-this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
         this._bulletLife = this._bulletLife - Time.delta;
-        this.rotation = Mathf.lerpDelta(this.rotation, Angles.angle(this.x, this.y, this._bullet.x, this._bullet.y), 0.7);
+        this.rotation = Angles.moveToward(this.rotation, Angles.angle(this.x, this.y, this._bullet.x, this._bullet.y), 360);
+        
+        shootLoc.trns(this.rotation, heatRiser.size * 4 + this.recoil);
+        
+        var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        
+        targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist]);
+        
         if(this._bulletLife <= 0){
           this._bullet = null;
         }
