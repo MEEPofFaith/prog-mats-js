@@ -21,7 +21,7 @@ const lavaBack = new Vec2();
 const lavaPool = extend(BasicBulletType, {
   update(b){
     if(b != null){
-      if(b.owner.target != null){
+      if(b.owner.targetPos != null){
         var target = Angles.angle(b.x, b.y, b.owner.targetPos.x, b.owner.targetPos.y);
         b.rotation(Mathf.slerpDelta(b.rotation(), target, 0.15));
       };
