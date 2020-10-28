@@ -1,6 +1,6 @@
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
-var colors = [Color.valueOf("a3570055"), Color.valueOf("bf6804aa"), Color.valueOf("db7909"), Color.valueOf("f08913")];
+var colors = [Color.valueOf("e69a2755"), Color.valueOf("eda332aa"), Color.valueOf("f2ac41"), Color.valueOf("ffbb54")];
 var length = 32;
 const burnRadius = 36;
 
@@ -8,7 +8,7 @@ const burnRadius = 36;
 //Width of each section of the beam from thickest to thinnest
 var tscales = [1, 0.7, 0.5, 0.2];
 //Overall width of each color
-var strokes = [burnRadius/2, burnRadius/2.5, burnRadius/3, burnRadius/3.5];
+var strokes = [burnRadius/2, burnRadius/2.5, burnRadius/3.3333, burnRadius/5];
 //Determines how far back each section in the start should be pulled
 var pullscales = [1, 1.12, 1.15, 1.17];
 //Determines how far each section of the end should extend past the main thickest section
@@ -16,6 +16,7 @@ var lenscales = [1, 1.3, 1.6, 1.9];
 
 var tmpColor = new Color();
 const vec = new Vec2();
+const lavaBack = new Vec2();
 
 const magmaPool = extend(BasicBulletType, {
   update(b){
@@ -23,11 +24,11 @@ const magmaPool = extend(BasicBulletType, {
       if(b.owner.target != null){
         var target = Angles.angle(b.x, b.y, b.owner.targetPos.x, b.owner.targetPos.y);
         b.rotation(Mathf.slerpDelta(b.rotation(), target, 0.15));
-      };
+      }
       
       if(b.timer.get(1, 5)){
         Damage.damage(b.team, b.x, b.y, burnRadius, this.damage, true);
-      };
+      }
       
       Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 100000);
       Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 99000);
@@ -35,34 +36,24 @@ const magmaPool = extend(BasicBulletType, {
   },
   draw(b){
     if(b != null){
-      //middle
-      Draw.blend(Blending.additive);
-      Draw.color(Color.valueOf("f08913"));
-      Draw.alpha(b.fout());
-      Fill.circle(b.x, b.y, burnRadius);
-      Draw.blend();
-      Draw.color();
-      
       //ring
-      Draw.color(Color.valueOf("a35700"));
+      Draw.color(Color.valueOf("e3931b"));
       Draw.alpha(b.fout());
-      Lines.stroke(1);
+      Lines.stroke(2);
       Lines.circle(b.x, b.y, burnRadius);
       
       //"fountain" of lava
-      Draw.blend(Blending.additive);
       for(var s = 0; s < 4; s++){
-        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
+        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() / 3 + Mathf.randomSeed(b.id), 1.0, 0.3) / 3));
         Draw.alpha(b.fout());
+        Fill.circle(b.x, b.y, strokes[s] * 2);
         for(var i = 0; i < 4; i++){
-          var baseLen = (length + (Mathf.absin(b.owner._bulletLife / ((i + 1) * 2.5) + b.id, 0.8, 1.5) * (length / 1.5))) * b.fout();
-          Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
+          var baseLen = (length + (Mathf.absin(Time.time() / ((i + 1) * 2) + Mathf.randomSeed(b.id), 0.8, 1.5) * (length / 1.5))) * b.fout();
+          lavaBack.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
-          Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], false);
+          Lines.lineAngle(b.x + lavaBack.x, b.y + lavaBack.y, 90, baseLen * b.fout() * lenscales[i], false);
         };
       };
-      Draw.blend();
-      Draw.color();
       Draw.reset();
     };
   }
@@ -260,8 +251,8 @@ lavaRiser.buildType = () => {
         this._bullet.time = 0;
         this.heat = 1;
         this.recoil = lavaRiser.recoilAmount;
-        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], lavaRiser.COA * Mathf.absin(this._bulletLife / 6 + this._bullet.id, 0.8, 1), 0.6);
-        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], lavaRiser.COA * Mathf.absin(-this._bulletLife / 6 + this._bullet.id, 0.8, 1), 0.6);
+        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], lavaRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
+        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], lavaRiser.COA * Mathf.absin(-this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
         this._bulletLife = this._bulletLife - Time.delta;
         if(this._bulletLife <= 0){
           this._bullet = null;
