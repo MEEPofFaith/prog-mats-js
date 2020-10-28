@@ -167,7 +167,7 @@ lavaRiser.buildType = () => {
         Draw.rect(lavaRiser.outlines[i + 9], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
-      Drawf.shadow(lavaRiser.turretRegion, this.x + back.x - (heatRiser.size / 2), this.y + back.y - (heatRiser.size / 2), this.rotation - 90);
+      Drawf.shadow(lavaRiser.turretRegion, this.x + back.x - (lavaRiser.size / (1 + (1/3))), this.y + back.y - (lavaRiser.size / (1 + (1/3))), this.rotation - 90);
       Draw.rect(lavaRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       //Bottom Layer Cells
