@@ -185,6 +185,7 @@ heatRiser.buildType = () => {
         this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], heatRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
         this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], heatRiser.COA * Mathf.absin(-this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
         this._bulletLife = this._bulletLife - Time.delta;
+        this.rotation = Mathf.lerpDelta(this.rotation, Angles.angle(this.x, this.y, this._bullet.x, this._bullet.y), 0.7);
         if(this._bulletLife <= 0){
           this._bullet = null;
         }
@@ -212,7 +213,9 @@ heatRiser.buildType = () => {
       this._bullet = bullet;
     },
     turnToTarget(targetRot){
-      this.rotation = Angles.moveToward(this.rotation, targetRot, this.efficiency() * heatRiser.rotateSpeed * this.delta() * (this._bulletLife > 0 ? heatRiser.firingMoveFract : 1));
+      if(this._bulletLife <= 0){
+        this.rotation = Angles.moveToward(this.rotation, targetRot, this.efficiency() * heatRiser.rotateSpeed * this.delta());
+      }
     },
     shouldActiveSound(){
       return this._bulletLife > 0 && this._bullet != null;
