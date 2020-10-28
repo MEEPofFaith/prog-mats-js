@@ -145,7 +145,7 @@ heatRiser.buildType = () => {
         Draw.rect(heatRiser.outlines[i + 1], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
-      Drawf.shadow(heatRiser.turretRegion, this.x + back.x - (heatRiser.size / 2), this.y + back.y - (heatRiser.size / 2),, this.rotation - 90);
+      Drawf.shadow(heatRiser.turretRegion, this.x + back.x - (heatRiser.size / 2), this.y + back.y - (heatRiser.size / 2), this.rotation - 90);
       Draw.rect(heatRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       Drawf.shadow(heatRiser.cells, this.x + back.x - heatRiser.cellHeight, this.y + back.y - heatRiser.cellHeight, this.rotation - 90);
