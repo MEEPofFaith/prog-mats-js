@@ -82,13 +82,18 @@ lavaPool.hittable = false;
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const heatRiser = extendContent(PowerTurret, "eruptor-i", {
   load(){
-    this.super$load();
     this.caps = [];
+    this.outlines = [];
     
+    this.baseRegion = Core.atlas.find("block-3");
+    this.turretRegion = Core.atlas.find(this.name + "-turret");
     this.cells = Core.atlas.find(this.name + "-cells");
     this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
     for(var i = 0; i < 4; i++){
       this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
+    }
+    for(var i = 0; i < 5; i++){
+      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
     }
   },
   icons(){
@@ -105,6 +110,7 @@ heatRiser.range = 240;
 heatRiser.reloadTime = 60;
 heatRiser.recoilAmount = 2;
 heatRiser.COA = 1;
+heatRiser.cellHeight = 1;
 heatRiser.rotateSpeed = 3;
 heatRiser.firingMoveFract = 0.8;
 heatRiser.shootEffect = Fx.none;
@@ -133,14 +139,20 @@ heatRiser.buildType = () => {
       
       back.trns(this.rotation - 90, 0, -this.recoil);
       
-      Drawf.shadow(heatRiser.region, this.x + back.x - (heatRiser.size / 2), this.y + back.y - (heatRiser.size / 2), this.rotation - 90);
-      Draw.rect(heatRiser.region, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Draw.rect(heatRiser.outlines[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+      for(var i = 0; i < 4; i ++){
+      open.trns(this.rotation - 90, 0 + (this._cellOpenAmounts[alternate[i]] * trnsX[i]), this._cellOpenAmounts[alternate[i]] * trnsY[i]);
+        Draw.rect(heatRiser.outlines[i + 1], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      }
       
-      Drawf.shadow(heatRiser.cells, this.x + back.x - (heatRiser.size / 2), this.y + back.y - (heatRiser.size / 2), this.rotation - 90);
+      Drawf.shadow(heatRiser.turretRegion, this.x + back.x - (heatRiser.size / 2), this.y + back.y - (heatRiser.size / 2),, this.rotation - 90);
+      Draw.rect(heatRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
+      
+      Drawf.shadow(heatRiser.cells, this.x + back.x - heatRiser.cellHeight, this.y + back.y - heatRiser.cellHeight, this.rotation - 90);
       
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
-        Drawf.shadow(heatRiser.caps[i], this.x + open.x + back.x - (heatRiser.size / 2), this.y + open.y + back.y - (heatRiser.size / 2), this.rotation - 90);
+        Drawf.shadow(heatRiser.caps[i], this.x + open.x + back.x - heatRiser.cellHeight, this.y + open.y + back.y - heatRiser.cellHeight, this.rotation - 90);
       }
       
       Draw.rect(heatRiser.cells, this.x + back.x, this.y + back.y, this.rotation - 90);

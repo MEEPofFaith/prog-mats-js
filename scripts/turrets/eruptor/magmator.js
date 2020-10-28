@@ -82,13 +82,15 @@ magmaPool.hittable = false;
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
   load(){
-    this.super$load();
     this.cells = [];
     this.cellHeats = [];
     this.capsA = [];
     this.capsB = [];
     this.capsC = [];
+    this.outlines = [];
     
+    this.baseRegion = Core.atlas.find("block-4");
+    this.turretRegion = Core.atlas.find(this.name + "-turret");
     for(var i = 0; i < 3; i++){
       this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
       this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
@@ -97,6 +99,9 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
       this.capsA[i] = Core.atlas.find(this.name + "-caps-0-" + i);
       this.capsB[i] = Core.atlas.find(this.name + "-caps-1-" + i);
       this.capsC[i] = Core.atlas.find(this.name + "-caps-2-" + i);
+    }
+    for(var i = 0; i < 13; i++){
+      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
     }
   },
   icons(){
@@ -114,6 +119,7 @@ lavaRiser.reloadTime = 90;
 lavaRiser.rotateSpeed = 2.25;
 lavaRiser.recoilAmount = 4;
 lavaRiser.COA = 1.5;
+lavaRiser.cellHeight = 1;
 lavaRiser.firingMoveFract = 0.8;
 lavaRiser.shootEffect = Fx.none;
 lavaRiser.smokeEffect = Fx.none;
@@ -141,15 +147,35 @@ lavaRiser.buildType = () => {
       
       back.trns(this.rotation - 90, 0, -this.recoil);
       
-      Drawf.shadow(lavaRiser.region, this.x + back.x - (lavaRiser.size / 2), this.y + back.y - (lavaRiser.size / 2), this.rotation - 90);
-      Draw.rect(lavaRiser.region, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Draw.rect(lavaRiser.outlines[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+      
+      //Bottom Layer Cell Outlines
+      for(var i = 0; i < 4; i ++){
+      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
+        Draw.rect(lavaRiser.outlines[i + 1], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      }
+      
+      //Mid Layer Cell Outlines
+      for(var i = 0; i < 4; i ++){
+      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[3 - i]] * trnsX[i], this._cellOpenAmounts[alternate[3 - i]] * trnsY[i]);
+        Draw.rect(lavaRiser.outlines[i + 5], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      }
+      
+      //Top Layer Cell Outlines
+      for(var i = 0; i < 4; i ++){
+      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
+        Draw.rect(lavaRiser.outlines[i + 9], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      }
+      
+      Drawf.shadow(lavaRiser.turretRegion, this.x + back.x - (heatRiser.size / 2),, this.y + back.y - (heatRiser.size / 2),, this.rotation - 90);
+      Draw.rect(lavaRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       //Bottom Layer Cells
-      Drawf.shadow(lavaRiser.cells[0], this.x + back.x - (lavaRiser.size / 2), this.y + back.y - (lavaRiser.size / 2), this.rotation - 90);
+      Drawf.shadow(lavaRiser.cells[0], this.x + back.x - lavaRiser.cellHeight, this.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
-        Drawf.shadow(lavaRiser.capsA[i], this.x + open.x + back.x - (lavaRiser.size / 2), this.y + open.y + back.y - (lavaRiser.size / 2), this.rotation - 90);
+        Drawf.shadow(lavaRiser.capsA[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       }
       
       Draw.rect(lavaRiser.cells[0], this.x + back.x, this.y + back.y, this.rotation - 90);
@@ -168,11 +194,11 @@ lavaRiser.buildType = () => {
       }
       
       //Mid Layer Cells
-      Drawf.shadow(lavaRiser.cells[1], this.x + open.x + back.x - (lavaRiser.size / 2), this.y + open.y + back.y - (lavaRiser.size / 2), this.rotation - 90);
+      Drawf.shadow(lavaRiser.cells[1], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[3 - i]] * trnsX[i], this._cellOpenAmounts[alternate[3 - i]] * trnsY[i]);
-        Drawf.shadow(lavaRiser.capsB[i], this.x + open.x + back.x - (lavaRiser.size / 2), this.y + open.y + back.y - (lavaRiser.size / 2), this.rotation - 90);
+        Drawf.shadow(lavaRiser.capsB[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       }
       
       Draw.rect(lavaRiser.cells[1], this.x + back.x, this.y + back.y, this.rotation - 90);
@@ -191,11 +217,11 @@ lavaRiser.buildType = () => {
       }
       
       //Top Layer Cells
-      Drawf.shadow(lavaRiser.cells[2], this.x + open.x + back.x - (lavaRiser.size / 2), this.y + open.y + back.y - (lavaRiser.size / 2), this.rotation - 90);
+      Drawf.shadow(lavaRiser.cells[2], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
-        Drawf.shadow(lavaRiser.capsC[i], this.x + open.x + back.x - (lavaRiser.size / 2), this.y + open.y + back.y - (lavaRiser.size / 2), this.rotation - 90);
+        Drawf.shadow(lavaRiser.capsC[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       }
       
       Draw.rect(lavaRiser.cells[2], this.x + back.x, this.y + back.y, this.rotation - 90);
