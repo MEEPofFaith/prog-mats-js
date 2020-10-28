@@ -74,24 +74,22 @@ magmaPool.hittable = false;
 const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
   load(){
     this.cells = [];
-    this.cellHeats = [];
-    this.capsA = [];
-    this.capsB = [];
-    this.capsC = [];
+    this.heatRegions = [];
+    this.bottomCaps = [];
+    this.topCaps = [];
     this.outlines = [];
     
     this.baseRegion = Core.atlas.find("block-4");
     this.turretRegion = Core.atlas.find(this.name + "-turret");
     for(var i = 0; i < 3; i++){
       this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
-      this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
+      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
     for(var i = 0; i < 4; i++){
-      this.capsA[i] = Core.atlas.find(this.name + "-caps-0-" + i);
-      this.capsB[i] = Core.atlas.find(this.name + "-caps-1-" + i);
-      this.capsC[i] = Core.atlas.find(this.name + "-caps-2-" + i);
+      this.bottomCaps[i] = Core.atlas.find(this.name + "-caps-0-" + i);
+      this.topCaps[i] = Core.atlas.find(this.name + "-caps-1-" + i);
     }
-    for(var i = 0; i < 13; i++){
+    for(var i = 0; i < 9; i++){
       this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
     }
   },
@@ -109,7 +107,7 @@ lavaRiser.range = 280;
 lavaRiser.reloadTime = 90;
 lavaRiser.rotateSpeed = 2.25;
 lavaRiser.recoilAmount = 4;
-lavaRiser.COA = 1.5;
+lavaRiser.COA = 0.9;
 lavaRiser.cellHeight = 1;
 lavaRiser.firingMoveFract = 0.8;
 lavaRiser.shootEffect = Fx.none;
@@ -130,7 +128,7 @@ lavaRiser.buildType = () => {
       const back = new Vec2();
       const trnsX = [-1, 1, -1, 1];
       const trnsY = [-1, -1, 1, 1];
-      const alternate = [1, 1, 0, 0];
+      const trnsYflat = [0, 0, 1, 1];
       
       Draw.rect(lavaRiser.baseRegion, this.x, this.y, 0);
       
@@ -142,31 +140,33 @@ lavaRiser.buildType = () => {
       
       //Bottom Layer Cell Outlines
       for(var i = 0; i < 4; i ++){
-      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
+      open.trns(this.rotation - 90, this._cellOpenAmounts[1] * trnsX[i], this._cellOpenAmounts[1] * trnsY[i]);
         Draw.rect(lavaRiser.outlines[i + 1], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
-      }
-      
-      //Mid Layer Cell Outlines
-      for(var i = 0; i < 4; i ++){
-      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[3 - i]] * trnsX[i], this._cellOpenAmounts[alternate[3 - i]] * trnsY[i]);
-        Draw.rect(lavaRiser.outlines[i + 5], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
       //Top Layer Cell Outlines
       for(var i = 0; i < 4; i ++){
-      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
-        Draw.rect(lavaRiser.outlines[i + 9], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      open.trns(this.rotation - 90, this._cellOpenAmounts[0] * trnsX[i], this._cellOpenAmounts[0] * trnsYflat[i]);
+        Draw.rect(lavaRiser.outlines[i + 5], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
       Drawf.shadow(lavaRiser.turretRegion, this.x + back.x - (lavaRiser.size / (1 + (1/3))), this.y + back.y - (lavaRiser.size / (1 + (1/3))), this.rotation - 90);
       Draw.rect(lavaRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
       
+      if(this.heat > 0.00001){
+        Draw.blend(Blending.additive);
+        Draw.color(lavaRiser.heatColor, this.heat);
+        Draw.rect(lavaRiser.heatRegions[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.blend();
+        Draw.color();
+      }
+      
       //Bottom Layer Cells
       Drawf.shadow(lavaRiser.cells[0], this.x + back.x - lavaRiser.cellHeight, this.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       
       for(var i = 0; i < 4; i ++){
-      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
-        Drawf.shadow(lavaRiser.capsA[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
+      open.trns(this.rotation - 90, this._cellOpenAmounts[1] * trnsX[i], this._cellOpenAmounts[1] * trnsY[i]);
+        Drawf.shadow(lavaRiser.bottomCaps[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       }
       
       Draw.rect(lavaRiser.cells[0], this.x + back.x, this.y + back.y, this.rotation - 90);
@@ -174,22 +174,22 @@ lavaRiser.buildType = () => {
       if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
         Draw.color(lavaRiser.heatColor, this.heat);
-        Draw.rect(lavaRiser.cellHeats[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.rect(lavaRiser.heatRegions[1], this.x + back.x, this.y + back.y, this.rotation - 90);
         Draw.blend();
         Draw.color();
       }
       
       for(var i = 0; i < 4; i ++){
-      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
-        Draw.rect(lavaRiser.capsA[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      open.trns(this.rotation - 90, this._cellOpenAmounts[1] * trnsX[i], this._cellOpenAmounts[1] * trnsY[i]);
+        Draw.rect(lavaRiser.bottomCaps[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
-      //Mid Layer Cells
+      //Top Layer Cells
       Drawf.shadow(lavaRiser.cells[1], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       
       for(var i = 0; i < 4; i ++){
-      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[3 - i]] * trnsX[i], this._cellOpenAmounts[alternate[3 - i]] * trnsY[i]);
-        Drawf.shadow(lavaRiser.capsB[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
+      open.trns(this.rotation - 90, this._cellOpenAmounts[0] * trnsX[i], this._cellOpenAmounts[0] * trnsYflat[i]);
+        Drawf.shadow(lavaRiser.topCaps[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
       }
       
       Draw.rect(lavaRiser.cells[1], this.x + back.x, this.y + back.y, this.rotation - 90);
@@ -197,37 +197,14 @@ lavaRiser.buildType = () => {
       if(this.heat > 0){
         Draw.blend(Blending.additive);
         Draw.color(lavaRiser.heatColor, this.heat);
-        Draw.rect(lavaRiser.cellHeats[1], this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.rect(lavaRiser.heatRegions[2], this.x + back.x, this.y + back.y, this.rotation - 90);
         Draw.blend();
         Draw.color();
       }
       
       for(var i = 0; i < 4; i ++){
-      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[3 - i]] * trnsX[i], this._cellOpenAmounts[alternate[3 - i]] * trnsY[i]);
-        Draw.rect(lavaRiser.capsB[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
-      }
-      
-      //Top Layer Cells
-      Drawf.shadow(lavaRiser.cells[2], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
-      
-      for(var i = 0; i < 4; i ++){
-      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
-        Drawf.shadow(lavaRiser.capsC[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
-      }
-      
-      Draw.rect(lavaRiser.cells[2], this.x + back.x, this.y + back.y, this.rotation - 90);
-      
-      if(this.heat > 0){
-        Draw.blend(Blending.additive);
-        Draw.color(lavaRiser.heatColor, this.heat);
-        Draw.rect(lavaRiser.cellHeats[2], this.x + back.x, this.y + back.y, this.rotation - 90);
-        Draw.blend();
-        Draw.color();
-      }
-      
-      for(var i = 0; i < 4; i ++){
-      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
-        Draw.rect(lavaRiser.capsC[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      open.trns(this.rotation - 90, this._cellOpenAmounts[0] * trnsX[i], this._cellOpenAmounts[0] * trnsYflat[i]);
+        Draw.rect(lavaRiser.topCaps[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
     },
     setStats(){

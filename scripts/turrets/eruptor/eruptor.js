@@ -75,11 +75,14 @@ const heatRiser = extendContent(PowerTurret, "eruptor-i", {
   load(){
     this.caps = [];
     this.outlines = [];
+    this.heatRegions = [];
     
     this.baseRegion = Core.atlas.find("block-3");
     this.turretRegion = Core.atlas.find(this.name + "-turret");
     this.cells = Core.atlas.find(this.name + "-cells");
-    this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
+    for(var i = 0; i < 2; i++){
+      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
+    }
     for(var i = 0; i < 4; i++){
       this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
     }
@@ -139,6 +142,14 @@ heatRiser.buildType = () => {
       Drawf.shadow(heatRiser.turretRegion, this.x + back.x - (heatRiser.size / (1 + (1/3))), this.y + back.y - (heatRiser.size / (1 + (1/3))), this.rotation - 90);
       Draw.rect(heatRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
       
+      if(this.heat > 0.00001){
+        Draw.blend(Blending.additive);
+        Draw.color(heatRiser.heatColor, this.heat);
+        Draw.rect(heatRiser.heatRegions[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.blend();
+        Draw.color();
+      }
+      
       Drawf.shadow(heatRiser.cells, this.x + back.x - heatRiser.cellHeight, this.y + back.y - heatRiser.cellHeight, this.rotation - 90);
       
       for(var i = 0; i < 4; i ++){
@@ -151,7 +162,7 @@ heatRiser.buildType = () => {
       if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
         Draw.color(heatRiser.heatColor, this.heat);
-        Draw.rect(heatRiser.cellHeat, this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.rect(heatRiser.heatRegions[1], this.x + back.x, this.y + back.y, this.rotation - 90);
         Draw.blend();
         Draw.color();
       }
