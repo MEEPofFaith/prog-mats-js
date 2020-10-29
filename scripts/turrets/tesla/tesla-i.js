@@ -66,16 +66,15 @@ teslaRing.shootSound = Sounds.spark;
 teslaRing.shootEffect = Fx.sparkShoot;
 teslaRing.shootSmoke = lightningSmoke;
 
-const targetX = new Seq(511);
-const targetY = new Seq(511);
-const targets = new Seq(255);
+const targetX = new Seq(127);
+const targetY = new Seq(127);
+const targets = new Seq(127);
 
 const shootLoc = new Vec2();
 
 teslaRing.buildType = () => {
   var teslaRingEntity = extendContent(PowerTurret.PowerTurretBuild, teslaRing, {
     setEff(){
-      this._targetCount = -1;
       this._currentTarget = 0;
       this._shootAngle = 0;
       this._dist = 0;
@@ -84,13 +83,13 @@ teslaRing.buildType = () => {
       //I have ascended to stealing code from myself.
       targetX.clear();
       targetY.clear();
-      this._targetCount = -1;
       
       Units.nearbyEnemies(this.team, this.x - teslaRing.range, this.y - teslaRing.range, teslaRing.range * 2, teslaRing.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, teslaRing.range) && !e.dead){
+          if(targetX.size <= 127){
             targetX.add(e.x);
             targetY.add(e.y);
-            this._targetCount++;
+          }
         };
       });
       
@@ -109,18 +108,19 @@ teslaRing.buildType = () => {
           if(other == null) continue yGroup;
           if(!targets.contains(other.pos())){
             if(other.team != this.team && !other.dead){
-              targetX.add(other.x);
-              targetY.add(other.y);
-              this._targetCount++;
+              if(targetX.size <= 127){
+                targetX.add(other.x);
+                targetY.add(other.y);
+              }
             }
           };
         };
       };
       
-      if(this._targetCount >= 0){
+      if(targetX.size >= 0){
         this.heat = 1;
         for(var i = 0; i < teslaRing.shots; i++){
-          this._currentTarget = Mathf.floor(Mathf.random(this._targetCount + 0.999));
+          this._currentTarget = Mathf.floor(Mathf.random(targetX.size + 0.999));
           var targX = targetX.get(this._currentTarget);
           var targY = targetY.get(this._currentTarget);
           

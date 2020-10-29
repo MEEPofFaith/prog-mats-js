@@ -34,15 +34,11 @@ const targetLightning = new Effect(10, 500, e => {
 
 targetLightning.ground = true;
 
-const side = new Vec2();
-const open = new Vec2();
-const rangeloc = new Vec2();
-
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
 var colors = [Color.valueOf("e69a2755"), Color.valueOf("eda332aa"), Color.valueOf("f2ac41"), Color.valueOf("ffbb54")];
 var length = 8;
-const burnRadius = 8;
+const burnRadius = 7;
 
 //Stuff you probably shouldn't edit.
 //Width of each section of the beam from thickest to thinnest
@@ -65,8 +61,8 @@ const hellPool = extend(BasicBulletType, {
         Damage.damage(b.team, b.x, b.y, burnRadius, this.damage, true);
       }
       
-      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 10000);
-      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 9000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 100000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 99000);
     }
   },
   draw(b){
@@ -109,24 +105,23 @@ hellPool.hittable = false;
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
   load(){
-    this.super$load();
     this.caps = [];
-    this.sides = [];
     this.cells = [];
-    this.cellHeats = [];
+    this.heatRegions = [];
     this.outlines = [];
     
+    this.baseRegion = Core.atlas.find("block-4");
     this.bottomRegion = Core.atlas.find(this.name + "-bottom");
+    this.sideRegion = Core.atlas.find(this.name + "-side");
     for(var i = 0; i < 2; i++){
-      this.sides[i] = Core.atlas.find(this.name + "-sides-" + i);
-      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
-    }
-    for(var i = 0; i < 3; i++){
       this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
-      this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
     }
     for(var i = 0; i < 4; i++){
+      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
       this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
+    }
+    for(var i = 0; i < 6; i++){
+      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
     }
   },
   icons(){
@@ -142,86 +137,156 @@ hellRiser.shootDuration = burnDuration;
 hellRiser.range = 200;
 hellRiser.reloadTime = 90;
 hellRiser.shootCone = 360;
-hellRiser.rotationSpeed = 0;
-hellRiser.COA = 0.9;
-hellRiser.SOA = 3;
+hellRiser.rotationSpeed = 8;
+hellRiser.rotationWindUp = 0.1;
+hellRiser.rotationWindDown = 0.005;
+hellRiser.COA = 0.5;
+hellRiser.recoil = 7;
+hellRiser.sideHeight = 4;
+hellRiser.cellHeight = 1;
 hellRiser.shootEffect = Fx.none;
 hellRiser.smokeEffect = Fx.none;
 hellRiser.ammoUseEffect = Fx.none;
 hellRiser.restitution = 0.01;
+hellRiser.heatColor = Color.valueOf("f08913");
 
-const targetX = new Seq(511);
-const targetY = new Seq(511);
-const collidedBlocks = new IntSet(255);
+const targetX = new Seq(2047);
+const targetY = new Seq(2047);
+const collidedBlocks = new IntSet(2047);
+
+const side = new Vec2();
+const open = new Vec2();
+const rangeloc = new Vec2();
+const shootLoc = new Vec2();
+var rots = [0, 90, 180, 270];
 
 hellRiser.buildType = () => {
 	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, hellRiser, {
     setEff(){
-      this._targetCount = -1;
       this._bulletLife = 0;
-      this._cellOpenAmount = 0;
-      this._cellSideAmount = 0;
+      this._cellOpenAmounts = [0, 0];
+      this._rotationSpeed = 0;
+      this._yes = 0;
     },
     draw(){
+      var trnsX = [-1, 1];
+      
       Draw.rect(hellRiser.baseRegion, this.x, this.y, 0);
       
       Draw.z(Layer.turret);
       
-      for(var i = 0; i < 2; i++){
-        side.trns(this.rotation - 90, this._cellSideAmount * ((i - 0.5) * 2), 0);
-        Drawf.shadow(hellRiser.outlines[i], this.x, this.y, this.rotation - 90);
-        Draw.rect(hellRiser.outlines[i], this.x + side.x, this.y + side.y, this.rotation - 90);
+      Drawf.shadow(hellRiser.bottomRegion, this.x - (hellRiser.size / (1 + (1 / 3))), this.y - (hellRiser.size / (1 + (1 / 3))));
+      
+      Draw.rect(hellRiser.outlines[0], this.x, this.y);
+      
+      for(var i = 0; i < 4; i++){
+        var drawRotation = this.rotation + rots[i];
+        
+        side.trns(drawRotation, 0, this.recoil);
       }
       
-      Drawf.shadow(hellRiser.bottomRegion, this.x - (hellRiser.size / 2), this.y - (hellRiser.size / 2), this.rotation - 90);
-      Draw.rect(hellRiser.bottomRegion, this.x, this.y, this.rotation - 90);
+      Draw.rect(hellRiser.bottomRegion, this.x, this.y);
       
-      //inside big cell
-      Draw.rect(hellRiser.cells[2], this.x, this.y, this.rotation - 90);
       if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
-        Draw.color(Color.valueOf("ffbe73"), this.heat);
-        Draw.rect(hellRiser.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation - 90);
+        Draw.color(hellRiser.heatColor, this.heat);
+        Draw.rect(hellRiser.heatRegions[0], this.x, this.y);
         Draw.blend();
         Draw.color();
       }
       
-      //sides and cells
-      for(var i = 0; i < 2; i ++){
-        side.trns(this.rotation - 90, this._cellSideAmount * ((i-0.5)*2), 0);
-        Drawf.shadow(hellRiser.sides[i], this.x + side.x - (hellRiser.size / 2), this.y + side.y - (hellRiser.size / 2), this.rotation - 90);
-        Draw.rect(hellRiser.sides[i], this.x + side.x, this.y + side.y, this.rotation - 90);
+      for(i = 0; i < 4; i++){
+        var drawRotation = this.rotation + rots[i];
         
-        Drawf.shadow(hellRiser.cells[i], this.x + side.x - (hellRiser.size / 2), this.y + side.y - (hellRiser.size / 2), this.rotation - 90);
-        Draw.rect(hellRiser.cells[i], this.x + side.x, this.y + side.y, this.rotation - 90);
-        if(this.heat > 0){
-          Draw.blend(Blending.additive);
-          Draw.color(Color.valueOf("f08913"), this.heat);
-          Draw.rect(hellRiser.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation - 90);
-          Draw.blend();
-          Draw.color();
+        side.trns(drawRotation, 0, this.recoil);
+        
+        //Side shadows
+        Drawf.shadow(hellRiser.sideRegion, this.x + side.x - hellRiser.sideHeight, this.y + side.y - hellRiser.sideHeight, drawRotation);
+        
+        //Side outlines
+        for(var j = 0; j < 5; j++){
+          Draw.rect(hellRiser.outlines[j + 1], this.x + side.x, this.y + side.y, drawRotation);
+        }
+        
+        //Cap Outlines
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[0] * trnsX[i], this._cellOpenAmounts[0]);
+          Draw.rect(hellRiser.outlines[j + 2], this.x + side.x + open.x, this.y + side.y + open.y, drawRotation);
+          Draw.rect(hellRiser.outlines[j + 4], this.x + side.x + open.x, this.y + side.y + open.y, drawRotation);
         }
       }
       
-      //sw
-      open.trns(this.rotation - 90, 0 - this._cellOpenAmount - this._cellSideAmount, -this._cellOpenAmount);
-      Drawf.shadow(hellRiser.caps[0], this.x + open.x - (hellRiser.size / 2), this.y + open.y - (hellRiser.size / 2), this.rotation - 90);
-      Draw.rect(hellRiser.caps[0], this.x + open.x, this.y + open.y, this.rotation - 90);
+      for(i = 0; i < 4; i++){
+        var drawRotation = this.rotation + rots[i];
+        
+        side.trns(drawRotation, 0, this.recoil);
+        
+        //Side Parts
+        Draw.rect(hellRiser.sideRegion, this.x + side.x, this.y + side.y, drawRotation);
+        
+        //Side Parts Heat
+        if(this.heat > 0.00001){
+          Draw.blend(Blending.additive);
+          Draw.color(hellRiser.heatColor, this.heat);
+          Draw.rect(hellRiser.heatRegions[1], this.x + side.x, this.y + side.y, drawRotation);
+          Draw.blend();
+          Draw.color();
+        }
+        
+        //Bottom Layer Cell Shadows
+        Drawf.shadow(hellRiser.cells[0], this.x + side.x - hellRiser.cellHeight, this.y + side.y - hellRiser.cellHeight, drawRotation);
+        
+        //Bottom Layer Cap Shadows
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[0] * trnsX[j], this._cellOpenAmounts[0]);
+          Drawf.shadow(hellRiser.caps[j], this.x + side.x + open.x - hellRiser.cellHeight, this.y + side.y + open.y - hellRiser.cellHeight, drawRotation);
+        }
+        
+        //Bottom Layer Cells
+        Draw.rect(hellRiser.cells[0], this.x + side.x, this.y + side.y, drawRotation);
+        
+        //Bottom Layer Cells Heat
+        if(this.heat > 0.00001){
+          Draw.blend(Blending.additive);
+          Draw.color(hellRiser.heatColor, this.heat);
+          Draw.rect(hellRiser.heatRegions[2], this.x + side.x, this.y + side.y, drawRotation);
+          Draw.blend();
+          Draw.color();
+        }
       
-      //se
-      open.trns(this.rotation - 90, 0 + this._cellOpenAmount + this._cellSideAmount, -this._cellOpenAmount);
-      Drawf.shadow(hellRiser.caps[1], this.x + open.x - (hellRiser.size / 2), this.y + open.y - (hellRiser.size / 2), this.rotation - 90);
-      Draw.rect(hellRiser.caps[1], this.x + open.x, this.y + open.y, this.rotation - 90);
+        //Bottom Layer Caps
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[0] * trnsX[j], this._cellOpenAmounts[0]);
+          Draw.rect(hellRiser.caps[j], this.x + side.x + open.x, this.y + side.y + open.y, drawRotation);
+        }
       
-      //nw
-      open.trns(this.rotation - 90, 0 - this._cellOpenAmount - this._cellSideAmount, this._cellOpenAmount);
-      Drawf.shadow(hellRiser.caps[2], this.x + open.x - (hellRiser.size / 2), this.y + open.y - (hellRiser.size / 2), this.rotation - 90);
-      Draw.rect(hellRiser.caps[2], this.x + open.x, this.y + open.y, this.rotation - 90);
+        //Top Layer Cell Shadows
+        Drawf.shadow(hellRiser.cells[1], this.x + side.x - hellRiser.cellHeight, this.y + side.y - hellRiser.cellHeight, drawRotation);
+        
+        //Top layer Cap Shadows
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[1] * trnsX[j], this._cellOpenAmounts[1]);
+          Drawf.shadow(hellRiser.caps[j + 2], this.x + side.x + open.x - hellRiser.cellHeight, this.y + side.y + open.y - hellRiser.cellHeight, drawRotation);
+        }
+        
+        //Top Layer Cells
+        Draw.rect(hellRiser.cells[1], this.x + side.x, this.y + side.y, drawRotation);
       
-      //ne
-      open.trns(this.rotation - 90, 0 + this._cellOpenAmount + this._cellSideAmount, this._cellOpenAmount);
-      Drawf.shadow(hellRiser.caps[3], this.x + open.x - (hellRiser.size / 2), this.y + open.y - (hellRiser.size / 2), this.rotation - 90);
-      Draw.rect(hellRiser.caps[3], this.x + open.x, this.y + open.y, this.rotation - 90);
+        //Bottom Layer Cells Heat
+        if(this.heat > 0.00001){
+          Draw.blend(Blending.additive);
+          Draw.color(hellRiser.heatColor, this.heat);
+          Draw.rect(hellRiser.heatRegions[3], this.x + side.x, this.y + side.y, drawRotation);
+          Draw.blend();
+          Draw.color();
+        }
+      
+        //Top Layer Caps
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[1] * trnsX[j], this._cellOpenAmounts[1]);
+          Draw.rect(hellRiser.caps[j + 2], this.x + side.x + open.x, this.y + side.y + open.y, drawRotation);
+        }
+      }
     },
     setStats(){
       this.super$setStats();
@@ -237,22 +302,33 @@ hellRiser.buildType = () => {
       this.super$updateTile();
       
       if(this._bulletLife <= 0){
-        this._cellOpenAmount = Mathf.lerpDelta(this._cellOpenAmount, 0, hellRiser.restitution);
-        this._cellSideAmount = Mathf.lerpDelta(this._cellSideAmount, 0, hellRiser.restitution);
+        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], 0, hellRiser.restitution);
+        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], 0, hellRiser.restitution);
+        this.recoil = Mathf.lerpDelta(this.recoil, 0, hellRiser.restitution);
+        this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, 0, hellRiser.rotationWindDown);
       }
       
       if(this._bulletLife > 0){
         this.heat = 1;
-        this._cellOpenAmount = hellRiser.COA * 1 + (Mathf.absin(this._bulletLife / 3, 0.8, 1.5) / 3);
-        this._cellSideAmount = hellRiser.SOA + (Mathf.absin(this._bulletLife / 3, 0.8, 1.5) * 2);
+        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], hellRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._yes), 0.8, 1), 0.6);
+        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], hellRiser.COA * Mathf.absin(-this._bulletLife / 6 + Mathf.randomSeed(this._yes), 0.8, 1), 0.6);
+        this.recoil = hellRiser.recoil;
+        this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, hellRiser.rotationSpeed, hellRiser.rotationWindUp);
         this._bulletLife = this._bulletLife - Time.delta;
-        for(var i = 0; i < this._targetCount; i++){
-          var dist = Mathf.dst(this.x, this.y, targetX.get(i), targetY.get(i));
-          var ang = Angles.angle(this.x, this.y, targetX.get(i), targetY.get(i));
-          
-          targetLightning.at(this.x, this.y, ang, colors[2], [dist]);
+        
+        if(targetX.size >= 0){
+          for(var i = 0; i < targetX.size; i++){
+            shootLoc.trns(this.rotation + rots[Mathf.floor(Mathf.random(3.999))], hellRiser.size * 4 + this.recoil);
+            
+            var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, targetX.get(i), targetY.get(i));
+            var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, targetX.get(i), targetY.get(i));
+            
+            targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist]);
+          }
         }
       }
+      
+      this.rotation -= this._rotationSpeed;
     },
     updateShooting(){
       if(this._bulletLife > 0){
@@ -273,13 +349,13 @@ hellRiser.buildType = () => {
     shoot(type){
       targetX.clear();
       targetY.clear();
-      this._targetCount = -1;
       
       Units.nearbyEnemies(this.team, this.x - hellRiser.range, this.y - hellRiser.range, hellRiser.range * 2, hellRiser.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, hellRiser.range) && !e.dead){
+          if(targetX.size <= 2047){
             targetX.add(e.x);
             targetY.add(e.y);
-            this._targetCount++;
+          }
         }
       })
       
@@ -298,18 +374,23 @@ hellRiser.buildType = () => {
           if(other == null) continue yGroup;
           if(!collidedBlocks.contains(other.pos())){
             if(other.team != this.team && !other.dead){
-              targetX.add(other.x);
-              targetY.add(other.y);
-              this._targetCount++;
+              if(targetX.size <= 2047){
+                targetX.add(other.x);
+                targetY.add(other.y);
+              }
             }
             collidedBlocks.add(other.pos());
           }
         }
       }
       
-      for(var i = 0; i < this._targetCount; i++){
-        hellRiser.shootType.create(this, this.team, targetX.get(i), targetY.get(i), 0, 1, 1);
+      if(targetX.size >= 0){
+        for(var i = 0; i < targetX.size; i++){
+          hellRiser.shootType.create(this, this.team, targetX.get(i), targetY.get(i), 0, 1, 1);
+        }
       }
+      
+      this._yes = Mathf.random(9999);
     },
     shouldTurn(){
       return false;

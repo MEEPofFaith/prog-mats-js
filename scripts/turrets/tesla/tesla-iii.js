@@ -102,7 +102,6 @@ const shootLoc2 = new Vec2();
 teslaStorm.buildType = () => {
   var teslaStormEntity = extendContent(PowerTurret.PowerTurretBuild, teslaStorm, {
     setEff(){
-      this._targetCount = -1;
       this._currentTarget = 0;
       this._shootAngle = 0;
       this._dist = 0;
@@ -153,13 +152,13 @@ teslaStorm.buildType = () => {
       //I have ascended to stealing code from myself.
       targetX.clear();
       targetY.clear();
-      this._targetCount = -1;
       
       Units.nearbyEnemies(this.team, this.x - teslaStorm.range, this.y - teslaStorm.range, teslaStorm.range * 2, teslaStorm.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, teslaStorm.range) && !e.dead){
+          if(targetX.size <= 511){
             targetX.add(e.x);
             targetY.add(e.y);
-            this._targetCount++;
+          }
         };
       });
       
@@ -178,18 +177,19 @@ teslaStorm.buildType = () => {
           if(other == null) continue yGroup;
           if(!targets.contains(other.pos())){
             if(other.team != this.team && !other.dead){
-              targetX.add(other.x);
-              targetY.add(other.y);
-              this._targetCount++;
+              if(targetX.size <= 511){
+                targetX.add(other.x);
+                targetY.add(other.y);
+              }
             }
           };
         };
       };
       
-      if(this._targetCount >= 0){
+      if(targetX.size >= 0){
         this.heat = 1;
         for(var i = 0; i < teslaStorm.shots; i++){
-          this._currentTarget = Mathf.floor(Mathf.random(this._targetCount + 0.999));
+          this._currentTarget = Mathf.floor(Mathf.random(targetX.size + 0.999));
           var targX = targetX.get(this._currentTarget);
           var targY = targetY.get(this._currentTarget);
           
