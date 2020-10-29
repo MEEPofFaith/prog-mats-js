@@ -32,7 +32,7 @@ const targetLightning = new Effect(10, 500, e => {
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
 
-targetLightning.ground = true;
+targetLightning.layer = 45;
 
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
@@ -149,10 +149,6 @@ hellRiser.smokeEffect = Fx.none;
 hellRiser.ammoUseEffect = Fx.none;
 hellRiser.restitution = 0.01;
 hellRiser.heatColor = Color.valueOf("f08913");
-
-const targetX = new Seq(2047);
-const targetY = new Seq(2047);
-const collidedBlocks = new IntSet(2047);
 
 const side = new Vec2();
 const open = new Vec2();
@@ -316,12 +312,12 @@ hellRiser.buildType = () => {
         this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, hellRiser.rotationSpeed, hellRiser.rotationWindUp);
         this._bulletLife = this._bulletLife - Time.delta;
         
-        if(targetX.size >= 0){
-          for(var i = 0; i < targetX.size; i++){
+        if(hellEntity.targetX.size >= 0){
+          for(var i = 0; i < hellEntity.targetX.size; i++){
             shootLoc.trns(this.rotation + rots[Mathf.floor(Mathf.random(3.999))], hellRiser.size * 4 + this.recoil);
             
-            var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, targetX.get(i), targetY.get(i));
-            var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, targetX.get(i), targetY.get(i));
+            var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
+            var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
             
             targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist]);
           }
@@ -347,20 +343,20 @@ hellRiser.buildType = () => {
       }
     },
     shoot(type){
-      targetX.clear();
-      targetY.clear();
+      hellEntity.targetX.clear();
+      hellEntity.targetY.clear();
       
       Units.nearbyEnemies(this.team, this.x - hellRiser.range, this.y - hellRiser.range, hellRiser.range * 2, hellRiser.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, hellRiser.range) && !e.dead){
-          if(targetX.size <= 2047){
-            targetX.add(e.x);
-            targetY.add(e.y);
+          if(hellEntity.targetX.size <= 1023){
+            hellEntity.targetX.add(e.x);
+            hellEntity.targetY.add(e.y);
           }
         }
       })
       
       //I am once again stealing End Game code for this.
-      collidedBlocks.clear();
+      hellEntity.collidedBlocks.clear();
       var tx = Vars.world.toTile(this.x);
       var ty = Vars.world.toTile(this.y);
       
@@ -372,21 +368,21 @@ hellRiser.buildType = () => {
           if(!Mathf.within(x * Vars.tilesize, y * Vars.tilesize, this.x, this.y, hellRiser.range)) continue yGroup;
           var other = Vars.world.build(x, y);
           if(other == null) continue yGroup;
-          if(!collidedBlocks.contains(other.pos())){
+          if(!hellEntity.collidedBlocks.contains(other.pos())){
             if(other.team != this.team && !other.dead){
-              if(targetX.size <= 2047){
-                targetX.add(other.x);
-                targetY.add(other.y);
+              if(hellEntity.targetX.size <= 1023){
+                hellEntity.targetX.add(other.x);
+                hellEntity.targetY.add(other.y);
               }
             }
-            collidedBlocks.add(other.pos());
+            hellEntity.collidedBlocks.add(other.pos());
           }
         }
       }
       
-      if(targetX.size >= 0){
-        for(var i = 0; i < targetX.size; i++){
-          hellRiser.shootType.create(this, this.team, targetX.get(i), targetY.get(i), 0, 1, 1);
+      if(hellEntity.targetX.size >= 0){
+        for(var i = 0; i < hellEntity.targetX.size; i++){
+          hellRiser.shootType.create(this, this.team, hellEntity.targetX.get(i), hellEntity.targetY.get(i), 0, 1, 1);
         }
       }
       
@@ -399,6 +395,9 @@ hellRiser.buildType = () => {
       return this._bulletLife > 0;
     }
 	});
+  hellEntity.targetX = new Seq(1023);
+  hellEntity.targetY = new Seq(1023);
+  hellEntity.collidedBlocks = new IntSet(1023);
 	hellEntity.setEff();
 	return hellEntity;
 };

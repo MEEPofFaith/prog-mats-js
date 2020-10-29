@@ -32,7 +32,7 @@ const targetLightning = new Effect(10, 500, e => {
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
 
-targetLightning.ground = true;
+targetLightning.layer = 45;
 
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
