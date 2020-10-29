@@ -1,3 +1,39 @@
+const tV = new Vec2();
+const tV2 = new Vec2();
+
+//Stolen effect from [redacted] from [redacted/redacted]
+//Which I now just stole from myself.
+//Why do I keep stealing things.
+const targetLightning = new Effect(10, 500, e => {
+	var length = e.data[0];
+	var tileLength = Mathf.round(length / 8);
+	
+	Lines.stroke(4 * e.fout());
+	Draw.color(e.color, Color.white, e.fin());
+	
+	for(var i = 0; i < tileLength; i++){
+		var offsetXA = (i == 0) ? 0 : Mathf.randomSeed(e.id + (i * 6413), -4.5, 4.5);
+		var offsetYA = (length / tileLength) * i;
+		
+		var f = i + 1;
+		
+		var offsetXB = (f == tileLength) ? 0 : Mathf.randomSeed(e.id + (f * 6413), -4.5, 4.5);
+		var offsetYB = (length / tileLength) * f;
+		
+		tV.trns(e.rotation, offsetYA, offsetXA);
+		tV.add(e.x, e.y);
+		
+		tV2.trns(e.rotation, offsetYB, offsetXB);
+		tV2.add(e.x, e.y);
+		
+		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
+		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
+	};
+  Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
+});
+
+targetLightning.ground = true;
+
 const side = new Vec2();
 const open = new Vec2();
 const rangeloc = new Vec2();
@@ -70,8 +106,6 @@ hellPool.shootEffect = Fx.none;
 hellPool.smokeEffect = Fx.none;
 hellPool.hittable = false;
 
-const collidedBlocks = new IntSet(127);
-
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
   load(){
@@ -116,9 +150,14 @@ hellRiser.smokeEffect = Fx.none;
 hellRiser.ammoUseEffect = Fx.none;
 hellRiser.restitution = 0.01;
 
+const targetX = new Seq(511);
+const targetY = new Seq(511);
+const collidedBlocks = new IntSet(255);
+
 hellRiser.buildType = () => {
 	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, hellRiser, {
     setEff(){
+      this._targetCount = -1;
       this._bulletLife = 0;
       this._cellOpenAmount = 0;
       this._cellSideAmount = 0;
@@ -132,7 +171,7 @@ hellRiser.buildType = () => {
         side.trns(this.rotation - 90, this._cellSideAmount * ((i - 0.5) * 2), 0);
         Drawf.shadow(hellRiser.outlines[i], this.x, this.y, this.rotation - 90);
         Draw.rect(hellRiser.outlines[i], this.x + side.x, this.y + side.y, this.rotation - 90);
-      };
+      }
       
       Drawf.shadow(hellRiser.bottomRegion, this.x - (hellRiser.size / 2), this.y - (hellRiser.size / 2), this.rotation - 90);
       Draw.rect(hellRiser.bottomRegion, this.x, this.y, this.rotation - 90);
@@ -145,7 +184,7 @@ hellRiser.buildType = () => {
         Draw.rect(hellRiser.cellHeats[2], this.x + Mathf.range(1 * this.heat), this.y + Mathf.range(1 * this.heat), this.rotation - 90);
         Draw.blend();
         Draw.color();
-      };
+      }
       
       //sides and cells
       for(var i = 0; i < 2; i ++){
@@ -161,8 +200,8 @@ hellRiser.buildType = () => {
           Draw.rect(hellRiser.cellHeats[i], this.x + side.x, this.y + side.y, this.rotation - 90);
           Draw.blend();
           Draw.color();
-        };
-      };
+        }
+      }
       
       //sw
       open.trns(this.rotation - 90, 0 - this._cellOpenAmount - this._cellSideAmount, -this._cellOpenAmount);
@@ -200,19 +239,25 @@ hellRiser.buildType = () => {
       if(this._bulletLife <= 0){
         this._cellOpenAmount = Mathf.lerpDelta(this._cellOpenAmount, 0, hellRiser.restitution);
         this._cellSideAmount = Mathf.lerpDelta(this._cellSideAmount, 0, hellRiser.restitution);
-      };
+      }
       
       if(this._bulletLife > 0){
         this.heat = 1;
         this._cellOpenAmount = hellRiser.COA * 1 + (Mathf.absin(this._bulletLife / 3, 0.8, 1.5) / 3);
         this._cellSideAmount = hellRiser.SOA + (Mathf.absin(this._bulletLife / 3, 0.8, 1.5) * 2);
         this._bulletLife = this._bulletLife - Time.delta;
-      };
+        for(var i = 0; i < this._targetCount; i++){
+          var dist = Mathf.dst(this.x, this.y, targetX.get(i), targetY.get(i));
+          var ang = Angles.angle(this.x, this.y, targetX.get(i), targetY.get(i));
+          
+          targetLightning.at(this.x, this.y, ang, colors[2], [dist]);
+        }
+      }
     },
     updateShooting(){
       if(this._bulletLife > 0){
         return;
-      };
+      }
       
       if(this.reload >= hellRiser.reloadTime){
         var type = this.peekAmmo();
@@ -223,14 +268,20 @@ hellRiser.buildType = () => {
         this._bulletLife = hellRiser.shootDuration;
       }else{
         this.reload += this.delta() * this.baseReloadSpeed();
-      };
+      }
     },
     shoot(type){
+      targetX.clear();
+      targetY.clear();
+      this._targetCount = -1;
+      
       Units.nearbyEnemies(this.team, this.x - hellRiser.range, this.y - hellRiser.range, hellRiser.range * 2, hellRiser.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, hellRiser.range) && !e.dead){
-            hellRiser.shootType.create(this, this.team, e.x, e.y, 0, 1, 1);
-        };
-      });
+            targetX.add(e.x);
+            targetY.add(e.y);
+            this._targetCount++;
+        }
+      })
       
       //I am once again stealing End Game code for this.
       collidedBlocks.clear();
@@ -247,12 +298,18 @@ hellRiser.buildType = () => {
           if(other == null) continue yGroup;
           if(!collidedBlocks.contains(other.pos())){
             if(other.team != this.team && !other.dead){
-              hellRiser.shootType.create(this, this.team, other.x, other.y, 0, 1, 1);
-            };
+              targetX.add(other.x);
+              targetY.add(other.y);
+              this._targetCount++;
+            }
             collidedBlocks.add(other.pos());
-          };
-        };
-      };
+          }
+        }
+      }
+      
+      for(var i = 0; i < this._targetCount; i++){
+        hellRiser.shootType.create(this, this.team, targetX.get(i), targetY.get(i), 0, 1, 1);
+      }
     },
     shouldTurn(){
       return false;

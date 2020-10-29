@@ -92,9 +92,9 @@ teslaStorm.shootSmoke = lightningSmoke;
 teslaStorm.heatColor = Color.valueOf("fff694");
 teslaStorm.coolantMultiplier = 1;
 
-const targetX = new Seq(255);
-const targetY = new Seq(255);
-const targets = new Seq(127);
+const targetX = new Seq(511);
+const targetY = new Seq(511);
+const targets = new Seq(255);
 
 const shootLoc = new Vec2();
 const shootLoc2 = new Vec2();
