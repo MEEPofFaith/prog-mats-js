@@ -13,6 +13,14 @@ const quadMinigun = extendContent(ItemTurret, "minigun-iii", {
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
   },
+  setStats(){
+    this.super$setStats();
+    
+    this.stats.remove(BlockStat.shots);
+    this.stats.add(BlockStat.shots, "4");
+    this.stats.remove(BlockStat.shots);
+    this.stats.add(BlockStat.shots, "4 - 80");
+  },
   icons(){	
     return [	
       Core.atlas.find("block-4"),	
@@ -125,12 +133,6 @@ quadMinigun.buildType = () => {
       this._shouldShoot = false;
       this._shouldBarrel = false;
     },
-    setStats(){	
-      this.super$setStats();	
-
-      this.stats.remove(BlockStat.shots);	
-      this.stats.add(BlockStat.shots, "4");	
-    },	
     draw(){	
       const vec = new Vec2();	
       

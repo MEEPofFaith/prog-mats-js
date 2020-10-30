@@ -133,6 +133,14 @@ const heatRiser = extendContent(PowerTurret, "eruptor-i", {
       this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
     }
   },
+  setStats(){
+    this.super$setStats();
+    
+    this.stats.remove(BlockStat.inaccuracy);
+    this.stats.remove(BlockStat.damage);
+    //damages every 5 ticks
+    this.stats.add(BlockStat.damage, lavaRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
+  },
   icons(){
     return [
       Core.atlas.find("block-3"),
@@ -216,14 +224,6 @@ heatRiser.buildType = () => {
       open.trns(this.rotation - 90, 0 + (this._cellOpenAmounts[alternate[i]] * trnsX[i]), this._cellOpenAmounts[alternate[i]] * trnsY[i]);
         Draw.rect(heatRiser.caps[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
-    },
-    setStats(){
-      this.super$setStats();
-      
-      this.stats.remove(BlockStat.inaccuracy);
-      this.stats.remove(BlockStat.damage);
-      //damages every 5 ticks
-      this.stats.add(BlockStat.damage, heatRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
     },
     updateTile(){
       this.super$updateTile();

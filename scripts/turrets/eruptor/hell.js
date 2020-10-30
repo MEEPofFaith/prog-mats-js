@@ -124,6 +124,16 @@ const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
       this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
     }
   },
+  setStats(){
+    this.super$setStats();
+    
+    this.stats.remove(BlockStat.inaccuracy);
+    this.stats.remove(BlockStat.shots);
+    this.stats.add(BlockStat.shots, "The number of enemies in range (oh no)");
+    this.stats.remove(BlockStat.damage);
+    //damages every 5 ticks, at least in meltdown's case
+    this.stats.add(BlockStat.damage, hellRiser.shootType.damage * 12, StatUnit.perSecond);
+  },
   icons(){
     return [
       Core.atlas.find("block-4"),
@@ -283,16 +293,6 @@ hellRiser.buildType = () => {
           Draw.rect(hellRiser.caps[j + 2], this.x + side.x + open.x, this.y + side.y + open.y, drawRotation);
         }
       }
-    },
-    setStats(){
-      this.super$setStats();
-      
-      this.stats.remove(BlockStat.inaccuracy);
-      this.stats.remove(BlockStat.shots);
-      this.stats.add(BlockStat.shots, "The number of enemies in range (oh no)");
-      this.stats.remove(BlockStat.damage);
-      //damages every 5 ticks, at least in meltdown's case
-      this.stats.add(BlockStat.damage, hellRiser.shootType.damage * 12, StatUnit.perSecond);
     },
     updateTile(){
       this.super$updateTile();
