@@ -127,7 +127,7 @@ const blackhole = extendContent(ChargeTurret, "blackhole-i", {
     
     //damages every 5 ticks
     this.stats.remove(Stat.damage);
-    this.stats.add(BlockStat.damage, this.shootType.damage / 60 * 12, StatUnit.perSecond);
+    this.stats.add(Stat.damage, this.shootType.damage / 60 * 12, StatUnit.perSecond);
   },
   icons(){	
     return [	
