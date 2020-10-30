@@ -16,10 +16,7 @@ const quadMinigun = extendContent(ItemTurret, "minigun-iii", {
   setStats(){
     this.super$setStats();
     
-    this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, "4");
-    this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, "4 - 80");
+    this.stats.add(Stat.shots, 4);
   },
   icons(){	
     return [	
@@ -41,6 +38,10 @@ quadMinigun.smokeEffect = Fx.none;
 quadMinigun.ammoUseEffect = Fx.none;
 quadMinigun.shootSound = Sounds.shootBig;
 quadMinigun.heatColor = Color.valueOf("f7956a");
+
+//Dummy stats to mess with the shots/sec stat
+quadMinigun.reloadTime = 60;
+quadMinigun.shots = 80;
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.sprite = "prog-mats-minigun-ball";

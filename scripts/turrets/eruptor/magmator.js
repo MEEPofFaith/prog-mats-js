@@ -132,10 +132,11 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
   setStats(){
     this.super$setStats();
     
-    this.stats.remove(BlockStat.inaccuracy);
-    this.stats.remove(BlockStat.damage);
+    this.stats.remove(Stat.inaccuracy);
+    
     //damages every 5 ticks
-    this.stats.add(BlockStat.damage, lavaRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
+    this.stats.remove(Stat.damage);
+    this.stats.add(Stat.damage, lavaRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
   },
   icons(){
     return [

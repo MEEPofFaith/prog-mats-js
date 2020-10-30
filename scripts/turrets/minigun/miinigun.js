@@ -16,10 +16,7 @@ const dualMinigun = extendContent(ItemTurret, "minigun-ii", {
   setStats(){
     this.super$setStats();
     
-    this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, "2");
-    this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, "2 - 40");
+    this.stats.add(Stat.shots, 2);
   },
   icons(){
     return [
@@ -39,6 +36,10 @@ dualMinigun.smokeEffect = Fx.none;
 dualMinigun.ammoUseEffect = Fx.none;
 dualMinigun.shootSound = Sounds.shootBig;
 dualMinigun.heatColor = Color.valueOf("f7956a");
+
+//Dummy stats to mess with the shots/sec stat
+dualMinigun.reloadTime = 60;
+dualMinigun.shots = 40;
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.sprite = "prog-mats-minigun-ball";

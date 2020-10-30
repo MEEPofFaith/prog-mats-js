@@ -53,13 +53,6 @@ const ballOfSucc = extend(BasicBulletType, {
       this.front[i] = Core.atlas.find("prog-mats-backhole-" + i);
     }
   },
-  setStats(){
-    this.super$setStats();
-    
-    this.stats.remove(BlockStat.damage);
-    //damages every 2 ticks
-    this.stats.add(BlockStat.damage, this.shootType.damage, StatUnit.perSecond);
-  },
   update(b){
     const succ = new Vec2();
     
@@ -129,6 +122,13 @@ ballOfSucc.backColor = Color.valueOf("000000");
 ballOfSucc.frontColor = Color.valueOf("353535");
 
 const blackhole = extendContent(ChargeTurret, "blackhole-i", {
+  setStats(){
+    this.super$setStats();
+    
+    //damages every 5 ticks
+    this.stats.remove(Stat.damage);
+    this.stats.add(BlockStat.damage, this.shootType.damage / 60 * 12, StatUnit.perSecond);
+  },
   icons(){	
     return [	
       Core.atlas.find("block-4"),	

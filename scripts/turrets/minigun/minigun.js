@@ -16,8 +16,7 @@ const minigun = extendContent(ItemTurret, "minigun-i", {
   setStats(){
     this.super$setStats();
     
-    this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, "1 - 20");
+    this.stats.add(Stat.shots, 1);
   },
   icons(){
     return [
@@ -37,6 +36,10 @@ minigun.shootEffect = Fx.none;
 minigun.smokeEffect = Fx.none;
 minigun.ammoUseEffect = Fx.none;
 minigun.heatColor = Color.valueOf("f7956a");
+
+//Dummy stats to mess with the shots/sec stat
+minigun.reloadTime = 60;
+minigun.shots = 20;
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.sprite = "prog-mats-minigun-ball";

@@ -31,6 +31,8 @@ const targetLightning = new Effect(10, 500, e => {
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
 
+targetLightning.layer = 117;
+
 const lightningSmoke = new Effect(30, e=> {
   Angles.randLenVectors(e.id, 12, e.finpow() * 36, e.rotation, 15, (x, y) => {
     var size = e.fout() * 2;
@@ -46,7 +48,7 @@ const stormZap = extend(LightningBulletType, {});
 
 const lightningCol = Pal.surge;
 
-stormZap.damage = 34; //Note: I'm making up these numbers as I go.
+stormZap.damage = 15;
 stormZap.lightningLength = 7;
 stormZap.lightningLengthRand = 5;
 stormZap.lightningAngle = 0;
@@ -70,6 +72,15 @@ const teslaStorm = extendContent(PowerTurret, "tesla-iii", {
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
   },
+  setStats(){
+    this.super$setStats();
+    
+    this.stats.remove(Stat.inaccuracy);
+    
+    //Something can get hit by multiple strikes since they all spawn in the same place.
+    this.stats.remove(Stat.damage);
+    this.stats.add(Stat.damage, teslaStorm.shootType.damage + " - " + teslaStorm.shootType.damage * teslaStorm.zaps);
+  },
   icons(){
     return [
       Core.atlas.find("block-3"),
@@ -91,10 +102,6 @@ teslaStorm.shootEffect = Fx.sparkShoot;
 teslaStorm.shootSmoke = lightningSmoke;
 teslaStorm.heatColor = Color.valueOf("fff694");
 teslaStorm.coolantMultiplier = 1;
-
-const targetX = new Seq(511);
-const targetY = new Seq(511);
-const targets = new Seq(255);
 
 const shootLoc = new Vec2();
 const shootLoc2 = new Vec2();
@@ -150,14 +157,14 @@ teslaStorm.buildType = () => {
     },
     shoot(type){
       //I have ascended to stealing code from myself.
-      targetX.clear();
-      targetY.clear();
+      teslaStormEntity.targetX.clear();
+      teslaStormEntity.targetY.clear();
       
       Units.nearbyEnemies(this.team, this.x - teslaStorm.range, this.y - teslaStorm.range, teslaStorm.range * 2, teslaStorm.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, teslaStorm.range) && !e.dead){
-          if(targetX.size <= 511){
-            targetX.add(e.x);
-            targetY.add(e.y);
+          if(teslaStormEntity.targetX.size <= 511){
+            teslaStormEntity.targetX.add(e.x);
+            teslaStormEntity.targetY.add(e.y);
           }
         };
       });
@@ -167,7 +174,7 @@ teslaStorm.buildType = () => {
       
       var tileRange = Mathf.floorPositive(teslaStorm.range / Vars.tilesize + 1);
       
-      targets.clear();
+      teslaStormEntity.targetBlocks.clear();
       
       for(var x = -tileRange + tx; x <= tileRange + tx; x++){
         yGroup:
@@ -175,23 +182,23 @@ teslaStorm.buildType = () => {
           if(!Mathf.within(x * Vars.tilesize, y * Vars.tilesize, this.x, this.y, teslaStorm.range)) continue yGroup;
           var other = Vars.world.build(x, y);
           if(other == null) continue yGroup;
-          if(!targets.contains(other.pos())){
+          if(!teslaStormEntity.targetBlocks.contains(other.pos())){
             if(other.team != this.team && !other.dead){
-              if(targetX.size <= 511){
-                targetX.add(other.x);
-                targetY.add(other.y);
+              if(teslaStormEntity.targetX.size <= 511){
+                teslaStormEntity.targetX.add(other.x);
+                teslaStormEntity.targetY.add(other.y);
               }
             }
           };
         };
       };
       
-      if(targetX.size >= 0){
+      if(teslaStormEntity.targetX.size >= 0){
         this.heat = 1;
         for(var i = 0; i < teslaStorm.shots; i++){
-          this._currentTarget = Mathf.floor(Mathf.random(targetX.size + 0.999));
-          var targX = targetX.get(this._currentTarget);
-          var targY = targetY.get(this._currentTarget);
+          this._currentTarget = Mathf.floor(Mathf.random(teslaStormEntity.targetX.size - 0.001));
+          var targX = teslaStormEntity.targetX.get(this._currentTarget);
+          var targY = teslaStormEntity.targetY.get(this._currentTarget);
           
           var shootLocs = [0, 3.25, 6.75, 10.75, 11.25];
           var shotsection = Mathf.floor(Mathf.random(4.999));
@@ -233,6 +240,9 @@ teslaStorm.buildType = () => {
       return false;
     }
   });
+  teslaStormEntity.targetX = new Seq(511);
+  teslaStormEntity.targetY = new Seq(511);
+  teslaStormEntity.targetBlocks = new Seq(511);
   teslaStormEntity.setEff();
   return teslaStormEntity;
 };

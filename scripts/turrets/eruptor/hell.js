@@ -127,12 +127,12 @@ const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
   setStats(){
     this.super$setStats();
     
-    this.stats.remove(BlockStat.inaccuracy);
-    this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, "The number of enemies in range (oh no)");
-    this.stats.remove(BlockStat.damage);
-    //damages every 5 ticks, at least in meltdown's case
-    this.stats.add(BlockStat.damage, hellRiser.shootType.damage * 12, StatUnit.perSecond);
+    this.stats.remove(Stat.inaccuracy);
+    this.stats.add(Stat.shots, "The number of enemies in range (oh no)");
+    
+    //damages every 5 ticks
+    this.stats.remove(Stat.damage);
+    this.stats.add(Stat.damage, hellRiser.shootType.damage * 12, StatUnit.perSecond);
   },
   icons(){
     return [
