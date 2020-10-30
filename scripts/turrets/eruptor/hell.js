@@ -172,6 +172,7 @@ hellRiser.buildType = () => {
       this._bulletLife = 0;
       this._cellOpenAmounts = [0, 0];
       this._rotationSpeed = 0;
+      this._dists = [0, 0, 0, 0]
       this._yes = 0;
     },
     draw(){
@@ -314,9 +315,20 @@ hellRiser.buildType = () => {
         
         if(hellEntity.targetX.size >= 0){
           for(var i = 0; i < hellEntity.targetX.size; i++){
-            shootLoc.trns(this.rotation + rots[Mathf.floor(Mathf.random(3.999))], hellRiser.size * 4 + this.recoil);
+            for(var j = 0; j < 4; j++){
+              shootLoc.trns(this.rotation - 90 + rots[j], hellRiser.size * 4 + this.recoil);
+              this._dists[j] = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
+            }
+            var dist = 400;
+            for(var j = 0; j < this._dists.length; j++){
+              if(this._dists[j] < dist){
+                dist = this._dists[j];
+                var effectSide = j;
+              }
+            }
             
-            var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
+            shootLoc.trns(this.rotation - 90 + rots[effectSide], hellRiser.size * 4 + this.recoil);
+            
             var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
             
             targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist]);
