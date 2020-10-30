@@ -154,7 +154,7 @@ heatRiser.shootType = lavaPool;
 heatRiser.shootDuration = 180;
 heatRiser.range = 240;
 heatRiser.reloadTime = 60;
-heatRiser.recoilAmount = 4;
+heatRiser.recoilAmount = 3;
 heatRiser.COA = 0.75;
 heatRiser.cellHeight = 1;
 heatRiser.rotateSpeed = 3;
@@ -185,7 +185,7 @@ heatRiser.buildType = () => {
       
       Draw.z(Layer.turret);
       
-      back.trns(this.rotation - 90, 0, this.recoil);
+      back.trns(this.rotation - 90, 0, -this.recoil);
       
       Draw.rect(heatRiser.outlines[0], this.x + back.x, this.y + back.y, this.rotation - 90);
       for(var i = 0; i < 4; i ++){
@@ -244,7 +244,7 @@ heatRiser.buildType = () => {
         this._bulletLife = this._bulletLife - Time.delta;
         this.rotation = Angles.moveToward(this.rotation, Angles.angle(this.x, this.y, this._bullet.x, this._bullet.y), 360);
         
-        shootLoc.trns(this.rotation, heatRiser.size * 4 + this.recoil);
+        shootLoc.trns(this.rotation, heatRiser.size * 4 - this.recoil);
         
         var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
         var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);

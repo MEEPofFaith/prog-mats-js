@@ -151,7 +151,7 @@ lavaRiser.shootDuration = 240;
 lavaRiser.range = 280;
 lavaRiser.reloadTime = 90;
 lavaRiser.rotateSpeed = 2.25;
-lavaRiser.recoilAmount = 6;
+lavaRiser.recoilAmount = 4;
 lavaRiser.COA = 0.9;
 lavaRiser.cellHeight = 1;
 lavaRiser.firingMoveFract = 0.8;
@@ -181,7 +181,7 @@ lavaRiser.buildType = () => {
       
       Draw.z(Layer.turret);
       
-      back.trns(this.rotation - 90, 0, this.recoil);
+      back.trns(this.rotation - 90, 0, -this.recoil);
       
       Draw.rect(lavaRiser.outlines[0], this.x + back.x, this.y + back.y, this.rotation - 90);
       
@@ -272,7 +272,7 @@ lavaRiser.buildType = () => {
         this._bulletLife = this._bulletLife - Time.delta;
         this.rotation = Angles.moveToward(this.rotation, Angles.angle(this.x, this.y, this._bullet.x, this._bullet.y), 360);
         
-        shootLoc.trns(this.rotation, lavaRiser.size * 4 + this.recoil);
+        shootLoc.trns(this.rotation, lavaRiser.size * 4 - this.recoil);
         
         var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
         var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
