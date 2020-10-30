@@ -1,0 +1,27 @@
+localizedName: Mindron Collider
+description: Accelerates titanium and thorium particles at each other to fuse Techtanite. Takes a lot of power to run.
+outputItem: techtanite/4
+craftTime: 300
+idleSound: none
+hasPower: true
+baseExplosiveness: 5
+consumes: {
+  items: {
+    items: [
+      titanium/2
+      thorium/2
+    ]
+  }
+  power: {
+    usage: 12.6
+  }
+}
+size: 5
+requirements: [
+  silicon/80
+  metaglass/20
+  plastanium/30
+  thorium/30
+]
+research: alloy-smelter
+category: crafting

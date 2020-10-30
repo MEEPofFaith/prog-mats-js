@@ -33,15 +33,6 @@ const targetLightning = new Effect(10, 500, e => {
 
 targetLightning.layer = 117;
 
-const lightningSmoke = new Effect(30, e=> {
-  Angles.randLenVectors(e.id, 12, e.finpow() * 36, e.rotation, 15, (x, y) => {
-    var size = e.fout() * 2;
-    Draw.color(e.color);
-    Draw.alpha(e.fslope());
-    Fill.circle(e.x + x, e.y + y, size);
-  });
-});
-
 const lightningLine = new Vec2();
 
 const stormZap = extend(LightningBulletType, {});
@@ -99,7 +90,6 @@ teslaStorm.rotateSpeed = 12;
 teslaStorm.lightningColor = lightningCol;
 teslaStorm.shootSound = Sounds.spark;
 teslaStorm.shootEffect = Fx.sparkShoot;
-teslaStorm.shootSmoke = lightningSmoke;
 teslaStorm.heatColor = Color.valueOf("fff694");
 teslaStorm.coolantMultiplier = 1;
 
@@ -224,7 +214,6 @@ teslaStorm.buildType = () => {
           targetLightning.at(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, this._shootAngle, teslaStorm.lightningColor, [this._dist]);
           teslaStorm.shootSound.at(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, Mathf.random(0.9, 1.1));
           teslaStorm.shootEffect.at(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, this._shootAngle, teslaStorm.lightningColor);
-          teslaStorm.shootSmoke.at(this.x + shootLoc.x + shootLoc2.x, this.y + shootLoc.y + shootLoc2.y, this._shootAngle, teslaStorm.lightningColor);
           
           const thisX = targX;
           const thisY = targY;
