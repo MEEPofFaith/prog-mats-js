@@ -1,14 +1,15 @@
-const effectSize = 0.5;
+const effectSize = 0.75;
+const effectLength = 0.5;
 
 const collisionEffect = new Effect(30, e => {
   e.scaled(7, i => {
     Lines.stroke((3.1 * i.fout()) * effectSize);
-    Lines.circle(e.x, e.y, (3 + i.fin() * 14) * effectSize);
+    Lines.circle(e.x, e.y, (3 + i.fin() * 14) * effectLength);
   });
   
   Draw.color(Color.gray);
   
-  Angles.randLenVectors(e.id, 6, (2 + 19 * e.finpow()) * effectSize, (x, y) => {
+  Angles.randLenVectors(e.id, 6, (2 + 13 * e.finpow()) * effectLength, (x, y) => {
     Fill.circle(e.x + x, e.y + y, (e.fout() * 3 + 0.5) * effectSize);
     Fill.circle(e.x + x / 2, e.y + y / 2, (e.fout() * 1) * effectSize);
   });
@@ -16,7 +17,7 @@ const collisionEffect = new Effect(30, e => {
   Draw.color(Pal.lighterOrange, Pal.lightOrange, Color.gray, e.fin());
   Lines.stroke((1.7 * e.fout()) * effectSize);
 
-  Angles.randLenVectors(e.id + 1, 9, (1 + 23 * e.finpow()) * effectSize, (x, y) => {
+  Angles.randLenVectors(e.id + 1, 9, (1 + 14 * e.finpow()) * effectLength, (x, y) => {
     Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), (1 + e.fout() * 3) * effectSize);
   });
 });
@@ -37,7 +38,7 @@ const hadron = extendContent(GenericCrafter, "mindron-collider", {
   icons(){
     return [
       Core.atlas.find(this.name + "-bottom"),
-      Core.atlas.find(this.name + "-top")
+      Core.atlas.find(this.name + "-icon")
     ]
   }
 });
