@@ -7,7 +7,7 @@ const targetLightning = new Effect(10, 500, e => {
 	var length = e.data[0];
 	var tileLength = Mathf.round(length / 8);
 	
-	Lines.stroke(5 * e.fout());
+	Lines.stroke(e.data[1] * e.fout());
 	Draw.color(e.color, Color.white, e.fin());
 	
 	for(var i = 0; i < tileLength; i++){
@@ -52,6 +52,7 @@ const teslaCoil = extendContent(PowerTurret, "tesla-ii", {
     this.super$setStats();
     
     this.stats.remove(Stat.inaccuracy);
+    this.stats.add(Stat.inaccuracy, teslaCoil.inaccuracy / 8, StatUnit.blocks);
     
     //Something can get hit by multiple strikes since they all spawn in the same place.
     this.stats.remove(Stat.damage);
@@ -63,12 +64,14 @@ teslaCoil.shootType = coilZap;
 teslaCoil.range = 130;
 teslaCoil.shots = 2;
 teslaCoil.zaps = 6;
+teslaCoil.inaccuracy = 28;
 teslaCoil.angleRand = 19;
 teslaCoil.lightningColor = lightningCol;
 teslaCoil.shootSound = Sounds.spark;
 teslaCoil.shootEffect = Fx.sparkShoot;
 
 const shootLoc = new Vec2();
+const inacc = new Vec2();
 
 teslaCoil.buildType = () => {
   var teslaCoilEntity = extendContent(PowerTurret.PowerTurretBuild, teslaCoil, {
@@ -116,29 +119,32 @@ teslaCoil.buildType = () => {
       };
       
       if(teslaCoilEntity.targetX.size >= 0){
-        this.heat = 1;
         for(var i = 0; i < teslaCoil.shots; i++){
           this._currentTarget = Mathf.floor(Mathf.random(teslaCoilEntity.targetX.size - 0.001));
-          var targX = teslaCoilEntity.targetX.get(this._currentTarget);
-          var targY = teslaCoilEntity.targetY.get(this._currentTarget);
-          
-          var shootLocs = [2, 6];
-          shootLoc.trns(Mathf.random(360), shootLocs[Mathf.round(Mathf.random(1))]);
-          
-          this._shootAngle = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, targX, targY);
-          this._dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, targX, targY);
-          
-          targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaCoil.lightningColor, [this._dist]);
-          teslaCoil.shootSound.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(0.9, 1.1));
-          teslaCoil.shootEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaCoil.lightningColor);
-          
-          const thisX = targX;
-          const thisY = targY;
-          Time.run(3, () => {
-            for(var j = 0; j < teslaCoil.zaps; j++){
-              teslaCoil.shootType.create(this, this.team, thisX, thisY, ((360 / teslaCoil.zaps) * j) + Mathf.range(teslaCoil.angleRand));
-            }
-          });
+          inacc.trns(Mathf.random(360), 0, Mathf.range(teslaCoil.inaccuracy));
+          if(this._currentTarget >= 0){
+            this.heat = 1;
+            var targX = teslaCoilEntity.targetX.get(this._currentTarget) + inacc.x;
+            var targY = teslaCoilEntity.targetY.get(this._currentTarget) + inacc.y;
+            
+            var shootLocs = [2, 6];
+            shootLoc.trns(Mathf.random(360), shootLocs[Mathf.round(Mathf.random(1))]);
+            
+            this._shootAngle = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, targX, targY);
+            this._dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, targX, targY);
+            
+            targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaCoil.lightningColor, [this._dist, 5]);
+            teslaCoil.shootSound.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(0.9, 1.1));
+            teslaCoil.shootEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaCoil.lightningColor);
+            
+            const shootX = targX;
+            const shootY = targY;
+            Time.run(3, () => {
+              for(var j = 0; j < teslaCoil.zaps; j++){
+                teslaCoil.shootType.create(this, this.team, shootX, shootY, ((360 / teslaCoil.zaps) * j) + Mathf.range(teslaCoil.angleRand));
+              }
+            });
+          }
         }
       }
     },
