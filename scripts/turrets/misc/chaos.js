@@ -56,7 +56,7 @@ chaosBeam.length = length;
 chaosBeam.width = width;
 chaosBeam.oscScl = oscScl;
 chaosBeam.oscMag = oscMag;
-chaosBeam.damage = 2147483647;
+chaosBeam.damage = Number.MAX_VALUE;
 chaosBeam.lifetime = duration + 16;
 chaosBeam.shake = 10;
 
@@ -114,7 +114,7 @@ chaosArray.buildType = () => {
     shoot(ammo){
       this.useAmmo();
 
-      shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil);
+      shootLoc.trns(this.rotation - 90, 0, chaosArray.size * 4 - this.recoil);
       chaosArray.chargeBeginEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, this.rotation);
       chaosArray.chargeSound.at(this.x + shootLoc.x, this.y + shootLoc.y, 1);
       
@@ -131,6 +131,7 @@ chaosArray.buildType = () => {
         this.heat = 1;
         this._bulletLife = chaosArray.shootDuration;
         Angles.shotgun(chaosArray.shots, chaosArray.spread / chaosArray.shots, this.rotation, (rot) => {
+          shootLoc.trns(this.rotation - 90, 0, chaosArray.size * 4 - this.recoil);
           this.bullet(ammo, rot + Mathf.range(chaosArray.inaccuracy));
           chaosArray.shootSound.at(this.x + shootLoc.x, this.y + shootLoc.y, 1);
         });
