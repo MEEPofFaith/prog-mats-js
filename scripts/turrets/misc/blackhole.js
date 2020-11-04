@@ -121,7 +121,7 @@ ballOfSucc.smokeEffect = Fx.none;
 ballOfSucc.backColor = Color.valueOf("000000");
 ballOfSucc.frontColor = Color.valueOf("353535");
 
-const blackhole = extendContent(ChargeTurret, "blackhole-i", {
+const blackhole = extendContent(ChargeTurret, "blackhole", {
   setStats(){
     this.super$setStats();
     

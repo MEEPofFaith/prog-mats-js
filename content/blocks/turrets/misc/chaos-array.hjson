@@ -1,0 +1,20 @@
+name: Chaos Array
+description: Go to r/Mindustry and search for 'The true power of the Duo.'
+range: 560
+reloadTime: 600
+chargeSound: prog-mats-octagonapus
+shootSound: prog-mats-braaagh
+requirements: [
+  copper/9001
+  lead/9001
+  graphite/9001
+  silicon/9001
+  metaglass/9001
+  titanium/9001
+  plastanium/9001
+  thorium/9001
+  phase-fabric/9001
+  techtanite/9001
+]
+category: turret
+research: foreshadow

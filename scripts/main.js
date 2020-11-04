@@ -11,5 +11,6 @@ require("turrets/tesla/tesla-ii")
 require("turrets/tesla/tesla-iii")
 
 require("turrets/misc/blackhole")
+require("turrets/misc/chaos")
 
 require("production/hadron")
