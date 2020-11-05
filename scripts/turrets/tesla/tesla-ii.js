@@ -27,6 +27,7 @@ const targetLightning = new Effect(10, 500, e => {
 		
 		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
 		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
+    Drawf.light(e.data[2], tV.x, tV.y, tV2.x, tV2.y, e.data[1] * 3, e.color, 0.7);
 	};
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
@@ -44,7 +45,8 @@ coilZap.lightningLength = 6;
 coilZap.lightningLengthRand = 4;
 coilZap.lightningAngle = 0;
 coilZap.lightningColor = lightningCol;
-//coilZap.collidesTiles = false;
+coilZap.lightRadius = 24;
+coilZap.lightOpcaity = 0.7;
 coilZap.hittable = false;
 
 const teslaCoil = extendContent(PowerTurret, "tesla-ii", {
@@ -133,7 +135,7 @@ teslaCoil.buildType = () => {
             this._shootAngle = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, targX, targY);
             this._dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, targX, targY);
             
-            targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaCoil.lightningColor, [this._dist, 5]);
+            targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaCoil.lightningColor, [this._dist, 5, this.team]);
             teslaCoil.shootSound.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(0.9, 1.1));
             teslaCoil.shootEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaCoil.lightningColor);
             

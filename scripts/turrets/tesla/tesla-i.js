@@ -27,6 +27,7 @@ const targetLightning = new Effect(10, 500, e => {
 		
 		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
 		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
+    Drawf.light(e.data[2], tV.x, tV.y, tV2.x, tV2.y, e.data[1] * 3, e.color, 0.7);
 	};
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
@@ -44,7 +45,8 @@ ringZap.lightningLength = 5;
 ringZap.lightningLengthRand = 3;
 ringZap.lightningAngle = 0;
 ringZap.lightningColor = lightningCol;
-//ringZap.collidesTiles = false;
+ringZap.lightRadius = 24;
+ringZap.lightOpcaity = 0.7;
 ringZap.hittable = false;
 
 const teslaRing = extendContent(PowerTurret, "tesla-i", {
@@ -133,7 +135,7 @@ teslaRing.buildType = () => {
             this._shootAngle = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, targX, targY);
             this._dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, targX, targY);
             
-            targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaRing.lightningColor, [this._dist, 5]);
+            targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaRing.lightningColor, [this._dist, 5, this.team]);
             teslaRing.shootSound.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(0.9, 1.1));
             teslaRing.shootEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, this._shootAngle, teslaRing.lightningColor);
             

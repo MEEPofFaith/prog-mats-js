@@ -8,7 +8,7 @@ const targetLightning = new Effect(10, 500, e => {
 	var length = e.data[0];
 	var tileLength = Mathf.round(length / 8);
 	
-	Lines.stroke(4 * e.fout());
+	Lines.stroke(e.data[1] * e.fout());
 	Draw.color(e.color, Color.white, e.fin());
 	
 	for(var i = 0; i < tileLength; i++){
@@ -27,6 +27,7 @@ const targetLightning = new Effect(10, 500, e => {
 		tV2.add(e.x, e.y);
 		
 		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
+    Drawf.light(e.data[2], tV.x, tV.y, tV2.x, tV2.y, e.data[1] * 3, e.color, 0.7);
 		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
 	};
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
@@ -44,7 +45,7 @@ const burnRadius = 7;
 //Width of each section of the beam from thickest to thinnest
 var tscales = [1, 0.7, 0.5, 0.2];
 //Overall width of each color
-var strokes = [burnRadius/2, burnRadius/2.5, burnRadius/3, burnRadius/3.5];
+var strokes = [burnRadius / 2, burnRadius / 2.5, burnRadius / 3.3333, burnRadius / 5];
 //Determines how far back each section in the start should be pulled
 var pullscales = [1, 1.12, 1.15, 1.17];
 //Determines how far each section of the end should extend past the main thickest section
@@ -65,6 +66,8 @@ const hellPool = extend(BasicBulletType, {
       Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 99000);
     }
   },
+  drawLight(b){
+  },
   draw(b){
     if(b != null){
       //ring
@@ -83,6 +86,7 @@ const hellPool = extend(BasicBulletType, {
           lavaBack.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
           Lines.lineAngle(b.x + lavaBack.x, b.y + lavaBack.y, 90, baseLen * b.fout() * lenscales[i], false);
+          Drawf.light(b.team, b.x + lavaBack.x, b.y + lavaBack.y, b.x + lavaBack.y + lavaBack.x, b.y + baseLen * b.fout() * lenscales[i], Lines.getStroke() * this.lightRadius, this.lightColor, this.lightOpacity);
         };
       };
       Draw.reset();
@@ -101,6 +105,9 @@ hellPool.despawnEffect = Fx.none;
 hellPool.shootEffect = Fx.none;
 hellPool.smokeEffect = Fx.none;
 hellPool.hittable = false;
+hellPool.lightRadius = 2;
+hellPool.lightOpacity = 0.7;
+hellPool.lightColor = colors[2];
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
@@ -331,7 +338,7 @@ hellRiser.buildType = () => {
             
             var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
             
-            targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist]);
+            targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist, 6, this.team]);
           }
         }
       }
@@ -392,8 +399,8 @@ hellRiser.buildType = () => {
         }
       }
       
-      if(hellEntity.targetX.size >= 0){
-        for(var i = 0; i < hellEntity.targetX.size; i++){
+      for(var i = 0; i < hellEntity.targetX.size; i++){
+        if(i >= 0){
           hellRiser.shootType.create(this, this.team, hellEntity.targetX.get(i), hellEntity.targetY.get(i), 0, 1, 1);
         }
       }

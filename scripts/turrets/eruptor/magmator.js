@@ -8,7 +8,7 @@ const targetLightning = new Effect(10, 500, e => {
 	var length = e.data[0];
 	var tileLength = Mathf.round(length / 8);
 	
-	Lines.stroke(6 * e.fout());
+	Lines.stroke(e.data[1] * e.fout());
 	Draw.color(e.color, Color.white, e.fin());
 	
 	for(var i = 0; i < tileLength; i++){
@@ -27,11 +27,11 @@ const targetLightning = new Effect(10, 500, e => {
 		tV2.add(e.x, e.y);
 		
 		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
+    Drawf.light(e.data[2], tV.x, tV.y, tV2.x, tV2.y, e.data[1] * 3, e.color, 0.7);
 		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
 	};
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
-
 targetLightning.layer = 45;
 
 //Editable stuff for custom laser.
@@ -44,7 +44,7 @@ const burnRadius = 36;
 //Width of each section of the beam from thickest to thinnest
 var tscales = [1, 0.7, 0.5, 0.2];
 //Overall width of each color
-var strokes = [burnRadius/2, burnRadius/2.5, burnRadius/3.3333, burnRadius/5];
+var strokes = [burnRadius / 2, burnRadius / 2.5, burnRadius / 3.3333, burnRadius / 5];
 //Determines how far back each section in the start should be pulled
 var pullscales = [1, 1.12, 1.15, 1.17];
 //Determines how far each section of the end should extend past the main thickest section
@@ -70,6 +70,8 @@ const magmaPool = extend(BasicBulletType, {
       Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 99000);
     }
   },
+  drawLight(b){
+  },
   draw(b){
     if(b != null){
       //ring
@@ -88,6 +90,7 @@ const magmaPool = extend(BasicBulletType, {
           lavaBack.trns(90, (pullscales[i] - 1.0) * 55.0);
           Lines.stroke(4 * strokes[s] * tscales[i]);
           Lines.lineAngle(b.x + lavaBack.x, b.y + lavaBack.y, 90, baseLen * b.fout() * lenscales[i], false);
+          Drawf.light(b.team, b.x + lavaBack.x, b.y + lavaBack.y, b.x + lavaBack.y + lavaBack.x, b.y + baseLen * b.fout() * lenscales[i], Lines.getStroke() * this.lightRadius, this.lightColor, this.lightOpacity);
         };
       };
       Draw.reset();
@@ -105,9 +108,12 @@ magmaPool.despawnEffect = Fx.none;
 magmaPool.shootEffect = Fx.none;
 magmaPool.smokeEffect = Fx.none;
 magmaPool.hittable = false;
+magmaPool.lightRadius = 2;
+magmaPool.lightOpacity = 0.7;
+magmaPool.lightColor = colors[2];
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
-const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
+const magmaRiser = extendContent(PowerTurret, "eruptor-ii", {
   load(){
     this.cells = [];
     this.heatRegions = [];
@@ -136,7 +142,7 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
     
     //damages every 5 ticks
     this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, lavaRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
+    this.stats.add(Stat.damage, magmaRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
   },
   icons(){
     return [
@@ -146,25 +152,25 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-ii", {
   }
 });
 
-lavaRiser.shootType = magmaPool;
-lavaRiser.shootDuration = 240;
-lavaRiser.range = 280;
-lavaRiser.reloadTime = 90;
-lavaRiser.rotateSpeed = 2.25;
-lavaRiser.recoilAmount = 4;
-lavaRiser.COA = 0.9;
-lavaRiser.cellHeight = 1;
-lavaRiser.firingMoveFract = 0.8;
-lavaRiser.shootEffect = Fx.none;
-lavaRiser.smokeEffect = Fx.none;
-lavaRiser.ammoUseEffect = Fx.none;
-lavaRiser.capClosing = 0.01;
-lavaRiser.heatColor = Color.valueOf("f08913");
+magmaRiser.shootType = magmaPool;
+magmaRiser.shootDuration = 240;
+magmaRiser.range = 280;
+magmaRiser.reloadTime = 90;
+magmaRiser.rotateSpeed = 2.25;
+magmaRiser.recoilAmount = 4;
+magmaRiser.COA = 0.9;
+magmaRiser.cellHeight = 1;
+magmaRiser.firingMoveFract = 0.8;
+magmaRiser.shootEffect = Fx.none;
+magmaRiser.smokeEffect = Fx.none;
+magmaRiser.ammoUseEffect = Fx.none;
+magmaRiser.capClosing = 0.01;
+magmaRiser.heatColor = Color.valueOf("f08913");
 
 const shootLoc = new Vec2();
 
-lavaRiser.buildType = () => {
-	var magmaEntity = extendContent(PowerTurret.PowerTurretBuild, lavaRiser, {
+magmaRiser.buildType = () => {
+	var magmaEntity = extendContent(PowerTurret.PowerTurretBuild, magmaRiser, {
 		setEff(){
 			this._bullet = null;
 			this._bulletLife = 0;
@@ -177,81 +183,81 @@ lavaRiser.buildType = () => {
       const trnsY = [-1, -1, 1, 1];
       const trnsYflat = [0, 0, 1, 1];
       
-      Draw.rect(lavaRiser.baseRegion, this.x, this.y, 0);
+      Draw.rect(magmaRiser.baseRegion, this.x, this.y, 0);
       
       Draw.z(Layer.turret);
       
       back.trns(this.rotation - 90, 0, -this.recoil);
       
-      Draw.rect(lavaRiser.outlines[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+      Draw.rect(magmaRiser.outlines[0], this.x + back.x, this.y + back.y, this.rotation - 90);
       
       //Bottom Layer Cell Outlines
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[1] * trnsX[i], this._cellOpenAmounts[1] * trnsY[i]);
-        Draw.rect(lavaRiser.outlines[i + 1], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+        Draw.rect(magmaRiser.outlines[i + 1], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
       //Top Layer Cell Outlines
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[0] * trnsX[i], this._cellOpenAmounts[0] * trnsYflat[i]);
-        Draw.rect(lavaRiser.outlines[i + 5], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+        Draw.rect(magmaRiser.outlines[i + 5], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
-      Drawf.shadow(lavaRiser.turretRegion, this.x + back.x - (lavaRiser.size / (1 + (1/3))), this.y + back.y - (lavaRiser.size / (1 + (1/3))), this.rotation - 90);
-      Draw.rect(lavaRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
+      Drawf.shadow(magmaRiser.turretRegion, this.x + back.x - (magmaRiser.size / (1 + (1/3))), this.y + back.y - (magmaRiser.size / (1 + (1/3))), this.rotation - 90);
+      Draw.rect(magmaRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
-        Draw.color(lavaRiser.heatColor, this.heat);
-        Draw.rect(lavaRiser.heatRegions[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.color(magmaRiser.heatColor, this.heat);
+        Draw.rect(magmaRiser.heatRegions[0], this.x + back.x, this.y + back.y, this.rotation - 90);
         Draw.blend();
         Draw.color();
       }
       
       //Bottom Layer Cells
-      Drawf.shadow(lavaRiser.cells[0], this.x + back.x - lavaRiser.cellHeight, this.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
+      Drawf.shadow(magmaRiser.cells[0], this.x + back.x - magmaRiser.cellHeight, this.y + back.y - magmaRiser.cellHeight, this.rotation - 90);
       
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[1] * trnsX[i], this._cellOpenAmounts[1] * trnsY[i]);
-        Drawf.shadow(lavaRiser.bottomCaps[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
+        Drawf.shadow(magmaRiser.bottomCaps[i], this.x + open.x + back.x - magmaRiser.cellHeight, this.y + open.y + back.y - magmaRiser.cellHeight, this.rotation - 90);
       }
       
-      Draw.rect(lavaRiser.cells[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+      Draw.rect(magmaRiser.cells[0], this.x + back.x, this.y + back.y, this.rotation - 90);
       
       if(this.heat > 0.00001){
         Draw.blend(Blending.additive);
-        Draw.color(lavaRiser.heatColor, this.heat);
-        Draw.rect(lavaRiser.heatRegions[1], this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.color(magmaRiser.heatColor, this.heat);
+        Draw.rect(magmaRiser.heatRegions[1], this.x + back.x, this.y + back.y, this.rotation - 90);
         Draw.blend();
         Draw.color();
       }
       
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[1] * trnsX[i], this._cellOpenAmounts[1] * trnsY[i]);
-        Draw.rect(lavaRiser.bottomCaps[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+        Draw.rect(magmaRiser.bottomCaps[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
       //Top Layer Cells
-      Drawf.shadow(lavaRiser.cells[1], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
+      Drawf.shadow(magmaRiser.cells[1], this.x + open.x + back.x - magmaRiser.cellHeight, this.y + open.y + back.y - magmaRiser.cellHeight, this.rotation - 90);
       
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[0] * trnsX[i], this._cellOpenAmounts[0] * trnsYflat[i]);
-        Drawf.shadow(lavaRiser.topCaps[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
+        Drawf.shadow(magmaRiser.topCaps[i], this.x + open.x + back.x - magmaRiser.cellHeight, this.y + open.y + back.y - magmaRiser.cellHeight, this.rotation - 90);
       }
       
-      Draw.rect(lavaRiser.cells[1], this.x + back.x, this.y + back.y, this.rotation - 90);
+      Draw.rect(magmaRiser.cells[1], this.x + back.x, this.y + back.y, this.rotation - 90);
       
       if(this.heat > 0){
         Draw.blend(Blending.additive);
-        Draw.color(lavaRiser.heatColor, this.heat);
-        Draw.rect(lavaRiser.heatRegions[2], this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.color(magmaRiser.heatColor, this.heat);
+        Draw.rect(magmaRiser.heatRegions[2], this.x + back.x, this.y + back.y, this.rotation - 90);
         Draw.blend();
         Draw.color();
       }
       
       for(var i = 0; i < 4; i ++){
       open.trns(this.rotation - 90, this._cellOpenAmounts[0] * trnsX[i], this._cellOpenAmounts[0] * trnsYflat[i]);
-        Draw.rect(lavaRiser.topCaps[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+        Draw.rect(magmaRiser.topCaps[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
     },
     updateTile(){
@@ -259,25 +265,25 @@ lavaRiser.buildType = () => {
       
       if(this._bulletLife <= 0 && this._bullet == null){
         for(var i = 0; i < 2; i ++){
-          this._cellOpenAmounts[i] = Mathf.lerpDelta(this._cellOpenAmounts[i], 0, lavaRiser.capClosing);
+          this._cellOpenAmounts[i] = Mathf.lerpDelta(this._cellOpenAmounts[i], 0, magmaRiser.capClosing);
         }
       }
       
       if(this._bulletLife > 0 && this._bullet != null){
         this._bullet.time = 0;
         this.heat = 1;
-        this.recoil = lavaRiser.recoilAmount;
-        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], lavaRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
-        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], lavaRiser.COA * Mathf.absin(-this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
+        this.recoil = magmaRiser.recoilAmount;
+        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], magmaRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
+        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], magmaRiser.COA * Mathf.absin(-this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
         this._bulletLife = this._bulletLife - Time.delta;
         this.rotation = Angles.moveToward(this.rotation, Angles.angle(this.x, this.y, this._bullet.x, this._bullet.y), 360);
         
-        shootLoc.trns(this.rotation, lavaRiser.size * 4 - this.recoil);
+        shootLoc.trns(this.rotation, magmaRiser.size * 4 - this.recoil);
         
         var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
         var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
         
-        targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist]);
+        targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist, 6, this.team]);
         
         if(this._bulletLife <= 0){
           this._bullet = null;
@@ -289,13 +295,13 @@ lavaRiser.buildType = () => {
         return;
       }
       
-      if(this.reload >= lavaRiser.reloadTime){
+      if(this.reload >= magmaRiser.reloadTime){
         var type = this.peekAmmo();
         
         this.shoot(type);
         
         this.reload = 0;
-        this._bulletLife = lavaRiser.shootDuration;
+        this._bulletLife = magmaRiser.shootDuration;
       }else{
         this.reload += this.delta() * this.baseReloadSpeed();
       }
@@ -307,7 +313,7 @@ lavaRiser.buildType = () => {
     },
     turnToTarget(targetRot){
       if(this._bulletLife <= 0){
-        this.rotation = Angles.moveToward(this.rotation, targetRot, this.efficiency() * lavaRiser.rotateSpeed * this.delta() * (this._bulletLife > 0 ? lavaRiser.firingMoveFract : 1));
+        this.rotation = Angles.moveToward(this.rotation, targetRot, this.efficiency() * magmaRiser.rotateSpeed * this.delta() * (this._bulletLife > 0 ? magmaRiser.firingMoveFract : 1));
       }
     },
     shouldActiveSound(){

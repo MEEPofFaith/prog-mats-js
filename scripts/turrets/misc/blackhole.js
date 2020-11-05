@@ -1,5 +1,7 @@
 const blackholeSize = 6;
 const succRadius = 64;
+const horizon = Color.valueOf("bd5200");
+const horizonRad = 5;
 
 const swirl = new Effect(90, e => {
   const loc = new Vec2();
@@ -8,12 +10,13 @@ const swirl = new Effect(90, e => {
   
   loc.trns(Mathf.randomSeedRange(e.id, 360) + (480 * e.fin()), succRadius / 2 * e.fout());
   
-	Draw.blend(Blending.normal);
-  Draw.color(Color.valueOf("000000"));
-  Draw.alpha(1);
+	Draw.color(Color.valueOf("000000"));
 	Fill.circle(e.x + loc.x + (e.fin() * endX), e.y + loc.y + (e.fin() * endY), 2 * e.fout());
-	Draw.blend();
+  
+  Drawf.light(e.x + loc.x + (e.fin() * endX), e.y + loc.y + (e.fin() * endY), (2 + horizonRad) * e.fout(), horizon, 0.7);
+  Draw.reset();
 });
+swirl.layer = Layer.bullet;
 
 const poof = new Effect(24, e => {
   Draw.color(Color.valueOf("353535"), Color.valueOf("000000"), e.fin());
@@ -57,7 +60,7 @@ const ballOfSucc = extend(BasicBulletType, {
     const succ = new Vec2();
     
     if(b != null){
-      if(b.timer.get(1, 5)){
+      if(b.timer.get(1, 2)){
         //Adapted from Graviton from AdvanceContent
         Units.nearbyEnemies(b.team, b.x - succRadius, b.y - succRadius, succRadius * 2, succRadius * 2, cons(unit => {
           if(unit.within(b.x, b.y, succRadius)){
@@ -82,7 +85,7 @@ const ballOfSucc = extend(BasicBulletType, {
           }
         }));
         
-        Damage.damage(b.team, b.x, b.y, 24, this.damage/12, true);
+        Damage.damage(b.team, b.x, b.y, 24, this.damage, true);
         
         var dist = (this.lifetime - b.time) * this.speed;
         var endX = Mathf.sinDeg(b.rotation() + 90) * dist;
@@ -95,20 +98,17 @@ const ballOfSucc = extend(BasicBulletType, {
     }
   },
   draw(b){
+    Draw.z(Layer.bullet + 0.5);
     Draw.color(this.backColor);
     Draw.rect(this.backRegion, b.x, b.y, blackholeSize, blackholeSize, 0);
     
-    var f = Mathf.round(b.time/5);
-    for(var i = 0; i < 2; i++){
-      if(f % 3 == i){
-        Draw.color(this.frontColor);
-        Draw.rect(this.front[i], b.x, b.y, blackholeSize, blackholeSize,  0);
-      }
-    }
+    Draw.color(this.frontColor);
+    var f = Mathf.floor(b.time/5) % 3;
+    Draw.rect(this.front[f], b.x, b.y, blackholeSize, blackholeSize,  0);
   }
 });
 
-ballOfSucc.damage = 1500;
+ballOfSucc.damage = 575 / 30;
 ballOfSucc.speed = 0.5;
 ballOfSucc.lifetime = 384;
 ballOfSucc.collides = false;
@@ -120,6 +120,9 @@ ballOfSucc.smokeEffect = Fx.none;
 
 ballOfSucc.backColor = Color.valueOf("000000");
 ballOfSucc.frontColor = Color.valueOf("353535");
+ballOfSucc.lightColor = horizon;
+ballOfSucc.lightRadius = blackholeSize / 2 + horizonRad;
+ballOfSucc.lightOpacity = 0.7;
 
 const blackhole = extendContent(ChargeTurret, "blackhole", {
   setStats(){
@@ -127,13 +130,7 @@ const blackhole = extendContent(ChargeTurret, "blackhole", {
     
     //damages every 5 ticks
     this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, this.shootType.damage / 60 * 12, StatUnit.perSecond);
-  },
-  icons(){	
-    return [	
-      Core.atlas.find("block-4"),	
-      Core.atlas.find("prog-mats-blackhole-i-icon")	
-    ];	
+    this.stats.add(Stat.damage, this.shootType.damage * 30, StatUnit.perSecond);
   }
 });
 
