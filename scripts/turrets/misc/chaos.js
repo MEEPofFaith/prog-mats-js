@@ -36,7 +36,7 @@ const chaosChargeBegin = new Effect(180, 400, e => {
 });
 
 var chargeLenScale = 0.75;
-var chargeBeams = 30 / 2;
+var chargeBeams = 20 / 2;
 
 const chaosCharge = new Effect(180, 1600 * chargeLenScale, e => {
   var fade = 1 - Mathf.curve(e.time, e.lifetime - fadeTime, e.lifetime);
@@ -50,20 +50,20 @@ const chaosCharge = new Effect(180, 1600 * chargeLenScale, e => {
       for(var k = 0; k < chargeBeams; k++){
         var side = k * (360 / chargeBeams);
         for(var l = 0; l < 4; l++){
-          Lines.stroke((width + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[l] * fade);
+          Lines.stroke((width + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[l]);
           Lines.lineAngle(e.x, e.y, (e.rotation + 360 * e.fin() + side) * dir, baseLen * lenscales[l], false);
         }
         
         vec.trns((e.rotation + 360 * e.fin() + side) * dir, baseLen * 1.1);
           
-        Drawf.light(e.data[0], e.x, e.y, e.x + vec.x, e.y + vec.y, ((width + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[j] * fade) / 2 + lightStroke * lightScale * e.fin(), colors[2], 0.7);
+        Drawf.light(e.data[0], e.x, e.y, e.x + vec.x, e.y + vec.y, ((width + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[j]) / 2 + lightStroke * lightScale * e.fin(), colors[2], 0.7);
       }
     }
     Draw.reset();
   }
 });
 
-const duration = 90;
+const duration = 60;
 
 const chaosBeam = extend(ContinuousLaserBulletType, {
   update(b){
@@ -85,9 +85,14 @@ chaosBeam.lightColor = colors[2];
 chaosBeam.fadeTime = fadeTime;
 chaosBeam.damage = Number.MAX_VALUE;
 chaosBeam.lifetime = duration + 16;
-chaosBeam.shake = 5.6;
+chaosBeam.shake = 50;
 
 const chaosArray = extendContent(ChargeTurret, "chaos-array", {
+  load(){
+    this.baseRegion = Core.atlas.find("prog-mats-block-8");
+    this.region = Core.atlas.find(this.name);
+    this.heatRegion = Core.atlas.find(this.name + "-heat");
+  },
   setStats(){
     this.super$setStats();
     
@@ -95,11 +100,11 @@ const chaosArray = extendContent(ChargeTurret, "chaos-array", {
     this.stats.add(Stat.damage, "oh no");
   }
 });
+
 chaosArray.shootType = chaosBeam;
-chaosArray.powerUse = 150.016667;
 chaosArray.chargeTime = 180;
-chaosArray.shootSound = loadSound("braaaagh");
-chaosArray.chargeSound = loadSound("octagonapus");
+chaosArray.chargeSound = loadSound("chaosCharge");
+chaosArray.shootSound = loadSound("chaosShoot");
 chaosArray.chargeBeginEffect = chaosChargeBegin;
 chaosArray.chargeEffect = chaosCharge;
 chaosArray.chargeMaxDelay = 0;
@@ -107,11 +112,12 @@ chaosArray.size = 8;
 chaosArray.shootDuration = duration;
 chaosArray.shots = 100;
 chaosArray.inaccuracy = 45;
-chaosArray.shootShake = 3200;
+chaosArray.shootY = -8;
 
 const tmpCol = new Color();
 const pow6In = new Interp.PowIn(6);
 
+//More stolen code :D
 chaosArray.heatDrawer = tile => {
 	if(tile.heat <= 0.00001) return;
 	var r = Interp.pow2Out.apply(tile.heat);
@@ -136,7 +142,7 @@ chaosArray.buildType = () => {
     },
     updateTile(){
       this.super$updateTile();
-      shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil);
+      shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
       
       if(this._bulletLife > 0){
         this.heat = 1;
@@ -166,7 +172,7 @@ chaosArray.buildType = () => {
     shoot(ammo){
       this.useAmmo();
 
-      shootLoc.trns(this.rotation - 90, 0, chaosArray.size * 4 - this.recoil);
+      shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
       chaosArray.chargeEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(360), [this.team]);
       chaosArray.chargeBeginEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, this.rotation, [this.team]);
       chaosArray.chargeSound.at(this.x + shootLoc.x, this.y + shootLoc.y, 1);
@@ -178,7 +184,7 @@ chaosArray.buildType = () => {
         this.heat = 1;
         this._bulletLife = chaosArray.shootDuration;
         for(var i = 0; i < chaosArray.shots; i++){
-          shootLoc.trns(this.rotation - 90, 0, chaosArray.size * 4 - this.recoil);
+          shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
           this.bullet(ammo, this.rotation + Mathf.range(chaosArray.inaccuracy));
           chaosArray.shootSound.at(this.x + shootLoc.x, this.y + shootLoc.y, 1);
         };
