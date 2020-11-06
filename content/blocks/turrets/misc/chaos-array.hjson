@@ -1,10 +1,15 @@
-name: Chaos Array
-description: Go to r/Mindustry and search for 'The true power of the Duo.'
+localizedName: "Chaos Array"
+description: "Go to r/Mindustry and search for 'The true power of the Duo.'"
+powerUse: 150.016667
 range: 560
-reloadTime: 600
-chargeSound: prog-mats-octagonapus
-shootSound: prog-mats-braaagh
-requirements: [
+reloadTime: 900
+recoilAmount: 8
+rotateSpeed: 0.3
+shootCone: 35
+cooldown: 0.003
+restitution: 0.008
+shootShake: 80
+requirements:[
   copper/9001
   lead/9001
   graphite/9001

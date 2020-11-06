@@ -6,7 +6,7 @@ reloadTime: 40
 shootCone: 360
 heatColor: fff694
 size: 2
-requirements: [
+requirements:[
   copper/35
   lead/85
   graphite/25

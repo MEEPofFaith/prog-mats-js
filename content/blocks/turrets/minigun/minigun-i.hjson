@@ -14,7 +14,7 @@ shootSound: shootBig
 targetAir: true
 targetGround: true
 rotateSpeed: 2
-requirements: [
+requirements:[
   copper/200
   graphite/175
   titanium/100

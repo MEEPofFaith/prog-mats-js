@@ -10,7 +10,7 @@ cooldown: 0.01
 shootSound: none
 activeSound: beam
 activeSoundVolume: 2
-requirements: [
+requirements:[
   copper/700
   lead/950
   graphite/750

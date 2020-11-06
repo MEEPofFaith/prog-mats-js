@@ -5,7 +5,7 @@ health: 1540
 reloadTime: 20
 shootCone: 360
 size: 3
-requirements: [
+requirements:[
   copper/75
   lead/110
   graphite/30

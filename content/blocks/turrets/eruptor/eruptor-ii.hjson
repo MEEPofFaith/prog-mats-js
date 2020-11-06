@@ -16,7 +16,7 @@ restitution: 0.01
 shootSound: none
 activeSound: beam
 activeSoundVolume: 2
-requirements: [
+requirements:[
   copper/350
   lead/550
   graphite/550

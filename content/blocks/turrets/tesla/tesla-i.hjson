@@ -5,7 +5,7 @@ health: 260
 reloadTime: 60
 shootCone: 360
 heatColor: fff694
-requirements: [
+requirements:[
   copper/45
   lead/60
   silicon/10

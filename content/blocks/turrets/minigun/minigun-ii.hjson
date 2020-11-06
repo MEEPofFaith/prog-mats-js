@@ -12,7 +12,7 @@ shootCone: 20
 targetAir: true
 targetGround: true
 rotateSpeed: 2
-requirements: [
+requirements:[
   copper/350
   graphite/300
   plastanium/175
