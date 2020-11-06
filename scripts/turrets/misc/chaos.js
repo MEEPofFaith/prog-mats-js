@@ -63,7 +63,7 @@ const chaosCharge = new Effect(180, 1600 * chargeLenScale, e => {
   }
 });
 
-const duration = 60;
+const duration = 50.4;
 
 const chaosBeam = extend(ContinuousLaserBulletType, {
   update(b){
