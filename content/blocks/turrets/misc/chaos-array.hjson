@@ -2,13 +2,13 @@ localizedName: "Chaos Array"
 description: "Go to r/Mindustry and search for 'The true power of the Duo.'"
 powerUse: 150.016667
 range: 560
-reloadTime: 900
+reloadTime: 600
 recoilAmount: 8
 rotateSpeed: 0.3
 shootCone: 35
 cooldown: 0.003
 restitution: 0.008
-shootShake: 80
+shootShake: 100
 requirements:[
   copper/9001
   lead/9001

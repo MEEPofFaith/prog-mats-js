@@ -23,7 +23,7 @@ const vec2 = new Vec2();
 
 var lightScale = 1;
 
-const chaosChargeBegin = new Effect(180, 400, e => {
+const chaosChargeBegin = new Effect(73, 400, e => {
   Draw.color(colors[0], colors[2], 0.5 + e.fin() * 0.5);
   Lines.stroke(Mathf.lerp(0, 28, e.fin()));
   Lines.circle(e.x, e.y, 384 * e.fout());
@@ -37,10 +37,11 @@ const chaosChargeBegin = new Effect(180, 400, e => {
 
 var chargeLenScale = 0.75;
 var chargeBeams = 20 / 2;
+var widthScl = 0.75;
 
-const chaosCharge = new Effect(180, 1600 * chargeLenScale, e => {
-  var fade = 1 - Mathf.curve(e.time, e.lifetime - fadeTime, e.lifetime);
-  var grow = Mathf.curve(e.time, 0, e.lifetime - fadeTime);
+const chaosCharge = new Effect(73, 1600 * chargeLenScale, e => {
+  var fade = 1 - Mathf.curve(e.time, e.lifetime - 4, e.lifetime);
+  var grow = Mathf.curve(e.time, 0, e.lifetime - 4);
   var baseLen = (length + (Mathf.absin(Time.time() / ((i + 1) * 2) + Mathf.randomSeed(e.id), 0.8, 1.5) * (length / 1.5))) * chargeLenScale * fade;
   
   for(var i = 0; i < 4; i++){
@@ -50,13 +51,13 @@ const chaosCharge = new Effect(180, 1600 * chargeLenScale, e => {
       for(var k = 0; k < chargeBeams; k++){
         var side = k * (360 / chargeBeams);
         for(var l = 0; l < 4; l++){
-          Lines.stroke((width + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[l]);
+          Lines.stroke((width * widthScl + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[l]);
           Lines.lineAngle(e.x, e.y, (e.rotation + 360 * e.fin() + side) * dir, baseLen * lenscales[l], false);
         }
         
         vec.trns((e.rotation + 360 * e.fin() + side) * dir, baseLen * 1.1);
           
-        Drawf.light(e.data[0], e.x, e.y, e.x + vec.x, e.y + vec.y, ((width + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[j]) / 2 + lightStroke * lightScale * e.fin(), colors[2], 0.7);
+        Drawf.light(e.data[0], e.x, e.y, e.x + vec.x, e.y + vec.y, ((width * widthScl + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[j]) / 2 + lightStroke * lightScale * e.fin(), colors[2], 0.7);
       }
     }
     Draw.reset();
@@ -85,7 +86,7 @@ chaosBeam.lightColor = colors[2];
 chaosBeam.fadeTime = fadeTime;
 chaosBeam.damage = Number.MAX_VALUE;
 chaosBeam.lifetime = duration + 16;
-chaosBeam.shake = 50;
+chaosBeam.shake = 100;
 
 const chaosArray = extendContent(ChargeTurret, "chaos-array", {
   load(){
@@ -102,7 +103,7 @@ const chaosArray = extendContent(ChargeTurret, "chaos-array", {
 });
 
 chaosArray.shootType = chaosBeam;
-chaosArray.chargeTime = 180;
+chaosArray.chargeTime = 73;
 chaosArray.chargeSound = loadSound("chaosCharge");
 chaosArray.shootSound = loadSound("chaosShoot");
 chaosArray.chargeBeginEffect = chaosChargeBegin;
@@ -112,7 +113,7 @@ chaosArray.size = 8;
 chaosArray.shootDuration = duration;
 chaosArray.shots = 100;
 chaosArray.inaccuracy = 45;
-chaosArray.shootY = -8;
+chaosArray.shootY = -16;
 
 const tmpCol = new Color();
 const pow6In = new Interp.PowIn(6);

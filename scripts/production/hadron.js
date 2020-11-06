@@ -27,10 +27,13 @@ collisionEffect.layer = 32.5;
 const hadron = extendContent(GenericCrafter, "mindron-collider", {
   load(){
     this.heatRegions = [];
+    this.lightRegions = [];
     
     this.colliderRegion = Core.atlas.find(this.name + "-collider");
-    this.heatRegions[0] = Core.atlas.find(this.name + "-heat-0");
-    this.heatRegions[1] = Core.atlas.find(this.name + "-heat-1");
+    for(var i = 0; i < 2; i++){
+      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
+      this.lightRegions[i] = Core.atlas.find(this.name + "-light-" + i);
+    }
     this.glassRegion = Core.atlas.find(this.name + "-glass");
     this.bottomRegion = Core.atlas.find(this.name + "-bottom");
     this.topRegion = Core.atlas.find(this.name + "-top");
@@ -112,6 +115,8 @@ hadron.buildType = () => {
         Draw.color();
       }
       
+      Drawf.light(this.team, this.x, this.y, hadron.lightRegions[0], hadron.heatColor, this._heat);
+      
       Draw.alpha(0.75);
       Draw.rect(hadron.glassRegion, this.x, this.y);
       Draw.alpha(1);
@@ -125,6 +130,8 @@ hadron.buildType = () => {
         Draw.blend();
         Draw.color();
       }
+      
+      Drawf.light(this.team, this.x, this.y, hadron.lightRegions[1], hadron.heatColor, this._heat);
     },
     updateTile(){
       this.super$updateTile();
