@@ -3,17 +3,17 @@ const succRadius = 64;
 const horizon = Color.valueOf("bd5200");
 const horizonRad = 5;
 
+const loc = new Vec2();
+const vec = new Vec2();
+const succ = new Vec2();
+
 const swirl = new Effect(90, e => {
-  const loc = new Vec2();
-  const endX = Mathf.sinDeg(e.rotation + 90) * 45;
-  const endY = Mathf.cosDeg(e.rotation - 90) * 45;
-  
-  loc.trns(Mathf.randomSeedRange(e.id, 360) + (480 * e.fin()), succRadius / 2 * e.fout());
+  loc.trns(e.rotation + (480 * e.fin()), succRadius / 2 * e.fout());
   
 	Draw.color(Color.valueOf("000000"));
-	Fill.circle(e.x + loc.x + (e.fin() * endX), e.y + loc.y + (e.fin() * endY), 2 * e.fout());
+	Fill.circle(e.data[0].x + loc.x , e.data[0].y + loc.y, 2 * e.fout());
   
-  Drawf.light(e.x + loc.x + (e.fin() * endX), e.y + loc.y + (e.fin() * endY), (2 + horizonRad) * e.fout(), horizon, 0.7);
+  Drawf.light(e.data[0].x + loc.x , e.data[0].y + loc.y, (2 + horizonRad) * e.fout(), horizon, 0.7);
   Draw.reset();
 });
 swirl.layer = Layer.bullet;
@@ -57,17 +57,14 @@ const ballOfSucc = extend(BasicBulletType, {
     }
   },
   update(b){
-    const succ = new Vec2();
-    
     if(b != null){
       if(b.timer.get(1, 2)){
         //Adapted from Graviton from AdvanceContent
         Units.nearbyEnemies(b.team, b.x - succRadius, b.y - succRadius, succRadius * 2, succRadius * 2, cons(unit => {
           if(unit.within(b.x, b.y, succRadius)){
-            var targetMass = unit.mass();
             var angle = Angles.angle(unit.x, unit.y, b.x, b.y);
-            succ.trns(angle, 11 / (targetMass / 5 + 1));
-            unit.vel.add(succ);
+            succ.trns(angle, 11);
+            unit.impulse(succ);
           };
         }));
         
@@ -92,7 +89,7 @@ const ballOfSucc = extend(BasicBulletType, {
         var endY = Mathf.cosDeg(b.rotation() - 90) * dist;
         
         if(b.time <= this.lifetime - 90){
-          swirl.at(b.x, b.y, b.rotation());
+          swirl.at(b.x, b.y,Mathf.random(360), [b]);
         }
       }
     }
@@ -144,15 +141,14 @@ blackhole.recoilAmount = 2;
 blackhole.heatColor = Color.valueOf("000000");
 blackhole.restitution = 0.015;
 blackhole.cooldown = 0.015;
-blackhole.expanded = true;
+blackhole.shootY = 0;
 
 blackhole.buildType = () => {
   var succEntity = extendContent(ChargeTurret.ChargeTurretBuild, blackhole, {
     shoot(type){
-      const vec = new Vec2();
       this.useAmmo();
 
-      vec.trns(this.rotation, 9 - this.recoil);
+      vec.trns(this.rotation -90, 0, blackhole.size * 4 - this.recoil + blackhole.shootY);
       blackhole.chargeBeginEffect.at(this.x + vec.x, this.y + vec.y, this.rotation);
       
       for(var i = 0; i < blackhole.chargeEffects; i++){
