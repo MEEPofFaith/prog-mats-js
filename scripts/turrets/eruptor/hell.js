@@ -33,7 +33,7 @@ const targetLightning = new Effect(10, 500, e => {
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
 
-targetLightning.layer = 45;
+targetLightning.layer = Layer.turret + 0.5;
 
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
@@ -187,7 +187,7 @@ hellRiser.buildType = () => {
       
       Draw.rect(hellRiser.baseRegion, this.x, this.y, 0);
       
-      Draw.z(Layer.turret);
+      Draw.z(Layer.turret + 1);
       
       Drawf.shadow(hellRiser.bottomRegion, this.x - (hellRiser.size / (1 + (1 / 3))), this.y - (hellRiser.size / (1 + (1 / 3))));
       

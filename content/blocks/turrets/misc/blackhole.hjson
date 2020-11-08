@@ -1,11 +1,13 @@
 localizedName: Kugelblitz
-description: Fires a small black hole that sucks in units.
+description: "Fires small black holes that sucks in units and bullets."
+details: "Sprite based off of sprite provided by @Goober#8171 on discord."
 size: 4
 range: 128
 health: 800
 reloadTime: 240
 shootEffect: none
 smokeEffect: none
+rotateSpeed: 1.25
 shootSound: release
 requirements:[
   titanium/100

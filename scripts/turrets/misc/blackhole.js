@@ -37,6 +37,10 @@ const poof = new Effect(24, e => {
 const chargeBegin = new Effect(50, e => {
   Draw.color(Color.valueOf("000000"));
   Fill.circle(e.x, e.y, e.fin() * (blackholeSize / 2));
+  Draw.color();
+  
+  Drawf.light(e.x , e.y, e.fin() * (blackholeSize / 2 + horizonRad), horizon, 0.7);
+  Draw.reset();
 });
 
 const charge = new Effect(38, e => {
@@ -63,7 +67,7 @@ const ballOfSucc = extend(BasicBulletType, {
         Units.nearbyEnemies(b.team, b.x - succRadius, b.y - succRadius, succRadius * 2, succRadius * 2, cons(unit => {
           if(unit.within(b.x, b.y, succRadius)){
             var angle = Angles.angle(unit.x, unit.y, b.x, b.y);
-            succ.trns(angle, 11);
+            succ.trns(angle, 40);
             unit.impulse(succ);
           };
         }));
@@ -128,6 +132,11 @@ const blackhole = extendContent(ChargeTurret, "blackhole", {
     //damages every 5 ticks
     this.stats.remove(Stat.damage);
     this.stats.add(Stat.damage, this.shootType.damage * 30, StatUnit.perSecond);
+  },
+  load(){
+    this.super$load();
+    
+    this.spaceRegion = Core.atlas.find(this.name + "-space");
   }
 });
 
@@ -140,15 +149,43 @@ blackhole.chargeEffects = 16;
 blackhole.recoilAmount = 2;
 blackhole.heatColor = Color.valueOf("000000");
 blackhole.restitution = 0.015;
-blackhole.cooldown = 0.015;
-blackhole.shootY = 0;
+blackhole.cooldown = 0.005;
+blackhole.shootY = -16;
+
+const tmpCol = new Color();
+const pow6In = new Interp.PowIn(6);
+
+//More stolen code :D
+blackhole.heatDrawer = tile => {
+	if(tile.heat <= 0.00001) return;
+	var r = pow6In.apply(tile.heat);
+	var g = (Interp.pow3In.apply(tile.heat) + ((1 - Interp.pow3In.apply(tile.heat)) * 0.12)) / 2;
+	var b = Interp.pow2Out.apply(tile.heat);
+	var a = Interp.pow2Out.apply(tile.heat);
+	tmpCol.set(r, g, b, a);
+	Draw.color(tmpCol);
+
+	Draw.blend(Blending.additive);
+	Draw.rect(blackhole.heatRegion, tile.x + blackhole.tr2.x, tile.y + blackhole.tr2.y, tile.rotation - 90);
+	Draw.blend();
+	Draw.color();
+};
 
 blackhole.buildType = () => {
   var succEntity = extendContent(ChargeTurret.ChargeTurretBuild, blackhole, {
+    draw(){
+      this.super$draw();
+      
+      Draw.draw(Layer.turret + 1, () => {
+        Draw.shader(Shaders.space);
+        Draw.rect(blackhole.spaceRegion, this.x, this.y, this.rotation - 90);
+        Draw.shader();
+      });
+    },
     shoot(type){
       this.useAmmo();
 
-      vec.trns(this.rotation -90, 0, blackhole.size * 4 - this.recoil + blackhole.shootY);
+      vec.trns(this.rotation - 90, 0, blackhole.size * 4 - this.recoil + blackhole.shootY);
       blackhole.chargeBeginEffect.at(this.x + vec.x, this.y + vec.y, this.rotation);
       
       for(var i = 0; i < blackhole.chargeEffects; i++){

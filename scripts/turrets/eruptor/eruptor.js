@@ -33,7 +33,7 @@ const targetLightning = new Effect(10, 500, e => {
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
 
-targetLightning.layer = 45;
+targetLightning.layer = Layer.turret + 0.5;
 
 //Editable stuff for custom laser.
 //4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
@@ -191,7 +191,7 @@ lavaRiser.buildType = () => {
       
       Draw.rect(lavaRiser.baseRegion, this.x, this.y, 0);
       
-      Draw.z(Layer.turret);
+      Draw.z(Layer.turret + 1);
       
       back.trns(this.rotation - 90, 0, -this.recoil);
       
@@ -259,8 +259,8 @@ lavaRiser.buildType = () => {
         var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
         
         if(centDist > lavaRiser.maxRange){
-            vec.trns(ang, lavaRiser.maxRange);
-            this._bullet.set(this.x + vec.x, this.y + vec.y);
+          vec.trns(ang, lavaRiser.maxRange);
+          this._bullet.set(this.x + vec.x, this.y + vec.y);
         }
         
         targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist, 6, this.team]);
@@ -291,12 +291,11 @@ lavaRiser.buildType = () => {
       var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this.targetPos.x, this.targetPos.y);
       
       if(centDist > lavaRiser.maxRange){
-          vec.trns(angle, lavaRiser.maxRange);
+        vec.trns(angle, lavaRiser.maxRange);
+        var bullet = type.create(this, this.team, this.x + vec.x, this.y + vec.y, angle);
       }else{
-          vec.trns(0, 0);
+        var bullet = type.create(this, this.team, this.targetPos.x, this.targetPos.y, angle);
       }
-      
-      const bullet = type.create(this, this.team, this.x + vec.x, this.y + vec.y, angle);
       
       this._bullet = bullet;
     },
