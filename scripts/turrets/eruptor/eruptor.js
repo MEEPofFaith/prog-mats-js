@@ -160,6 +160,7 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-i", {
 lavaRiser.shootType = lavaPool;
 lavaRiser.shootDuration = 180;
 lavaRiser.range = 240;
+lavaRiser.maxRange = 360;
 lavaRiser.reloadTime = 60;
 lavaRiser.recoilAmount = 3;
 lavaRiser.COA = 0.75;
@@ -253,8 +254,14 @@ lavaRiser.buildType = () => {
         
         shootLoc.trns(this.rotation, lavaRiser.size * 4 - this.recoil);
         
-        var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
         var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        var centDist = Mathf.dst(this.x, this.y, this._bullet.x, this._bullet.y);
+        var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        
+        if(centDist > lavaRiser.maxRange){
+            vec.trns(ang, lavaRiser.maxRange);
+            this._bullet.set(this.x + vec.x, this.y + vec.y);
+        }
         
         targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist, 6, this.team]);
         
@@ -280,7 +287,16 @@ lavaRiser.buildType = () => {
       }
     },
     bullet(type, angle){
-      const bullet = type.create(this, this.team, this.targetPos.x, this.targetPos.y, angle);
+      var centDist = Mathf.dst(this.x, this.y, this.targetPos.x, this.targetPos.y);
+      var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this.targetPos.x, this.targetPos.y);
+      
+      if(centDist > lavaRiser.maxRange){
+          vec.trns(angle, lavaRiser.maxRange);
+      }else{
+          vec.trns(0, 0);
+      }
+      
+      const bullet = type.create(this, this.team, this.x + vec.x, this.y + vec.y, angle);
       
       this._bullet = bullet;
     },

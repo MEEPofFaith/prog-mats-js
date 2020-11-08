@@ -155,6 +155,7 @@ const magmaRiser = extendContent(PowerTurret, "eruptor-ii", {
 magmaRiser.shootType = magmaPool;
 magmaRiser.shootDuration = 240;
 magmaRiser.range = 280;
+magmaRiser.maxRange = 450;
 magmaRiser.reloadTime = 90;
 magmaRiser.rotateSpeed = 2.25;
 magmaRiser.recoilAmount = 4;
@@ -280,8 +281,14 @@ magmaRiser.buildType = () => {
         
         shootLoc.trns(this.rotation, magmaRiser.size * 4 - this.recoil);
         
-        var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
         var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        var centDist = Mathf.dst(this.x, this.y, this._bullet.x, this._bullet.y);
+        var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        
+        if(centDist > magmaRiser.maxRange){
+            vec.trns(ang, magmaRiser.maxRange);
+            this._bullet.set(this.x + vec.x, this.y + vec.y);
+        }
         
         targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist, 6, this.team]);
         
@@ -307,7 +314,16 @@ magmaRiser.buildType = () => {
       }
     },
     bullet(type, angle){
-      const bullet = type.create(this, this.team, this.targetPos.x, this.targetPos.y, angle);
+      var centDist = Mathf.dst(this.x, this.y, this.targetPos.x, this.targetPos.y);
+      var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this.targetPos.x, this.targetPos.y);
+      
+      if(centDist > magmaRiser.maxRange){
+          vec.trns(angle, magmaRiser.maxRange);
+      }else{
+          vec.trns(0, 0);
+      }
+      
+      const bullet = type.create(this, this.team, this.x + vec.x, this.y + vec.y, angle);
       
       this._bullet = bullet;
     },
