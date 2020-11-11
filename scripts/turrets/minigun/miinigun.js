@@ -13,11 +13,6 @@ const dualMinigun = extendContent(ItemTurret, "minigun-ii", {
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
   },
-  setStats(){
-    this.super$setStats();
-    
-    this.stats.add(Stat.shots, 2);
-  },
   icons(){
     return [
       Core.atlas.find("block-4"),
@@ -38,8 +33,8 @@ dualMinigun.shootSound = Sounds.shootBig;
 dualMinigun.heatColor = Color.valueOf("f7956a");
 
 //Dummy stats to mess with the shots/sec stat
-dualMinigun.reloadTime = 60;
-dualMinigun.shots = 40;
+dualMinigun.reloadTime = 3;
+dualMinigun.shots = 2;
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.sprite = "prog-mats-minigun-ball";
@@ -169,7 +164,7 @@ dualMinigun.buildType = () => {
     updateTile(){
       this.super$updateTile();
       
-      if(!this.validateTarget() || !this.hasAmmo()){
+      if(!this.validateTarget() || !this.hasAmmo() || (!(this.logicControlled() && this.logicShooting) && !(this.isControlled() && this.unit.isShooting))){
         this._frameSpeed = Mathf.lerpDelta(this._frameSpeed, 0, 0.0125);
       }
       
