@@ -171,16 +171,27 @@ blackhole.heatDrawer = tile => {
 	Draw.color();
 };
 
+const spaceColor = new Color.valueOf("140017");
+
 blackhole.buildType = () => {
   var succEntity = extendContent(ChargeTurret.ChargeTurretBuild, blackhole, {
+    setEff(){
+      this._spaceAlpha = 0;
+    },
     draw(){
       this.super$draw();
       
-      Draw.draw(Layer.turret + 1, () => {
-        Draw.shader(Shaders.space);
-        Draw.rect(blackhole.spaceRegion, this.x, this.y, this.rotation - 90);
-        Draw.shader();
-      });
+      vec.trns(this.rotation - 90, 0, -this.recoil);
+      
+      Draw.color(spaceColor.cpy().shiftHue(Time.time() / 2).shiftValue(Mathf.absin(Time.time(), 4, 0.15)));
+      Draw.alpha(this._spaceAlpha);
+      Draw.rect(blackhole.spaceRegion, this.x + vec.x, this.y + vec.y, this.rotation - 90);
+      Draw.reset();
+    },
+    updateTile(){
+      this.super$updateTile();
+      
+      this._spaceAlpha = Mathf.lerpDelta(this._spaceAlpha, Mathf.num(this.cons.valid()), 0.1);
     },
     shoot(type){
       this.useAmmo();
@@ -204,6 +215,7 @@ blackhole.buildType = () => {
       }));
     }
   });
+  succEntity.setEff();
   
   return succEntity;
 };
