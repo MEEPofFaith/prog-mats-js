@@ -25,21 +25,23 @@ var lightScale = 1;
 var chargeLenScale = 0.75;
 var chargeBeams = 20 / 2;
 var widthScl = 0.75;
-var rotateAmount = 180;
+var rotateAmount = 360;
+var chargeTime = 150;
+var fadeTime = 30;
 
-const chaosChargeBegin = new Effect(80, 1600 * chargeLenScale, e => {
-  Draw.color(colors[0], colors[2], 0.5 + e.fin() * 0.5);
-  Lines.stroke(Mathf.lerp(0, 28, e.fin()));
-  Lines.circle(e.x, e.y, 384 * e.fout());
+const chaosChargeBegin = new Effect(chargeTime, 1600 * chargeLenScale, e => {
+  Draw.color(colors[0], colors[2], 0.5 + e.finpow() * 0.5);
+  Lines.stroke(Mathf.lerp(0, 28, e.finpow()));
+  Lines.circle(e.x, e.y, 384 * (1 - e.finpow()));
   
   for(var i = 0; i < 36; i++){
     vec.trns(i * 10, 384 * e.fout());
     vec2.trns(i * 10 + 10, 384 * e.fout());
-    Drawf.light(e.data[0], e.x + vec.x, e.y + vec.y, e.x + vec2.x, e.y + vec2.y, 14 / 2 + lightStroke * lightScale * e.fin(), Draw.getColor(), 0.7);
+    Drawf.light(e.data[0], e.x + vec.x, e.y + vec.y, e.x + vec2.x, e.y + vec2.y, 14 / 2 + lightStroke * lightScale * e.finpow(), Draw.getColor(), 0.7);
   }
   
-  var fade = 1 - Mathf.curve(e.time, e.lifetime - 4, e.lifetime);
-  var grow = Mathf.curve(e.time, 0, e.lifetime - 4);
+  var fade = 1 - Mathf.curve(e.time, e.lifetime - fadeTime, e.lifetime);
+  var grow = Mathf.curve(e.time, 0, e.lifetime - fadeTime);
   var baseLen = (length + (Mathf.absin(Time.time() / ((i + 1) * 2) + Mathf.randomSeed(e.id), 0.8, 1.5) * (length / 1.5))) * chargeLenScale * fade;
   
   for(var i = 0; i < 4; i++){
@@ -50,19 +52,19 @@ const chaosChargeBegin = new Effect(80, 1600 * chargeLenScale, e => {
         var side = k * (360 / chargeBeams);
         for(var l = 0; l < 4; l++){
           Lines.stroke((width * widthScl + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[l]);
-          Lines.lineAngle(e.x, e.y, (e.rotation + rotateAmount * e.fin() + side) * dir, baseLen * lenscales[l], false);
+          Lines.lineAngle(e.x, e.y, (e.rotation + rotateAmount * e.finpow() + side) * dir, baseLen * lenscales[l], false);
         }
         
-        vec.trns((e.rotation + 360 * e.fin() + side) * dir, baseLen * 1.1);
+        vec.trns((e.rotation + 360 * e.finpow() + side) * dir, baseLen * 1.1);
           
-        Drawf.light(e.data[0], e.x, e.y, e.x + vec.x, e.y + vec.y, ((width * widthScl + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[j]) / 2 + lightStroke * lightScale * e.fin(), colors[2], 0.7);
+        Drawf.light(e.data[0], e.x, e.y, e.x + vec.x, e.y + vec.y, ((width * widthScl + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[j]) / 2 + lightStroke * lightScale * e.finpow(), colors[2], 0.7);
       }
     }
     Draw.reset();
   }
 });
 
-const duration = 65;
+const duration = 114;
 
 /*const chaosBeam = extend(ContinuousLaserBulletType, {
   update(b){
@@ -79,7 +81,6 @@ chaosBeam.length = length;
 chaosBeam.width = 75;
 chaosBeam.lightStroke = lightStroke;
 chaosBeam.lightColor = colors[2];
-chaosBeam.fadeTime = 60;
 chaosBeam.damage = Number.MAX_VALUE;
 chaosBeam.lifetime = duration + 16;
 
@@ -111,17 +112,18 @@ const chaosArray = extendContent(ChargeTurret, "chaos-array", {
 });
 
 chaosArray.shootType = chaosBeam;
-chaosArray.chargeTime = 80;
-/*chaosArray.chargeSound = loadSound("chaosCharge");
-chaosArray.shootSound = loadSound("chaosShoot");*/
-chaosArray.chargeSound = Sounds.lasercharge;
-chaosArray.shootSound = Sounds.laserblast;
+chaosArray.chargeTime = chargeTime;
+chaosArray.chargeSound = loadSound("chaoscharge");
+chaosArray.shootSound = loadSound("chaosblast");
+/*chaosArray.chargeSound = Sounds.lasercharge;
+chaosArray.shootSound = Sounds.laserblast;*/
 chaosArray.chargeBeginEffect = chaosChargeBegin;
 chaosArray.size = 8;
 chaosArray.shootDuration = duration;
 chaosArray.shots = 100;
 chaosArray.inaccuracy = 45;
 chaosArray.shootY = -16;
+chaosArray.shootShake = 150
 
 const tmpCol = new Color();
 const pow6In = new Interp.PowIn(6);
@@ -195,6 +197,7 @@ chaosArray.buildType = () => {
           shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
           this.bullet(ammo, this.rotation + Mathf.range(chaosArray.inaccuracy));
           chaosArray.shootSound.at(this.x + shootLoc.x, this.y + shootLoc.y, 1);
+          Effect.shake(chaosArray.shootShake, chaosArray.shootShake, this);
         };
       }));
     },
