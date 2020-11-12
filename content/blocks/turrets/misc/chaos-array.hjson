@@ -9,7 +9,7 @@ rotateSpeed: 0.3
 shootCone: 35
 cooldown: 0.0015
 restitution: 0.008
-shootShake: 100
+shootShake: 150
 requirements:[
   copper/9001
   lead/9001

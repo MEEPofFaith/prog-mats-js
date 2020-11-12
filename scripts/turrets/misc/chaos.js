@@ -2,7 +2,6 @@
 var colors = [Color.valueOf("D99F6B55"), Color.valueOf("E8D174aa"), Color.valueOf("F3E979"), Color.valueOf("ffffff")];
 var length = 900;
 var width = 16;
-var fadeTime = 45;
 var oscScl = 0.5;
 var oscMag = 1;
 var lightStroke = 60;
@@ -23,7 +22,12 @@ const vec2 = new Vec2();
 
 var lightScale = 1;
 
-const chaosChargeBegin = new Effect(73, 400, e => {
+var chargeLenScale = 0.75;
+var chargeBeams = 20 / 2;
+var widthScl = 0.75;
+var rotateAmount = 180;
+
+const chaosChargeBegin = new Effect(80, 1600 * chargeLenScale, e => {
   Draw.color(colors[0], colors[2], 0.5 + e.fin() * 0.5);
   Lines.stroke(Mathf.lerp(0, 28, e.fin()));
   Lines.circle(e.x, e.y, 384 * e.fout());
@@ -33,13 +37,7 @@ const chaosChargeBegin = new Effect(73, 400, e => {
     vec2.trns(i * 10 + 10, 384 * e.fout());
     Drawf.light(e.data[0], e.x + vec.x, e.y + vec.y, e.x + vec2.x, e.y + vec2.y, 14 / 2 + lightStroke * lightScale * e.fin(), Draw.getColor(), 0.7);
   }
-});
-
-var chargeLenScale = 0.75;
-var chargeBeams = 20 / 2;
-var widthScl = 0.75;
-
-const chaosCharge = new Effect(73, 1600 * chargeLenScale, e => {
+  
   var fade = 1 - Mathf.curve(e.time, e.lifetime - 4, e.lifetime);
   var grow = Mathf.curve(e.time, 0, e.lifetime - 4);
   var baseLen = (length + (Mathf.absin(Time.time() / ((i + 1) * 2) + Mathf.randomSeed(e.id), 0.8, 1.5) * (length / 1.5))) * chargeLenScale * fade;
@@ -52,7 +50,7 @@ const chaosCharge = new Effect(73, 1600 * chargeLenScale, e => {
         var side = k * (360 / chargeBeams);
         for(var l = 0; l < 4; l++){
           Lines.stroke((width * widthScl + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[l]);
-          Lines.lineAngle(e.x, e.y, (e.rotation + 360 * e.fin() + side) * dir, baseLen * lenscales[l], false);
+          Lines.lineAngle(e.x, e.y, (e.rotation + rotateAmount * e.fin() + side) * dir, baseLen * lenscales[l], false);
         }
         
         vec.trns((e.rotation + 360 * e.fin() + side) * dir, baseLen * 1.1);
@@ -64,29 +62,39 @@ const chaosCharge = new Effect(73, 1600 * chargeLenScale, e => {
   }
 });
 
-const duration = 50.4;
+const duration = 65;
 
-const chaosBeam = extend(ContinuousLaserBulletType, {
+/*const chaosBeam = extend(ContinuousLaserBulletType, {
   update(b){
     this.super$update(b);
     
     Effect.shake(this.shake, 120, b);
   }
-});
-chaosBeam.colors = colors;
-chaosBeam.tscales = tscales;
-chaosBeam.strokes = strokes;
-chaosBeam.lenscales = lenscales;
+});*/
+
+const chaosBeam = extend(LaserBulletType, {});
+
+chaosBeam.colors = [Color.valueOf("F3E97966"), Color.valueOf("F3E979"), Color.white];
 chaosBeam.length = length;
-chaosBeam.width = width;
-chaosBeam.oscScl = oscScl;
-chaosBeam.oscMag = oscMag;
+chaosBeam.width = 75;
 chaosBeam.lightStroke = lightStroke;
 chaosBeam.lightColor = colors[2];
-chaosBeam.fadeTime = fadeTime;
+chaosBeam.fadeTime = 60;
 chaosBeam.damage = Number.MAX_VALUE;
 chaosBeam.lifetime = duration + 16;
-chaosBeam.shake = 100;
+
+chaosBeam.lightningSpacing = 35;
+chaosBeam.lightningLength = 8;
+chaosBeam.lightningDelay = 1.1;
+chaosBeam.lightningLengthRand = 4;
+chaosBeam.lightningDamage = Number.MAX_VALUE;
+chaosBeam.lightningAngleRand = 40;
+chaosBeam.largeHit = true;
+chaosBeam.lightningColor = colors[2];
+
+chaosBeam.sideAngle = 15;
+chaosBeam.sideWidth = width / 10;
+chaosBeam.sideLength = length / 10;
 
 const chaosArray = extendContent(ChargeTurret, "chaos-array", {
   load(){
@@ -103,12 +111,12 @@ const chaosArray = extendContent(ChargeTurret, "chaos-array", {
 });
 
 chaosArray.shootType = chaosBeam;
-chaosArray.chargeTime = 73;
-chaosArray.chargeSound = loadSound("chaosCharge");
-chaosArray.shootSound = loadSound("chaosShoot");
+chaosArray.chargeTime = 80;
+/*chaosArray.chargeSound = loadSound("chaosCharge");
+chaosArray.shootSound = loadSound("chaosShoot");*/
+chaosArray.chargeSound = Sounds.lasercharge;
+chaosArray.shootSound = Sounds.laserblast;
 chaosArray.chargeBeginEffect = chaosChargeBegin;
-chaosArray.chargeEffect = chaosCharge;
-chaosArray.chargeMaxDelay = 0;
 chaosArray.size = 8;
 chaosArray.shootDuration = duration;
 chaosArray.shots = 100;
@@ -174,8 +182,7 @@ chaosArray.buildType = () => {
       this.useAmmo();
 
       shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
-      chaosArray.chargeEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(360), [this.team]);
-      chaosArray.chargeBeginEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, this.rotation, [this.team]);
+      chaosArray.chargeBeginEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(360), [this.team]);
       chaosArray.chargeSound.at(this.x + shootLoc.x, this.y + shootLoc.y, 1);
       
       this.shooting = true;
