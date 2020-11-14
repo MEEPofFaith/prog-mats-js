@@ -14,3 +14,5 @@ require("turrets/misc/blackhole")
 require("turrets/misc/chaos")
 
 require("production/hadron")
+
+require("liquids/magma")

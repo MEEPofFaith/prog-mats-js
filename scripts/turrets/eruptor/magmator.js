@@ -66,8 +66,8 @@ const magmaPool = extend(BasicBulletType, {
         Damage.damage(b.team, b.x, b.y, burnRadius, this.damage, true);
       }
       
-      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 100000);
-      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 99000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Vars.content.getByName(ContentType.liquid, "prog-mats-magma"), 150000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 1);
     }
   },
   drawLight(b){
@@ -331,7 +331,7 @@ magmaRiser.buildType = () => {
         this.rotation = Angles.moveToward(this.rotation, targetRot, this.efficiency() * magmaRiser.rotateSpeed * this.delta() * (this._bulletLife > 0 ? magmaRiser.firingMoveFract : 1));
       }
     },
-    shouldActiveSound(){
+    shouldAmbientSound(){
       return this._bulletLife > 0 && this._bullet != null;
     }
 	});

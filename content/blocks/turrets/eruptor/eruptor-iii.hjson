@@ -8,8 +8,8 @@ targetGround: true
 recoilAmount: 0
 cooldown: 0.01
 shootSound: none
-activeSound: beam
-activeSoundVolume: 2
+ambientSound: beam
+ambientSoundVolume: 2
 requirements:[
   copper/700
   lead/950

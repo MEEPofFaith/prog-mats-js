@@ -166,7 +166,7 @@ quadMinigun.buildType = () => {
     updateTile(){	
       this.super$updateTile();	
       
-      if(!this.validateTarget() || !this.hasAmmo() || (!(this.logicControlled() && this.logicShooting) && !(this.isControlled() && this.unit.isShooting))){
+      if(!this.hasAmmo() || !this.isShooting() || !this.isActive()){
         this._frameSpeed = Mathf.lerpDelta(this._frameSpeed, 0, 0.0125);
       }
       

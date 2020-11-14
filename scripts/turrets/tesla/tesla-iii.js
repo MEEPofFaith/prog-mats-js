@@ -27,7 +27,7 @@ const targetLightning = new Effect(10, 500, e => {
 		
 		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
 		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
-    Drawf.light(e.data[2], tV.x, tV.y, tV2.x, tV2.y, e.data[1] * 3 * e.fout(), e.color, 0.7);
+    Drawf.light(e.data[2], tV.x, tV.y, tV2.x, tV2.y, e.data[1] * 3 * e.fout(), e.color, 0.4);
 	};
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
@@ -140,10 +140,10 @@ teslaStorm.buildType = () => {
     updateTile(){
       this.super$updateTile();
       
-      if(!this.validateTarget() || !this.hasAmmo()){
+      if(!this.hasAmmo() || !this.isShooting() || !this.isActive() || !this.cons.valid()){
         this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, 0, 0.0125);
       }
-      if(this.validateTarget() && this.hasAmmo()){
+      if(this.hasAmmo() && this.isShooting() && this.isActive() && this.cons.valid()){
         const liquid = this.liquids.current();
         this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, 1, 0.005 * this.peekAmmo().reloadMultiplier * liquid.heatCapacity * teslaStorm.coolantMultiplier * this.delta());
       }

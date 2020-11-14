@@ -32,7 +32,6 @@ const targetLightning = new Effect(10, 500, e => {
 	};
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
-
 targetLightning.layer = Layer.turret + 0.5;
 
 //Editable stuff for custom laser.
@@ -67,8 +66,8 @@ const lavaPool = extend(BasicBulletType, {
         Damage.damage(b.team, b.x, b.y, burnRadius, this.damage, true);
       };
       
-      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 20000);
-      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 19000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Vars.content.getByName(ContentType.liquid, "prog-mats-magma"), 30000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 1);
     };
   },
   drawLight(b){
@@ -304,7 +303,7 @@ lavaRiser.buildType = () => {
         this.rotation = Angles.moveToward(this.rotation, targetRot, this.efficiency() * lavaRiser.rotateSpeed * this.delta());
       }
     },
-    shouldActiveSound(){
+    shouldAmbientSound(){
       return this._bulletLife > 0 && this._bullet != null;
     }
 	});
