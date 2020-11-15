@@ -88,6 +88,7 @@ MiniPyratite.backColor = Pal.lightOrange;
 MiniPyratite.status = StatusEffects.burning;
 MiniPyratite.inaccuracy = 3;
 MiniPyratite.lifetime = 90;
+MiniPyratite.makeFire = true;
 
 const MiniBlast = extend(BasicBulletType,{});
 MiniBlast.sprite = "prog-mats-minigun-ball";
