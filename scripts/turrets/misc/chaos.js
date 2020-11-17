@@ -93,9 +93,9 @@ chaosBeam.lightningAngleRand = 45;
 chaosBeam.largeHit = true;
 chaosBeam.lightningColor = colors[2];
 
-chaosBeam.sideAngle = 15;
-chaosBeam.sideWidth = width / 10;
-chaosBeam.sideLength = length / 10;
+chaosBeam.sideAngle = 25;
+chaosBeam.sideWidth = width / 6;
+chaosBeam.sideLength = length / 1.5;
 
 const chaosArray = extendContent(ChargeTurret, "chaos-array", {
   load(){
@@ -128,6 +128,7 @@ chaosArray.shots = 100;
 chaosArray.inaccuracy = 45;
 chaosArray.shootY = -16;
 chaosArray.shootShake = 150
+chaosArray.coolantMultiplier = 1;
 
 const liquidPerSec = 150 / 60;
 chaosArray.consumes.add(new ConsumeLiquidFilter(l => l.temperature <= 0.5 && l.flammability < 0.1, liquidPerSec)).update(false);
@@ -173,7 +174,7 @@ chaosArray.buildType = () => {
         if(this._bulletLife <= 0){
           this.shooting = false;
         }
-      }else if(this.reload > 0 && !this.shooting){
+      }else if(this.reload >= 0 && !this.shooting){
         const liquid = this.liquids.current();
         var maxUsed = chaosArray.consumes.get(ConsumeType.liquid).amount;
 
@@ -191,7 +192,7 @@ chaosArray.buildType = () => {
         return;
       }
       
-      if(this.reload <= 0 && !this.shooting){
+      if(this.reload < 0 && !this.shooting){
         var type = this.peekAmmo();
         
         this.shoot(type);
