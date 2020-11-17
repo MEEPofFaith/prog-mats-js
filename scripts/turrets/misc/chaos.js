@@ -108,6 +108,9 @@ const chaosArray = extendContent(ChargeTurret, "chaos-array", {
     
     this.stats.remove(Stat.damage);
     this.stats.add(Stat.damage, "oh no");
+    
+    this.stats.remove(Stat.booster);
+    this.stats.add(Stat.input, new BoosterListValue(chaosArray.reloadTime, chaosArray.consumes.get(ConsumeType.liquid).amount, chaosArray.coolantMultiplier, false, l => chaosArray.consumes.liquidfilters.get(l.id)));
   }
 });
 
@@ -125,7 +128,8 @@ chaosArray.inaccuracy = 45;
 chaosArray.shootY = -16;
 chaosArray.shootShake = 150
 
-chaosArray.consumes.add(new ConsumeLiquidFilter(liquid => liquid.temperature <= 0.5 && liquid.flammability < 0.1, 0.5)).update(false);
+const liquidPerSec = 150 / 60;
+chaosArray.consumes.add(new ConsumeLiquidFilter(l => l.temperature <= 0.5 && l.flammability < 0.1, liquidPerSec)).update(false);
 
 const tmpCol = new Color();
 const pow6In = new Interp.PowIn(6);

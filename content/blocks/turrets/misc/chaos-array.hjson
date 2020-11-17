@@ -1,7 +1,7 @@
 localizedName: "Chaos Array"
 description: Fires massive blasts of lasers. And a lot of lasers.
 details: "Go to r/Mindustry and search for 'The true power of the Duo.'"
-powerUse: 150.016667
+powerUse: 2000
 range: 560
 reloadTime: 600
 recoilAmount: 8
@@ -10,16 +10,21 @@ shootCone: 35
 cooldown: 0.0015
 restitution: 0.008
 requirements:[
-  copper/9001
-  lead/9001
-  graphite/9001
-  silicon/9001
-  metaglass/9001
-  titanium/9001
-  plastanium/9001
-  thorium/9001
-  phase-fabric/9001
-  techtanite/9001
+  copper/23000
+  lead/23000
+  coal/23000
+  scrap/23000
+  graphite/23000
+  silicon/23000
+  pyratite/23000
+  spore-pod/23000
+  blast-compound/23000
+  metaglass/23000
+  titanium/23000
+  plastanium/23000
+  thorium/23000
+  phase-fabric/23000
+  techtanite/23000
 ]
 category: turret
 research: foreshadow
