@@ -84,12 +84,12 @@ chaosBeam.lightColor = colors[2];
 chaosBeam.damage = Number.MAX_VALUE;
 chaosBeam.lifetime = duration + 16;
 
-chaosBeam.lightningSpacing = 35;
-chaosBeam.lightningLength = 8;
-chaosBeam.lightningDelay = 1.1;
-chaosBeam.lightningLengthRand = 4;
+chaosBeam.lightningSpacing = 17.5;
+chaosBeam.lightningLength = 35;
+chaosBeam.lightningDelay = 0.55;
+chaosBeam.lightningLengthRand = 15;
 chaosBeam.lightningDamage = Number.MAX_VALUE;
-chaosBeam.lightningAngleRand = 40;
+chaosBeam.lightningAngleRand = 45;
 chaosBeam.largeHit = true;
 chaosBeam.lightningColor = colors[2];
 
@@ -124,6 +124,8 @@ chaosArray.shots = 100;
 chaosArray.inaccuracy = 45;
 chaosArray.shootY = -16;
 chaosArray.shootShake = 150
+
+chaosArray.consumes.add(new ConsumeLiquidFilter(liquid => liquid.temperature <= 0.5 && liquid.flammability < 0.1, 0.5)).update(false);
 
 const tmpCol = new Color();
 const pow6In = new Interp.PowIn(6);

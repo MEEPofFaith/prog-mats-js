@@ -1,3 +1,5 @@
+require("mod-meta")
+
 require("turrets/eruptor/eruptor")
 require("turrets/eruptor/magmator")
 require("turrets/eruptor/hell")
