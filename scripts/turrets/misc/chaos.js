@@ -84,10 +84,10 @@ chaosBeam.lightColor = colors[2];
 chaosBeam.damage = Number.MAX_VALUE;
 chaosBeam.lifetime = duration + 16;
 
-chaosBeam.lightningSpacing = 17.5;
-chaosBeam.lightningLength = 35;
-chaosBeam.lightningDelay = 0.55;
-chaosBeam.lightningLengthRand = 15;
+chaosBeam.lightningSpacing = 26.25;
+chaosBeam.lightningLength = 10;
+chaosBeam.lightningDelay = 0.825;
+chaosBeam.lightningLengthRand = 5;
 chaosBeam.lightningDamage = Number.MAX_VALUE;
 chaosBeam.lightningAngleRand = 45;
 chaosBeam.largeHit = true;
@@ -115,6 +115,7 @@ const chaosArray = extendContent(ChargeTurret, "chaos-array", {
 });
 
 chaosArray.shootType = chaosBeam;
+chaosArray.reloadTime = 450;
 chaosArray.chargeTime = chargeTime;
 chaosArray.chargeSound = loadSound("chaoscharge");
 chaosArray.shootSound = loadSound("chaosblast");
@@ -157,17 +158,31 @@ chaosArray.buildType = () => {
     setEff(){
       this._bulletLife = 0;
     },
+    updateCooling(){
+      //do nothing, cooling is irrelevant here
+    },
     updateTile(){
       this.super$updateTile();
       shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
       
       if(this._bulletLife > 0){
         this.heat = 1;
-        this.recoil = chaosArray.recoilAmount;
+        //this.recoil = chaosArray.recoilAmount;
         this._bulletLife -= Time.delta;
         
         if(this._bulletLife <= 0){
           this.shooting = false;
+        }
+      }else if(this.reload > 0 && !this.shooting){
+        const liquid = this.liquids.current();
+        var maxUsed = chaosArray.consumes.get(ConsumeType.liquid).amount;
+
+        var used = (this.cheating() ? maxUsed * Time.delta : Math.min(this.liquids.get(liquid), maxUsed * Time.delta)) * liquid.heatCapacity * chaosArray.coolantMultiplier;
+        this.reload -= used;
+        this.liquids.remove(liquid, used);
+
+        if(Mathf.chance(0.06 * used)){
+          chaosArray.coolEffect.at(this.x + Mathf.range(chaosArray.size * Vars.tilesize / 2), this.y + Mathf.range(chaosArray.size * Vars.tilesize / 2));
         }
       }
     },
@@ -176,24 +191,21 @@ chaosArray.buildType = () => {
         return;
       }
       
-      if(this.reload >= chaosArray.reloadTime && !this.shooting){
+      if(this.reload <= 0 && !this.shooting){
         var type = this.peekAmmo();
         
         this.shoot(type);
         
-        this.reload = 0;
-      }else{
-        this.reload += this.delta() * this.baseReloadSpeed();
+        this.reload = chaosArray.reloadTime;
       }
     },
     shoot(ammo){
       this.useAmmo();
-
+      this.shooting = true;
+      
       shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
       chaosArray.chargeBeginEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(360), [this.team]);
       chaosArray.chargeSound.at(this.x + shootLoc.x, this.y + shootLoc.y, 1);
-      
-      this.shooting = true;
 
       Time.run(chaosArray.chargeTime, run(() => {
         this.recoil = chaosArray.recoilAmount;
