@@ -12,18 +12,20 @@ restitution: 0.008
 requirements:[
   copper/23000
   lead/23000
-  coal/23000
-  scrap/23000
+  metaglass/23000
   graphite/23000
+  sand/23000
+  coal/23000
+  titanium/23000
+  thorium/23000
+  scrap/23000
   silicon/23000
-  pyratite/23000
+  plastanium/23000
+  phase-fabric/23000
+  surge-alloy/23000
   spore-pod/23000
   blast-compound/23000
-  metaglass/23000
-  titanium/23000
-  plastanium/23000
-  thorium/23000
-  phase-fabric/23000
+  pyratite/23000
   techtanite/23000
 ]
 category: turret
