@@ -30,7 +30,7 @@ var chargeTime = 150;
 var fadeTime = 30;
 
 const chaosChargeBegin = new Effect(chargeTime, 1600 * chargeLenScale, e => {
-  var lightOpacity = 0.4 + (e.finpow() * 0.5);
+  var lightOpacity = 0.4 + (e.finpow() * 0.4);
   
   Draw.color(colors[0], colors[2], 0.5 + e.finpow() * 0.5);
   Lines.stroke(Mathf.lerp(0, 28, e.finpow()));
@@ -39,7 +39,7 @@ const chaosChargeBegin = new Effect(chargeTime, 1600 * chargeLenScale, e => {
   for(var i = 0; i < 36; i++){
     vec.trns(i * 10, 384 * (1 - e.finpow()));
     vec2.trns(i * 10 + 10, 384 * (1 - e.finpow()));
-    Drawf.light(e.data[0], e.x + vec.x, e.y + vec.y, e.x + vec2.x, e.y + vec2.y, 14 / 2 + lightStroke * lightScale * e.finpow(), Draw.getColor(), lightOpacity);
+    Drawf.light(e.data[0], e.x + vec.x, e.y + vec.y, e.x + vec2.x, e.y + vec2.y, 14 / 2 + lightStroke * lightScale * e.finpow(), Draw.getColor(), lightOpacity + (0.2 * e.finpow()));
   }
   
   var fade = 1 - Mathf.curve(e.time, e.lifetime - fadeTime, e.lifetime);
