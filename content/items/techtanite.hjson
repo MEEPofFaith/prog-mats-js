@@ -4,9 +4,5 @@ hardness: 3
 cost: 1.2
 color: B0BAC0
 research: {
-  parent: plastanium-compressor
-  requirements: [
-    titanium/8000
-    thorium/8000
-  ]
+  parent: thorium
 }

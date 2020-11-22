@@ -35,9 +35,9 @@ const chaosChargeBegin = new Effect(chargeTime, 1600 * chargeLenScale, e => {
   Lines.circle(e.x, e.y, 384 * (1 - e.finpow()));
   
   for(var i = 0; i < 36; i++){
-    vec.trns(i * 10, 384 * e.fout());
-    vec2.trns(i * 10 + 10, 384 * e.fout());
-    Drawf.light(e.data[0], e.x + vec.x, e.y + vec.y, e.x + vec2.x, e.y + vec2.y, 14 / 2 + lightStroke * lightScale * e.finpow(), Draw.getColor(), 0.7);
+    vec.trns(i * 10, 384 * e.finpow());
+    vec2.trns(i * 10 + 10, 384 * e.finpow());
+    Drawf.light(e.data[0], e.x + vec.x, e.y + vec.y, e.x + vec2.x, e.y + vec2.y, 14 / 2 + lightStroke * lightScale * e.finpow(), Draw.getColor(), 1);
   }
   
   var fade = 1 - Mathf.curve(e.time, e.lifetime - fadeTime, e.lifetime);
