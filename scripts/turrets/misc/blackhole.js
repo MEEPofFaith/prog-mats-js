@@ -125,7 +125,7 @@ ballOfSucc.lightColor = horizon;
 ballOfSucc.lightRadius = blackholeSize / 2 + horizonRad;
 ballOfSucc.lightOpacity = 0.7;
 
-const blackhole = extendContent(ChargeTurret, "blackhole", {
+const blackhole = extendContent(PowerTurret, "blackhole", {
   setStats(){
     this.super$setStats();
     
@@ -174,7 +174,7 @@ blackhole.heatDrawer = tile => {
 const spaceColor = new Color.valueOf("140017");
 
 blackhole.buildType = () => {
-  var succEntity = extendContent(ChargeTurret.ChargeTurretBuild, blackhole, {
+  var succEntity = extendContent(PowerTurret.PowerTurretBuild, blackhole, {
     setEff(){
       this._spaceAlpha = 0;
     },
@@ -205,13 +205,13 @@ blackhole.buildType = () => {
         }));
       }
       
-      this.shooting = true;
+      this.charging = true;
 
       Time.run(blackhole.chargeTime, run(() => {
         this.recoil = blackhole.recoilAmount;
         this.heat = 1;
         type.create(this, this.team, this.x + vec.x, this.y + vec.y, this.rotation, 1, 1);
-        this.shooting = false;
+        this.charging = false;
       }));
     }
   });

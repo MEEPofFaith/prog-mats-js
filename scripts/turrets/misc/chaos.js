@@ -99,7 +99,7 @@ chaosBeam.sideAngle = 25;
 chaosBeam.sideWidth = width / 6;
 chaosBeam.sideLength = length / 1.5;
 
-const chaosArray = extendContent(ChargeTurret, "chaos-array", {
+const chaosArray = extendContent(PowerTurret, "chaos-array", {
   load(){
     this.baseRegion = Core.atlas.find("prog-mats-block-8");
     this.region = Core.atlas.find(this.name);
@@ -157,7 +157,7 @@ chaosArray.heatDrawer = tile => {
 const shootLoc = new Vec2();
 
 chaosArray.buildType = () => {
-	var chaosEntity = extendContent(ChargeTurret.ChargeTurretBuild, chaosArray, {
+	var chaosEntity = extendContent(PowerTurret.PowerTurretBuild, chaosArray, {
     setEff(){
       this._bulletLife = 0;
     },
@@ -174,9 +174,9 @@ chaosArray.buildType = () => {
         this._bulletLife -= Time.delta;
         
         if(this._bulletLife <= 0){
-          this.shooting = false;
+          this.charging = false;
         }
-      }else if(this.reload >= 0 && !this.shooting){
+      }else if(this.reload >= 0 && !this.charging){
         const liquid = this.liquids.current();
         var maxUsed = chaosArray.consumes.get(ConsumeType.liquid).amount;
 
@@ -194,7 +194,7 @@ chaosArray.buildType = () => {
         return;
       }
       
-      if(this.reload < 0 && !this.shooting){
+      if(this.reload < 0 && !this.charging){
         var type = this.peekAmmo();
         
         this.shoot(type);
@@ -204,7 +204,7 @@ chaosArray.buildType = () => {
     },
     shoot(ammo){
       this.useAmmo();
-      this.shooting = true;
+      this.charging = true;
       
       shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
       chaosArray.chargeBeginEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(360), [this.team]);
