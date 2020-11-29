@@ -115,6 +115,7 @@ lavaPool.despawnEffect = Fx.none;
 lavaPool.shootEffect = Fx.none;
 lavaPool.smokeEffect = Fx.none;
 lavaPool.hittable = false;
+lavaPool.absorbable = false;
 lavaPool.lightRadius = 2;
 lavaPool.lightOpacity = 0.7;
 lavaPool.lightColor = colors[2];

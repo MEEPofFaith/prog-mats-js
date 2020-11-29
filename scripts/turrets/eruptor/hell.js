@@ -104,6 +104,7 @@ hellPool.despawnEffect = Fx.none;
 hellPool.shootEffect = Fx.none;
 hellPool.smokeEffect = Fx.none;
 hellPool.hittable = false;
+hellPool.absorbable = false;
 hellPool.lightRadius = 2;
 hellPool.lightOpacity = 0.7;
 hellPool.lightColor = colors[2];

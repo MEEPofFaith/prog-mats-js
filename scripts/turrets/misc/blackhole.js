@@ -119,6 +119,9 @@ ballOfSucc.despawnEffect = poof;
 ballOfSucc.shootEffect = Fx.none;
 ballOfSucc.smokeEffect = Fx.none;
 
+ballOfSucc.hittable = false;
+ballOfSucc.absorbable = false;
+
 ballOfSucc.backColor = Color.valueOf("000000");
 ballOfSucc.frontColor = Color.valueOf("353535");
 ballOfSucc.lightColor = horizon;

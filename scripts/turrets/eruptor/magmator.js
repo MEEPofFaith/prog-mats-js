@@ -108,6 +108,7 @@ magmaPool.despawnEffect = Fx.none;
 magmaPool.shootEffect = Fx.none;
 magmaPool.smokeEffect = Fx.none;
 magmaPool.hittable = false;
+magmaPool.absorbable = false;
 magmaPool.lightRadius = 2;
 magmaPool.lightOpacity = 0.7;
 magmaPool.lightColor = colors[2];
