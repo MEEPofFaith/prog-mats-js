@@ -35,20 +35,14 @@ const targetLightning = new Effect(10, 500, e => {
 targetLightning.layer = Layer.turret + 0.5;
 
 //Editable stuff for custom laser.
-//4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
-var colors = [Color.valueOf("e69a2755"), Color.valueOf("eda332aa"), Color.valueOf("f2ac41"), Color.valueOf("ffbb54")];
+var colors = [Color.valueOf("EC7458"), Color.valueOf("F58859"), Color.valueOf("FF9C5A")];
 var length = 16;
 const burnRadius = 18;
 
-//Stuff you probably shouldn't edit.
-//Width of each section of the beam from thickest to thinnest
-var tscales = [1, 0.7, 0.5, 0.2];
-//Overall width of each color
-var strokes = [burnRadius / 2, burnRadius / 2.5, burnRadius / 3.3333, burnRadius / 5];
-//Determines how far back each section in the start should be pulled
-var pullscales = [1, 1.12, 1.15, 1.17];
-//Determines how far each section of the end should extend past the main thickest section
-var lenscales = [1, 1.3, 1.6, 1.9];
+//Overall width of each color.
+var strokes = [burnRadius, burnRadius / 1.333, burnRadius / 1.666];
+
+var osc = 3;
 
 var tmpColor = new Color();
 const vec = new Vec2();
@@ -74,40 +68,32 @@ const lavaPool = extend(BasicBulletType, {
   },
   draw(b){
     if(b != null){
-      shootLoc.trns(b.owner.rotation, b.owner.size / 2 - b.owner.recoil);
-      
-      var dist = Mathf.dst(b.owner.x + shootLoc.x, b.owner.y + shootLoc.y, b.x, b.y);
-      var ang = Mathf.dst(b.owner.x + shootLoc.x, b.owner.y + shootLoc.y, b.x, b.y);
-      
-      targetLightning.at(b.owner.x + shootLoc.x, b.owner.y + shootLoc.y, ang, colors[2], [dist]);
-      
-      //ring
-      Draw.color(Color.valueOf("e3931b"));
+      //bottom
+      Draw.color(colors[0]);
       Draw.alpha(b.fout());
-      Lines.stroke(2);
-      Lines.circle(b.x, b.y, burnRadius);
+      Fill.circle(b.x, b.y, strokes[0]);
       
-      //"fountain" of lava
-      for(var s = 0; s < 4; s++){
+      //pulsing
+      for(var s = 0; s < colors.length; s++){
         Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() / 3 + Mathf.randomSeed(b.id), 1.0, 0.3) / 3));
         Draw.alpha(b.fout());
-        Fill.circle(b.x, b.y, strokes[s] * 2);
-        for(var i = 0; i < 4; i++){
-          var baseLen = (length + (Mathf.absin(Time.time() / ((i + 1) * 2) + Mathf.randomSeed(b.id), 0.8, 1.5) * (length / 1.5))) * b.fout();
-          lavaBack.trns(90, (pullscales[i] - 1.0) * 55.0);
-          Lines.stroke(4 * strokes[s] * tscales[i]);
-          Lines.lineAngle(b.x + lavaBack.x, b.y + lavaBack.y, 90, baseLen * b.fout() * lenscales[i], false);
-          Drawf.light(b.team, b.x + lavaBack.x, b.y + lavaBack.y, b.x + lavaBack.y + lavaBack.x, b.y + baseLen * b.fout() * lenscales[i], Lines.getStroke() * this.lightRadius, this.lightColor, this.lightOpacity);
-        };
-      };
+        Fill.circle(b.x, b.y, strokes[s] * Mathf.absin((Time.time() / ((s + 2) * osc)) + Mathf.randomSeed(b.id), 0.8, 1));
+      }
+      
+      //ring
+      Draw.color(colors[0]);
+      Draw.alpha(b.fout());
+      Lines.stroke(2);
+      Lines.circle(b.x, b.y, strokes[0]);
+      
       Draw.reset();
-    };
+    }
   }
 });
 
 lavaPool.speed = 1;
 lavaPool.damage = 50;
-lavaPool.lifetime = 16;
+lavaPool.lifetime = 10;
 lavaPool.collides = false;
 lavaPool.collidesTiles = false;
 lavaPool.hitEffect = Fx.fireballsmoke;
@@ -244,7 +230,9 @@ lavaRiser.buildType = () => {
       };
       
       if(this._bulletLife > 0 && this._bullet != null){
-        this._bullet.time = 0;
+        if(this._bulletLife > this._bullet.lifetime - 1){
+          this._bullet.time = 0;
+        }
         this.heat = 1;
         this.recoil = lavaRiser.recoilAmount;
         this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], lavaRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
