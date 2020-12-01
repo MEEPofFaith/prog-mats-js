@@ -51,16 +51,16 @@ const hadron = extendContent(GenericCrafter, "mindron-collider", {
 });
 
 hadron.collidePoint = 12;
-hadron.collideSep = 2;
+hadron.collideSep = 3;
 hadron.lengthStart = 4;
 hadron.lengthEnd = 72;
 hadron.strokeStart = 1.25;
 hadron.strokeEnd = 0.75;
 hadron.strokes = [1, 0.9, 0.75, 0.55];
-hadron.particleSize = 1.1;
+hadron.particleSize = 1.05;
 hadron.startRot = 540;
-hadron.collideStart = 0.885;
-hadron.collideEnd = 0.96;
+hadron.collideStart = 0.65;
+hadron.collideEnd = 0.9;
 hadron.cooldown = 0.03;
 hadron.heatColor = Pal.accent;
 
@@ -84,6 +84,7 @@ hadron.buildType = () => {
       this._released = false;
       this._before = 0;
       this._colliding = 0;
+      this._interpColliding = 0;
       this._after = 0;
       this._heat = 0;
       this._beforeHeat = 0;
@@ -160,29 +161,30 @@ hadron.buildType = () => {
       
       this._before = Mathf.curve(this.progress, 0, hadron.collideStart);
       this._colliding = Mathf.curve(this.progress, hadron.collideStart, hadron.collideEnd);
+      this._interpColliding = Interp.pow2In.apply(Mathf.curve(this.progress, hadron.collideStart, hadron.collideEnd));
       this._after = Mathf.curve(this.progress, hadron.collideEnd, 1);
       
-      this._stroke = Mathf.lerp(hadron.strokeStart, hadron.strokeEnd, this._colliding);
+      this._stroke = Mathf.lerp(hadron.strokeStart, hadron.strokeEnd, this._interpColliding);
       
       for(var i = 0; i < 2; i++){
         var side = Mathf.signs[i];
         
-        this._curRot[i] = (hadron.startRot * (1 - this._colliding)) * side - 90;
+        this._curRot[i] = (hadron.startRot * (1 - this._interpColliding)) * side - 90;
         this._dist[i] = Mathf.lerp(hadron.collidePoint + hadron.collideSep * side, hadron.collidePoint, this._colliding);
         
         if(this.progress <= hadron.collideStart && this.progress > 0){
-          this._heat = Mathf.lerp(this._beforeHeat, 1, this._before);
+          this._heat = Mathf.lerpDelta(this._beforeHeat, 1, this._before);
           this._length[i] = 0;
         }else if(this.progress > hadron.collideStart && this.progress < hadron.collideEnd){
-          this._length[i] = Mathf.lerp(hadron.lengthStart, hadron.lengthEnd, this._colliding) * side;
+          this._length[i] = Mathf.lerp(hadron.lengthStart, hadron.lengthEnd, this._interpColliding) * side;
           
-          this._heat = Mathf.lerp(this._heat, 0, hadron.cooldown);
+          this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
         }else if(this.progress >= hadron.collideEnd){
           this._length[i] = Mathf.lerp(hadron.lengthEnd, 0, this._after) * side;
           
-          this._heat = Mathf.lerp(this._heat, 0, hadron.cooldown);
+          this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
         }else{
-          this._heat = Mathf.lerp(this._heat, 0, hadron.cooldown);
+          this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
         }
         
         this._length[i] = equalArcLen(hadron.collidePoint, this._dist[i], this._length[i]);
