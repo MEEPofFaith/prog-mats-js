@@ -44,22 +44,22 @@ const chaosChargeBegin = new Effect(chargeTime, 1600 * chargeLenScale, e => {
   
   var fade = 1 - Mathf.curve(e.time, e.lifetime - fadeTime, e.lifetime);
   var grow = Mathf.curve(e.time, 0, e.lifetime - fadeTime);
-  var baseLen = (length + (Mathf.absin(Time.time() / ((i + 1) * 2) + Mathf.randomSeed(e.id), 0.8, 1.5) * (length / 1.5))) * chargeLenScale * fade;
+  var baseLen = (length + (Mathf.absin(Time.time / ((i + 1) * 2) + Mathf.randomSeed(e.id), 0.8, 1.5) * (length / 1.5))) * chargeLenScale * fade;
   
   for(var i = 0; i < 4; i++){
-    Draw.color(tmpColor.set(colors[i]).mul(1.0 + Mathf.absin(Time.time() / 3 + Mathf.randomSeed(e.id), 1.0, 0.3) / 3));
+    Draw.color(tmpColor.set(colors[i]).mul(1.0 + Mathf.absin(Time.time / 3 + Mathf.randomSeed(e.id), 1.0, 0.3) / 3));
     for(var j = 0; j < 2; j++){
       var dir = Mathf.signs[j];
       for(var k = 0; k < chargeBeams; k++){
         var side = k * (360 / chargeBeams);
         for(var l = 0; l < 4; l++){
-          Lines.stroke((width * widthScl + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[l]);
+          Lines.stroke((width * widthScl + Mathf.absin(Time.time, oscScl, oscMag)) * grow * strokes[i] * tscales[l]);
           Lines.lineAngle(e.x, e.y, (e.rotation + rotateAmount * e.finpow() + side) * dir, baseLen * lenscales[l], false);
         }
         
         vec.trns((e.rotation + 360 * e.finpow() + side) * dir, baseLen * 1.1);
           
-        Drawf.light(e.data[0], e.x, e.y, e.x + vec.x, e.y + vec.y, ((width * widthScl + Mathf.absin(Time.time(), oscScl, oscMag)) * grow * strokes[i] * tscales[j]) / 2 + lightStroke * lightScale * e.finpow(), colors[2], lightOpacity);
+        Drawf.light(e.data[0], e.x, e.y, e.x + vec.x, e.y + vec.y, ((width * widthScl + Mathf.absin(Time.time, oscScl, oscMag)) * grow * strokes[i] * tscales[j]) / 2 + lightStroke * lightScale * e.finpow(), colors[2], lightOpacity);
       }
     }
     Draw.reset();

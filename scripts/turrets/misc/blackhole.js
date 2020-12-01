@@ -186,7 +186,7 @@ blackhole.buildType = () => {
       
       vec.trns(this.rotation - 90, 0, -this.recoil);
       
-      Draw.color(spaceColor.cpy().shiftHue(Time.time() / 2).shiftValue(Mathf.absin(Time.time(), 4, 0.15)));
+      Draw.color(spaceColor.cpy().shiftHue(Time.time / 2).shiftValue(Mathf.absin(Time.time, 4, 0.15)));
       Draw.alpha(this._spaceAlpha);
       Draw.rect(blackhole.spaceRegion, this.x + vec.x, this.y + vec.y, this.rotation - 90);
       Draw.reset();

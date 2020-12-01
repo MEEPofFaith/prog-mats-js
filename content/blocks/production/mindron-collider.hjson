@@ -23,5 +23,5 @@ requirements:[
   plastanium/30
   thorium/30
 ]
-research: plastaniumCompressor
+research: plastanium-compressor
 category: crafting

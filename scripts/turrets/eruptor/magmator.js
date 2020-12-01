@@ -75,9 +75,9 @@ const magmaPool = extend(BasicBulletType, {
       
       //pulsing
       for(var s = 0; s < colors.length; s++){
-        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() / 3 + Mathf.randomSeed(b.id), 1.0, 0.3) / 3));
+        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time / 3 + Mathf.randomSeed(b.id), 1.0, 0.3) / 3));
         Draw.alpha(b.fout());
-        Fill.circle(b.x, b.y, strokes[s] * Mathf.absin((Time.time() / ((s + 2) * osc)) + Mathf.randomSeed(b.id), 0.8, 1));
+        Fill.circle(b.x, b.y, strokes[s] * Mathf.absin((Time.time / ((s + 2) * osc)) + Mathf.randomSeed(b.id), 0.8, 1));
       }
       
       //ring
