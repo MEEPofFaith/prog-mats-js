@@ -1,6 +1,10 @@
 const effectSize = 0.75;
 const effectLength = 0.5;
 
+const equalArcLen = (r1, r2, v) => {
+  return (r1 / r2) * v;
+};
+
 const collisionEffect = new Effect(30, e => {
   e.scaled(7, i => {
     Lines.stroke((3.1 * i.fout()) * effectSize);
@@ -49,12 +53,14 @@ const hadron = extendContent(GenericCrafter, "mindron-collider", {
 hadron.collidePoint = 12;
 hadron.collideSep = 2;
 hadron.lengthStart = 4;
-hadron.lengthEnd = 48;
-hadron.strokeStart = 1;
-hadron.strokeEnd = 1;
+hadron.lengthEnd = 72;
+hadron.strokeStart = 1.25;
+hadron.strokeEnd = 0.75;
+hadron.strokes = [1, 0.9, 0.75, 0.55];
+hadron.particleSize = 1.1;
 hadron.startRot = 540;
-hadron.collideStart = 0.9;
-hadron.collideEnd = 0.975;
+hadron.collideStart = 0.885;
+hadron.collideEnd = 0.96;
 hadron.cooldown = 0.03;
 hadron.heatColor = Pal.accent;
 
@@ -62,6 +68,7 @@ const p1 = new Vec2();
 const p2 = new Vec2();
 const p3 = new Vec2();
 const p4 = new Vec2();
+const p5 = new Vec2();
 const collide = new Vec2();
 const meter = new Vec2();
 
@@ -71,8 +78,8 @@ hadron.buildType = () => {
       this._color = [Items.titanium.color, Items.thorium.color];
       this._length = [0, 0];
       this._curRot = [0, 0];
-      this._stroke = [0, 0];
       this._dist = [0, 0];
+      this._stroke = 0;
       this._collided = false;
       this._released = false;
       this._before = 0;
@@ -86,20 +93,26 @@ hadron.buildType = () => {
       Draw.rect(hadron.bottomRegion, this.x, this.y);
       
       if(this.progress > 0){
-        //test colors
         for(var i = 0; i < 2; i++){
           p1.trns(this._curRot[i], this._dist[i]);
           p1.add(this.x, this.y);
-          p2.trns(this._curRot[i] - (this._length[i] / 3), this._dist[i]);
+          p2.trns(this._curRot[i] + (this._length[i] / 4), this._dist[i]);
           p2.add(this.x, this.y);
-          p3.trns(this._curRot[i] - (this._length[i] / 3 * 2), this._dist[i]);
+          p3.trns(this._curRot[i] + (this._length[i] / 4 * 2), this._dist[i]);
           p3.add(this.x, this.y);
-          p4.trns(this._curRot[i] - this._length[i], this._dist[i]);
+          p4.trns(this._curRot[i] + (this._length[i] / 4 * 3), this._dist[i]);
           p4.add(this.x, this.y);
+          p5.trns(this._curRot[i] + this._length[i], this._dist[i]);
+          p5.add(this.x, this.y);
+          var points = [p1, p2, p3, p4, p5];
           
           Draw.color(this._color[i]);
-          Lines.stroke(this._stroke[i]);
-          Lines.curve(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, 10);
+          Lines.stroke(this._stroke);
+          Fill.circle(points[0].x, points[0].y, Lines.getStroke() * hadron.particleSize);
+          for(var j = 0; j < 4; j++){
+            Lines.stroke(this._stroke * hadron.strokes[j]);
+            Lines.line(points[j].x, points[j].y, points[j + 1].x, points[j + 1].y);
+          }
           Draw.color();
         }
       }
@@ -117,10 +130,7 @@ hadron.buildType = () => {
       
       Drawf.light(this.team, this.x, this.y, hadron.lightRegions[0], hadron.heatColor, this._heat);
       
-      Draw.alpha(0.75);
       Draw.rect(hadron.glassRegion, this.x, this.y);
-      Draw.alpha(1);
-      
       Draw.rect(hadron.topRegion, this.x, this.y);
       
       if(this._heat > 0.00001){
@@ -137,8 +147,7 @@ hadron.buildType = () => {
       this.super$updateTile();
       
       if(this.progress <= 0){
-        var order = Mathf.round(Mathf.random(1));
-        if(order == 0){
+        if(Mathf.chance(0.5)){
           this._color = [Items.titanium.color, Items.thorium.color];
         }else{
           this._color = [Items.thorium.color, Items.titanium.color];
@@ -153,28 +162,34 @@ hadron.buildType = () => {
       this._colliding = Mathf.curve(this.progress, hadron.collideStart, hadron.collideEnd);
       this._after = Mathf.curve(this.progress, hadron.collideEnd, 1);
       
+      this._stroke = Mathf.lerp(hadron.strokeStart, hadron.strokeEnd, this._colliding);
+      
       for(var i = 0; i < 2; i++){
-        this._curRot[i] = 180 - (hadron.startRot * (1 - this._colliding)) * Mathf.sign(i - 0.5) + 90;
-        this._stroke[i] = Mathf.lerpDelta(hadron.strokeStart, hadron.strokeEnd, this._colliding);
-        this._dist[i] = Mathf.lerpDelta(hadron.collidePoint + hadron.collideSep, hadron.collidePoint, this._colliding);
+        var side = Mathf.signs[i];
+        
+        this._curRot[i] = (hadron.startRot * (1 - this._colliding)) * side - 90;
+        this._dist[i] = Mathf.lerp(hadron.collidePoint + hadron.collideSep * side, hadron.collidePoint, this._colliding);
         
         if(this.progress <= hadron.collideStart && this.progress > 0){
-          this._heat = Mathf.lerpDelta(this._beforeHeat, 1, this._before);
-        }else if(this.progress >= hadron.collideStart && this.progress <= hadron.collideEnd){
-          this._length[i] = Mathf.lerpDelta(hadron.lengthStart, hadron.lengthEnd, this._colliding) * Mathf.sign(i - 0.5);
+          this._heat = Mathf.lerp(this._beforeHeat, 1, this._before);
+          this._length[i] = 0;
+        }else if(this.progress > hadron.collideStart && this.progress < hadron.collideEnd){
+          this._length[i] = Mathf.lerp(hadron.lengthStart, hadron.lengthEnd, this._colliding) * side;
           
-          this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
+          this._heat = Mathf.lerp(this._heat, 0, hadron.cooldown);
         }else if(this.progress >= hadron.collideEnd){
-          this._length[i] = Mathf.lerpDelta(hadron.lengthEnd * Mathf.sign(i - 0.5), 0, this._after);
+          this._length[i] = Mathf.lerp(hadron.lengthEnd, 0, this._after) * side;
           
-          this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
+          this._heat = Mathf.lerp(this._heat, 0, hadron.cooldown);
         }else{
-          this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
+          this._heat = Mathf.lerp(this._heat, 0, hadron.cooldown);
         }
+        
+        this._length[i] = equalArcLen(hadron.collidePoint, this._dist[i], this._length[i]);
       }
       
       if(this.progress >= hadron.collideStart && this.progress <= hadron.collideEnd && !this._released){
-        Sounds.release.at(this.x, this.y + hadron.collidePoint, Mathf.random(1.4, 1.6), Mathf.random(0.3, 0.5));
+        Sounds.railgun.at(this.x, this.y + hadron.collidePoint, Mathf.random(1.4, 1.6), Mathf.random(0.1, 0.3));
         this._released = true;
       }
       
