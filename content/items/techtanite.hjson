@@ -3,6 +3,4 @@ description: A sythetic compound of titanium and thorium. Useful for techy stuff
 hardness: 3
 cost: 1.2
 color: B0BAC0
-research: {
-  parent: thorium
-}
+research: thorium
