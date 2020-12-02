@@ -1,295 +1,415 @@
-const side = new Vec2();
-const open = new Vec2();
-const rangeloc = new Vec2();
+const tV = new Vec2();
+const tV2 = new Vec2();
 
-//Got some help from EoD for the turning LaserTurret into PowerTurret part
-const burningHell = extendContent(PowerTurret, "eruptor-iii", {
-  load(){
-    this.baseRegion = Core.atlas.find("block-4");
-    this.bottomRegion = Core.atlas.find(this.name + "-bottom");
-    for(i = 0; i < 2; i++){
-      this.sides[i] = Core.atlas.find(this.name + "-sides-" + i);
-      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
-    }
-    for(i = 0; i < 3; i++){
-      this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
-      this.cellHeats[i] = Core.atlas.find(this.name + "-cells-heat-" + i);
-    }
-    for(i = 0; i < 4; i++){
-      this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
-    }
-  },
-  drawLayer(tile){
-    const entity = tile.ent();
-    
-    for(i = 0; i < 2; i++){
-      side.trns(entity.rotation-90, entity.getSideOpenAmount() * ((i-0.5)*2), 0);
-      Draw.rect(this.outlines[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
-    }
-    
-    Draw.rect(this.bottomRegion, entity.x, entity.y, entity.rotation-90);
-    
-    //inside big cell
-    Draw.rect(this.cells[2], entity.x, entity.y, entity.rotation-90);
-    if(entity.heat > 0){
-      Draw.blend(Blending.additive);
-      Draw.color(Color.valueOf("ffbe73"), entity.heat);
-      Draw.rect(this.cellHeats[2], entity.x + Mathf.range(1 * entity.heat), entity.y + Mathf.range(1 * entity.heat), entity.rotation-90);
-      Draw.blend();
-      Draw.color();
-    }
-    
-    //sides and cells
-    for(i = 0; i < 2; i ++){
-      side.trns(entity.rotation-90, entity.getSideOpenAmount() * ((i-0.5)*2), 0);
-      Draw.rect(this.sides[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
-      Draw.rect(this.cells[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
-      if(entity.heat > 0){
-        Draw.blend(Blending.additive);
-        Draw.color(Color.valueOf("f08913"), entity.heat);
-        Draw.rect(this.cellHeats[i], entity.x + side.x, entity.y + side.y, entity.rotation-90);
-        Draw.blend();
-        Draw.color();
-      }
-    }
-    
-    //sw
-    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount() - entity.getSideOpenAmount(), -entity.getCellOpenAmount());
-    Draw.rect(this.caps[0], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-    
-    //se
-    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount() + entity.getSideOpenAmount(), -entity.getCellOpenAmount());
-    Draw.rect(this.caps[1], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-    
-    //nw
-    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount() - entity.getSideOpenAmount(), entity.getCellOpenAmount());
-    Draw.rect(this.caps[2], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-    
-    //ne
-    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount() + entity.getSideOpenAmount(), entity.getCellOpenAmount());
-    Draw.rect(this.caps[3], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-  },
-  generateIcons(){
-    return [
-			Core.atlas.find("block-4"),
-			Core.atlas.find("definitely-not-advance-content-eruptor-iii-icon")
-		];
-  },
-  setStats(){
-    this.super$setStats();
-    
-    this.stats.remove(BlockStat.inaccuracy);
-    this.stats.remove(BlockStat.shots);
-    this.stats.add(BlockStat.shots, "The number of enemies in range (oh no)");
-    this.stats.remove(BlockStat.damage);
-    //damages every 5 ticks, at least in meltdown's case
-    this.stats.add(BlockStat.damage, this.shootType.damage * 60 / 5, StatUnit.perSecond);
-  },
-  update(tile){
-    this.super$update(tile);
-		
-		const entity = tile.ent();
-		
-    if(entity.getBulletLife() <= 0){
-      entity.setCellOpenAmount(Mathf.lerpDelta(entity.getCellOpenAmount(), 0, this.restitution));
-      entity.setSideOpenAmount(Mathf.lerpDelta(entity.getSideOpenAmount(), 0, this.restitution));
-    }
-    
-		if(entity.getBulletLife() > 0){
-			entity.heat = 1;
-			entity.setCellOpenAmount(this.COA * 1+(Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)/3));
-      entity.setSideOpenAmount(this.SOA + (Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)*2));
-			entity.setBulletLife(entity.getBulletLife() - Time.delta());
-		}
-  },
-	updateShooting(tile){
-		const entity = tile.ent();
-		
-		if(entity.getBulletLife() > 0){
-			return;
-		};
-		
-		if(entity.reload >= this.reload){
-			type = this.peekAmmo(tile);
-			
-			this.shoot(tile, type);
-			
-			entity.reload = 0;
-      entity.setBulletLife(this.shootDuration);
-		}else{
-			liquid = entity.liquids.current();
-			maxUsed = this.consumes.get(ConsumeType.liquid).amount;
-			
-			used = this.baseReloadSpeed(tile) * (tile.isEnemyCheat() ? maxUsed : Math.min(entity.liquids.get(liquid), maxUsed * Time.delta())) * liquid.heatCapacity * this.coolantMultiplier;
-			entity.reload += Math.max(used, 1 * Time.delta()) * entity.power.status;
-			entity.liquids.remove(liquid, used);
-			
-			if(Mathf.chance(0.06 * used)){
-				Effects.effect(this.coolEffect, tile.drawx() + Mathf.range(this.size * Vars.tilesize / 2), tile.drawy() + Mathf.range(this.size * Vars.tilesize / 2));
-			}
-		}
-	},
-  shoot(tile, type){
-    const entity = tile.ent();
-    Units.nearbyEnemies(tile.getTeam(), tile.drawx() - this.range, tile.drawy() - this.range, this.range*2, this.range*2, cons(unit => {
-      if(unit.withinDst(tile.drawx(), tile.drawy(), this.range)){
-        if(!unit.isDead() && unit instanceof HealthTrait){
-          Calls.createBullet(this.shootType, tile.getTeam(), unit.x, unit.y, 0, 1, 1);
-        }
-      }
-    }));
-    
-    //reset oofed
-    var oofed = [];
-    for(a = 0; a < 360; a++){
-      for(l = this.range/8; l > 0; l--){
-        rangeloc.trns(a, 0, l);
-        if(Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y) != null){
-          other = Vars.world.ltile(tile.x + rangeloc.x, tile.y + rangeloc.y);
-          
-          if(other.getTeam() != tile.getTeam() && other.ent() != null && oofed.indexOf(other) == -1){
-            Calls.createBullet(this.shootType, tile.getTeam(), other.drawx(), other.drawy(), 0, 1, 1);
-            //add to oofed so the same thing doesn't get oofed twice.
-            oofed.push(other);
-          }
-        }
-      }
-    }
-  },
-  shouldTurn(tile){
-    return false;
-  },
-	shouldActiveSound(tile){
-		const entity = tile.ent();
-
-		return entity.getBulletLife() > 0;
-	}
-});
-const burnRadius = 8;
-const oofDuration = 30;
-
-burningHell.shootDuration = oofDuration;
-burningHell.range = 200;
-burningHell.shootCone = 360;
-burningHell.rotationSpeed = 0;
-burningHell.COA = 0.9;
-burningHell.SOA = 3;
-burningHell.firingMoveFract = 0.8;
-burningHell.shootEffect = Fx.none;
-burningHell.smokeEffect = Fx.none;
-burningHell.ammoUseEffect = Fx.none;
-burningHell.restitution = 0.01;
-
-burningHell.caps = [];
-burningHell.sides = [];
-burningHell.cells = [];
-burningHell.cellHeats = [];
-burningHell.outlines = [];
-
-burningHell.entityType = prov(() => {
-	entity = extend(Turret.TurretEntity, {
-		setBulletLife(a){
-			this._bulletlife = a;
-		},
-    
-		getBulletLife(){
-			return this._bulletlife;
-		},
-    
-    setCellOpenAmount(a){
-      this._cellOpenAmount = a;
-    },
-		
-    getCellOpenAmount(){
-      return this._cellOpenAmount;
-    },
-    
-    setSideOpenAmount(a){
-      this._cellSideAmount = a;
-    },
-		
-    getSideOpenAmount(){
-      return this._cellSideAmount;
-    }
-	});
+//Stolen effect from [redacted] from [redacted/redacted]
+//Which I now just stole from myself.
+//Why do I keep stealing things.
+const targetLightning = new Effect(10, 500, e => {
+	var length = e.data[0];
+	var tileLength = Mathf.round(length / 8);
 	
-	entity.setBulletLife(0);
-  entity.setCellOpenAmount(0);
-  entity.setSideOpenAmount(0);
+	Lines.stroke(e.data[1] * e.fout());
+	Draw.color(e.color, Color.white, e.fin());
 	
-	return entity;
+	for(var i = 0; i < tileLength; i++){
+		var offsetXA = (i == 0) ? 0 : Mathf.randomSeed(e.id + (i * 6413), -4.5, 4.5);
+		var offsetYA = (length / tileLength) * i;
+		
+		var f = i + 1;
+		
+		var offsetXB = (f == tileLength) ? 0 : Mathf.randomSeed(e.id + (f * 6413), -4.5, 4.5);
+		var offsetYB = (length / tileLength) * f;
+		
+		tV.trns(e.rotation, offsetYA, offsetXA);
+		tV.add(e.x, e.y);
+		
+		tV2.trns(e.rotation, offsetYB, offsetXB);
+		tV2.add(e.x, e.y);
+		
+		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
+    Drawf.light(e.data[2], tV.x, tV.y, tV2.x, tV2.y, e.data[1] * 3, e.color, 0.7);
+		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
+	};
+  Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
+targetLightning.layer = Layer.turret + 0.5;
 
 //Editable stuff for custom laser.
-//4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
-var colors = [Color.valueOf("a3570055"), Color.valueOf("bf6804aa"), Color.valueOf("db7909"), Color.valueOf("f08913")];
+var colors = [Color.valueOf("EC7458"), Color.valueOf("F58859"), Color.valueOf("FF9C5A")];
 var length = 8;
+const burnRadius = 7;
 
-//Stuff you probably shouldn't edit.
-//Width of each section of the beam from thickest to thinnest
-var tscales = [1, 0.7, 0.5, 0.2];
-//Overall width of each color
-var strokes = [burnRadius/2, burnRadius/2.5, burnRadius/3, burnRadius/3.5];
-//Determines how far back each section in the start should be pulled
-var pullscales = [1, 1.12, 1.15, 1.17];
-//Determines how far each section of the end should extend past the main thickest section
-var lenscales = [1, 1.3, 1.6, 1.9];
+//Overall width of each color.
+var strokes = [burnRadius, burnRadius / 1.333, burnRadius / 1.666];
+
+var osc = 1;
 
 var tmpColor = new Color();
 const vec = new Vec2();
+const lavaBack = new Vec2();
 
-burningHell.shootType = extend(BasicBulletType, {
+const hellPool = extend(BasicBulletType, {
   update(b){
     if(b != null){
       if(b.timer.get(1, 5)){
-        Damage.damage(b.getTeam(), b.x, b.y, burnRadius*2, this.damage, true);
+        Damage.damage(b.team, b.x, b.y, burnRadius, this.damage, true);
       }
       
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 10000);
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 9000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Vars.content.getByName(ContentType.liquid, "prog-mats-magma"), 15000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 1);
     }
+  },
+  drawLight(b){
   },
   draw(b){
     if(b != null){
-      //middle
-      Draw.blend(Blending.additive);
-      Draw.color(Color.valueOf("f08913"));
+      //bottom
+      Draw.color(colors[0]);
       Draw.alpha(b.fout());
-      Fill.circle(b.x, b.y, burnRadius);
-      Draw.blend();
-      Draw.color();
+      Fill.circle(b.x, b.y, strokes[0]);
+      
+      //pulsing
+      for(var s = 0; s < colors.length; s++){
+        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time / 3 + Mathf.randomSeed(b.id), 1.0, 0.3) / 3));
+        Draw.alpha(b.fout());
+        Fill.circle(b.x, b.y, strokes[s] * Mathf.absin((Time.time / ((s + 2) * osc)) + Mathf.randomSeed(b.id), 0.8, 1));
+      }
       
       //ring
-      Draw.color(Color.valueOf("a35700"));
+      Draw.color(colors[0]);
       Draw.alpha(b.fout());
-      Lines.stroke(1);
-      Lines.circle(b.x, b.y, burnRadius);
+      Lines.stroke(2);
+      Lines.circle(b.x, b.y, strokes[0]);
       
-      //"fountain" of lava
-      Draw.blend(Blending.additive);
-      for(var s = 0; s < 4; s++){
-        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
-        Draw.alpha(b.fout());
-        for(var i = 0; i < 4; i++){
-          var baseLen = (length + (Mathf.absin(Time.time()/((i+1)*2) + b.id, 0.8, 1.5)*(length/1.5))) * b.fout();
-          Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
-          Lines.stroke(4 * strokes[s] * tscales[i]);
-          Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], CapStyle.none);
-        }
-      }
-      Draw.blend();
-      Draw.color();
       Draw.reset();
     }
   }
 });
+const burnDuration = 30;
 
-burningHell.shootType.speed = 0.000000001;
-burningHell.shootType.damage = 62.5;
-burningHell.shootType.lifetime = oofDuration;
-burningHell.shootType.collides = false;
-burningHell.shootType.collidesTiles = false;
-burningHell.shootType.hitEffect = Fx.fireballsmoke;
-burningHell.shootType.despawnEffect = Fx.none;
-burningHell.shootType.shootEffect = Fx.none;
-burningHell.shootType.smokeEffect = Fx.none;
+hellPool.speed = 0.0001;
+hellPool.damage = 62.5;
+hellPool.lifetime = burnDuration;
+hellPool.collides = false;
+hellPool.collidesTiles = false;
+hellPool.hitEffect = Fx.fireballsmoke;
+hellPool.despawnEffect = Fx.none;
+hellPool.shootEffect = Fx.none;
+hellPool.smokeEffect = Fx.none;
+hellPool.hittable = false;
+hellPool.absorbable = false;
+hellPool.lightRadius = 2;
+hellPool.lightOpacity = 0.7;
+hellPool.lightColor = colors[2];
+
+//Got some help from EoD for the turning LaserTurret into PowerTurret part
+const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
+  load(){
+    this.caps = [];
+    this.cells = [];
+    this.heatRegions = [];
+    this.outlines = [];
+    
+    this.baseRegion = Core.atlas.find("block-4");
+    this.bottomRegion = Core.atlas.find(this.name + "-bottom");
+    this.sideRegion = Core.atlas.find(this.name + "-side");
+    for(var i = 0; i < 2; i++){
+      this.cells[i] = Core.atlas.find(this.name + "-cells-" + i);
+    }
+    for(var i = 0; i < 4; i++){
+      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
+      this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
+    }
+    for(var i = 0; i < 6; i++){
+      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
+    }
+  },
+  setStats(){
+    this.super$setStats();
+    
+    this.stats.remove(Stat.inaccuracy);
+    this.stats.add(Stat.shots, "The number of enemies in range (oh no)");
+    
+    //damages every 5 ticks
+    this.stats.remove(Stat.damage);
+    this.stats.add(Stat.damage, hellRiser.shootType.damage * 12, StatUnit.perSecond);
+  },
+  icons(){
+    return [
+      Core.atlas.find("block-4"),
+      Core.atlas.find(this.name + "-icon")
+    ];
+  }
+});
+
+hellRiser.shootType = hellPool;
+hellRiser.shootDuration = burnDuration;
+hellRiser.range = 200;
+hellRiser.reloadTime = 90;
+hellRiser.shootCone = 360;
+hellRiser.rotationSpeed = 8;
+hellRiser.rotationWindUp = 0.1;
+hellRiser.rotationWindDown = 0.005;
+hellRiser.COA = 0.5;
+hellRiser.recoil = 7;
+hellRiser.sideHeight = 4;
+hellRiser.cellHeight = 1;
+hellRiser.shootEffect = Fx.none;
+hellRiser.smokeEffect = Fx.none;
+hellRiser.ammoUseEffect = Fx.none;
+hellRiser.restitution = 0.01;
+hellRiser.heatColor = Color.valueOf("f08913");
+
+const side = new Vec2();
+const open = new Vec2();
+const rangeloc = new Vec2();
+const shootLoc = new Vec2();
+var rots = [0, 90, 180, 270];
+
+hellRiser.buildType = () => {
+	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, hellRiser, {
+    setEff(){
+      this._bulletLife = 0;
+      this._cellOpenAmounts = [0, 0];
+      this._rotationSpeed = 0;
+      this._dists = [0, 0, 0, 0]
+      this._yes = 0;
+    },
+    draw(){
+      var trnsX = [-1, 1];
+      
+      Draw.rect(hellRiser.baseRegion, this.x, this.y, 0);
+      
+      Draw.z(Layer.turret + 1);
+      
+      Drawf.shadow(hellRiser.bottomRegion, this.x - (hellRiser.size / (1 + (1 / 3))), this.y - (hellRiser.size / (1 + (1 / 3))));
+      
+      Draw.rect(hellRiser.outlines[0], this.x, this.y);
+      
+      for(var i = 0; i < 4; i++){
+        var drawRotation = this.rotation + rots[i];
+        
+        side.trns(drawRotation, 0, this.recoil);
+      }
+      
+      Draw.rect(hellRiser.bottomRegion, this.x, this.y);
+      
+      if(this.heat > 0.00001){
+        Draw.blend(Blending.additive);
+        Draw.color(hellRiser.heatColor, this.heat);
+        Draw.rect(hellRiser.heatRegions[0], this.x, this.y);
+        Draw.blend();
+        Draw.color();
+      }
+      
+      for(i = 0; i < 4; i++){
+        var drawRotation = this.rotation + rots[i];
+        
+        side.trns(drawRotation, 0, this.recoil);
+        
+        //Side shadows
+        Drawf.shadow(hellRiser.sideRegion, this.x + side.x - hellRiser.sideHeight, this.y + side.y - hellRiser.sideHeight, drawRotation);
+        
+        //Side outlines
+        for(var j = 0; j < 5; j++){
+          Draw.rect(hellRiser.outlines[j + 1], this.x + side.x, this.y + side.y, drawRotation);
+        }
+        
+        //Cap Outlines
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[0] * trnsX[i], this._cellOpenAmounts[0]);
+          Draw.rect(hellRiser.outlines[j + 2], this.x + side.x + open.x, this.y + side.y + open.y, drawRotation);
+          Draw.rect(hellRiser.outlines[j + 4], this.x + side.x + open.x, this.y + side.y + open.y, drawRotation);
+        }
+      }
+      
+      for(i = 0; i < 4; i++){
+        var drawRotation = this.rotation + rots[i];
+        
+        side.trns(drawRotation, 0, this.recoil);
+        
+        //Side Parts
+        Draw.rect(hellRiser.sideRegion, this.x + side.x, this.y + side.y, drawRotation);
+        
+        //Side Parts Heat
+        if(this.heat > 0.00001){
+          Draw.blend(Blending.additive);
+          Draw.color(hellRiser.heatColor, this.heat);
+          Draw.rect(hellRiser.heatRegions[1], this.x + side.x, this.y + side.y, drawRotation);
+          Draw.blend();
+          Draw.color();
+        }
+        
+        //Bottom Layer Cell Shadows
+        Drawf.shadow(hellRiser.cells[0], this.x + side.x - hellRiser.cellHeight, this.y + side.y - hellRiser.cellHeight, drawRotation);
+        
+        //Bottom Layer Cap Shadows
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[0] * trnsX[j], this._cellOpenAmounts[0]);
+          Drawf.shadow(hellRiser.caps[j], this.x + side.x + open.x - hellRiser.cellHeight, this.y + side.y + open.y - hellRiser.cellHeight, drawRotation);
+        }
+        
+        //Bottom Layer Cells
+        Draw.rect(hellRiser.cells[0], this.x + side.x, this.y + side.y, drawRotation);
+        
+        //Bottom Layer Cells Heat
+        if(this.heat > 0.00001){
+          Draw.blend(Blending.additive);
+          Draw.color(hellRiser.heatColor, this.heat);
+          Draw.rect(hellRiser.heatRegions[2], this.x + side.x, this.y + side.y, drawRotation);
+          Draw.blend();
+          Draw.color();
+        }
+      
+        //Bottom Layer Caps
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[0] * trnsX[j], this._cellOpenAmounts[0]);
+          Draw.rect(hellRiser.caps[j], this.x + side.x + open.x, this.y + side.y + open.y, drawRotation);
+        }
+      
+        //Top Layer Cell Shadows
+        Drawf.shadow(hellRiser.cells[1], this.x + side.x - hellRiser.cellHeight, this.y + side.y - hellRiser.cellHeight, drawRotation);
+        
+        //Top layer Cap Shadows
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[1] * trnsX[j], this._cellOpenAmounts[1]);
+          Drawf.shadow(hellRiser.caps[j + 2], this.x + side.x + open.x - hellRiser.cellHeight, this.y + side.y + open.y - hellRiser.cellHeight, drawRotation);
+        }
+        
+        //Top Layer Cells
+        Draw.rect(hellRiser.cells[1], this.x + side.x, this.y + side.y, drawRotation);
+      
+        //Bottom Layer Cells Heat
+        if(this.heat > 0.00001){
+          Draw.blend(Blending.additive);
+          Draw.color(hellRiser.heatColor, this.heat);
+          Draw.rect(hellRiser.heatRegions[3], this.x + side.x, this.y + side.y, drawRotation);
+          Draw.blend();
+          Draw.color();
+        }
+      
+        //Top Layer Caps
+        for(var j = 0; j < 2; j++){
+          open.trns(drawRotation, this._cellOpenAmounts[1] * trnsX[j], this._cellOpenAmounts[1]);
+          Draw.rect(hellRiser.caps[j + 2], this.x + side.x + open.x, this.y + side.y + open.y, drawRotation);
+        }
+      }
+    },
+    updateTile(){
+      this.super$updateTile();
+      
+      if(this._bulletLife <= 0){
+        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], 0, hellRiser.restitution);
+        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], 0, hellRiser.restitution);
+        this.recoil = Mathf.lerpDelta(this.recoil, 0, hellRiser.restitution);
+        this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, 0, hellRiser.rotationWindDown);
+      }
+      
+      if(this._bulletLife > 0){
+        this.heat = 1;
+        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], hellRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._yes), 0.8, 1), 0.6);
+        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], hellRiser.COA * Mathf.absin(-this._bulletLife / 6 + Mathf.randomSeed(this._yes), 0.8, 1), 0.6);
+        this.recoil = hellRiser.recoil;
+        this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, hellRiser.rotationSpeed, hellRiser.rotationWindUp);
+        this._bulletLife = this._bulletLife - Time.delta;
+        
+        if(hellEntity.targetX.size >= 0){
+          for(var i = 0; i < hellEntity.targetX.size; i++){
+            for(var j = 0; j < 4; j++){
+              shootLoc.trns(this.rotation - 90 + rots[j], hellRiser.size * 4 + this.recoil);
+              this._dists[j] = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
+            }
+            var dist = 400;
+            for(var j = 0; j < this._dists.length; j++){
+              if(this._dists[j] < dist){
+                dist = this._dists[j];
+                var effectSide = j;
+              }
+            }
+            
+            shootLoc.trns(this.rotation - 90 + rots[effectSide], hellRiser.size * 4 + this.recoil);
+            
+            var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
+            
+            targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist, 6, this.team]);
+          }
+        }
+      }
+      
+      this.rotation -= this._rotationSpeed;
+    },
+    updateShooting(){
+      if(this._bulletLife > 0){
+        return;
+      }
+      
+      if(this.reload >= hellRiser.reloadTime){
+        var type = this.peekAmmo();
+        
+        this.shoot(type);
+        
+        this.reload = 0;
+        this._bulletLife = hellRiser.shootDuration;
+      }else{
+        this.reload += this.delta() * this.baseReloadSpeed();
+      }
+    },
+    shoot(type){
+      hellEntity.targetX.clear();
+      hellEntity.targetY.clear();
+      
+      Units.nearbyEnemies(this.team, this.x - hellRiser.range, this.y - hellRiser.range, hellRiser.range * 2, hellRiser.range * 2, e => {
+				if(Mathf.within(this.x, this.y, e.x, e.y, hellRiser.range) && !e.dead){
+          if(hellEntity.targetX.size <= 1023){
+            hellEntity.targetX.add(e.x);
+            hellEntity.targetY.add(e.y);
+          }
+        }
+      })
+      
+      //I am once again stealing End Game code for this.
+      hellEntity.collidedBlocks.clear();
+      var tx = Vars.world.toTile(this.x);
+      var ty = Vars.world.toTile(this.y);
+      
+      var tileRange = Mathf.floorPositive(hellRiser.range / Vars.tilesize + 1);
+      
+      for(var x = -tileRange + tx; x <= tileRange + tx; x++){
+        yGroup:
+        for(var y = -tileRange + ty; y <= tileRange + ty; y++){
+          if(!Mathf.within(x * Vars.tilesize, y * Vars.tilesize, this.x, this.y, hellRiser.range)) continue yGroup;
+          var other = Vars.world.build(x, y);
+          if(other == null) continue yGroup;
+          if(!hellEntity.collidedBlocks.contains(other.pos())){
+            if(other.team != this.team && !other.dead){
+              if(hellEntity.targetX.size <= 1023){
+                hellEntity.targetX.add(other.x);
+                hellEntity.targetY.add(other.y);
+              }
+            }
+            hellEntity.collidedBlocks.add(other.pos());
+          }
+        }
+      }
+      
+      for(var i = 0; i < hellEntity.targetX.size; i++){
+        if(i >= 0){
+          hellRiser.shootType.create(this, this.team, hellEntity.targetX.get(i), hellEntity.targetY.get(i), 0, 1, 1);
+        }
+      }
+      
+      this._yes = Mathf.random(9999);
+    },
+    shouldTurn(){
+      return false;
+    },
+    shouldAmbientSound(){
+      return this._bulletLife > 0;
+    }
+	});
+  hellEntity.targetX = new Seq(1023);
+  hellEntity.targetY = new Seq(1023);
+  hellEntity.collidedBlocks = new IntSet(1023);
+	hellEntity.setEff();
+	return hellEntity;
+};

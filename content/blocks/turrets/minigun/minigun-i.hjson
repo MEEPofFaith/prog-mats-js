@@ -1,0 +1,24 @@
+localizedName: "Minigun"
+description: 
+  '''
+  It starts slow, but then i- DAKADAKADAKADAKADAKADAKADAKADAKA *ahem*
+  
+  Overdrive, firing speed multiplier, and liquid boosting effect how fast it spins up instead of firing speed.
+  Doesn't ever go above 1 shot/3 ticks because it'll stop firing correctly if it goes any faster.
+  '''
+size: 4
+range: 225
+health: 1800
+shootCone: 20
+shootSound: shootBig
+targetAir: true
+targetGround: true
+rotateSpeed: 2
+requirements:[
+  copper/200
+  graphite/175
+  titanium/100
+  thorium/80
+]
+category: turret
+research: salvo

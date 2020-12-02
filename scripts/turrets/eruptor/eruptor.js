@@ -1,254 +1,301 @@
-const open = new Vec2();
-const back = new Vec2();
+const tV = new Vec2();
+const tV2 = new Vec2();
 
-//Got some help from EoD for the turning LaserTurret into PowerTurret part
-const heatRiser = extendContent(PowerTurret, "eruptor-i", {
-  load(){
-    this.super$load();
-    this.cells = Core.atlas.find(this.name + "-cells");
-    this.cellHeat = Core.atlas.find(this.name + "-cells-heat");
-    for(i = 0; i < 4; i++){
-      this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
-    }
-  },
-  drawLayer(tile){
-    this.super$drawLayer(tile);
-    const entity = tile.ent();
-    
-    back.trns(entity.rotation-90, 0, 0);
-    
-    Draw.rect(this.cells, entity.x + back.x, entity.y + back.y, entity.rotation-90);
-    
-    if(entity.heat > 0){
-      Draw.blend(Blending.additive);
-      Draw.color(Color.valueOf("f08913"), entity.heat);
-      Draw.rect(this.cellHeat, entity.x + back.x, entity.y + back.y, entity.rotation-90);
-      Draw.blend();
-      Draw.color();
-    }
-    
-    //sw
-    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount(), -entity.getCellOpenAmount());
-    Draw.rect(this.caps[0], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-    
-    //se
-    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount(), -entity.getCellOpenAmount());
-    Draw.rect(this.caps[1], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-    
-    //nw
-    open.trns(entity.rotation-90, 0 - entity.getCellOpenAmount(), entity.getCellOpenAmount());
-    Draw.rect(this.caps[2], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-    
-    //nw
-    open.trns(entity.rotation-90, 0 + entity.getCellOpenAmount(), entity.getCellOpenAmount());
-    Draw.rect(this.caps[3], entity.x + open.x, entity.y + open.y, entity.rotation-90);
-  },
-  generateIcons(){
-    return [
-			Core.atlas.find("block-3"),
-			Core.atlas.find("definitely-not-advance-content-eruptor-i-icon")
-		];
-  },
-  setStats(){
-    this.super$setStats();
-    
-    this.stats.remove(BlockStat.inaccuracy);
-    this.stats.remove(BlockStat.damage);
-    //damages every 5 ticks
-    this.stats.add(BlockStat.damage, this.shootType.damage * 60 / 5, StatUnit.perSecond);
-  },
-  update(tile){
-    this.super$update(tile);
-		
-		const entity = tile.ent();
-		
-    if(entity.getBulletLife() <= 0 && entity.getBullet() == null){
-      entity.setCellOpenAmount(Mathf.lerpDelta(entity.getCellOpenAmount(), 0, this.restitution));
-    }
-    
-		if(entity.getBulletLife() > 0 && entity.getBullet() != null){
-			var entBullet = entity.getBullet();
-      
-      if(entity.getBulletLife() >= this.shootDuration){
-        entBullet.set(tile.entity.target.getX(), tile.entity.target.getY());
-      }
-			
-			this.tr.trns(entity.rotation, this.size * Vars.tilesize / 2, 0);
-			entBullet.time(0);
-			entity.heat = 1;
-			entity.setCellOpenAmount(this.COA * 1+(Mathf.absin(entity.getBulletLife()/3, 0.8, 1.5)/3));
-			entity.setBulletLife(entity.getBulletLife() - Time.delta());
-			if(entity.getBulletLife() <= 0){
-				entity.setBullet(null);
-			}
-		}
-  },
-	updateShooting(tile){
-		const entity = tile.ent();
-		
-		if(entity.getBulletLife() > 0 && entity.getBullet() != null){
-			return;
-		};
-		
-		if(entity.reload >= this.reload){
-			type = this.peekAmmo(tile);
-			
-			this.shoot(tile, type);
-			
-			entity.reload = 0;
-		}
-    else{
-			liquid = entity.liquids.current();
-			maxUsed = this.consumes.get(ConsumeType.liquid).amount;
-			
-			used = this.baseReloadSpeed(tile) * (tile.isEnemyCheat() ? maxUsed : Math.min(entity.liquids.get(liquid), maxUsed * Time.delta())) * liquid.heatCapacity * this.coolantMultiplier;
-			entity.reload += Math.max(used, 1 * Time.delta()) * entity.power.status;
-			entity.liquids.remove(liquid, used);
-			
-			if(Mathf.chance(0.06 * used)){
-				Effects.effect(this.coolEffect, tile.drawx() + Mathf.range(this.size * Vars.tilesize / 2), tile.drawy() + Mathf.range(this.size * Vars.tilesize / 2));
-			}
-		}
-	},
-  bullet(tile, type, angle){
-		const entity = tile.ent();
-		bullet = Bullet.create(type, entity, tile.getTeam(), tile.drawx() + this.tr.x, tile.drawy() + this.tr.y, angle);
-		
-		entity.setBullet(bullet);
-		entity.setBulletLife(this.shootDuration);
-	},
-	turnToTarget(tile, targetRot){
-		const entity = tile.ent();
-
-		entity.rotation = Angles.moveToward(entity.rotation, targetRot, this.rotatespeed * entity.delta() * (entity.getBulletLife() > 0 ? this.firingMoveFract : 1));
-	},
-	shouldActiveSound(tile){
-		const entity = tile.ent();
-
-		return entity.getBulletLife() > 0 && entity.getBullet() != null;
-	}
-});
-const burnRadius = 18;
-
-heatRiser.shootDuration = 180;
-heatRiser.COA = 0.9;
-heatRiser.firingMoveFract = 0.8;
-heatRiser.shootEffect = Fx.none;
-heatRiser.smokeEffect = Fx.none;
-heatRiser.ammoUseEffect = Fx.none;
-heatRiser.restitution = 0.01;
-
-heatRiser.caps = [];
-
-heatRiser.entityType = prov(() => {
-	entity = extend(Turret.TurretEntity, {
-		setBullet(a){
-			this._bullet = a;
-		},
-		
-		getBullet(){
-			return this._bullet;
-		},
-		
-		setBulletLife(a){
-			this._bulletlife = a;
-		},
-    
-		getBulletLife(){
-			return this._bulletlife;
-		},
-    
-    setCellOpenAmount(a){
-      this._cellOpenAmount = a;
-    },
-		
-    getCellOpenAmount(){
-      return this._cellOpenAmount;
-    }
-	});
+//Stolen effect from [redacted] from [redacted/redacted]
+//Which I now just stole from myself.
+//Why do I keep stealing things.
+const targetLightning = new Effect(10, 500, e => {
+	var length = e.data[0];
+	var tileLength = Mathf.round(length / 8);
 	
-	entity.setBullet(null);
-	entity.setBulletLife(0);
-  entity.setCellOpenAmount(0);
+	Lines.stroke(e.data[1] * e.fout());
+	Draw.color(e.color, Color.white, e.fin());
 	
-	return entity;
+	for(var i = 0; i < tileLength; i++){
+		var offsetXA = (i == 0) ? 0 : Mathf.randomSeed(e.id + (i * 6413), -4.5, 4.5);
+		var offsetYA = (length / tileLength) * i;
+		
+		var f = i + 1;
+		
+		var offsetXB = (f == tileLength) ? 0 : Mathf.randomSeed(e.id + (f * 6413), -4.5, 4.5);
+		var offsetYB = (length / tileLength) * f;
+		
+		tV.trns(e.rotation, offsetYA, offsetXA);
+		tV.add(e.x, e.y);
+		
+		tV2.trns(e.rotation, offsetYB, offsetXB);
+		tV2.add(e.x, e.y);
+		
+		Lines.line(tV.x, tV.y, tV2.x, tV2.y, false);
+    Drawf.light(e.data[2], tV.x, tV.y, tV2.x, tV2.y, e.data[1] * 3, e.color, 0.7);
+		Fill.circle(tV.x, tV.y, Lines.getStroke() / 2);
+	};
+  Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
+targetLightning.layer = Layer.turret + 0.5;
 
 //Editable stuff for custom laser.
-//4 colors from outside in. Normal meltdown laser has trasnparrency 55 -> aa -> ff (no transparrency) -> ff(no transparrency)
-var colors = [Color.valueOf("a3570055"), Color.valueOf("bf6804aa"), Color.valueOf("db7909"), Color.valueOf("f08913")];
+var colors = [Color.valueOf("EC7458"), Color.valueOf("F58859"), Color.valueOf("FF9C5A")];
 var length = 16;
+const burnRadius = 18;
 
-//Stuff you probably shouldn't edit.
-//Width of each section of the beam from thickest to thinnest
-var tscales = [1, 0.7, 0.5, 0.2];
-//Overall width of each color
-var strokes = [burnRadius/2, burnRadius/2.5, burnRadius/3, burnRadius/3.5];
-//Determines how far back each section in the start should be pulled
-var pullscales = [1, 1.12, 1.15, 1.17];
-//Determines how far each section of the end should extend past the main thickest section
-var lenscales = [1, 1.3, 1.6, 1.9];
+//Overall width of each color.
+var strokes = [burnRadius, burnRadius / 1.333, burnRadius / 1.666];
+
+var osc = 3;
 
 var tmpColor = new Color();
 const vec = new Vec2();
+const lavaBack = new Vec2();
 
-heatRiser.shootType = extend(BasicBulletType, {
+const lavaPool = extend(BasicBulletType, {
   update(b){
     if(b != null){
-      if(b.getOwner().target != null){
-        var target = Angles.angle(b.x, b.y, b.getOwner().target.getX(), b.getOwner().target.getY());
-        b.rot(Mathf.slerpDelta(b.rot(), target, 0.15));
-      }
+      if(b.owner.targetPos != null){
+        var target = Angles.angle(b.x, b.y, b.owner.targetPos.x, b.owner.targetPos.y);
+        b.rotation(Mathf.slerpDelta(b.rotation(), target, 0.15));
+      };
       
       if(b.timer.get(1, 5)){
-        Damage.damage(b.getTeam(), b.x, b.y, burnRadius*2, this.damage, true);
-      }
+        Damage.damage(b.team, b.x, b.y, burnRadius, this.damage, true);
+      };
       
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 20000);
-      Puddle.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.oil, 19000);
-    }
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Vars.content.getByName(ContentType.liquid, "prog-mats-magma"), 30000);
+      Puddles.deposit(Vars.world.tileWorld(b.x, b.y), Liquids.slag, 1);
+    };
+  },
+  drawLight(b){
   },
   draw(b){
     if(b != null){
-      //middle
-      Draw.blend(Blending.additive);
-      Draw.color(Color.valueOf("f08913"));
+      //bottom
+      Draw.color(colors[0]);
       Draw.alpha(b.fout());
-      Fill.circle(b.x, b.y, burnRadius);
-      Draw.blend();
-      Draw.color();
+      Fill.circle(b.x, b.y, strokes[0]);
+      
+      //pulsing
+      for(var s = 0; s < colors.length; s++){
+        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time / 3 + Mathf.randomSeed(b.id), 1.0, 0.3) / 3));
+        Draw.alpha(b.fout());
+        Fill.circle(b.x, b.y, strokes[s] * Mathf.absin((Time.time / ((s + 2) * osc)) + Mathf.randomSeed(b.id), 0.8, 1));
+      }
       
       //ring
-      Draw.color(Color.valueOf("a35700"));
+      Draw.color(colors[0]);
       Draw.alpha(b.fout());
-      Lines.stroke(1);
-      Lines.circle(b.x, b.y, burnRadius);
+      Lines.stroke(2);
+      Lines.circle(b.x, b.y, strokes[0]);
       
-      //"fountain" of lava
-      Draw.blend(Blending.additive);
-      for(var s = 0; s < 4; s++){
-        Draw.color(tmpColor.set(colors[s]).mul(1.0 + Mathf.absin(Time.time() + b.id, 1.0, 0.3)));
-        Draw.alpha(b.fout());
-        for(var i = 0; i < 4; i++){
-          var baseLen = (length + (Mathf.absin(Time.time()/((i+1)*2) + b.id, 0.8, 1.5)*(length/1.5))) * b.fout();
-          Tmp.v1.trns(90, (pullscales[i] - 1.0) * 55.0);
-          Lines.stroke(4 * strokes[s] * tscales[i]);
-          Lines.lineAngle(b.x, b.y, 90, baseLen * b.fout() * lenscales[i], CapStyle.none);
-        }
-      }
-      Draw.blend();
-      Draw.color();
       Draw.reset();
     }
   }
 });
 
-heatRiser.shootType.speed = 1;
-heatRiser.shootType.damage = 50;
-heatRiser.shootType.lifetime = 16;
-heatRiser.shootType.collides = false;
-heatRiser.shootType.collidesTiles = false;
-heatRiser.shootType.hitEffect = Fx.fireballsmoke;
-heatRiser.shootType.despawnEffect = Fx.none;
-heatRiser.shootType.shootEffect = Fx.none;
-heatRiser.shootType.smokeEffect = Fx.none;
+lavaPool.speed = 1;
+lavaPool.damage = 50;
+lavaPool.lifetime = 10;
+lavaPool.collides = false;
+lavaPool.collidesTiles = false;
+lavaPool.hitEffect = Fx.fireballsmoke;
+lavaPool.despawnEffect = Fx.none;
+lavaPool.shootEffect = Fx.none;
+lavaPool.smokeEffect = Fx.none;
+lavaPool.hittable = false;
+lavaPool.absorbable = false;
+lavaPool.lightRadius = 2;
+lavaPool.lightOpacity = 0.7;
+lavaPool.lightColor = colors[2];
+
+//Got some help from EoD for the turning LaserTurret into PowerTurret part
+const lavaRiser = extendContent(PowerTurret, "eruptor-i", {
+  load(){
+    this.caps = [];
+    this.outlines = [];
+    this.heatRegions = [];
+    
+    this.baseRegion = Core.atlas.find("block-3");
+    this.turretRegion = Core.atlas.find(this.name + "-turret");
+    this.cells = Core.atlas.find(this.name + "-cells");
+    for(var i = 0; i < 2; i++){
+      this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
+    }
+    for(var i = 0; i < 4; i++){
+      this.caps[i] = Core.atlas.find(this.name + "-caps-" + i);
+    }
+    for(var i = 0; i < 5; i++){
+      this.outlines[i] = Core.atlas.find(this.name + "-outline-" + i);
+    }
+  },
+  setStats(){
+    this.super$setStats();
+    
+    this.stats.remove( Stat.inaccuracy);
+    
+    //damages every 5 ticks
+    this.stats.remove(Stat.damage);
+    this.stats.add(Stat.damage, lavaRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
+  },
+  icons(){
+    return [
+      Core.atlas.find("block-3"),
+      Core.atlas.find(this.name + "-icon")
+    ];
+  }
+});
+
+lavaRiser.shootType = lavaPool;
+lavaRiser.shootDuration = 180;
+lavaRiser.range = 240;
+lavaRiser.maxRange = 360;
+lavaRiser.reloadTime = 60;
+lavaRiser.recoilAmount = 3;
+lavaRiser.COA = 0.75;
+lavaRiser.cellHeight = 1;
+lavaRiser.rotateSpeed = 3;
+lavaRiser.firingMoveFract = 0.8;
+lavaRiser.shootEffect = Fx.none;
+lavaRiser.smokeEffect = Fx.none;
+lavaRiser.ammoUseEffect = Fx.none;
+lavaRiser.capClosing = 0.01;
+lavaRiser.heatColor = Color.valueOf("f08913");
+
+const shootLoc = new Vec2();
+
+lavaRiser.buildType = () => {
+	var eruptEntity = extendContent(PowerTurret.PowerTurretBuild, lavaRiser, {
+    setEff(){
+      this._bullet = null;
+      this._bulletLife = 0;
+      this._cellOpenAmounts = [0, 0];
+    },
+    draw(){
+      const open = new Vec2();
+      const back = new Vec2();
+      const trnsX = [-1, 1, -1, 1];
+      const trnsY = [-1, -1, 1, 1];
+      const alternate = [1, 1, 0, 0];
+      
+      Draw.rect(lavaRiser.baseRegion, this.x, this.y, 0);
+      
+      Draw.z(Layer.turret + 1);
+      
+      back.trns(this.rotation - 90, 0, -this.recoil);
+      
+      Draw.rect(lavaRiser.outlines[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+      for(var i = 0; i < 4; i ++){
+      open.trns(this.rotation - 90, 0 + (this._cellOpenAmounts[alternate[i]] * trnsX[i]), this._cellOpenAmounts[alternate[i]] * trnsY[i]);
+        Draw.rect(lavaRiser.outlines[i + 1], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      }
+      
+      Drawf.shadow(lavaRiser.turretRegion, this.x + back.x - (lavaRiser.size / (1 + (1/3))), this.y + back.y - (lavaRiser.size / (1 + (1/3))), this.rotation - 90);
+      Draw.rect(lavaRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
+      
+      if(this.heat > 0.00001){
+        Draw.blend(Blending.additive);
+        Draw.color(lavaRiser.heatColor, this.heat);
+        Draw.rect(lavaRiser.heatRegions[0], this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.blend();
+        Draw.color();
+      }
+      
+      Drawf.shadow(lavaRiser.cells, this.x + back.x - lavaRiser.cellHeight, this.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
+      
+      for(var i = 0; i < 4; i ++){
+      open.trns(this.rotation - 90, this._cellOpenAmounts[alternate[i]] * trnsX[i], this._cellOpenAmounts[alternate[i]] * trnsY[i]);
+        Drawf.shadow(lavaRiser.caps[i], this.x + open.x + back.x - lavaRiser.cellHeight, this.y + open.y + back.y - lavaRiser.cellHeight, this.rotation - 90);
+      }
+      
+      Draw.rect(lavaRiser.cells, this.x + back.x, this.y + back.y, this.rotation - 90);
+      
+      if(this.heat > 0.00001){
+        Draw.blend(Blending.additive);
+        Draw.color(lavaRiser.heatColor, this.heat);
+        Draw.rect(lavaRiser.heatRegions[1], this.x + back.x, this.y + back.y, this.rotation - 90);
+        Draw.blend();
+        Draw.color();
+      }
+      
+      for(var i = 0; i < 4; i ++){
+      open.trns(this.rotation - 90, 0 + (this._cellOpenAmounts[alternate[i]] * trnsX[i]), this._cellOpenAmounts[alternate[i]] * trnsY[i]);
+        Draw.rect(lavaRiser.caps[i], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
+      }
+    },
+    updateTile(){
+      this.super$updateTile();
+      
+      if(this._bulletLife <= 0 && this._bullet == null){
+        for(var i = 0; i < 2; i ++){
+          this._cellOpenAmounts[i] = Mathf.lerpDelta(this._cellOpenAmounts[i], 0, lavaRiser.capClosing);
+        }
+      };
+      
+      if(this._bulletLife > 0 && this._bullet != null){
+        if(this._bulletLife > this._bullet.lifetime - 1){
+          this._bullet.time = 0;
+        }
+        this.heat = 1;
+        this.recoil = lavaRiser.recoilAmount;
+        this._cellOpenAmounts[0] = Mathf.lerpDelta(this._cellOpenAmounts[0], lavaRiser.COA * Mathf.absin(this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
+        this._cellOpenAmounts[1] = Mathf.lerpDelta(this._cellOpenAmounts[1], lavaRiser.COA * Mathf.absin(-this._bulletLife / 6 + Mathf.randomSeed(this._bullet.id), 0.8, 1), 0.6);
+        this._bulletLife = this._bulletLife - Time.delta;
+        this.rotation = Angles.moveToward(this.rotation, Angles.angle(this.x, this.y, this._bullet.x, this._bullet.y), 360);
+        
+        shootLoc.trns(this.rotation, lavaRiser.size * 4 - this.recoil);
+        
+        var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        var centDist = Mathf.dst(this.x, this.y, this._bullet.x, this._bullet.y);
+        var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._bullet.x, this._bullet.y);
+        
+        if(centDist > lavaRiser.maxRange){
+          vec.trns(ang, lavaRiser.maxRange);
+          this._bullet.set(this.x + vec.x, this.y + vec.y);
+        }
+        
+        targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist, 6, this.team]);
+        
+        if(this._bulletLife <= 0){
+          this._bullet = null;
+        }
+      }
+    },
+    updateShooting(){
+      if(this._bulletLife > 0 && this._bullet != null){
+        return;
+      }
+      
+      if(this.reload >= lavaRiser.reloadTime){
+        var type = this.peekAmmo();
+        
+        this.shoot(type);
+        
+        this.reload = 0;
+        this._bulletLife = lavaRiser.shootDuration;
+      }else{
+        this.reload += this.delta() * this.baseReloadSpeed();
+      }
+    },
+    bullet(type, angle){
+      var centDist = Mathf.dst(this.x, this.y, this.targetPos.x, this.targetPos.y);
+      var dist = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this.targetPos.x, this.targetPos.y);
+      
+      if(centDist > lavaRiser.maxRange){
+        vec.trns(angle, lavaRiser.maxRange);
+        var bullet = type.create(this, this.team, this.x + vec.x, this.y + vec.y, angle);
+      }else{
+        var bullet = type.create(this, this.team, this.targetPos.x, this.targetPos.y, angle);
+      }
+      
+      this._bullet = bullet;
+    },
+    turnToTarget(targetRot){
+      if(this._bulletLife <= 0){
+        this.rotation = Angles.moveToward(this.rotation, targetRot, this.efficiency() * lavaRiser.rotateSpeed * this.delta());
+      }
+    },
+    shouldAmbientSound(){
+      return this._bulletLife > 0 && this._bullet != null;
+    }
+	});
+	eruptEntity.setEff();
+	return eruptEntity;
+};

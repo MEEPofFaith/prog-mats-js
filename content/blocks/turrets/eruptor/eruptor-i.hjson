@@ -1,0 +1,29 @@
+localizedName: "[#d17000]Eruptor"
+description: 
+  '''
+  Opens the Earth under enemies, blasting them with lava.
+  
+  [#d17000]Stray blasts may burn your defences.
+  '''
+details: "Big thanks to @ThirstyBoi✓#6102 for redoing the sprites for this! (Now to do the other 2 myself...)"
+size: 3
+health: 1800
+powerUse: 10
+shootCone: 10
+targetAir: true
+targetGround: true
+cooldown: 0.01
+restitution: 0.01
+shootSound: none
+ambientSound: beam
+ambientSoundVolume: 2
+requirements:[
+  copper/200
+  lead/300
+  graphite/300
+  silicon/325
+  titanium/200
+  thorium/200
+]
+category: turret
+research: fuse

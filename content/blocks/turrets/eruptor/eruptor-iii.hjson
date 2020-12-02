@@ -1,0 +1,24 @@
+localizedName: "[#d17000]Blazing Inferno"
+description: Burns every enemy in range. And I do mean every. Well, unless you have 2048 enemies in range. It has a max of 1024 targets.
+size: 4
+health: 1800
+powerUse: 15
+targetAir: true
+targetGround: true
+recoilAmount: 0
+cooldown: 0.01
+shootSound: none
+ambientSound: beam
+ambientSoundVolume: 2
+requirements:[
+  copper/700
+  lead/950
+  graphite/750
+  silicon/800
+  titanium/400
+  thorium/500
+  surge-alloy/650
+  techtanite/400
+]
+category: turret
+research: eruptor-ii
