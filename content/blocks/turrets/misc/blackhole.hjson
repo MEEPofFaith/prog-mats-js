@@ -1,5 +1,9 @@
 localizedName: Kugelblitz
-description: "Fires small black holes that sucks in units and bullets."
+description:
+  '''
+  Fires small black holes that sucks in units and bullets.
+  [red]WARNING: DO NOT LET A BLACK HOLE COME IN CONTACT WITH A BLACK HOLD OF ANOTHER TEAM!!![]
+  '''
 details: "Sprite based off of sprite provided by @Goober#8171 on discord."
 size: 4
 range: 128

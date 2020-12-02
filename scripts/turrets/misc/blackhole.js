@@ -1,14 +1,45 @@
-const blackholeSize = 6;
-const succRadius = 64;
 const horizon = Color.valueOf("bd5200");
 const horizonRad = 5;
 
 const loc = new Vec2();
 const vec = new Vec2();
-const succ = new Vec2();
+
+const fLib = this.global.pm.funcLib;
+
+const clearBullet = (b, succEffect) => {
+  var bWidth = b.type.width * ((1 - b.type.shrinkX) + b.type.shrinkX * b.fout());
+  var bHeight = b.type.height * ((1 - b.type.shrinkY) + b.type.shrinkY * b.fout());
+  var bOffset = -90 + (b.type.spin != 0 ? Mathf.randomSeed(b.id, 360) + b.time * b.type.spin : 0);
+  var artilleryScale = 0.7 + b.fslope() * 0.3
+  var shape = [bWidth, bHeight, bOffset, artilleryScale];
+  var baseShape = [b.type.width, b.type.height, b.type.hitSize, (b.type.width + b.type.height) / 2];
+  
+  var bullData = [baseShape, shape, b.type.backRegion, b.type];
+  
+  succEffect.at(b.x, b.y, b.rotation(), bullData);
+  
+  const bData = [b.type.hitEffect, b.type.despawnEffect, b.type.hitSound, b.type.despawnShake, b.type.fragBullet, b.type.splashDamageRadius, b.type.damage];
+  b.type.hitEffect = Fx.none;
+  b.type.despawnEffect = Fx.none;
+  b.type.hitSound = Sounds.none;
+  b.type.despawnShake = 0;
+  b.type.fragBullet = null;
+  b.type.splashDamageRadius = -1;
+  b.type.damage = 0;
+  
+  b.remove();
+  
+  b.type.hitEffect = bData[0];
+  b.type.despawnEffect = bData[1];
+  b.type.hitSound = bData[2];
+  b.type.despawnShake = bData[3];
+  b.type.fragBullet = bData[4];
+  b.type.splashDamageRadius = bData[5];
+  b.type.damage = bData[6];
+};
 
 const swirl = new Effect(90, e => {
-  loc.trns(e.rotation + (480 * e.fin()), succRadius / 2 * e.fout());
+  loc.trns(e.rotation + (480 * e.fin()), e.data[1] / 2 * e.fout());
   
 	Draw.color(Color.valueOf("000000"));
 	Fill.circle(e.data[0].x + loc.x , e.data[0].y + loc.y, 2 * e.fout());
@@ -34,12 +65,44 @@ const poof = new Effect(24, e => {
   Angles.randLenVectors(e.id, 8, e.fin() * 30, e.rotation, 180, ln);
 });
 
+const bulletDissapear = new Effect(24, e => {
+  e.scaled(8, cons(s => {
+    Draw.color(Color.black);
+    Lines.stroke(Interp.pow2Out.apply(s.fout()));
+    Lines.circle(e.x, e.y, Interp.pow2Out.apply(s.fout()) * e.data[0][3]);
+    Draw.reset();
+  }))
+  
+  if(e.data[3] instanceof BasicBulletType){
+    if(e.data[3] instanceof LaserBoltBulletType){
+      Draw.color(Color.black);
+      Draw.alpha(e.fout());
+      Lines.stroke(e.data[0][0]);
+      Lines.lineAngleCenter(e.x, e.y, e.rotation - 90, e.data[0][1]);
+
+      Draw.reset();
+    }else if(e.data[3] instanceof ArtilleryBulletType){
+      Draw.color(Color.black);
+      Draw.alpha(e.fout());
+      Draw.rect(e.data[2], e.x, e.y, e.data[1][0] * e.data[1][3], e.data[1][1] * e.data[1][3], e.rotation - 90);
+
+      Draw.reset();
+    }else{
+      Draw.color(Color.black);
+      Draw.alpha(e.fout());
+      Draw.rect(e.data[2], e.x, e.y, e.data[1][0], e.data[1][1], e.rotation + e.data[1][2]);
+
+      Draw.reset();
+    }
+  }
+});
+
 const chargeBegin = new Effect(50, e => {
   Draw.color(Color.valueOf("000000"));
-  Fill.circle(e.x, e.y, e.fin() * (blackholeSize / 2));
+  Fill.circle(e.x, e.y, e.fin() * (e.data / 2));
   Draw.color();
   
-  Drawf.light(e.x , e.y, e.fin() * (blackholeSize / 2 + horizonRad), horizon, 0.7);
+  Drawf.light(e.x , e.y, e.fin() * (e.data / 2 + horizonRad), horizon, 0.7);
   Draw.reset();
 });
 
@@ -50,6 +113,45 @@ const charge = new Effect(38, e => {
   }})
   Angles.randLenVectors(e.id, 2, 1 + 40 * e.fout(), e.rotation, 180, ln);
 });
+
+const cataclysmArea = 100;
+const cataclysm = new Effect(60 * 60, cataclysmArea * 10, e => {
+  var expandTime = 15;
+  
+  const interp = new Interp.PowOut(6);
+  var midPoint = 3450;
+  var fslope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, midPoint) - Mathf.curve(e.fin() * e.lifetime, midPoint, e.lifetime);
+  var fin = Mathf.curve(e.fin() * e.lifetime, 0, 60);
+  
+  var expand = Mathf.curve(e.fin() * e.lifetime, 0, expandTime) - Mathf.curve(e.fin() * e.lifetime, midPoint, e.lifetime);
+  var darkness = Mathf.curve(e.fin() * e.lifetime, 0, 7.5 * 60);
+  
+  Draw.color(Color.darkGray, Color.black, darkness);
+  Draw.alpha(expand);
+  Lines.stroke(24);
+  Lines.circle(e.x, e.y, expand * e.data);
+  Fill.circle(e.x, e.y, expand * e.data);
+  
+  e.scaled(expandTime, cons(s => {
+    Draw.color(Color.black);
+    Lines.stroke(s.fin() * 24);
+    Lines.circle(e.x, e.y, s.fin() * e.data);
+    Draw.reset();
+  }))
+  
+  Angles.randLenVectors(e.id, 500, interp.apply(fin) * (e.data + e.data / 3), (x, y) => {
+    var size = fslope * 96;
+    Draw.color(Color.black);
+    Fill.circle(e.x + x, e.y + y, size / 2);
+  });
+  
+  /*SoundControl.silenced = true;
+  
+  if(e.life == e.lifetime){
+    SoundControl.silenced = false;
+  }*/
+});
+cataclysm.layer = Layer.max + 256;
 
 const ballOfSucc = extend(BasicBulletType, {
   load(){
@@ -63,24 +165,45 @@ const ballOfSucc = extend(BasicBulletType, {
   update(b){
     if(b != null){
       if(b.timer.get(1, 2)){
-        //Adapted from Graviton from AdvanceContent
-        Units.nearbyEnemies(b.team, b.x - succRadius, b.y - succRadius, succRadius * 2, succRadius * 2, cons(unit => {
-          if(unit.within(b.x, b.y, succRadius)){
-            var angle = Angles.angle(unit.x, unit.y, b.x, b.y);
-            succ.trns(angle, 40);
-            unit.impulse(succ);
+        //Adapted from Graviton from AdvanceContent, translated to v6 by me.
+        Units.nearbyEnemies(b.team, b.x - this.succRadius, b.y - this.succRadius, this.succRadius * 2, this.succRadius * 2, cons(unit => {
+          if(unit.within(b.x, b.y, this.succRadius)){
+            unit.impulse(Tmp.v1.set(b).sub(unit).limit((this.force + (1 - unit.dst(b) / this.succRadius) * this.scaledForce)));
           };
         }));
         
-        //Adapted from Point Defence from AdvanceContent
-        Groups.bullet.intersect(b.x - succRadius, b.y - succRadius, succRadius, succRadius, cons(e => {
+        //Adapted from Point Defence from AdvanceContent, translated to v6 by me.
+        Groups.bullet.intersect(b.x - this.succRadius, b.y - this.succRadius, this.succRadius * 2, this.succRadius * 2, cons(e => {
           if(e != null){
-            var dst2 = Mathf.dst2(e.x, e.y, b.x, b.y);
-            if(Mathf.within(b.x, b.y, e.x, e.y, succRadius) && e != b && e.team != b.team){
-              var target = Angles.angle(e.x, e.y, b.x, b.y);
-              e.rotation(Mathf.slerpDelta(b.rotation(), target, 0.7));
-              if(Mathf.within(b.x, b.y, e.x, e.y, blackholeSize)){
-                e.remove();
+            if(Mathf.within(b.x, b.y, e.x, e.y, this.succRadius) && e != b && e.team != b.team && e.type instanceof BasicBulletType){
+              var dist = Mathf.dst(b.x, b.y, e.x, e.y);
+              var strength = this.bulletForce - (dist / this.succRadius) * this.bulletForceReduction;
+              
+              e.rotation(Mathf.slerpDelta(e.rotation(), e.angleTo(b), strength));
+              
+              if(Mathf.within(b.x, b.y, e.x, e.y, this.blackholeSize)){
+                if(e.type == b.type){
+                  this.ohnoEffect.at(b.x, b.y, Mathf.random(360), this.ohnoArea);
+                  
+                  Units.nearbyEnemies(null, b.x - this.ohnoArea, b.y - this.ohnoArea, this.ohnoArea * 2, this.ohnoArea * 2, unit => {
+                    if(unit.within(b.x, b.y, this.ohnoArea)){
+                      unit.kill();
+                    }
+                  });
+                  
+                  fLib.trueEachBlock(b.x, b.y, this.ohnoArea, build => {
+                    if(!build.dead && build.block != null){
+                      build.kill();
+                    }
+                  });
+                  
+                  Effect.shake(100, 500, b.x, b.y);
+                  
+                  clearBullet(e, Fx.none);
+                  clearBullet(b, Fx.none);
+                }else{
+                  clearBullet(e, this.succEffect);
+                }
               }
             }
           }
@@ -93,7 +216,7 @@ const ballOfSucc = extend(BasicBulletType, {
         var endY = Mathf.cosDeg(b.rotation() - 90) * dist;
         
         if(b.time <= this.lifetime - 90){
-          swirl.at(b.x, b.y,Mathf.random(360), [b]);
+          swirl.at(b.x, b.y, Mathf.random(360), [b, this.succRadius]);
         }
       }
     }
@@ -101,13 +224,14 @@ const ballOfSucc = extend(BasicBulletType, {
   draw(b){
     Draw.z(Layer.bullet + 0.5);
     Draw.color(this.backColor);
-    Draw.rect(this.backRegion, b.x, b.y, blackholeSize, blackholeSize, 0);
+    Draw.rect(this.backRegion, b.x, b.y, this.blackholeSize, this.blackholeSize, 0);
     
     Draw.color(this.frontColor);
     var f = Mathf.floor(b.time/5) % 3;
-    Draw.rect(this.front[f], b.x, b.y, blackholeSize, blackholeSize,  0);
+    Draw.rect(this.front[f], b.x, b.y, this.blackholeSize, this.blackholeSize,  0);
   }
 });
+var bhSize = 6;
 
 ballOfSucc.damage = 575 / 30;
 ballOfSucc.speed = 0.5;
@@ -116,8 +240,21 @@ ballOfSucc.collides = false;
 ballOfSucc.collidesTiles = false;
 ballOfSucc.hitEffect = poof;
 ballOfSucc.despawnEffect = poof;
+ballOfSucc.succEffect = bulletDissapear;
 ballOfSucc.shootEffect = Fx.none;
 ballOfSucc.smokeEffect = Fx.none;
+
+ballOfSucc.ohnoEffect = cataclysm;
+ballOfSucc.ohnoArea = cataclysmArea * 8;
+
+ballOfSucc.succRadius = 64;
+ballOfSucc.blackholeSize = bhSize;
+
+ballOfSucc.force = 35;
+ballOfSucc.scaledForce = 480;
+
+ballOfSucc.bulletForce = 0.8;
+ballOfSucc.bulletForceReduction = 0.6;
 
 ballOfSucc.hittable = false;
 ballOfSucc.absorbable = false;
@@ -125,7 +262,7 @@ ballOfSucc.absorbable = false;
 ballOfSucc.backColor = Color.valueOf("000000");
 ballOfSucc.frontColor = Color.valueOf("353535");
 ballOfSucc.lightColor = horizon;
-ballOfSucc.lightRadius = blackholeSize / 2 + horizonRad;
+ballOfSucc.lightRadius = bhSize / 2 + horizonRad;
 ballOfSucc.lightOpacity = 0.7;
 
 const blackhole = extendContent(PowerTurret, "blackhole", {
@@ -204,7 +341,7 @@ blackhole.buildType = () => {
       
       for(var i = 0; i < blackhole.chargeEffects; i++){
         Time.run(Mathf.random(blackhole.chargeMaxDelay), run(() => {
-          blackhole.chargeEffect.at(this.x + vec.x, this.y + vec.y, this.rotation);
+          blackhole.chargeEffect.at(this.x + vec.x, this.y + vec.y, this.rotation, blackhole.shootType.blackHoleSize);
         }));
       }
       

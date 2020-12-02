@@ -164,6 +164,7 @@ const side = new Vec2();
 const open = new Vec2();
 const rangeloc = new Vec2();
 const shootLoc = new Vec2();
+const fLib = this.global.pm.funcLib;
 var rots = [0, 90, 180, 270];
 
 hellRiser.buildType = () => {
@@ -367,30 +368,14 @@ hellRiser.buildType = () => {
         }
       })
       
-      //I am once again stealing End Game code for this.
-      hellEntity.collidedBlocks.clear();
-      var tx = Vars.world.toTile(this.x);
-      var ty = Vars.world.toTile(this.y);
-      
-      var tileRange = Mathf.floorPositive(hellRiser.range / Vars.tilesize + 1);
-      
-      for(var x = -tileRange + tx; x <= tileRange + tx; x++){
-        yGroup:
-        for(var y = -tileRange + ty; y <= tileRange + ty; y++){
-          if(!Mathf.within(x * Vars.tilesize, y * Vars.tilesize, this.x, this.y, hellRiser.range)) continue yGroup;
-          var other = Vars.world.build(x, y);
-          if(other == null) continue yGroup;
-          if(!hellEntity.collidedBlocks.contains(other.pos())){
-            if(other.team != this.team && !other.dead){
-              if(hellEntity.targetX.size <= 1023){
-                hellEntity.targetX.add(other.x);
-                hellEntity.targetY.add(other.y);
-              }
-            }
-            hellEntity.collidedBlocks.add(other.pos());
+      fLib.trueEachBlock(this.x, this.y, hellRiser.range, build => {
+        if(build.team != this.team && !build.dead && build.block != null){
+          if(hellEntity.targetX.size <= 1023){
+            hellEntity.targetX.add(build.x);
+            hellEntity.targetY.add(build.y);
           }
         }
-      }
+      });
       
       for(var i = 0; i < hellEntity.targetX.size; i++){
         if(i >= 0){
@@ -409,7 +394,6 @@ hellRiser.buildType = () => {
 	});
   hellEntity.targetX = new Seq(1023);
   hellEntity.targetY = new Seq(1023);
-  hellEntity.collidedBlocks = new IntSet(1023);
 	hellEntity.setEff();
 	return hellEntity;
 };
