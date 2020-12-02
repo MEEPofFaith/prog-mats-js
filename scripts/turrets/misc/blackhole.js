@@ -57,12 +57,15 @@ const poof = new Effect(24, e => {
     Lines.circle(e.x, e.y, s.fin() * 10);
   }))
   
-  const ln = new Floatc2({get(x, y){
-    Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 4 + 1.5);
-  }})
-  
   Lines.stroke(0.5 + e.fout() * 1.5);
-  Angles.randLenVectors(e.id, 8, e.fin() * 30, e.rotation, 180, ln);
+  Angles.randLenVectors(e.id, 4, e.fin() * 30, e.rotation, 180, (x, y) => {
+    Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 4 + 1.5);
+  });
+  
+  Draw.color(e.color);
+  Angles.randLenVectors(e.id + 1, 4, e.fin() * 30, e.rotation, 180, (x, y) => {
+    Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 4 + 1.5);
+  });
 });
 
 const bulletDissapear = new Effect(24, e => {
@@ -114,17 +117,18 @@ const charge = new Effect(38, e => {
   Angles.randLenVectors(e.id, 2, 1 + 40 * e.fout(), e.rotation, 180, ln);
 });
 
-const cataclysmArea = 100;
-const cataclysm = new Effect(60 * 60, cataclysmArea * 10, e => {
+const cataclysmArea = 50;
+const cataclysm = new Effect(60 * 60, cataclysmArea * 13, e => {
   var expandTime = 15;
   
-  const interp = new Interp.PowOut(6);
-  var midPoint = 3450;
-  var fslope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, midPoint) - Mathf.curve(e.fin() * e.lifetime, midPoint, e.lifetime);
-  var fin = Mathf.curve(e.fin() * e.lifetime, 0, 60);
+  const interp = new Interp.PowOut(2);
+  var endGrow = 25 * 60;
+  var startShrink = 3450;
+  var fslope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, endGrow) - Mathf.curve(e.time, startShrink, e.lifetime);
+  var fin = Mathf.curve(e.time, 0, 60);
   
-  var expand = Mathf.curve(e.fin() * e.lifetime, 0, expandTime) - Mathf.curve(e.fin() * e.lifetime, midPoint, e.lifetime);
-  var darkness = Mathf.curve(e.fin() * e.lifetime, 0, 7.5 * 60);
+  var expand = Mathf.curve(e.time, 0, expandTime) - Mathf.curve(e.time, startShrink, e.lifetime);
+  var darkness = Mathf.curve(e.time, 0, 7.5 * 60);
   
   Draw.color(Color.darkGray, Color.black, darkness);
   Draw.alpha(expand);
@@ -145,9 +149,22 @@ const cataclysm = new Effect(60 * 60, cataclysmArea * 10, e => {
     Fill.circle(e.x + x, e.y + y, size / 2);
   });
   
+  var range = e.data * expand;
+  Units.nearbyEnemies(null, e.x - range, e.y - range, range * 2, range * 2, unit => {
+    if(unit.within(e.x, e.y, range)){
+      unit.kill();
+    }
+  });
+  
+  fLib.trueEachBlock(e.x, e.y, range, build => {
+    if(!build.dead && build.block != null){
+      build.kill();
+    }
+  });
+  
   /*SoundControl.silenced = true;
   
-  if(e.life == e.lifetime){
+  if(e.time == e.lifetime){
     SoundControl.silenced = false;
   }*/
 });
@@ -185,18 +202,6 @@ const ballOfSucc = extend(BasicBulletType, {
                 if(e.type == b.type){
                   this.ohnoEffect.at(b.x, b.y, Mathf.random(360), this.ohnoArea);
                   
-                  Units.nearbyEnemies(null, b.x - this.ohnoArea, b.y - this.ohnoArea, this.ohnoArea * 2, this.ohnoArea * 2, unit => {
-                    if(unit.within(b.x, b.y, this.ohnoArea)){
-                      unit.kill();
-                    }
-                  });
-                  
-                  fLib.trueEachBlock(b.x, b.y, this.ohnoArea, build => {
-                    if(!build.dead && build.block != null){
-                      build.kill();
-                    }
-                  });
-                  
                   Effect.shake(100, 500, b.x, b.y);
                   
                   clearBullet(e, Fx.none);
@@ -223,12 +228,15 @@ const ballOfSucc = extend(BasicBulletType, {
   },
   draw(b){
     Draw.z(Layer.bullet + 0.5);
-    Draw.color(this.backColor);
+    Draw.color(Color.black);
     Draw.rect(this.backRegion, b.x, b.y, this.blackholeSize, this.blackholeSize, 0);
     
-    Draw.color(this.frontColor);
+    Draw.color(b.team.color);
     var f = Mathf.floor(b.time/5) % 3;
     Draw.rect(this.front[f], b.x, b.y, this.blackholeSize, this.blackholeSize,  0);
+  },
+  despawned(b){
+    this.despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
   }
 });
 var bhSize = 6;
@@ -259,8 +267,6 @@ ballOfSucc.bulletForceReduction = 0.6;
 ballOfSucc.hittable = false;
 ballOfSucc.absorbable = false;
 
-ballOfSucc.backColor = Color.valueOf("000000");
-ballOfSucc.frontColor = Color.valueOf("353535");
 ballOfSucc.lightColor = horizon;
 ballOfSucc.lightRadius = bhSize / 2 + horizonRad;
 ballOfSucc.lightOpacity = 0.7;
