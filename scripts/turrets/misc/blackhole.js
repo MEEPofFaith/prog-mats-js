@@ -125,7 +125,7 @@ const cataclysm = new Effect(60 * 60, cataclysmArea * 13, e => {
   var endGrow = 25 * 60;
   var startShrink = 3450;
   var fslope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, endGrow) - Mathf.curve(e.time, startShrink, e.lifetime);
-  var fHalfSlope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, endGrow);
+  var fHalfSlope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, startShrink);
   var fin = Mathf.curve(e.time, 0, 60);
   
   var expand = Mathf.curve(e.time, 0, expandTime) - Mathf.curve(e.time, startShrink, e.lifetime);
