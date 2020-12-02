@@ -2,7 +2,7 @@
 Adds a bunch of scripted stuff. The name definitely made up of synonyms of "Advance" and "Content."
 
 ## Content
-### Mindstron Collider:
+### Mindron Collider:
 A creatively named particle collider that fuses Techtanite.
 ### Techtaninte:
 An advanced alloy used for building high teir Progressed things.
