@@ -125,6 +125,7 @@ const cataclysm = new Effect(60 * 60, cataclysmArea * 13, e => {
   var endGrow = 25 * 60;
   var startShrink = 3450;
   var fslope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, endGrow) - Mathf.curve(e.time, startShrink, e.lifetime);
+  var fHalfSlope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, endGrow);
   var fin = Mathf.curve(e.time, 0, 60);
   
   var expand = Mathf.curve(e.time, 0, expandTime) - Mathf.curve(e.time, startShrink, e.lifetime);
@@ -133,23 +134,35 @@ const cataclysm = new Effect(60 * 60, cataclysmArea * 13, e => {
   Draw.color(Color.darkGray, Color.black, darkness);
   Draw.alpha(expand);
   Lines.stroke(24);
-  Lines.circle(e.x, e.y, expand * e.data);
-  Fill.circle(e.x, e.y, expand * e.data);
+  Lines.circle(e.x, e.y, expand * e.data[0]);
+  Fill.circle(e.x, e.y, expand * e.data[0]);
   
   e.scaled(expandTime, cons(s => {
     Draw.color(Color.black);
     Lines.stroke(s.fin() * 24);
-    Lines.circle(e.x, e.y, s.fin() * e.data);
+    Lines.circle(e.x, e.y, s.fin() * e.data[0]);
     Draw.reset();
   }))
   
-  Angles.randLenVectors(e.id, 500, interp.apply(fin) * (e.data + e.data / 3), (x, y) => {
+  Angles.randLenVectors(e.id, 480, interp.apply(fin) * (e.data[0] + e.data[0] / 3), (x, y) => {
     var size = fslope * 96;
     Draw.color(Color.black);
     Fill.circle(e.x + x, e.y + y, size / 2);
   });
   
-  var range = e.data * expand;
+  Angles.randLenVectors(e.id + 1, 10, interp.apply(fin) * (e.data[0] + e.data[0] / 3), (x, y) => {
+    var size = fslope * 96;
+    Draw.color(e.data[1], Color.black, fHalfSlope);
+    Fill.circle(e.x + x, e.y + y, size / 2);
+  });
+  
+  Angles.randLenVectors(e.id - 1, 10, interp.apply(fin) * (e.data[0] + e.data[0] / 3), (x, y) => {
+    var size = fslope * 96;
+    Draw.color(e.data[2], Color.black, fHalfSlope);
+    Fill.circle(e.x + x, e.y + y, size / 2);
+  });
+  
+  var range = e.data[0] * expand;
   Units.nearbyEnemies(null, e.x - range, e.y - range, range * 2, range * 2, unit => {
     if(unit.within(e.x, e.y, range)){
       unit.kill();
@@ -200,7 +213,7 @@ const ballOfSucc = extend(BasicBulletType, {
               
               if(Mathf.within(b.x, b.y, e.x, e.y, this.blackholeSize)){
                 if(e.type == b.type){
-                  this.ohnoEffect.at(b.x, b.y, Mathf.random(360), this.ohnoArea);
+                  this.ohnoEffect.at(b.x, b.y, Mathf.random(360), [this.ohnoArea, b.team.color, e.team.color]);
                   
                   Effect.shake(100, 500, b.x, b.y);
                   
