@@ -72,8 +72,8 @@ const p5 = new Vec2();
 const collide = new Vec2();
 const meter = new Vec2();
 
-hadron.buildType = () => {
-  var colliderEntity = extendContent(GenericCrafter.GenericCrafterBuild, hadron, {
+hadron.buildType = ent => {
+  ent = extendContent(GenericCrafter.GenericCrafterBuild, hadron, {
     setEff(){
       this._color = [Items.titanium.color, Items.thorium.color];
       this._length = [0, 0];
@@ -203,6 +203,6 @@ hadron.buildType = () => {
     }
   });
   
-  colliderEntity.setEff();
-  return colliderEntity;
+  ent.setEff();
+  return ent;
 };

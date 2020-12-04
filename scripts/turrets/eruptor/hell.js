@@ -167,8 +167,8 @@ const shootLoc = new Vec2();
 const fLib = this.global.pm.funcLib;
 var rots = [0, 90, 180, 270];
 
-hellRiser.buildType = () => {
-	var hellEntity = extendContent(PowerTurret.PowerTurretBuild, hellRiser, {
+hellRiser.buildType = ent => {
+	ent = extendContent(PowerTurret.PowerTurretBuild, hellRiser, {
     setEff(){
       this._bulletLife = 0;
       this._cellOpenAmounts = [0, 0];
@@ -314,11 +314,11 @@ hellRiser.buildType = () => {
         this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, hellRiser.rotationSpeed, hellRiser.rotationWindUp);
         this._bulletLife = this._bulletLife - Time.delta;
         
-        if(hellEntity.targetX.size >= 0){
-          for(var i = 0; i < hellEntity.targetX.size; i++){
+        if(this._targetX.size >= 0){
+          for(var i = 0; i < this._targetX.size; i++){
             for(var j = 0; j < 4; j++){
               shootLoc.trns(this.rotation - 90 + rots[j], hellRiser.size * 4 + this.recoil);
-              this._dists[j] = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
+              this._dists[j] = Mathf.dst(this.x + shootLoc.x, this.y + shootLoc.y, this._targetX.get(i), this._targetY.get(i));
             }
             var dist = 400;
             for(var j = 0; j < this._dists.length; j++){
@@ -330,7 +330,7 @@ hellRiser.buildType = () => {
             
             shootLoc.trns(this.rotation - 90 + rots[effectSide], hellRiser.size * 4 + this.recoil);
             
-            var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, hellEntity.targetX.get(i), hellEntity.targetY.get(i));
+            var ang = Angles.angle(this.x + shootLoc.x, this.y + shootLoc.y, this._targetX.get(i), this._targetY.get(i));
             
             targetLightning.at(this.x + shootLoc.x, this.y + shootLoc.y, ang, colors[2], [dist, 6, this.team]);
           }
@@ -356,30 +356,30 @@ hellRiser.buildType = () => {
       }
     },
     shoot(type){
-      hellEntity.targetX.clear();
-      hellEntity.targetY.clear();
+      this._targetX.clear();
+      this._targetY.clear();
       
       Units.nearbyEnemies(this.team, this.x - hellRiser.range, this.y - hellRiser.range, hellRiser.range * 2, hellRiser.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, hellRiser.range) && !e.dead){
-          if(hellEntity.targetX.size <= 1023){
-            hellEntity.targetX.add(e.x);
-            hellEntity.targetY.add(e.y);
+          if(this._targetX.size <= 1023){
+            this._targetX.add(e.x);
+            this._targetY.add(e.y);
           }
         }
       })
       
       fLib.trueEachBlock(this.x, this.y, hellRiser.range, build => {
         if(build.team != this.team && !build.dead && build.block != null){
-          if(hellEntity.targetX.size <= 1023){
-            hellEntity.targetX.add(build.x);
-            hellEntity.targetY.add(build.y);
+          if(this._targetX.size <= 1023){
+            this._targetX.add(build.x);
+            this._targetY.add(build.y);
           }
         }
       });
       
-      for(var i = 0; i < hellEntity.targetX.size; i++){
+      for(var i = 0; i < this._targetX.size; i++){
         if(i >= 0){
-          hellRiser.shootType.create(this, this.team, hellEntity.targetX.get(i), hellEntity.targetY.get(i), 0, 1, 1);
+          hellRiser.shootType.create(this, this.team, this._targetX.get(i), this._targetY.get(i), 0, 1, 1);
         }
       }
       
@@ -392,8 +392,8 @@ hellRiser.buildType = () => {
       return this._bulletLife > 0;
     }
 	});
-  hellEntity.targetX = new Seq(1023);
-  hellEntity.targetY = new Seq(1023);
-	hellEntity.setEff();
-	return hellEntity;
+  ent._targetX = new Seq(1023);
+  ent._targetY = new Seq(1023);
+	ent.setEff();
+	return ent;
 };

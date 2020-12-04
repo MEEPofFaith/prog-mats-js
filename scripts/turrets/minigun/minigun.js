@@ -116,8 +116,8 @@ minigun.ammo(
   Items.thorium, MiniThorium
 );
 
-minigun.buildType = () => {
-  var IEntity = extendContent(ItemTurret.ItemTurretBuild, minigun, {
+minigun.buildType = ent => {
+  ent = extendContent(ItemTurret.ItemTurretBuild, minigun, {
     setEffs(){
       this._barrelHeat = [0, 0, 0, 0];
       this._frame = 0;
@@ -216,6 +216,6 @@ minigun.buildType = () => {
     }
   });
   
-  IEntity.setEffs();
-  return IEntity;
+  ent.setEffs();
+  return ent;
 };

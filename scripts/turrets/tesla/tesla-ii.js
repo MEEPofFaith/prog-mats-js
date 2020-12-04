@@ -75,8 +75,8 @@ teslaCoil.shootEffect = Fx.sparkShoot;
 const shootLoc = new Vec2();
 const inacc = new Vec2();
 
-teslaCoil.buildType = () => {
-  var teslaCoilEntity = extendContent(PowerTurret.PowerTurretBuild, teslaCoil, {
+teslaCoil.buildType = ent => {
+  ent = extendContent(PowerTurret.PowerTurretBuild, teslaCoil, {
     setEff(){
       this._currentTarget = 0;
       this._shootAngle = 0;
@@ -84,14 +84,14 @@ teslaCoil.buildType = () => {
     },
     shoot(type){
       //I have ascended to stealing code from myself.
-      teslaCoilEntity.targetX.clear();
-      teslaCoilEntity.targetY.clear();
+      this._targetX.clear();
+      this._targetY.clear();
       
       Units.nearbyEnemies(this.team, this.x - teslaCoil.range, this.y - teslaCoil.range, teslaCoil.range * 2, teslaCoil.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, teslaCoil.range) && !e.dead){
-          if(teslaCoilEntity.targetX.size <= 255){
-            teslaCoilEntity.targetX.add(e.x);
-            teslaCoilEntity.targetY.add(e.y);
+          if(this._targetX.size <= 255){
+            this._targetX.add(e.x);
+            this._targetY.add(e.y);
           }
         };
       });
@@ -101,7 +101,7 @@ teslaCoil.buildType = () => {
       
       var tileRange = Mathf.floorPositive(teslaCoil.range / Vars.tilesize + 1);
       
-      teslaCoilEntity.targetBlocks.clear();
+      this._targetBlocks.clear();
       
       for(var x = -tileRange + tx; x <= tileRange + tx; x++){
         yGroup:
@@ -109,25 +109,25 @@ teslaCoil.buildType = () => {
           if(!Mathf.within(x * Vars.tilesize, y * Vars.tilesize, this.x, this.y, teslaCoil.range)) continue yGroup;
           var other = Vars.world.build(x, y);
           if(other == null) continue yGroup;
-          if(!teslaCoilEntity.targetBlocks.contains(other.pos())){
+          if(!this._targetBlocks.contains(other.pos())){
             if(other.team != this.team && !other.dead){
-              if(teslaCoilEntity.targetX.size <= 255){
-                teslaCoilEntity.targetX.add(other.x);
-                teslaCoilEntity.targetY.add(other.y);
+              if(this._targetX.size <= 255){
+                this._targetX.add(other.x);
+                this._targetY.add(other.y);
               }
             }
           };
         };
       };
       
-      if(teslaCoilEntity.targetX.size >= 0){
+      if(this._targetX.size >= 0){
         for(var i = 0; i < teslaCoil.shots; i++){
-          this._currentTarget = Mathf.floor(Mathf.random(teslaCoilEntity.targetX.size - 0.001));
+          this._currentTarget = Mathf.floor(Mathf.random(this._targetX.size - 0.001));
           inacc.trns(Mathf.random(360), 0, Mathf.range(teslaCoil.inaccuracy));
           if(this._currentTarget >= 0){
             this.heat = 1;
-            var targX = teslaCoilEntity.targetX.get(this._currentTarget) + inacc.x;
-            var targY = teslaCoilEntity.targetY.get(this._currentTarget) + inacc.y;
+            var targX = this._targetX.get(this._currentTarget) + inacc.x;
+            var targY = this._targetY.get(this._currentTarget) + inacc.y;
             
             var shootLocs = [2, 6];
             shootLoc.trns(Mathf.random(360), shootLocs[Mathf.round(Mathf.random(1))]);
@@ -154,9 +154,9 @@ teslaCoil.buildType = () => {
       return false;
     }
   });
-  teslaCoilEntity.targetX = new Seq(255);
-  teslaCoilEntity.targetY = new Seq(255);
-  teslaCoilEntity.targetBlocks = new Seq(255);
-  teslaCoilEntity.setEff();
-  return teslaCoilEntity;
+  ent._targetX = new Seq(255);
+  ent._targetY = new Seq(255);
+  ent._targetBlocks = new Seq(255);
+  ent.setEff();
+  return ent;
 };

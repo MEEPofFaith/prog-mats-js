@@ -118,8 +118,8 @@ quadMinigun.ammo(
   Items.thorium, MiniThorium
 );
 
-quadMinigun.buildType = () => {
-  var IVEntity = extendContent(ItemTurret.ItemTurretBuild, quadMinigun, {
+quadMinigun.buildType = ent => {
+  ent = extendContent(ItemTurret.ItemTurretBuild, quadMinigun, {
     setEffs(){
       this._barrelHeat = [0, 0, 0, 0];
       this._frame = 0;
@@ -246,6 +246,6 @@ quadMinigun.buildType = () => {
     }
   });
   
-  IVEntity.setEffs();
-  return IVEntity;
+  ent.setEffs();
+  return ent;
 };

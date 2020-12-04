@@ -154,8 +154,8 @@ chaosArray.heatDrawer = tile => {
 	Draw.color();
 };
 
-chaosArray.buildType = () => {
-	var chaosEntity = extendContent(PowerTurret.PowerTurretBuild, chaosArray, {
+chaosArray.buildType = ent => {
+	ent = extendContent(PowerTurret.PowerTurretBuild, chaosArray, {
     setEff(){
       this._bulletLife = 0;
     },
@@ -227,6 +227,6 @@ chaosArray.buildType = () => {
       type.create(this, this.team, this.x + this._shootLoc.x, this.y + this._shootLoc.y, angle);
     },
   });
-  chaosEntity._shootLoc = new Vec2();
-  return chaosEntity;
+  ent._shootLoc = new Vec2();
+  return ent;
 };

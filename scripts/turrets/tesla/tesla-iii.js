@@ -101,8 +101,8 @@ const shootLoc = new Vec2();
 const shootLoc2 = new Vec2();
 const inacc = new Vec2();
 
-teslaStorm.buildType = () => {
-  var teslaStormEntity = extendContent(PowerTurret.PowerTurretBuild, teslaStorm, {
+teslaStorm.buildType = ent => {
+  ent = extendContent(PowerTurret.PowerTurretBuild, teslaStorm, {
     setEff(){
       this._currentTarget = 0;
       this._shootAngle = 0;
@@ -152,14 +152,14 @@ teslaStorm.buildType = () => {
     },
     shoot(type){
       //I have ascended to stealing code from myself.
-      teslaStormEntity.targetX.clear();
-      teslaStormEntity.targetY.clear();
+      this._targetX.clear();
+      this._targetY.clear();
       
       Units.nearbyEnemies(this.team, this.x - teslaStorm.range, this.y - teslaStorm.range, teslaStorm.range * 2, teslaStorm.range * 2, e => {
 				if(Mathf.within(this.x, this.y, e.x, e.y, teslaStorm.range) && !e.dead){
-          if(teslaStormEntity.targetX.size <= 511){
-            teslaStormEntity.targetX.add(e.x);
-            teslaStormEntity.targetY.add(e.y);
+          if(this._targetX.size <= 511){
+            this._targetX.add(e.x);
+            this._targetY.add(e.y);
           }
         };
       });
@@ -169,7 +169,7 @@ teslaStorm.buildType = () => {
       
       var tileRange = Mathf.floorPositive(teslaStorm.range / Vars.tilesize + 1);
       
-      teslaStormEntity.targetBlocks.clear();
+      this._targetBlocks.clear();
       
       for(var x = -tileRange + tx; x <= tileRange + tx; x++){
         yGroup:
@@ -177,25 +177,25 @@ teslaStorm.buildType = () => {
           if(!Mathf.within(x * Vars.tilesize, y * Vars.tilesize, this.x, this.y, teslaStorm.range)) continue yGroup;
           var other = Vars.world.build(x, y);
           if(other == null) continue yGroup;
-          if(!teslaStormEntity.targetBlocks.contains(other.pos())){
+          if(!this._targetBlocks.contains(other.pos())){
             if(other.team != this.team && !other.dead){
-              if(teslaStormEntity.targetX.size <= 511){
-                teslaStormEntity.targetX.add(other.x);
-                teslaStormEntity.targetY.add(other.y);
+              if(this._targetX.size <= 511){
+                this._targetX.add(other.x);
+                this._targetY.add(other.y);
               }
             }
           };
         };
       };
       
-      if(teslaStormEntity.targetX.size >= 0){
+      if(this._targetX.size >= 0){
         for(var i = 0; i < teslaStorm.shots; i++){
-          this._currentTarget = Mathf.floor(Mathf.random(teslaStormEntity.targetX.size - 0.001));
+          this._currentTarget = Mathf.floor(Mathf.random(this._targetX.size - 0.001));
           inacc.trns(Mathf.random(360), 0, Mathf.range(teslaStorm.inaccuracy));
           if(this._currentTarget >= 0){
             this.heat = 1;
-            var targX = teslaStormEntity.targetX.get(this._currentTarget) + inacc.x;
-            var targY = teslaStormEntity.targetY.get(this._currentTarget) + inacc.y;
+            var targX = this._targetX.get(this._currentTarget) + inacc.x;
+            var targY = this._targetY.get(this._currentTarget) + inacc.y;
             
             var shootLocs = [0, 3.25, 6.75, 10.75, 11.25];
             var shotsection = Mathf.floor(Mathf.random(4.999));
@@ -237,9 +237,9 @@ teslaStorm.buildType = () => {
       return false;
     }
   });
-  teslaStormEntity.targetX = new Seq(511);
-  teslaStormEntity.targetY = new Seq(511);
-  teslaStormEntity.targetBlocks = new Seq(511);
-  teslaStormEntity.setEff();
-  return teslaStormEntity;
+  ent._targetX = new Seq(511);
+  ent._targetY = new Seq(511);
+  ent._targetBlocks = new Seq(511);
+  ent.setEff();
+  return ent;
 };

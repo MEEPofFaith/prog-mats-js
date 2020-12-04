@@ -161,8 +161,8 @@ lavaRiser.heatColor = Color.valueOf("f08913");
 
 const shootLoc = new Vec2();
 
-lavaRiser.buildType = () => {
-	var eruptEntity = extendContent(PowerTurret.PowerTurretBuild, lavaRiser, {
+lavaRiser.buildType = ent => {
+	ent = extendContent(PowerTurret.PowerTurretBuild, lavaRiser, {
     setEff(){
       this._bullet = null;
       this._bulletLife = 0;
@@ -296,6 +296,6 @@ lavaRiser.buildType = () => {
       return this._bulletLife > 0 && this._bullet != null;
     }
 	});
-	eruptEntity.setEff();
-	return eruptEntity;
+	ent.setEff();
+	return ent;
 };

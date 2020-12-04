@@ -116,8 +116,8 @@ dualMinigun.ammo(
   Items.thorium, MiniThorium
 );
 
-dualMinigun.buildType = () => {
-  var IIEntity = extendContent(ItemTurret.ItemTurretBuild, dualMinigun, {
+dualMinigun.buildType = ent => {
+  ent = extendContent(ItemTurret.ItemTurretBuild, dualMinigun, {
     setEffs(){
       this._barrelHeat = [0, 0, 0, 0];
       this._frame = 0;
@@ -243,6 +243,6 @@ dualMinigun.buildType = () => {
     }
   });
   
-  IIEntity.setEffs();
-  return IIEntity;
+  ent.setEffs();
+  return ent;
 };

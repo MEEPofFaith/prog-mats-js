@@ -164,8 +164,8 @@ magmaRiser.heatColor = Color.valueOf("f08913");
 
 const shootLoc = new Vec2();
 
-magmaRiser.buildType = () => {
-	var magmaEntity = extendContent(PowerTurret.PowerTurretBuild, magmaRiser, {
+magmaRiser.buildType = ent => {
+	ent = extendContent(PowerTurret.PowerTurretBuild, magmaRiser, {
 		setEff(){
 			this._bullet = null;
 			this._bulletLife = 0;
@@ -331,6 +331,6 @@ magmaRiser.buildType = () => {
       return this._bulletLife > 0 && this._bullet != null;
     }
 	});
-	magmaEntity.setEff();
-	return magmaEntity;
+	ent.setEff();
+	return ent;
 };

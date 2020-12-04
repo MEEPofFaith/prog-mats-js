@@ -69,8 +69,8 @@ kugelblitz.heatDrawer = tile => {
 
 const spaceColor = new Color.valueOf("140017");
 
-kugelblitz.buildType = () => {
-  var succEntity = extendContent(PowerTurret.PowerTurretBuild, kugelblitz, {
+kugelblitz.buildType = ent => {
+  ent = extendContent(PowerTurret.PowerTurretBuild, kugelblitz, {
     setEff(){
       this._spaceAlpha = 0;
     },
@@ -113,8 +113,8 @@ kugelblitz.buildType = () => {
       }));
     }
   });
-  succEntity.shootLoc = new Vec2();
-  succEntity.setEff();
+  ent.shootLoc = new Vec2();
+  ent.setEff();
   
-  return succEntity;
+  return ent;
 };
