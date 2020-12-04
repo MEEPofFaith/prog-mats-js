@@ -83,8 +83,6 @@ kugelblitz.buildType = () => {
       Draw.color(spaceColor.cpy().shiftHue(Time.time / 2).shiftValue(Mathf.absin(Time.time, 4, 0.15)));
       Draw.alpha(this._spaceAlpha);
       Draw.rect(kugelblitz.spaceRegion, Tmp.v1.x, Tmp.v1.y, this.rotation - 90);
-      Draw.z(Layer.effect);
-      Draw.rect(kugelblitz.spaceRegion, Tmp.v1.x, Tmp.v1.y, this.rotation - 90);
       Draw.reset();
     },
     updateTile(){
