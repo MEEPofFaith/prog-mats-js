@@ -191,7 +191,7 @@ module.exports = {
       var succRange = e.data[0][0] * e.data[0][2] * expand;
       Units.nearbyEnemies(null, e.x - succRange, e.y - succRange, succRange * 2, succRange * 2, cons(unit => {
         if(unit.within(e.x, e.y, succRange)){
-          unit.impulse(Tmp.v1.set(e.x, e.y).sub(unit).limit((e.data[2][0] + (1 - unit.dst(e.x, e.y) / succRange) * e.data[2][1]) * succMul));
+          unit.impulse(Tmp.v1.set(e.x, e.y).sub(unit).limit((e.data[2][0] + Interp.pow3In.apply(1 - (unit.dst(e.x, e.y) - range) / succRange) * e.data[2][1]) * succMul));
         };
       }));
       
@@ -199,7 +199,7 @@ module.exports = {
         if(b != null){
           if(Mathf.within(e.x, e.y, b.x, b.y, succRange) && b.type.speed >= 0.1){
             var dist = Mathf.dst(e.x, e.y, b.x, b.y);
-            var strength = e.data[2][2] * succMul - (dist / succRange) * e.data[2][3] * succMul;
+            var strength = e.data[2][2] * succMul - Interp.pow3Out.apply((dist - range) / succRange) * e.data[2][3] * succMul;
             
             b.rotation(Mathf.slerpDelta(b.rotation(), b.angleTo(e.x, e.y), strength));
             
@@ -239,7 +239,7 @@ module.exports = {
             //Adapted from Graviton from AdvanceContent, translated to v6 by me.
             Units.nearbyEnemies(b.team, b.x - this.succRadius, b.y - this.succRadius, this.succRadius * 2, this.succRadius * 2, cons(unit => {
               if(unit.within(b.x, b.y, this.succRadius)){
-                unit.impulse(Tmp.v1.set(b).sub(unit).limit((this.force + (1 - unit.dst(b) / this.succRadius) * this.scaledForce)));
+                unit.impulse(Tmp.v1.set(b).sub(unit).limit((this.force + Interp.pow3In.apply(1 - (unit.dst(b) - this.blackholeSize) / this.succRadius) * this.scaledForce)));
               };
             }));
             
@@ -248,7 +248,7 @@ module.exports = {
               if(e != null){
                 if(Mathf.within(b.x, b.y, e.x, e.y, this.succRadius) && e != b && e.team != b.team && e.type.speed >= 0.1){
                   var dist = Mathf.dst(b.x, b.y, e.x, e.y);
-                  var strength = this.bulletForce - (dist / this.succRadius) * this.bulletForceReduction;
+                  var strength = this.bulletForce - Interp.pow3Out.apply((dist - this.blackholeSize) / this.succRadius) * this.bulletForceReduction;
                   
                   e.rotation(Mathf.slerpDelta(e.rotation(), e.angleTo(b), strength));
                   
@@ -331,10 +331,10 @@ module.exports = {
     blackHole.force = 35;
     blackHole.scaledForce = 480;
 
-    blackHole.bulletForce = 0.8;
-    blackHole.bulletForceReduction = 0.6;
+    blackHole.bulletForce = 0.5;
+    blackHole.bulletForceReduction = 0.5;
     
-    blackHole.cataclysmForceMul = 2;
+    blackHole.cataclysmForceMul = 1;
     blackHole.cataclysmRangeMul = 1.5;
 
     blackHole.hittable = false;
