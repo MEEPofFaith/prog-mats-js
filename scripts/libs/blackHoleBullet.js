@@ -35,6 +35,10 @@ module.exports = {
       b.damage = 0;
       b.type.speed = 0;
       
+      if(b.type instanceof MassDriverBolt){
+        b.data = "nein";
+      }
+      
       b.remove();
       
       b.type.hitEffect = bData[0];
@@ -113,6 +117,12 @@ module.exports = {
         Draw.color(Color.black);
         Draw.alpha(e.fout());
         Draw.rect(e.data[0][2], e.x, e.y, e.data[0][1][0], e.data[0][1][1], e.rotation + e.data[0][1][2]);
+
+        Draw.reset();
+      }else if(e.data[0][3] instanceof MassDriverBolt){
+        Draw.color(Color.black);
+        Draw.alpha(e.fout());
+        Draw.rect(Core.atlas.find("shell-back"), e.x, e.y, 11, 13, e.rotation + 90);
 
         Draw.reset();
       }
@@ -243,7 +253,7 @@ module.exports = {
                   e.rotation(Mathf.slerpDelta(e.rotation(), e.angleTo(b), strength));
                   
                   if(Mathf.within(b.x, b.y, e.x, e.y, this.blackholeSize)){
-                    if(e.data != null){
+                    if(e.data != null && e.data.length > 0 && !(e.type instanceof MassDriverBolt)){
                       if(b.data[0] == e.data[0]){
                         var radius = (b.data[1] + e.data[1]) * 8;
                         var cSuccPower = (b.data[2] + e.data[2]) / 2;
