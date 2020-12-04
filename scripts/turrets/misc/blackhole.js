@@ -83,6 +83,8 @@ kugelblitz.buildType = () => {
       Draw.color(spaceColor.cpy().shiftHue(Time.time / 2).shiftValue(Mathf.absin(Time.time, 4, 0.15)));
       Draw.alpha(this._spaceAlpha);
       Draw.rect(kugelblitz.spaceRegion, Tmp.v1.x, Tmp.v1.y, this.rotation - 90);
+      Draw.z(Layer.effect);
+      Draw.rect(kugelblitz.spaceRegion, Tmp.v1.x, Tmp.v1.y, this.rotation - 90);
       Draw.reset();
     },
     updateTile(){
@@ -105,6 +107,7 @@ kugelblitz.buildType = () => {
       this.charging = true;
 
       Time.run(kugelblitz.chargeTime, run(() => {
+        if(!this.isValid()) return;
         this.recoil = kugelblitz.recoilAmount;
         this.heat = 1;
         type.create(this, this.team, this.x + this.shootLoc.x, this.y + this.shootLoc.y, this.rotation, 1, 1);

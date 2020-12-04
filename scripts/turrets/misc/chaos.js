@@ -154,8 +154,6 @@ chaosArray.heatDrawer = tile => {
 	Draw.color();
 };
 
-const shootLoc = new Vec2();
-
 chaosArray.buildType = () => {
 	var chaosEntity = extendContent(PowerTurret.PowerTurretBuild, chaosArray, {
     setEff(){
@@ -166,7 +164,7 @@ chaosArray.buildType = () => {
     },
     updateTile(){
       this.super$updateTile();
-      shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
+      this._shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
       
       if(this._bulletLife > 0){
         this.heat = 1;
@@ -176,7 +174,7 @@ chaosArray.buildType = () => {
         if(this._bulletLife <= 0){
           this.charging = false;
         }
-      }else if(this.reload >= 0 && !this.charging){
+      }else if(this.reload >= 0 && !this.charging && this.cons.valid()){
         const liquid = this.liquids.current();
         var maxUsed = chaosArray.consumes.get(ConsumeType.liquid).amount;
 
@@ -206,28 +204,29 @@ chaosArray.buildType = () => {
       this.useAmmo();
       this.charging = true;
       
-      shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
-      chaosArray.chargeBeginEffect.at(this.x + shootLoc.x, this.y + shootLoc.y, Mathf.random(360), [this.team]);
-      chaosArray.chargeSound.at(this.x + shootLoc.x, this.y + shootLoc.y, 1);
+      this._shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
+      chaosArray.chargeBeginEffect.at(this.x + this._shootLoc.x, this.y + this._shootLoc.y, Mathf.random(360), [this.team]);
+      chaosArray.chargeSound.at(this.x + this._shootLoc.x, this.y + this._shootLoc.y, 1);
 
       Time.run(chaosArray.chargeTime, run(() => {
+        if(!this.isValid()) return;
         this.recoil = chaosArray.recoilAmount;
         this.heat = 1;
         this._bulletLife = chaosArray.shootDuration;
         for(var i = 0; i < chaosArray.shots; i++){
-          shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
+          this._shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil + chaosArray.shootY);
           this.bullet(ammo, this.rotation + Mathf.range(chaosArray.inaccuracy));
-          chaosArray.shootSound.at(this.x + shootLoc.x, this.y + shootLoc.y, 1);
+          chaosArray.shootSound.at(this.x + this._shootLoc.x, this.y + this._shootLoc.y, 1);
           Effect.shake(chaosArray.shootShake, chaosArray.shootShake, this);
         };
       }));
     },
     bullet(type, angle){
-      shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil);
+      this._shootLoc.trns(this.rotation, chaosArray.size * 4 - this.recoil);
       
-      type.create(this, this.team, this.x + shootLoc.x, this.y + shootLoc.y, angle);
+      type.create(this, this.team, this.x + this._shootLoc.x, this.y + this._shootLoc.y, angle);
     },
   });
-  
+  chaosEntity._shootLoc = new Vec2();
   return chaosEntity;
 };
