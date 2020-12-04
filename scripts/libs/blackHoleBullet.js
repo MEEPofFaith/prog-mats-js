@@ -8,20 +8,32 @@ module.exports = {
       var bOffset = -90 + (b.type.spin != 0 ? Mathf.randomSeed(b.id, 360) + b.time * b.type.spin : 0);
       var artilleryScale = 0.7 + b.fslope() * 0.3
       var shape = [bWidth, bHeight, bOffset, artilleryScale];
-      var baseShape = [b.type.width, b.type.height, b.type.hitSize, (b.type.width + b.type.height) / 2];
+      var baseShape = [b.type.width, b.type.height, (bWidth + bHeight) / 2];
       
-      var bullData = [baseShape, shape, b.type.backRegion, b.type];
+      if(b.type instanceof ContinuousLaserBulletType){
+        var fout = 1 - Mathf.curve(b.time, b.lifetime - b.type.fadeTime, b.lifetime);
+        var lWidth = (b.type.width + Mathf.absin(Time.time, b.type.oscScl, b.type.oscMag)) * fout;
+        var lLengh = Damage.findLaserLength(b, b.type.length) * fout;
+        
+        baseShape[2] = lLengh;
+        var laserData = [lLengh, lWidth, b.type.spaceMag, b.type.tscales, b.type.lenscales, b.type.colors, b.type.strokes];
+      }else{
+        var laserData = null;
+      }
       
-      succEffect.at(b.x, b.y, b.rotation(), bullData);
+      var bulData = [baseShape, shape, b.type.backRegion, b.type];
       
-      const bData = [b.type.hitEffect, b.type.despawnEffect, b.type.hitSound, b.type.despawnShake, b.type.fragBullet, b.type.splashDamageRadius, b.type.damage];
+      succEffect.at(b.x, b.y, b.rotation(), [bulData, laserData]);
+      
+      const bData = [b.type.hitEffect, b.type.despawnEffect, b.type.hitSound, b.type.despawnShake, b.type.fragBullet, b.type.splashDamageRadius, b.type.speed];
       b.type.hitEffect = Fx.none;
       b.type.despawnEffect = Fx.none;
       b.type.hitSound = Sounds.none;
       b.type.despawnShake = 0;
       b.type.fragBullet = null;
       b.type.splashDamageRadius = -1;
-      b.type.damage = 0;
+      b.damage = 0;
+      b.type.speed = 0;
       
       b.remove();
       
@@ -31,7 +43,7 @@ module.exports = {
       b.type.despawnShake = bData[3];
       b.type.fragBullet = bData[4];
       b.type.splashDamageRadius = bData[5];
-      b.type.damage = bData[6];
+      b.type.speed = bData[6];
     };
 
     const swirl = new Effect(90, e => {
@@ -69,33 +81,43 @@ module.exports = {
       e.scaled(8, cons(s => {
         Draw.color(Color.black);
         Lines.stroke(Interp.pow2Out.apply(s.fout()));
-        Lines.circle(e.x, e.y, Interp.pow2Out.apply(s.fout()) * e.data[0][3]);
+        Lines.circle(e.x, e.y, Interp.pow2Out.apply(s.fout()) * e.data[0][0][2]);
         Draw.reset();
       }))
       
-      if(e.data[3] instanceof BasicBulletType){
-        if(e.data[3] instanceof LaserBoltBulletType){
-          Draw.color(Color.black);
+      if(e.data[0][3] instanceof ContinuousLaserBulletType){
+        for(var s = 0; s < e.data[1][5].length; s++){
+          Draw.color(Tmp.c1.set(e.data[1][5][s]).mul(1 + Mathf.absin(Time.time, 1, 0.1)).shiftValue(-1));
           Draw.alpha(e.fout());
-          Lines.stroke(e.data[0][0]);
-          Lines.lineAngleCenter(e.x, e.y, e.rotation - 90, e.data[0][1]);
-
-          Draw.reset();
-        }else if(e.data[3] instanceof ArtilleryBulletType){
-          Draw.color(Color.black);
-          Draw.alpha(e.fout());
-          Draw.rect(e.data[2], e.x, e.y, e.data[1][0] * e.data[1][3], e.data[1][1] * e.data[1][3], e.rotation - 90);
-
-          Draw.reset();
-        }else{
-          Draw.color(Color.black);
-          Draw.alpha(e.fout());
-          Draw.rect(e.data[2], e.x, e.y, e.data[1][0], e.data[1][1], e.rotation + e.data[1][2]);
-
-          Draw.reset();
+          for(var i = 0; i < e.data[1][3].length; i++){
+            Tmp.v1.trns(e.rotation + 180, (e.data[1][4][i] - 1) * e.data[1][2]);
+            Lines.stroke(e.data[1][1] * e.data[1][6][s] * e.data[1][3][i]);
+            Lines.lineAngle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.rotation, e.data[1][0] * e.data[1][4][i], false);
+          }
         }
+        Draw.reset();
+      }else if(e.data[0][3] instanceof LaserBoltBulletType){  
+        Draw.color(Color.black);
+        Draw.alpha(e.fout());
+        Lines.stroke(e.data[0][0][0]);
+        Lines.lineAngleCenter(e.x, e.y, e.rotation - 90, e.data[0][0][1]);
+
+        Draw.reset();
+      }else if(e.data[0][3] instanceof ArtilleryBulletType){
+        Draw.color(Color.black);
+        Draw.alpha(e.fout());
+        Draw.rect(e.data[0][2], e.x, e.y, e.data[0][1][0] * e.data[0][1][3], e.data[0][1][1] * e.data[0][1][3], e.rotation - 90);
+
+        Draw.reset();
+      }else if(e.data[0][3] instanceof BasicBulletType){
+        Draw.color(Color.black);
+        Draw.alpha(e.fout());
+        Draw.rect(e.data[0][2], e.x, e.y, e.data[0][1][0], e.data[0][1][1], e.rotation + e.data[0][1][2]);
+
+        Draw.reset();
       }
     });
+    bulletDissapear.layer = Layer.bullet;
     
     const cataclysm = new Effect(60 * 60, 8000, e => {
       var expandTime = 15;
