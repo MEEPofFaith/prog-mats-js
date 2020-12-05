@@ -1,4 +1,4 @@
-//Don't ask where I stol-copied this code from.
+//mmm yes script loader stolen from Project Unity
 global.pm = {};
 const loadFile = (prev, array) => {
   var results = [];
@@ -35,36 +35,45 @@ const loadFile = (prev, array) => {
 const script = [
   {
     name: "libs",
-    childs: ["funcLib", "blackHoleBullet"]
+    childs: ["funcLib", "blackHoleBullet", "multiTurret"]
   },
   {
-    name: "turrets",
-    childs: [
+    name:"progressed",
+    childs:[
       {
-        name: "eruptor",
-        childs: ["eruptor", "magmator", "hell"]
+        name: "turrets",
+        childs:[
+          {
+            name: "eruptor",
+            childs: ["eruptor", "magmator", "hell"]
+          },
+          {
+            name: "minigun",
+            childs: ["minigun", "miinigun", "mivnigun"]
+          },
+          {
+            name: "tesla",
+            childs: ["tesla-i", "tesla-ii", "tesla-iii"]
+          },
+          {
+            name: "misc",
+            childs: ["blackhole", "chaos"]
+          },
+          {
+            name: "multi",
+            childs: ["multi-i"]
+          }
+        ]
       },
       {
-        name: "minigun",
-        childs: ["minigun", "miinigun", "mivnigun"]
+        name: "production",
+        childs: ["hadron"]
       },
       {
-        name: "tesla",
-        childs: ["tesla-i", "tesla-ii", "tesla-iii"]
-      },
-      {
-        name: "misc",
-        childs: ["blackhole", "chaos"]
+        name: "liquids",
+        childs: ["magma"]
       }
     ]
-  },
-  {
-    name: "production",
-    childs: ["hadron"]
-  },
-  {
-    name: "liquids",
-    childs: ["magma"]
   }
 ];
 
