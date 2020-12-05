@@ -25,12 +25,11 @@ module.exports = {
       
       succEffect.at(b.x, b.y, b.rotation(), [bulData, laserData]);
       
-      const bData = [b.type.hitEffect, b.type.despawnEffect, b.type.hitSound, b.type.despawnShake, b.type.fragBullet, b.type.splashDamageRadius, b.type.speed];
+      const bData = [b.type.hitEffect, b.type.despawnEffect, b.type.hitSound, b.type.despawnShake, b.type.splashDamageRadius, b.type.speed];
       b.type.hitEffect = Fx.none;
       b.type.despawnEffect = Fx.none;
       b.type.hitSound = Sounds.none;
       b.type.despawnShake = 0;
-      b.type.fragBullet = null;
       b.type.splashDamageRadius = -1;
       b.damage = 0;
       b.type.speed = 0;
@@ -45,9 +44,8 @@ module.exports = {
       b.type.despawnEffect = bData[1];
       b.type.hitSound = bData[2];
       b.type.despawnShake = bData[3];
-      b.type.fragBullet = bData[4];
-      b.type.splashDamageRadius = bData[5];
-      b.type.speed = bData[6];
+      b.type.splashDamageRadius = bData[4];
+      b.type.speed = bData[5];
     };
 
     const swirl = new Effect(90, e => {
@@ -55,9 +53,9 @@ module.exports = {
       Tmp.v1.trns(e.rotation + (e.data[1][1] * e.fin()), e.data[1][0] / 2 * e.fout());
       
       Draw.color(Color.valueOf("000000"));
-      Fill.circle(e.data[0].x + Tmp.v1.x , e.data[0].y + Tmp.v1.y, 2 * e.fout());
+      Fill.circle(e.data[0].x + Tmp.v1.x , e.data[0].y + Tmp.v1.y, e.data[2] * e.fout());
       
-      Drawf.light(e.data[0].x + Tmp.v1.x , e.data[0].y + Tmp.v1.y, (2 + horizonRad) * e.fout(), horizonColor, 0.7);
+      Drawf.light(e.data[0].x + Tmp.v1.x , e.data[0].y + Tmp.v1.y, (e.data[2] + horizonRad) * e.fout(), horizonColor, 0.7);
       Draw.reset();
     });
     swirl.layer = Layer.bullet;
@@ -128,6 +126,19 @@ module.exports = {
       }
     });
     bulletDissapear.layer = Layer.bullet;
+    
+    //haha more stealing from Project Unity
+    const absorb = new Effect(15, 512, e => {
+      Draw.color(Color.black, e.fout());
+      Draw.blend(Blending.additive);
+      Tmp.v1.trns(e.rotation, 0, e.data[1] * e.fout());
+      Tmp.v1.add(e.x, e.y);
+      
+      fLib.simpleUnitDrawer(e.data[0], false, Tmp.v1.x, Tmp.v1.y, e.fout());
+      
+      Draw.blend();
+      Draw.color();
+    });
     
     const cataclysm = new Effect(60 * 60, 8000, e => {
       var expandTime = 15;
@@ -230,29 +241,29 @@ module.exports = {
       init(b){
         if(!b) return;
         this.super$init(b);
-        
-        b.data = ["haha cataclysm go brrr", this.cataclysmRadius, this.force, this.scaledForce, this.bulletForce, this.bulletForceReduction, this.cataclysmForceMul, this.cataclysmRangeMul];
+        var radii = [this.succRadius, this.blackholeSize, this.damageRadius, this.swirlSize, this.buildingDamageTicks];
+        b.data = ["haha cataclysm go brrr", this.cataclysmRadius, this.force, this.scaledForce, this.bulletForce, this.bulletForceReduction, radii, this.cataclysmForceMul, this.cataclysmRangeMul];
       },
       update(b){
         if(b != null){
           if(b.timer.get(1, 2)){
             //Adapted from Graviton from AdvanceContent, translated to v6 by me.
-            Units.nearbyEnemies(b.team, b.x - this.succRadius, b.y - this.succRadius, this.succRadius * 2, this.succRadius * 2, cons(unit => {
-              if(unit.within(b.x, b.y, this.succRadius)){
-                unit.impulse(Tmp.v1.set(b).sub(unit).limit((this.force + Interp.pow3In.apply(1 - (unit.dst(b) - this.blackholeSize) / this.succRadius) * this.scaledForce)));
+            Units.nearbyEnemies(b.team, b.x - b.data[6][0], b.y - b.data[6][0], b.data[6][0] * 2, b.data[6][0] * 2, cons(unit => {
+              if(unit.within(b.x, b.y, b.data[6][0])){
+                unit.impulse(Tmp.v1.set(b).sub(unit).limit((b.data[2] + Interp.pow3In.apply(1 - (unit.dst(b) - b.data[6][1]) / b.data[6][0]) * b.data[3])));
               };
             }));
             
             //Adapted from Point Defence from AdvanceContent, translated to v6 by me.
-            Groups.bullet.intersect(b.x - this.succRadius, b.y - this.succRadius, this.succRadius * 2, this.succRadius * 2, cons(e => {
+            Groups.bullet.intersect(b.x - b.data[6][0], b.y - b.data[6][0], b.data[6][0] * 2, b.data[6][0] * 2, cons(e => {
               if(e != null){
-                if(Mathf.within(b.x, b.y, e.x, e.y, this.succRadius) && e != b && e.team != b.team && e.type.speed >= 0.1){
+                if(Mathf.within(b.x, b.y, e.x, e.y, b.data[6][0]) && e != b && e.team != b.team && e.type.speed >= 0.1){
                   var dist = Mathf.dst(b.x, b.y, e.x, e.y);
-                  var strength = this.bulletForce - Interp.pow3Out.apply((dist - this.blackholeSize) / this.succRadius) * this.bulletForceReduction;
+                  var strength = b.data[4] - Interp.pow3Out.apply((dist - b.data[6][1]) / b.data[6][0]) * b.data[5];
                   
                   e.rotation(Mathf.slerpDelta(e.rotation(), e.angleTo(b), strength));
                   
-                  if(Mathf.within(b.x, b.y, e.x, e.y, this.blackholeSize)){
+                  if(Mathf.within(b.x, b.y, e.x, e.y, b.data[6][1])){
                     if(e.data != null && e.data.length > 0 && !(e.type instanceof MassDriverBolt)){
                       if(b.data[0] == e.data[0]){
                         var radius = (b.data[1] + e.data[1]) * 8;
@@ -260,8 +271,8 @@ module.exports = {
                         var cSuccSlcPower = (b.data[3] + e.data[3]) / 2;
                         var cBulletPower = (b.data[4] + e.data[4]) / 2;
                         var cBulletPowerRed = (b.data[5] + e.data[5]) / 2;
-                        var cSuccPowerMul = (b.data[6] + e.data[6]) / 2;
-                        var cSuccRangeMul = (b.data[7] + e.data[7]) / 2;
+                        var cSuccPowerMul = (b.data[7] + e.data[7]) / 2;
+                        var cSuccRangeMul = (b.data[8] + e.data[8]) / 2;
                         
                         var cForce = [cSuccPower, cSuccSlcPower, cBulletPower, cBulletPowerRed]
                         
@@ -276,45 +287,79 @@ module.exports = {
                         clearBullet(b, Fx.none);
                       }else{
                         clearBullet(e, this.succEffect);
+                        b.damage += fLib.bulletDamage(e.type) * e.damageMultiplier();
                       }
                     }else{
                       clearBullet(e, this.succEffect);
+                      b.damage += fLib.bulletDamage(e.type) * e.damageMultiplier();
                     }
                   }
                 }
               }
             }));
             
-            Damage.damage(b.team, b.x, b.y, 24, this.damage, true);
+            Units.nearbyEnemies(b.team, b.x - b.data[6][2], b.y - b.data[6][2], b.data[6][2] * 2, b.data[6][2] * 2, cons(unit => {
+              if(unit.within(b.x, b.y, b.data[6][2])){
+                var interp = Interp.pow3In.apply(1 - (unit.dst(b) - b.data[6][1]) / b.data[6][0]);
+                var dealt = b.damage * interp;
+                unit.damage(dealt);
+                b.damage += dealt * this.damageIncreasePercent * b.damageMultiplier();
+                absorb.at(b.x, b.y, Angles.angle(b.x, b.y, unit.x, unit.y), [unit, Mathf.dst(b.x, b.y, unit.x, unit.y)]);
+                for(var i = 2; i < 6; i++){
+                  b.data[i] += b.data[i] * this.strengthIncreasePercent * interp;
+                }
+                for(var i = 0; i < 5; i++){
+                  b.data[6][i] += b.data[6][i] * this.strengthIncreasePercent * interp;
+                }
+              };
+            }));
             
             var dist = (this.lifetime - b.time) * this.speed;
             var endX = Mathf.sinDeg(b.rotation() + 90) * dist;
             var endY = Mathf.cosDeg(b.rotation() - 90) * dist;
             
             if(b.time <= this.lifetime - 90){
-              swirl.at(b.x, b.y, Mathf.random(360), [b, [this.succRadius, this.swirlAngle]]);
+              swirl.at(b.x, b.y, Mathf.random(360), [b, [b.data[6][0], this.swirlAngle], b.data[6][3]]);
             }
           }
+          
+          Vars.world.raycastEach(Vars.world.toTile(b.lastX), Vars.world.toTile(b.lastY), b.tileX(), b.tileY(), (x, y) => {
+            const tile = Vars.world.build(x, y);
+            if(tile == null) return;
+            if(tile.collide(b) && !tile.dead && tile.team != b.team){
+              this.hitTile(b, tile, tile.health, true);
+            }
+          });
         }
       },
       draw(b){
         Draw.z(Layer.bullet + 0.5);
         Draw.color(Color.black);
-        Draw.rect(this.backRegion, b.x, b.y, this.blackholeSize, this.blackholeSize, 0);
+        Draw.rect(this.backRegion, b.x, b.y, b.data[6][1], b.data[6][1], 0);
         
         Draw.color(b.team.color);
         var f = Mathf.floor(b.time/5) % 3;
-        Draw.rect(this.front[f], b.x, b.y, this.blackholeSize, this.blackholeSize,  0);
+        Draw.rect(this.front[f], b.x, b.y, b.data[6][1], b.data[6][1],  0);
       },
       despawned(b){
         this.despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
+      },
+      hitTile(b, build, initialHealth, direct){
+        if(build.team != b.team && direct){
+          build.damage(b.damage * b.data[6][4]);
+          this.hitEffect.at(b.x, b.y, b.rotation(), b.team.color);
+          b.remove();
+        }
       }
     });
     blackHole.damage = 575 / 30;
+    blackHole.buildingDamageTicks = 10;
+    blackHole.damageIncreasePercent = 0.005;
+    blackHole.strengthIncreasePercent = 0.005;
+    
     blackHole.speed = 0.5;
-    blackHole.lifetime = 384;
+    blackHole.lifetime = 420;
     blackHole.collides = false;
-    blackHole.collidesTiles = false;
     blackHole.hitEffect = Fx.none;
     blackHole.despawnEffect = poof;
     blackHole.succEffect = bulletDissapear;
@@ -326,10 +371,12 @@ module.exports = {
 
     blackHole.succRadius = 64;
     blackHole.blackholeSize = size;
+    blackHole.damageRadius = 24;
     blackHole.swirlAngle = 480;
+    blackHole.swirlSize = 2;
 
     blackHole.force = 35;
-    blackHole.scaledForce = 480;
+    blackHole.scaledForce = 500;
 
     blackHole.bulletForce = 0.5;
     blackHole.bulletForceReduction = 0.5;

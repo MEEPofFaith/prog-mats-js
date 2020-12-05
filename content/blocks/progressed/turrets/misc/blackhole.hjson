@@ -8,7 +8,7 @@ details: "Sprite based off of sprite provided by @Goober#8171 on discord."
 size: 4
 range: 128
 health: 800
-reloadTime: 240
+reloadTime: 520
 shootEffect: none
 smokeEffect: none
 rotateSpeed: 1.25
