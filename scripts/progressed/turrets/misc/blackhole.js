@@ -19,7 +19,7 @@ const charge = new Effect(38, e => {
 });
 
 const bh = this.global.pm.blackHoleBullet;
-const ballOfSucc = bh.newBlackHole(6, horizonColor, horizonRad);
+const ballOfSucc = bh.newBlackHole(6, horizonColor, horizonRad, 25);
 
 const kugelblitz = extendContent(PowerTurret, "blackhole", {
   setStats(){
