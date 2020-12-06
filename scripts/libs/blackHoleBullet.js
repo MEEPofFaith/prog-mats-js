@@ -1,7 +1,7 @@
 const fLib = this.global.pm.funcLib;
 
 module.exports = {
-  newBlackHole(size, horizonColor, horizonRad){
+  newBlackHole(size, horizonColor, horizonRad, absorbEffectTime){
     const clearBullet = (b, succEffect) => {
       var bWidth = b.type.width * ((1 - b.type.shrinkX) + b.type.shrinkX * b.fout());
       var bHeight = b.type.height * ((1 - b.type.shrinkY) + b.type.shrinkY * b.fout());
@@ -128,17 +128,18 @@ module.exports = {
     bulletDissapear.layer = Layer.bullet;
     
     //haha more stealing from Project Unity
-    const absorb = new Effect(15, 512, e => {
-      Draw.color(Color.black, e.fout());
-      Draw.blend(Blending.additive);
-      Tmp.v1.trns(e.rotation, 0, e.data[1] * e.fout());
+    const absorb = new Effect(absorbEffectTime, 512, e => {
+      Draw.mixcol(Color.black, 1);
+      Draw.color(1, 1, 1, e.fout());
+      Tmp.v1.trns(e.rotation - 90, 0, e.data[1] * e.fout());
       Tmp.v1.add(e.x, e.y);
       
-      fLib.simpleUnitDrawer(e.data[0], false, Tmp.v1.x, Tmp.v1.y, e.fout());
+      fLib.simpleUnitDrawerStatic(e.data[0], false, Tmp.v1.x, Tmp.v1.y, e.fout(), e.data[2] - 90, e.data[3]);
       
-      Draw.blend();
       Draw.color();
+      Draw.mixcol();
     });
+    absorb.layer = Layer.flyingUnit + 1;
     
     const cataclysm = new Effect(60 * 60, 8000, e => {
       var expandTime = 15;
@@ -287,11 +288,11 @@ module.exports = {
                         clearBullet(b, Fx.none);
                       }else{
                         clearBullet(e, this.succEffect);
-                        b.damage += fLib.bulletDamage(e.type) * e.damageMultiplier();
+                        b.damage += fLib.bulletDamage(e.type) * e.damageMultiplier() * this.bulletAbsorbPercent;
                       }
                     }else{
                       clearBullet(e, this.succEffect);
-                      b.damage += fLib.bulletDamage(e.type) * e.damageMultiplier();
+                      b.damage += fLib.bulletDamage(e.type) * e.damageMultiplier() * this.bulletAbsorbPercent;
                     }
                   }
                 }
@@ -299,12 +300,15 @@ module.exports = {
             }));
             
             Units.nearbyEnemies(b.team, b.x - b.data[6][2], b.y - b.data[6][2], b.data[6][2] * 2, b.data[6][2] * 2, cons(unit => {
-              if(unit.within(b.x, b.y, b.data[6][2])){
+              if(unit.within(b.x, b.y, b.data[6][2]) && Mathf.chance(this.unitAbsorbChance)){
                 var interp = Interp.pow3In.apply(1 - (unit.dst(b) - b.data[6][1]) / b.data[6][0]);
                 var dealt = b.damage * interp;
-                unit.damage(dealt);
-                b.damage += dealt * this.damageIncreasePercent * b.damageMultiplier();
-                absorb.at(b.x, b.y, Angles.angle(b.x, b.y, unit.x, unit.y), [unit, Mathf.dst(b.x, b.y, unit.x, unit.y)]);
+                //unit.damage(dealt);
+                b.damage += dealt * this.damageIncreasePercent;
+                unit.maxHealth -= dealt * this.maxHealthReduction;
+                
+                absorb.at(b.x, b.y, Angles.angle(b.x, b.y, unit.x, unit.y), [unit, Mathf.dst(b.x, b.y, unit.x, unit.y), unit.rotation, unit.mounts]);
+                
                 for(var i = 2; i < 6; i++){
                   b.data[i] += b.data[i] * this.strengthIncreasePercent * interp;
                 }
@@ -313,6 +317,8 @@ module.exports = {
                 }
               };
             }));
+            
+            Damage.damage(b.team, b.x, b.y, b.data[6][2], b.damage);
             
             var dist = (this.lifetime - b.time) * this.speed;
             var endX = Mathf.sinDeg(b.rotation() + 90) * dist;
@@ -323,13 +329,13 @@ module.exports = {
             }
           }
           
-          Vars.world.raycastEach(Vars.world.toTile(b.lastX), Vars.world.toTile(b.lastY), b.tileX(), b.tileY(), (x, y) => {
+          /*Vars.world.raycastEach(Vars.world.toTile(b.lastX), Vars.world.toTile(b.lastY), b.tileX(), b.tileY(), (x, y) => {
             const tile = Vars.world.build(x, y);
             if(tile == null) return;
             if(tile.collide(b) && !tile.dead && tile.team != b.team){
               this.hitTile(b, tile, tile.health, true);
             }
-          });
+          });*/
         }
       },
       draw(b){
@@ -354,12 +360,16 @@ module.exports = {
     });
     blackHole.damage = 575 / 30;
     blackHole.buildingDamageTicks = 10;
+    blackHole.unitAbsorbChance = 0.4;
+    blackHole.maxHealthReduction = 0.5;
+    blackHole.bulletAbsorbPercent = 0.05;
     blackHole.damageIncreasePercent = 0.005;
     blackHole.strengthIncreasePercent = 0.005;
     
     blackHole.speed = 0.5;
     blackHole.lifetime = 420;
     blackHole.collides = false;
+    blackHole.collidesTiles = true;
     blackHole.hitEffect = Fx.none;
     blackHole.despawnEffect = poof;
     blackHole.succEffect = bulletDissapear;
