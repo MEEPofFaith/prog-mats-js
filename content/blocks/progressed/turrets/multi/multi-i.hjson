@@ -1,4 +1,5 @@
-description: "test"
+localizedName: "Jumble"
+description: "A few small turrets mounted on a larger turret."
 buildVisibility: sandboxOnly
 requirements: []
 category: turret
