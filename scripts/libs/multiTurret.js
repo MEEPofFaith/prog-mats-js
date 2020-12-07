@@ -57,6 +57,8 @@ module.exports = {
   newMultiTurret(name, mounts, ammoItem, mainBullet, rangeTime, fadeTime){
     const amount = mounts.length;
     const totalRangeTime = rangeTime * amount;
+    const newAmmoListValue = require("libs/newAmmoListValue");
+    
     const multiTur = extendContent(ItemTurret, name, {
       load(){
         this.baseRegion = Core.atlas.find(this.name + "-base", "block-" + this.size);
@@ -100,15 +102,21 @@ module.exports = {
       setStats(){
         this.super$setStats();
         
+        this.stats.remove(Stat.shootRange);
+        this.stats.remove(Stat.inaccuracy);
         this.stats.remove(Stat.ammo);
+        this.stats.remove(Stat.targetsAir);
+        this.stats.remove(Stat.targetsGround);
         
         const wT = new StatValue({
           display(table){
             table.add();
             table.row();
+            
             table.left();
-            table.add("Base Turret").color(Pal.accent).fillX();
+            table.add("[lightgray]" + "Base Turret:").fillX().padLeft(24);
             table.row();
+            
             //Base Turret
             var region = multiTur.baseTurret;
             table.image(region).size(60).scaling(Scaling.bounded).right().top();
@@ -117,83 +125,28 @@ module.exports = {
               w.left().defaults().padRight(3).left();
 
               if(multiTur.inaccuracy > 0){
-                table.row();
-                table.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + multiTur.inaccuracy + " " + StatUnit.degrees.localized());
+                this.sep(w, "[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + multiTur.inaccuracy + " " + StatUnit.degrees.localized());
               }
-              table.row();
-              table.add("[lightgray]" + Stat.reload.localized() + ": " + "[white]" + Strings.autoFixed(60 / multiTur.reloadTime * multiTur.shots, 1));
-
-              //var bullet = new AmmoListValue(OrderedMap.of(multiTur, mainBullet));
-              //const bullet = this.newAmmoListValue(mainBullet);
-              const bullet = new StatValue({
-                display(table){
-                  table.table(bt => {
-                    const type = mainBullet;
-                    bt.left().defaults().padRight(3).left();
-                    
-                    if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
-                      bt.add(Core.bundle.format("bullet.damage", type.damage));
-                    }
-
-                    if(type.splashDamage > 0){
-                      this.sep(bt, Core.bundle.format("bullet.splashdamage", type.splashDamage, Strings.fixed(type.splashDamageRadius / Vars.tilesize, 1)));
-                    }
-
-                    if(!Mathf.equal(type.reloadMultiplier, 1)){
-                      this.sep(bt, Core.bundle.format("bullet.reload", Strings.fixed(type.reloadMultiplier, 1)));
-                    }
-
-                    if(type.knockback > 0){
-                      this.sep(bt, Core.bundle.format("bullet.knockback", Strings.fixed(type.knockback, 1)));
-                    }
-
-                    if(type.healPercent > 0){
-                      this.sep(bt, Core.bundle.format("bullet.healpercent", type.healPercent));
-                    }
-
-                    if(type.pierce || type.pierceCap != -1){
-                      this.sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
-                    }
-
-                    if(type.status == StatusEffects.burning || type.status == StatusEffects.melting || type.incendAmount > 0){
-                      this.sep(bt, "@bullet.incendiary");
-                    }
-
-                    if(type.status == StatusEffects.freezing){
-                      this.sep(bt, "@bullet.freezing");
-                    }
-
-                    if(type.status == StatusEffects.tarred){
-                      this.sep(bt, "@bullet.tarred");
-                    }
-
-                    if(type.status == StatusEffects.sapped){
-                      this.sep(bt, "@bullet.sapping");
-                    }
-
-                    if(type.homingPower > 0.01){
-                      this.sep(bt, "@bullet.homing");
-                    }
-
-                    if(type.lightning > 0){
-                      this.sep(bt, "@bullet.shock");
-                    }
-
-                    if(type.fragBullet != null){
-                      this.sep(bt, "@bullet.frag");
-                    }
-                  }).padTop(0).left();
-                },
-                sep(table, text){
-                  table.row();
-                  table.add(text);
-                }
-              });
+              if(multiTur.range > 0){
+                this.sep(w, "[lightgray]" + Stat.shootRange.localized() + ": [white]" + Strings.fixed(multiTur.range / Vars.tilesize, 1) + " " + StatUnit.blocks);
+              }
+              this.sep(w, "[lightgray]" + Stat.reload.localized() + ": " + "[white]" + Strings.autoFixed(60 / multiTur.reloadTime * multiTur.shots, 1));
+              
+              var tAir = new BooleanValue(multiTur.targetAir);
+              this.sep(w, "[lightgray]" + Stat.targetsAir.localized() + ": ");
+              tAir.display(w);
+              
+              var tGround =  new BooleanValue(multiTur.targetGround);
+              this.sep(w, "[lightgray]" + Stat.targetsGround.localized() + ": ");
+              tGround.display(w);
+              
+              const bullet = newAmmoListValue(mainBullet);
               bullet.display(w);
             }).padTop(-9).left();
             table.row();
+            
             table.left();
-            table.add("Mounts").color(Pal.accent).fillX();
+            table.add("[lightgray]" + "Mounts:").fillX().padLeft(24);
             table.row();
             
             //Mounts
@@ -207,149 +160,34 @@ module.exports = {
                 w.left().defaults().padRight(3).left();
 
                 if(mount.inaccuracy > 0){
-                  table.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + mount.inaccuracy + " " + StatUnit.degrees.localized());
+                  this.sep(w, "[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + mount.inaccuracy + " " + StatUnit.degrees.localized());
                 }
-                table.add("[lightgray]" + Stat.reload.localized() + ": " + "[white]" + Strings.autoFixed(60 / mount.reloadTime * mount.shots, 1));
-
-                //var bullet = multiTur.newAmmoListValue(mount.bullet);
-                const bullet = new StatValue({
-                  display(table){
-                    table.table(bt => {
-                      const type = mount.bullet;
-                      bt.left().defaults().padRight(3).left();
-                      
-                      if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
-                        bt.add(Core.bundle.format("bullet.damage", type.damage));
-                      }
-
-                      if(type.splashDamage > 0){
-                        this.sep(bt, Core.bundle.format("bullet.splashdamage", type.splashDamage, Strings.fixed(type.splashDamageRadius / Vars.tilesize, 1)));
-                      }
-
-                      if(!Mathf.equal(type.reloadMultiplier, 1)){
-                        this.sep(bt, Core.bundle.format("bullet.reload", Strings.fixed(type.reloadMultiplier, 1)));
-                      }
-
-                      if(type.knockback > 0){
-                        this.sep(bt, Core.bundle.format("bullet.knockback", Strings.fixed(type.knockback, 1)));
-                      }
-
-                      if(type.healPercent > 0){
-                        this.sep(bt, Core.bundle.format("bullet.healpercent", type.healPercent));
-                      }
-
-                      if(type.pierce || type.pierceCap != -1){
-                        this.sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
-                      }
-
-                      if(type.status == StatusEffects.burning || type.status == StatusEffects.melting || type.incendAmount > 0){
-                        this.sep(bt, "@bullet.incendiary");
-                      }
-
-                      if(type.status == StatusEffects.freezing){
-                        this.sep(bt, "@bullet.freezing");
-                      }
-
-                      if(type.status == StatusEffects.tarred){
-                        this.sep(bt, "@bullet.tarred");
-                      }
-
-                      if(type.status == StatusEffects.sapped){
-                        this.sep(bt, "@bullet.sapping");
-                      }
-
-                      if(type.homingPower > 0.01){
-                        this.sep(bt, "@bullet.homing");
-                      }
-
-                      if(type.lightning > 0){
-                        this.sep(bt, "@bullet.shock");
-                      }
-
-                      if(type.fragBullet != null){
-                        this.sep(bt, "@bullet.frag");
-                      }
-                    }).padTop(0).left();
-                  },
-                  sep(table, text){
-                    table.row();
-                    table.add(text);
-                  }
-                });
+                if(mount.range > 0){
+                  this.sep(w, "[lightgray]" + Stat.shootRange.localized() + ": [white]" + Strings.fixed(mount.range / Vars.tilesize, 1) + " " + StatUnit.blocks);
+                }
+                this.sep(w, "[lightgray]" + Stat.reload.localized() + ": " + "[white]" + Strings.autoFixed(60 / mount.reloadTime * mount.shots, 1));
+              
+                var tAir = new BooleanValue(mount.targetAir);
+                this.sep(w, "[lightgray]" + Stat.targetsAir.localized() + ": ");
+                tAir.display(w);
+                
+                var tGround =  new BooleanValue(mount.targetGround);
+                this.sep(w, "[lightgray]" + Stat.targetsGround.localized() + ": ");
+                tGround.display(w);
+                
+                const bullet = newAmmoListValue(mount.bullet);
                 bullet.display(w);
               }).padTop(-9).left();
               table.row();
             }
-          },
-        });
-        
-        this.stats.add(Stat.weapons, wT);
-      },
-      newAmmoListValue(bullet){ //Note: I have no idea how to call this function.
-        new StatValue({
-          display(table){
-            table.table(bt => {
-              const type = bullet;
-              bt.left().defaults().padRight(3).left();
-              
-              if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
-                bt.add(Core.bundle.format("bullet.damage", type.damage));
-              }
-
-              if(type.splashDamage > 0){
-                this.sep(bt, Core.bundle.format("bullet.splashdamage", type.splashDamage, Strings.fixed(type.splashDamageRadius / Vars.tilesize, 1)));
-              }
-
-              if(!Mathf.equal(type.reloadMultiplier, 1)){
-                this.sep(bt, Core.bundle.format("bullet.reload", Strings.fixed(type.reloadMultiplier, 1)));
-              }
-
-              if(type.knockback > 0){
-                this.sep(bt, Core.bundle.format("bullet.knockback", Strings.fixed(type.knockback, 1)));
-              }
-
-              if(type.healPercent > 0){
-                this.sep(bt, Core.bundle.format("bullet.healpercent", type.healPercent));
-              }
-
-              if(type.pierce || type.pierceCap != -1){
-                this.sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
-              }
-
-              if(type.status == StatusEffects.burning || type.status == StatusEffects.melting || type.incendAmount > 0){
-                this.sep(bt, "@bullet.incendiary");
-              }
-
-              if(type.status == StatusEffects.freezing){
-                this.sep(bt, "@bullet.freezing");
-              }
-
-              if(type.status == StatusEffects.tarred){
-                this.sep(bt, "@bullet.tarred");
-              }
-
-              if(type.status == StatusEffects.sapped){
-                this.sep(bt, "@bullet.sapping");
-              }
-
-              if(type.homingPower > 0.01){
-                this.sep(bt, "@bullet.homing");
-              }
-
-              if(type.lightning > 0){
-                this.sep(bt, "@bullet.shock");
-              }
-
-              if(type.fragBullet != null){
-                this.sep(bt, "@bullet.frag");
-              }
-            }).padTop(0).left();
           },
           sep(table, text){
             table.row();
             table.add(text);
           }
         });
+        
+        this.stats.add(Stat.weapons, wT);
       }
     });
     
