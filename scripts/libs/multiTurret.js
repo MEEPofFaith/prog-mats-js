@@ -114,7 +114,7 @@ module.exports = {
             table.row();
             
             table.left();
-            table.add("[lightgray]" + "Base Turret:").fillX().padLeft(24);
+            table.add("[lightgray]" + "Base Turret").fillX().padLeft(24);
             table.row();
             
             //Base Turret
@@ -130,15 +130,10 @@ module.exports = {
               if(multiTur.range > 0){
                 this.sep(w, "[lightgray]" + Stat.shootRange.localized() + ": [white]" + Strings.fixed(multiTur.range / Vars.tilesize, 1) + " " + StatUnit.blocks);
               }
-              this.sep(w, "[lightgray]" + Stat.reload.localized() + ": " + "[white]" + Strings.autoFixed(60 / multiTur.reloadTime * multiTur.shots, 1));
+              this.sep(w, "[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(60 / multiTur.reloadTime * multiTur.shots, 1));
               
-              var tAir = new BooleanValue(multiTur.targetAir);
-              this.sep(w, "[lightgray]" + Stat.targetsAir.localized() + ": ");
-              tAir.display(w);
-              
-              var tGround =  new BooleanValue(multiTur.targetGround);
-              this.sep(w, "[lightgray]" + Stat.targetsGround.localized() + ": ");
-              tGround.display(w);
+              this.sep(w, "[lightgray]" + Stat.targetsAir.localized() + ": [white]" + (!multiTur.targetAir ? Core.bundle.get("no") : Core.bundle.get("yes")));
+              this.sep(w, "[lightgray]" + Stat.targetsGround.localized() + ": [white]" + (!multiTur.targetGround ? Core.bundle.get("no") : Core.bundle.get("yes")));
               
               const bullet = newAmmoListValue(mainBullet);
               bullet.display(w);
@@ -146,7 +141,7 @@ module.exports = {
             table.row();
             
             table.left();
-            table.add("[lightgray]" + "Mounts:").fillX().padLeft(24);
+            table.add("[lightgray]" + "Mounts").fillX().padLeft(24);
             table.row();
             
             //Mounts
@@ -165,15 +160,10 @@ module.exports = {
                 if(mount.range > 0){
                   this.sep(w, "[lightgray]" + Stat.shootRange.localized() + ": [white]" + Strings.fixed(mount.range / Vars.tilesize, 1) + " " + StatUnit.blocks);
                 }
-                this.sep(w, "[lightgray]" + Stat.reload.localized() + ": " + "[white]" + Strings.autoFixed(60 / mount.reloadTime * mount.shots, 1));
-              
-                var tAir = new BooleanValue(mount.targetAir);
-                this.sep(w, "[lightgray]" + Stat.targetsAir.localized() + ": ");
-                tAir.display(w);
+                this.sep(w, "[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(60 / mount.reloadTime * mount.shots, 1));
                 
-                var tGround =  new BooleanValue(mount.targetGround);
-                this.sep(w, "[lightgray]" + Stat.targetsGround.localized() + ": ");
-                tGround.display(w);
+                this.sep(w, "[lightgray]" + Stat.targetsAir.localized() + ": [white]" + (!mount.targetAir ? Core.bundle.get("no") : Core.bundle.get("yes")));
+                this.sep(w, "[lightgray]" + Stat.targetsGround.localized() + ": [white]" + (!mount.targetGround ? Core.bundle.get("no") : Core.bundle.get("yes")));
                 
                 const bullet = newAmmoListValue(mount.bullet);
                 bullet.display(w);
