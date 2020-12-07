@@ -63,10 +63,15 @@ module.exports = {
         this.region = Core.atlas.find(this.name + "-baseTurret");
         this.heatRegion = Core.atlas.find(this.name + "-heat");
         this.outline = Core.atlas.find(this.name + "-outline");
+        this.baseTurret = Core.atlas.find(this.name + "-baseTurret");
         this.turrets = [];
         for(var i = 0; i < amount; i++){
-          //[Sprite, Outline, Heat, Fade Mask]
-          var sprites = [Core.atlas.find(mounts[i].name), Core.atlas.find(mounts[i].name + "-outline"), Core.atlas.find(mounts[i].name + "-heat"), Core.atlas.find(mounts[i].name + "-mask")];
+          //[Sprite, Outline, Heat, Fade Mask, Full]
+          var sprites = [Core.atlas.find(mounts[i].name), 
+         Core.atlas.find(mounts[i].name + "-outline"),
+         Core.atlas.find(mounts[i].name + "-heat"), 
+         Core.atlas.find(mounts[i].name + "-mask"),
+         Core.atlas.find(mounts[i].name + "-full")];
           this.turrets[i] = sprites;
         }
       },
@@ -91,6 +96,260 @@ module.exports = {
       },
       icons(){
         return[this.baseRegion, Core.atlas.find(this.name + "-icon")]
+      },
+      setStats(){
+        this.super$setStats();
+        
+        this.stats.remove(Stat.ammo);
+        
+        const wT = new StatValue({
+          display(table){
+            table.add();
+            table.row();
+            table.left();
+            table.add("Base Turret").color(Pal.accent).fillX();
+            table.row();
+            //Base Turret
+            var region = multiTur.baseTurret;
+            table.image(region).size(60).scaling(Scaling.bounded).right().top();
+            
+            table.table(Tex.underline, w => {
+              w.left().defaults().padRight(3).left();
+
+              if(multiTur.inaccuracy > 0){
+                table.row();
+                table.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + multiTur.inaccuracy + " " + StatUnit.degrees.localized());
+              }
+              table.row();
+              table.add("[lightgray]" + Stat.reload.localized() + ": " + "[white]" + Strings.autoFixed(60 / multiTur.reloadTime * multiTur.shots, 1));
+
+              //var bullet = new AmmoListValue(OrderedMap.of(multiTur, mainBullet));
+              //const bullet = this.newAmmoListValue(mainBullet);
+              const bullet = new StatValue({
+                display(table){
+                  table.table(bt => {
+                    const type = mainBullet;
+                    bt.left().defaults().padRight(3).left();
+                    
+                    if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
+                      bt.add(Core.bundle.format("bullet.damage", type.damage));
+                    }
+
+                    if(type.splashDamage > 0){
+                      this.sep(bt, Core.bundle.format("bullet.splashdamage", type.splashDamage, Strings.fixed(type.splashDamageRadius / Vars.tilesize, 1)));
+                    }
+
+                    if(!Mathf.equal(type.reloadMultiplier, 1)){
+                      this.sep(bt, Core.bundle.format("bullet.reload", Strings.fixed(type.reloadMultiplier, 1)));
+                    }
+
+                    if(type.knockback > 0){
+                      this.sep(bt, Core.bundle.format("bullet.knockback", Strings.fixed(type.knockback, 1)));
+                    }
+
+                    if(type.healPercent > 0){
+                      this.sep(bt, Core.bundle.format("bullet.healpercent", type.healPercent));
+                    }
+
+                    if(type.pierce || type.pierceCap != -1){
+                      this.sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
+                    }
+
+                    if(type.status == StatusEffects.burning || type.status == StatusEffects.melting || type.incendAmount > 0){
+                      this.sep(bt, "@bullet.incendiary");
+                    }
+
+                    if(type.status == StatusEffects.freezing){
+                      this.sep(bt, "@bullet.freezing");
+                    }
+
+                    if(type.status == StatusEffects.tarred){
+                      this.sep(bt, "@bullet.tarred");
+                    }
+
+                    if(type.status == StatusEffects.sapped){
+                      this.sep(bt, "@bullet.sapping");
+                    }
+
+                    if(type.homingPower > 0.01){
+                      this.sep(bt, "@bullet.homing");
+                    }
+
+                    if(type.lightning > 0){
+                      this.sep(bt, "@bullet.shock");
+                    }
+
+                    if(type.fragBullet != null){
+                      this.sep(bt, "@bullet.frag");
+                    }
+                  }).padTop(0).left();
+                },
+                sep(table, text){
+                  table.row();
+                  table.add(text);
+                }
+              });
+              bullet.display(w);
+            }).padTop(-9).left();
+            table.row();
+            table.left();
+            table.add("Mounts").color(Pal.accent).fillX();
+            table.row();
+            
+            //Mounts
+            for(var i = 0; i < amount; i++){
+              let mount = mounts[i];
+              
+              var mRegion = multiTur.turrets[i][4];
+              table.image(mRegion).size(60).scaling(Scaling.bounded).right().top();
+              
+              table.table(Tex.underline, w => {
+                w.left().defaults().padRight(3).left();
+
+                if(mount.inaccuracy > 0){
+                  table.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + mount.inaccuracy + " " + StatUnit.degrees.localized());
+                }
+                table.add("[lightgray]" + Stat.reload.localized() + ": " + "[white]" + Strings.autoFixed(60 / mount.reloadTime * mount.shots, 1));
+
+                //var bullet = multiTur.newAmmoListValue(mount.bullet);
+                const bullet = new StatValue({
+                  display(table){
+                    table.table(bt => {
+                      const type = mount.bullet;
+                      bt.left().defaults().padRight(3).left();
+                      
+                      if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
+                        bt.add(Core.bundle.format("bullet.damage", type.damage));
+                      }
+
+                      if(type.splashDamage > 0){
+                        this.sep(bt, Core.bundle.format("bullet.splashdamage", type.splashDamage, Strings.fixed(type.splashDamageRadius / Vars.tilesize, 1)));
+                      }
+
+                      if(!Mathf.equal(type.reloadMultiplier, 1)){
+                        this.sep(bt, Core.bundle.format("bullet.reload", Strings.fixed(type.reloadMultiplier, 1)));
+                      }
+
+                      if(type.knockback > 0){
+                        this.sep(bt, Core.bundle.format("bullet.knockback", Strings.fixed(type.knockback, 1)));
+                      }
+
+                      if(type.healPercent > 0){
+                        this.sep(bt, Core.bundle.format("bullet.healpercent", type.healPercent));
+                      }
+
+                      if(type.pierce || type.pierceCap != -1){
+                        this.sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
+                      }
+
+                      if(type.status == StatusEffects.burning || type.status == StatusEffects.melting || type.incendAmount > 0){
+                        this.sep(bt, "@bullet.incendiary");
+                      }
+
+                      if(type.status == StatusEffects.freezing){
+                        this.sep(bt, "@bullet.freezing");
+                      }
+
+                      if(type.status == StatusEffects.tarred){
+                        this.sep(bt, "@bullet.tarred");
+                      }
+
+                      if(type.status == StatusEffects.sapped){
+                        this.sep(bt, "@bullet.sapping");
+                      }
+
+                      if(type.homingPower > 0.01){
+                        this.sep(bt, "@bullet.homing");
+                      }
+
+                      if(type.lightning > 0){
+                        this.sep(bt, "@bullet.shock");
+                      }
+
+                      if(type.fragBullet != null){
+                        this.sep(bt, "@bullet.frag");
+                      }
+                    }).padTop(0).left();
+                  },
+                  sep(table, text){
+                    table.row();
+                    table.add(text);
+                  }
+                });
+                bullet.display(w);
+              }).padTop(-9).left();
+              table.row();
+            }
+          },
+        });
+        
+        this.stats.add(Stat.weapons, wT);
+      },
+      newAmmoListValue(bullet){ //Note: I have no idea how to call this function.
+        new StatValue({
+          display(table){
+            table.table(bt => {
+              const type = bullet;
+              bt.left().defaults().padRight(3).left();
+              
+              if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
+                bt.add(Core.bundle.format("bullet.damage", type.damage));
+              }
+
+              if(type.splashDamage > 0){
+                this.sep(bt, Core.bundle.format("bullet.splashdamage", type.splashDamage, Strings.fixed(type.splashDamageRadius / Vars.tilesize, 1)));
+              }
+
+              if(!Mathf.equal(type.reloadMultiplier, 1)){
+                this.sep(bt, Core.bundle.format("bullet.reload", Strings.fixed(type.reloadMultiplier, 1)));
+              }
+
+              if(type.knockback > 0){
+                this.sep(bt, Core.bundle.format("bullet.knockback", Strings.fixed(type.knockback, 1)));
+              }
+
+              if(type.healPercent > 0){
+                this.sep(bt, Core.bundle.format("bullet.healpercent", type.healPercent));
+              }
+
+              if(type.pierce || type.pierceCap != -1){
+                this.sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
+              }
+
+              if(type.status == StatusEffects.burning || type.status == StatusEffects.melting || type.incendAmount > 0){
+                this.sep(bt, "@bullet.incendiary");
+              }
+
+              if(type.status == StatusEffects.freezing){
+                this.sep(bt, "@bullet.freezing");
+              }
+
+              if(type.status == StatusEffects.tarred){
+                this.sep(bt, "@bullet.tarred");
+              }
+
+              if(type.status == StatusEffects.sapped){
+                this.sep(bt, "@bullet.sapping");
+              }
+
+              if(type.homingPower > 0.01){
+                this.sep(bt, "@bullet.homing");
+              }
+
+              if(type.lightning > 0){
+                this.sep(bt, "@bullet.shock");
+              }
+
+              if(type.fragBullet != null){
+                this.sep(bt, "@bullet.frag");
+              }
+            }).padTop(0).left();
+          },
+          sep(table, text){
+            table.row();
+            table.add(text);
+          }
+        });
       }
     });
     
