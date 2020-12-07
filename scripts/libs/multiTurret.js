@@ -57,7 +57,7 @@ module.exports = {
   newMultiTurret(name, mounts, ammoItem, mainBullet, rangeTime, fadeTime){
     const amount = mounts.length;
     const totalRangeTime = rangeTime * amount;
-    const newAmmoListValue = require("libs/newAmmoListValue");
+    const newWeaponListValue = require("libs/newWeaponListValue");
     
     const multiTur = extendContent(ItemTurret, name, {
       load(){
@@ -112,68 +112,31 @@ module.exports = {
           display(table){
             table.add();
             table.row();
-            
             table.left();
             table.add("[lightgray]" + "Base Turret").fillX().padLeft(24);
             table.row();
             
             //Base Turret
-            var region = multiTur.baseTurret;
-            table.image(region).size(60).scaling(Scaling.bounded).right().top();
+            table.table(null, w => {
+              const baseT = newWeaponListValue(multiTur, multiTur.baseTurret, mainBullet);
+              baseT.display(w);
+              table.row();
+            });
             
-            table.table(Tex.underline, w => {
-              w.left().defaults().padRight(3).left();
-
-              if(multiTur.inaccuracy > 0){
-                this.sep(w, "[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + multiTur.inaccuracy + " " + StatUnit.degrees.localized());
-              }
-              if(multiTur.range > 0){
-                this.sep(w, "[lightgray]" + Stat.shootRange.localized() + ": [white]" + Strings.fixed(multiTur.range / Vars.tilesize, 1) + " " + StatUnit.blocks);
-              }
-              this.sep(w, "[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(60 / multiTur.reloadTime * multiTur.shots, 1));
-              
-              this.sep(w, "[lightgray]" + Stat.targetsAir.localized() + ": [white]" + (!multiTur.targetAir ? Core.bundle.get("no") : Core.bundle.get("yes")));
-              this.sep(w, "[lightgray]" + Stat.targetsGround.localized() + ": [white]" + (!multiTur.targetGround ? Core.bundle.get("no") : Core.bundle.get("yes")));
-              
-              const bullet = newAmmoListValue(mainBullet);
-              bullet.display(w);
-            }).padTop(-9).left();
             table.row();
-            
             table.left();
             table.add("[lightgray]" + "Mounts").fillX().padLeft(24);
-            table.row();
             
             //Mounts
             for(var i = 0; i < amount; i++){
               let mount = mounts[i];
               
-              var mRegion = multiTur.turrets[i][4];
-              table.image(mRegion).size(60).scaling(Scaling.bounded).right().top();
-              
-              table.table(Tex.underline, w => {
-                w.left().defaults().padRight(3).left();
-
-                if(mount.inaccuracy > 0){
-                  this.sep(w, "[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + mount.inaccuracy + " " + StatUnit.degrees.localized());
-                }
-                if(mount.range > 0){
-                  this.sep(w, "[lightgray]" + Stat.shootRange.localized() + ": [white]" + Strings.fixed(mount.range / Vars.tilesize, 1) + " " + StatUnit.blocks);
-                }
-                this.sep(w, "[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(60 / mount.reloadTime * mount.shots, 1));
-                
-                this.sep(w, "[lightgray]" + Stat.targetsAir.localized() + ": [white]" + (!mount.targetAir ? Core.bundle.get("no") : Core.bundle.get("yes")));
-                this.sep(w, "[lightgray]" + Stat.targetsGround.localized() + ": [white]" + (!mount.targetGround ? Core.bundle.get("no") : Core.bundle.get("yes")));
-                
-                const bullet = newAmmoListValue(mount.bullet);
-                bullet.display(w);
-              }).padTop(-9).left();
-              table.row();
+              table.table(null, w => {
+                const baseT = newWeaponListValue(multiTur, multiTur.turrets[i][4], mainBullet);
+                baseT.display(w);
+                table.row();
+              });
             }
-          },
-          sep(table, text){
-            table.row();
-            table.add(text);
           }
         });
         
