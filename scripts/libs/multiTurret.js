@@ -122,7 +122,7 @@ module.exports = {
           this.super$drawSelect();
           for(var i = 0; i < amount; i++){
             var fade = Mathf.curve(Time.time % totalRangeTime, rangeTime * i, rangeTime * i + fadeTime) - Mathf.curve(Time.time % totalRangeTime, rangeTime * (i + 1) - fadeTime, rangeTime * (i + 1));
-            var loc = this.mountLocations(i);
+            let loc = this.mountLocations(i);
             //Drawf.dashCircle(Loc[0], Loc[1], mounts[i].range, Pal.placing); //I already know this'll be terrible in game.
             Lines.stroke(3, Pal.gray);
             Draw.alpha(fade);
@@ -172,13 +172,13 @@ module.exports = {
           }
           
           for(var i = 0; i < amount; i++){
-            var loc = this.mountLocations(i);
+            let loc = this.mountLocations(i);
             
             Drawf.shadow(multiTur.turrets[i][0], loc[2] - mounts[i].elevation, loc[3] - mounts[i].elevation, this._rotations[i] - 90);
           }
           
           for(var i = 0; i < amount; i++){
-            var loc = this.mountLocations(i);
+            let loc = this.mountLocations(i);
             
             Draw.rect(multiTur.turrets[i][1], loc[2], loc[3], this._rotations[i] - 90);
             Draw.rect(multiTur.turrets[i][0], loc[2], loc[3], this._rotations[i] - 90);
@@ -205,14 +205,14 @@ module.exports = {
           if(this.hasAmmo()){
             if(this.timer.get(multiTur.mountTimer, multiTur.mountInterval)){
               for(var i = 0; i < amount; i++){
-                var loc = this.mountLocations(i);
+                let loc = this.mountLocations(i);
                 
                 this._targets[i] = this.findMountTargets(i);
               }
             }
             
             for(var i = 0; i < amount; i++){
-              var loc = this.mountLocations(i);
+              let loc = this.mountLocations(i);
               
               if(this.validateMountTarget(i)){
                 var canShoot = true;
@@ -266,7 +266,7 @@ module.exports = {
           this._rotations[mount] = Angles.moveToward(this._rotations[mount], target, mounts[mount].rotateSpeed * this.delta() * this.baseReloadSpeed());
         },
         findMountTargets(mount){
-          var loc = this.mountLocations(mount);
+          let loc = this.mountLocations(mount);
           
           if(mounts[mount].targetAir && !mounts[mount].targetGround){
             return Units.bestEnemy(this.team, loc[0], loc[1], mounts[mount].range, e => !e.dead && !e.isGrounded(), mounts[mount].unitSort);
@@ -275,7 +275,7 @@ module.exports = {
           }
         },
         validateMountTarget(mount){
-          var loc = this.mountLocations(mount);
+          let loc = this.mountLocations(mount);
           
           return !Units.invalidateTarget(this._targets[mount], this.team, loc[0], loc[1]) || this.isControlled() || this.logicControlled();
         },
@@ -316,7 +316,7 @@ module.exports = {
             
             this.liquids.remove(liquid, used);
             
-            var loc = this.mountLocations(i);
+            let loc = this.mountLocations(i);
             
             if(Mathf.chance(0.06 / amount * used)){
               mounts[i].coolEffect.at(loc[0] + Mathf.range(mounts[i].width), loc[1] + Mathf.range(mounts[i].height));
@@ -329,7 +329,7 @@ module.exports = {
             Time.run(mounts[mount].burstSpacing * j, () => {
               if(!this.isValid() || !this.hasAmmo()) return;
               
-              var loc = this.mountLocations(mount);
+              let loc = this.mountLocations(mount);
               
               if(mounts[mount].shootShake > 0){
                 Effect.shake(mounts[mount].shootShake, mounts[mount].shootShake, loc[4], loc[y]);
@@ -379,7 +379,7 @@ module.exports = {
           if(!this.isValid()) return;
           
           var side = mounts[mount].altEject ? Mathf.signs[this._shotCounters[mount] % 2] : mounts[mount].ejectRight;
-          var loc = this.mountLocations(mount);
+          let loc = this.mountLocations(mount);
           
           mounts[mount].ejectEffect.at(loc[4], loc[5], this._rotations[mount] * side);
         }
