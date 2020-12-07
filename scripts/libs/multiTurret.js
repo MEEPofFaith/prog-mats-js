@@ -132,7 +132,7 @@ module.exports = {
               let mount = mounts[i];
               
               table.table(null, w => {
-                const baseT = newWeaponListValue(multiTur, multiTur.turrets[i][4], mainBullet);
+                const baseT = newWeaponListValue(multiTur, multiTur.turrets[i][4], mount.bullet);
                 baseT.display(w);
                 table.row();
               });
