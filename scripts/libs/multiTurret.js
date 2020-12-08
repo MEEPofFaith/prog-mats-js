@@ -29,6 +29,8 @@ module.exports = {
       cooldown: 0.02,
       
       name: n,
+      title: "ohno",
+      icon: "error",
       
       shootEffect: Fx.none,
       smokeEffect: Fx.none,
@@ -54,10 +56,11 @@ module.exports = {
     
     return mount;
   },
-  newMultiTurret(name, mounts, ammoItem, mainBullet, rangeTime, fadeTime){
+  newMultiTurret(name, mounts, ammoItem, mainBullet, rangeTime, fadeTime, title){
     const amount = mounts.length;
     const totalRangeTime = rangeTime * amount;
-    const newWeaponListValue = require("libs/newWeaponListValue");
+    const newMountListValue = require("libs/newMountListValue");
+    const newBaseListValue = require("libs/newBaseListValue");
     
     const multiTur = extendContent(ItemTurret, name, {
       load(){
@@ -68,12 +71,11 @@ module.exports = {
         this.baseTurret = Core.atlas.find(this.name + "-baseTurret");
         this.turrets = [];
         for(var i = 0; i < amount; i++){
-          //[Sprite, Outline, Heat, Fade Mask, Full]
+          //[Sprite, Outline, Heat, Fade Mask]
           var sprites = [Core.atlas.find(mounts[i].name), 
          Core.atlas.find(mounts[i].name + "-outline"),
          Core.atlas.find(mounts[i].name + "-heat"), 
-         Core.atlas.find(mounts[i].name + "-mask"),
-         Core.atlas.find(mounts[i].name + "-full")];
+         Core.atlas.find(mounts[i].name + "-mask")];
           this.turrets[i] = sprites;
         }
       },
@@ -104,7 +106,24 @@ module.exports = {
         
         this.stats.remove(Stat.shootRange);
         this.stats.remove(Stat.inaccuracy);
+        this.stats.remove(Stat.reload);
+        
         this.stats.remove(Stat.ammo);
+        const ammoStat = new StatValue({
+          display(table){
+            table.row();
+            table.image(ammoItem.icon(Cicon.medium)).size(8 * 4).padRight(4).right().top();
+            table.add(ammoItem.localizedName).padRight(10).left().top();
+            table.table(Tex.underline, b => {
+              b.left().defaults().padRight(3).left();
+              
+              b.add(Core.bundle.format("bullet.multiplier", mainBullet.ammoMultiplier));
+            }).padTop(-9).left();
+            table.row();
+          }
+        });
+        this.stats.add(Stat.ammo, ammoStat);
+        
         this.stats.remove(Stat.targetsAir);
         this.stats.remove(Stat.targetsGround);
         
@@ -118,25 +137,21 @@ module.exports = {
             
             //Base Turret
             table.table(null, w => {
-              const baseT = newWeaponListValue(multiTur, multiTur.baseTurret, mainBullet);
+              const baseT = newBaseListValue(multiTur, multiTur.baseTurret, mainBullet, title);
               baseT.display(w);
               table.row();
             });
             
             table.row();
             table.left();
-            table.add("[lightgray]" + "Mounts").fillX().padLeft(24);
+            table.add("[lightgray]" + "Mini Turrets").fillX().padLeft(24);
             
             //Mounts
-            for(var i = 0; i < amount; i++){
-              let mount = mounts[i];
-              
-              table.table(null, w => {
-                const baseT = newWeaponListValue(multiTur, multiTur.turrets[i][4], mount.bullet);
-                baseT.display(w);
-                table.row();
-              });
-            }
+            table.table(null, w => {
+              const baseT = newMountListValue(mounts);
+              baseT.display(w);
+              table.row();
+            });
           }
         });
         
