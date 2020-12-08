@@ -40,7 +40,9 @@ module.exports = {
       ejectY: -1,
       altEject: true,
       ejectRight: true,
-      shootSound: Sounds.shoot,
+      shootSound: Sounds.pew,
+      loopSound: Sounds.none,
+      loopVolume: 1,
       shootShake: 0,
       
       minRange: 0,
@@ -73,10 +75,15 @@ module.exports = {
         for(var i = 0; i < amount; i++){
           //[Sprite, Outline, Heat, Fade Mask]
           var sprites = [Core.atlas.find(mounts[i].name), 
-         Core.atlas.find(mounts[i].name + "-outline"),
-         Core.atlas.find(mounts[i].name + "-heat"), 
-         Core.atlas.find(mounts[i].name + "-mask")];
+          Core.atlas.find(mounts[i].name + "-outline"),
+          Core.atlas.find(mounts[i].name + "-heat"), 
+          Core.atlas.find(mounts[i].name + "-mask")];
           this.turrets[i] = sprites;
+        }
+        
+        this.loopSounds = [];
+        for(var i = 0; i < amount; i++){
+          this.loopSounds[i] = (mounts[i].loopSound == Sounds.none ? null : new SoundLoop(mounts[i].loopSound, mounts[i].loopVolume));
         }
       },
       drawPlace(x ,y ,rotation, valid){
@@ -173,6 +180,7 @@ module.exports = {
           this._rotations = [];
           this._targets = [];
           this._targetPoss = [];
+          this._wasShootings = [];
           for(var i = 0; i < amount; i++){
             this._reloads[i] = 0;
             this._heats[i] = 0;
@@ -181,6 +189,7 @@ module.exports = {
             this._rotations[i] = 90;
             this._targets[i] = null;
             this._targetPoss[i] = new Vec2();
+            this._wasShootings[i] = false;
           }
         },
         drawSelect(){
@@ -257,10 +266,24 @@ module.exports = {
             }
           }
         },
+        update(){
+          this.super$update();
+          
+          for(var i = 0; i < amount; i++){
+            if(!Vars.headless){
+              let loc = this.mountLocations(i);
+                
+              if(multiTur.loopSounds[i] != null){
+                multiTur.loopSounds[i].update(loc[4], loc[5], this.mountLoopSound(i));
+              }
+            }
+          }
+        },
         updateTile(){
           this.super$updateTile();
           
           for(var i = 0; i < amount; i++){
+            this._wasShootings[i] = false;
             this._recoils[i] = Mathf.lerpDelta(this._recoils[i], 0, mounts[i].restitution);
             this._heats[i] = Mathf.lerpDelta(this._heats[i], 0, mounts[i].cooldown);
             
@@ -302,6 +325,7 @@ module.exports = {
 
                 if(Angles.angleDist(this._rotations[i], targetRot) < mounts[i].shootCone && canShoot){
                   this.wasShooting = true;
+                  this._wasShootings[i] = true;
                   this.updateMountShooting(i);
                 }
               }
@@ -412,6 +436,9 @@ module.exports = {
               this._heats[mount] = 1;
               
               this.mountUseAmmo(mount);
+              if(mounts[mount].loopSound != Sounds.none){
+                multiTur.loopSounds[mount].update(loc[4], loc[5], true);
+              }
               
               var velScl = 1 + Mathf.range(mounts[mount].velocityInaccuracy);
               var lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(loc[4], loc[5], this._targetPoss[mount].x, this._targetPoss[mount].y) / type.range(), mounts[mount].minRange / type.range(), mounts[mount].range / type.range()) : 1;
@@ -447,6 +474,9 @@ module.exports = {
           let loc = this.mountLocations(mount);
           
           mounts[mount].ejectEffect.at(loc[4], loc[5], this._rotations[mount] * side);
+        },
+        mountLoopSound(mount){
+          return this._wasShootings[mount];
         }
       });
       ent.setEffs();

@@ -40,6 +40,7 @@ hailMount.y = -4;
 hailMount.recoilAmount = 2.5;
 hailMount.range = 18 * 8;
 hailMount.title = "Mini Hail"
+hailMount.shootSound = Sounds.bang;
 
 const miniSlag = extend(LiquidBulletType, {});
 miniSlag.collidesAir = false;
@@ -56,6 +57,9 @@ waveMount.y = -3.5;
 waveMount.recoilAmount = 1;
 waveMount.range = 13 * 8;
 waveMount.title = "Mini Wave";
+waveMount.loop = true;
+waveMount.shootSound = Sounds.none;
+waveMount.loopSound = Sounds.spray;
 
 const weapons = [unoMount, waveMount, hailMount];
 
