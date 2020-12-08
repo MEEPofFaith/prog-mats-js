@@ -36,4 +36,4 @@ module.exports = (weapon, icon, bullet, title) => {
   });
   
   return w;
-}
+};
