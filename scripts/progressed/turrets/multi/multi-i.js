@@ -47,11 +47,11 @@ miniSlag.collidesAir = false;
 miniSlag.liquid = Liquids.slag;
 miniSlag.damage = 1;
 miniSlag.drag = 0.03;
-miniSlag.puddleSize = 3;
+miniSlag.puddleSize = 1;
 
 const waveMount = multiTLib.newMount(miniSlag, "prog-mats-waveM");
 waveMount.targetAir = false;
-waveMount.reloadTime = 7;
+waveMount.reloadTime = 3;
 waveMount.x = 4.25;
 waveMount.y = -3.5;
 waveMount.recoilAmount = 1;
