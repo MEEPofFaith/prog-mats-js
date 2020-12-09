@@ -74,7 +74,7 @@ mainBullet.shootEffect = Fx.shootSmall;
 mainBullet.smokeEffect = Fx.shootSmallSmoke;
 
 //Coalescence -> Amalgamation -> Conglomeration
-const jumble = multiTLib.newMultiTurret("multi-i", weapons, Items.lead, mainBullet, 80, 20, "Sploch");
+const jumble = multiTLib.newMultiTurret("multi-i", weapons, Items.graphite, mainBullet, 80, 20, "Sploch");
 jumble.size = 2;
 jumble.range = 15 * 8;
 jumble.maxAmmo = 225;
