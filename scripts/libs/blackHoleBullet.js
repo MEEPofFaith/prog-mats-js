@@ -304,7 +304,7 @@ module.exports = {
                 var interp = Interp.pow3In.apply(1 - (unit.dst(b) - b.data[6][1]) / b.data[6][0]);
                 var dealt = b.damage * interp;
                 //unit.damage(dealt);
-                b.damage += dealt * this.damageIncreasePercent;
+                b.damage += dealt * this.damageIncreasePercent / 30; //Why / 30? Because it hits 30 times a second.
                 unit.maxHealth -= dealt * this.maxHealthReduction;
                 
                 absorb.at(b.x, b.y, Angles.angle(b.x, b.y, unit.x, unit.y), [unit, Mathf.dst(b.x, b.y, unit.x, unit.y), unit.rotation, unit.mounts]);

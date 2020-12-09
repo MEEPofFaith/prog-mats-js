@@ -57,7 +57,7 @@ module.exports = {
   },
   bulletDamage(type){
     var trueDamage = type instanceof ContinuousLaserBulletType ? type.damage * 12 : type.damage;
-    //return trueDamage + type.splashDamage + (Math.max(type.lightningDamage, 0) * type.lightning * type.lightningLength);
-    return type.damage + type.splashDamage + (Math.max(type.lightningDamage, 0) * type.lightning * type.lightningLength);
+    return trueDamage + type.splashDamage + (Math.max(type.lightningDamage, 0) * type.lightning * type.lightningLength);
+    //return type.damage + type.splashDamage + (Math.max(type.lightningDamage, 0) * type.lightning * type.lightningLength);
   }
 };
