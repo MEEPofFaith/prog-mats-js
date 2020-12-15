@@ -390,6 +390,9 @@ hellRiser.buildType = ent => {
     },
     shouldAmbientSound(){
       return this._bulletLife > 0;
+    },
+    canControl(){
+      return false;
     }
 	});
   ent._targetX = new Seq(1023);
