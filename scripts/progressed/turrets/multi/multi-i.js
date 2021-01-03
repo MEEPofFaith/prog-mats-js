@@ -1,4 +1,4 @@
-const multiTLib = this.global.pm.multiTurret;
+const multiTLib = this.global.pm.multiTurretLib;
 const effect = require("libs/effect");
 
 const unoBullet = extend(BasicBulletType, {});
@@ -11,7 +11,7 @@ unoBullet.lifetime = 50;
 unoBullet.hitEffect = effect.scaledBasicHit(0.75);
 unoBullet.despawnEffect = effect.scaledBasicHit(0.6);
 
-const unoMount = multiTLib.newMount(unoBullet, "prog-mats-unoM");
+const unoMount = multiTLib.newWeapon(unoBullet, "prog-mats-unoM");
 unoMount.reloadTime = 15;
 unoMount.ammoPerShot = 5;
 unoMount.x = 2.75;
@@ -31,7 +31,7 @@ hailBullet.height = 5.5;
 hailBullet.splashDamageRadius = 14;
 hailBullet.splashDamage = 18;
 
-const hailMount = multiTLib.newMount(hailBullet, "prog-mats-hailM");
+const hailMount = multiTLib.newWeapon(hailBullet, "prog-mats-hailM");
 hailMount.targetAir = false;
 hailMount.reloadTime = 60;
 hailMount.ammoPerShot = 20;
@@ -49,7 +49,7 @@ miniSlag.damage = 1;
 miniSlag.drag = 0.03;
 miniSlag.puddleSize = 2;
 
-const waveMount = multiTLib.newMount(miniSlag, "prog-mats-waveM");
+const waveMount = multiTLib.newWeapon(miniSlag, "prog-mats-waveM");
 waveMount.targetAir = false;
 waveMount.reloadTime = 3;
 waveMount.x = 4.25;
@@ -74,7 +74,8 @@ mainBullet.shootEffect = Fx.shootSmall;
 mainBullet.smokeEffect = Fx.shootSmallSmoke;
 
 //Coalescence -> Amalgamation -> Conglomeration
-const jumble = multiTLib.newMultiTurret("multi-i", weapons, Items.graphite, mainBullet, 80, 20, "Sploch");
+//Or maybe Aggregate -> Assimilation -> Amalgamation
+const jumble = multiTLib.newMultiTurret("multi-i", weapons, Items.graphite, mainBullet, 80, 20, "Aggregate");
 jumble.size = 2;
 jumble.range = 15 * 8;
 jumble.maxAmmo = 225;

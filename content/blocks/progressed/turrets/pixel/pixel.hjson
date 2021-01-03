@@ -1,0 +1,7 @@
+localizedName: Pixel
+description: Seems to be a 0.5D object...?
+shootType: standardCopper
+requirements: []
+buildVisibility: sandboxOnly
+category: turret
+size: 2

@@ -1,5 +1,5 @@
 module.exports = {
-  newMount(b, n){
+  newWeapon(b, n){
     /*Notes: Too lazy to do charging, or continuous.*/
     const mount = {
       x: 0,
