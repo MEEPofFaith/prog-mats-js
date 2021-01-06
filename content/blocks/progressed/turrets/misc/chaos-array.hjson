@@ -1,7 +1,4 @@
-localizedName: "Chaos Array"
-description: Fires massive blasts of lasers. And a lot of lasers.
-details: "Go to r/Mindustry and search for 'The true power of the Duo.'"
-powerUse: 2000
+powerUse: 3000
 range: 560
 recoilAmount: 8
 rotateSpeed: 0.3

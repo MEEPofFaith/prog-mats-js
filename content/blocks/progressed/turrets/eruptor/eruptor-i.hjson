@@ -1,11 +1,3 @@
-localizedName: "[#d17000]Eruptor"
-description: 
-  '''
-  Opens the Earth under enemies, blasting them with lava.
-  
-  [#d17000]Stray blasts may burn your defences.
-  '''
-details: "Big thanks to @ThirstyBoi✓#6102 for redoing the sprites for this! (Now to do the other 2 myself...)"
 size: 3
 health: 1800
 powerUse: 10

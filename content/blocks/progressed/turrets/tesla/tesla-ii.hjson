@@ -1,6 +1,3 @@
-localizedName: Tesla Coil
-description: Zaps multiple random targets in range.
-size: 1
 health: 870
 reloadTime: 40
 shootCone: 360

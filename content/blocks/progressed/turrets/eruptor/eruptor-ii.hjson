@@ -1,10 +1,3 @@
-localizedName: "[#d17000]Magmator"
-description: 
-  '''
-  Opens even more of the Earth under enemies, blasting them with even more lava.
-  
-  [#d17000]Stray blasts may burn your defences.
-  '''
 size: 4
 health: 1800
 powerUse: 15

@@ -1,6 +1,3 @@
-localizedName: Tesla Storm
-description: Zaps numerous random targets in range.
-size: 1
 health: 1540
 reloadTime: 20
 shootCone: 360

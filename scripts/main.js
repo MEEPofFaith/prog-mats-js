@@ -65,7 +65,7 @@ const script = [
           },
           {
             name: "pixel",
-            childs: ["pixel"]
+            childs: ["pixel-i"]
           }
         ]
       },
@@ -97,8 +97,9 @@ for(var i = 0; i < loadedScript.res.length; i++){
 
 if(!Vars.headless){
   Core.app.post(() => {
-    const meta = Vars.mods.locateMod("prog-mats").meta;
-    meta.displayName = "[#FCC21B]Progressed Materials";
-    meta.author = "[#FCC21B]MEEP of Faith";
-  });
+        var mod = Vars.mods.locateMod("prog-mats");
+        var change = "mod."+ mod.meta.name + ".";
+        mod.meta.displayName = Core.bundle.get(change + "name");
+        mod.meta.author = Core.bundle.get(change + "author");
+    });
 }

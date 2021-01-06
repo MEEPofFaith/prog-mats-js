@@ -1,6 +1,3 @@
-localizedName: "Aggregate"
-description: "A few small turrets mounted on a larger turret."
-details: "This is cursed on so many levels."
 requirements: [
   copper/55
   lead/35
