@@ -1,4 +1,7 @@
 shootType: standardCopper
+alternate: true
+shots: 2
+spread: 1.5
 requirements: []
 buildVisibility: sandboxOnly
 category: turret
