@@ -18,7 +18,7 @@ module.exports = (weapon, icon, bullet, title) => {
           this.sep(w, "[lightgray]" + Stat.shootRange.localized() + ": [white]" + Strings.fixed(weapon.range / Vars.tilesize, 1) + " " + StatUnit.blocks);
         }
         //this.sep(w, "[lightgray]" + Stat.ammoPerShot.localized() + ": [white]" + weapon.ammoPerShot);
-        this.sep(w, "[lightgray]Ammo per shot: [white]" + weapon.ammoPerShot);
+        this.sep(w, "[lightgray]" + Core.bundle.get("stat.prog-mats.ammo-shot") + ": [white]" + weapon.ammoPerShot);
         this.sep(w, "[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(60 / weapon.reloadTime * weapon.shots, 1));
         
         this.sep(w, "[lightgray]" + Stat.targetsAir.localized() + ": [white]" + (!weapon.targetAir ? Core.bundle.get("no") : Core.bundle.get("yes")));

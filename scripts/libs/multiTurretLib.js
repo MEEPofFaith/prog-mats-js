@@ -139,7 +139,7 @@ module.exports = {
             table.add();
             table.row();
             table.left();
-            table.add("[lightgray]" + "Base Turret").fillX().padLeft(24);
+            table.add("[lightgray]" + Core.bundle.get("stat.prog-mats.base-t")).fillX().padLeft(24);
             table.row();
             
             //Base Turret
@@ -151,7 +151,7 @@ module.exports = {
             
             table.row();
             table.left();
-            table.add("[lightgray]" + "Mini Turrets").fillX().padLeft(24);
+            table.add("[lightgray]" + Core.bundle.get("stat.prog-mats.mini-t")).fillX().padLeft(24);
             
             //Mounts
             table.table(null, w => {
