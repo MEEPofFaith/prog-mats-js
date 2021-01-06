@@ -18,10 +18,11 @@ consumes:{
 }
 size: 5
 requirements:[
-  silicon/80
-  metaglass/20
-  plastanium/30
-  thorium/30
+  silicon/150
+  metaglass/50
+  plastanium/80
+  thorium/100
+  surge-alloy/110
 ]
 research: plastanium-compressor
 category: crafting

@@ -1,5 +1,5 @@
 localizedName: Tesla Storm
-description: Zaps a ton more random targets in range with even more damage.
+description: Zaps numerous random targets in range.
 size: 1
 health: 1540
 reloadTime: 20
@@ -10,6 +10,8 @@ requirements:[
   lead/110
   graphite/30
   silicon/65
+  titanium/70
+  surge-alloy/20
   techtanite/25
 ]
 category: turret

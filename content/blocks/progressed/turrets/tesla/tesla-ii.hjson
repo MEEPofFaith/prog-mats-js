@@ -1,5 +1,5 @@
 localizedName: Tesla Coil
-description: Zaps even more random targets in range with more damage.
+description: Zaps multiple random targets in range.
 size: 1
 health: 870
 reloadTime: 40
@@ -11,6 +11,7 @@ requirements:[
   lead/85
   graphite/25
   silicon/55
+  titanium/60
 ]
 category: turret
 research: tesla-i
