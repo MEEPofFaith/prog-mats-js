@@ -15,7 +15,15 @@ module.exports = {
         }
       },
       icons(){
-        return[this.baseRegion, Core.atlas.find(this.name + "-side-outline-0"), Core.atlas.find(this.name + "-side-0")]
+        /*return[
+          this.baseRegion,
+          Core.atlas.find(this.name + "-side-outline-0"),
+          Core.atlas.find(this.name + "-side-0")
+        ];*/
+        return[
+          this.baseRegion,
+          Core.atlas.find(this.name + "-side-0")
+        ];
       }
     });
     

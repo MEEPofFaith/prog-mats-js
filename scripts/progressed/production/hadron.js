@@ -45,7 +45,9 @@ const hadron = extendContent(GenericCrafter, "mindron-collider", {
   icons(){
     return [
       Core.atlas.find(this.name + "-bottom"),
-      Core.atlas.find(this.name + "-icon")
+      Core.atlas.find(this.name + "-collider"),
+      Core.atlas.find(this.name + "-glass"),
+      Core.atlas.find(this.name + "-top")
     ]
   }
 });

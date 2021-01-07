@@ -14,7 +14,7 @@ const dualMinigun = extendContent(ItemTurret, "minigun-ii", {
     }
   },
   icons(){
-    return [
+    return[
       Core.atlas.find("block-4"),
       Core.atlas.find("prog-mats-minigun-ii-frame-0")
     ];
