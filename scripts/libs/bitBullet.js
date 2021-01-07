@@ -82,6 +82,7 @@ module.exports = {
     bit.smokeEffect = Fx.none;
     bit.absorbable = false;
     bit.hittable = false;
+    bit.hitSound = loadSound("bitHit");
     
     return bit;
   }

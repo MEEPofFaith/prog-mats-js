@@ -85,6 +85,8 @@ module.exports = {
       });
       return ent;
     }
+    bit.shootSound = loadSound("bitShoot");
+    
     return bit;
   }
 }
