@@ -1,8 +1,13 @@
-shootType: standardCopper
-alternate: true
-shots: 2
-spread: 1.5
-requirements: []
-buildVisibility: sandboxOnly
+reloadTime: 70
+recoilAmount: 4
+inaccuracy: 15
+range: 140
+powerUse: 1.35
+requirements: [
+  lead/60
+  silicon/40
+  titanium/25
+]
 category: turret
 size: 2
+research: lancer
