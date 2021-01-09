@@ -76,7 +76,22 @@ const duration = 114;
   }
 });*/
 
-const chaosBeam = extend(LaserBulletType, {});
+const chaosBeam = extend(LaserBulletType, {
+  hitTile(b, build, initialHealth, direct){
+    this.super$hitTile(b, build, initialHealth, direct);
+    
+    if(build.team != b.team && direct){
+      build.kill();
+    }
+  },
+  hitEntity(b, other, initialHealth){
+    this.super$hitEntity(b, other, initialHealth);
+    
+    if(other.team != b.team){
+      other.kill();
+    }
+  }
+});
 
 chaosBeam.colors = [Color.valueOf("F3E97966"), Color.valueOf("F3E979"), Color.white];
 chaosBeam.length = length;
