@@ -60,6 +60,10 @@ const script = [
             childs: ["blackhole", "chaos", "excalibur", "silo"]
           },
           {
+            name: "missile",
+            childs: ["missile-ii"]
+          },
+          {
             name: "multi",
             childs: ["multi-i"]
           },

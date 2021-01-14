@@ -1,15 +1,15 @@
 module.exports = {
-  strikeBullet(){
+  strikeBullet(autoDrop, autoDropRad, stopRad, resumeSeek){
     const strike = extend(BasicBulletType, {
       init(b){
         if(!b) return;
         this.super$init(b);
         
-        b.data = [b.owner.x, b.owner.y];
+        // (Owner x, Owner y, angle, reset speed)
+        b.data = [b.owner.x, b.owner.y, 0, false];
       },
       update(b){
         if(!b) return;
-        this.super$update(b);
         
         var owner = b.owner;
         var x = b.data[0];
@@ -19,6 +19,29 @@ module.exports = {
         if(rise < 0.999){
           Fx.rocketSmoke.at(x + Mathf.range(r), y + rise * this.elevation + this.rocketOffset + Mathf.range(r), this.trailSize);
         }
+        
+        var target = Units.closestTarget(b.team, b.x, b.y, this.homingRange, e => (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), t => this.collidesGround);
+        //Instant drop
+        var dropTime = (1 - Mathf.curve(b.fin(), 0, this.growTime / b.lifetime)) + Mathf.curve(b.fin(), (b.lifetime - this.fadeTime) / b.lifetime, 1);
+        if(autoDrop && dropTime == 0 && target != null){
+          if(Mathf.within(b.x, b.y, target.x, target.y, autoDropRad)){
+            b.time = b.lifetime - this.fadeTime;
+          }
+        }
+        //Stop/Start when over target
+        if(target != null){
+          var inRange = Mathf.within(b.x, b.y, target.x, target.y, stopRad);
+          if(inRange && !b.data[3]){
+            b.data[2] = b.vel.len();
+            b.data[3] = true;
+            b.vel.trns(b.vel.angle(), 0.001);
+          }else if(!inRange && resumeSeek && b.data[3]){
+            b.vel.trns(b.vel.angle(), b.data[2]);
+            b.data[3] = false;
+          }
+        }
+        
+        this.super$update(b);
       },
       draw(b){
         //Variables
@@ -30,15 +53,16 @@ module.exports = {
         var fall = 1 - fadeIn;
         var a = fadeOut + fadeIn;
         var rocket = Interp.pow2In.apply(Mathf.curve(b.fin(), 0, this.rocketTime / b.lifetime)) - Interp.pow2In.apply(Mathf.curve(b.fin(), this.rocketTime / b.lifetime, this.growTime / b.lifetime));
+        var target = Mathf.curve(b.fin(), 0, 8 / b.lifetime) - Mathf.curve(b.fin(), (b.lifetime - 8) / b.lifetime, 1);
         
         //Target
-        var radius = 1;
+        var radius = 1 * target;
         Draw.z(Layer.turret + 1);
-        Draw.color(Pal.gray, fall * 2);
+        Draw.color(Pal.gray, target);
         Lines.stroke(3);
         Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id));
         Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id));
-        Draw.color(b.team.color, fall * 2);
+        Draw.color(b.team.color, target);
         Lines.stroke(1);
         Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id));
         Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id));
@@ -79,6 +103,8 @@ module.exports = {
     strike.fadeTime = 20;
     strike.elevation = 200;
     strike.collides = false;
+    strike.hittable = false;
+    strike.absorbable = false;
     
     return strike;
   }
