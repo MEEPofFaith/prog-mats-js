@@ -1,6 +1,10 @@
 name: prog-mats
 displayName: "[accent]Progressed Materials"
-author: "[accent]MEEP of Faith"
+author: ```
+  [accent]MEEP of Faith[]
+  
+  Contributors: ThirstyBoi, Goober, and anyone I stole code from.
+```
 description:
   '''
   Just a hell hole of script chaos. The end.

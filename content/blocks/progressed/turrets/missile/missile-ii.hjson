@@ -4,6 +4,9 @@ health: 800
 reloadTime: 90
 shootEffect: none
 smokeEffect: none
+shootLength: 0
+shootCone: 360
+rotateSpeed: 9999
 shootSound: release
 category: turret
 buildVisibility: sandboxOnly
