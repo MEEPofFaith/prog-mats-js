@@ -1,0 +1,11 @@
+size: 4
+range: 380
+health: 800
+reloadTime: 30
+shootEffect: none
+smokeEffect: none
+shootSound: release
+requirements:[]
+category: turret
+research: foreshadow
+buildVisibility: sandboxOnly
