@@ -6,6 +6,7 @@ module.exports = {
         this.super$init(b);
         
         // (Owner x, Owner y, angle, reset speed)
+        // Owner coords are placed in data in case it dies while the bullet is still active. Don't want null errors.
         b.data = [b.owner.x, b.owner.y, 0, false];
       },
       update(b){
@@ -15,17 +16,17 @@ module.exports = {
         var x = b.data[0];
         var y = b.data[1];
         var r = 3;
-        var rise = Interp.pow2In.apply(Mathf.curve(b.fin(), 0, this.growTime / b.lifetime));
+        var rise = Interp.pow2In.apply(Mathf.curve(b.fin(), 0, this.riseTime / b.lifetime));
         if(rise < 0.999){
           Fx.rocketSmoke.at(x + Mathf.range(r), y + rise * this.elevation + this.rocketOffset + Mathf.range(r), this.trailSize);
         }
         
         var target = Units.closestTarget(b.team, b.x, b.y, this.homingRange, e => (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), t => this.collidesGround);
         //Instant drop
-        var dropTime = (1 - Mathf.curve(b.fin(), 0, this.growTime / b.lifetime)) + Mathf.curve(b.fin(), (b.lifetime - this.fadeTime) / b.lifetime, 1);
+        var dropTime = (1 - Mathf.curve(b.fin(), 0, this.riseTime / b.lifetime)) + Mathf.curve(b.fin(), (b.lifetime - this.fallTime) / b.lifetime, 1);
         if(autoDrop && dropTime == 0 && target != null){
           if(Mathf.within(b.x, b.y, target.x, target.y, autoDropRad)){
-            b.time = b.lifetime - this.fadeTime;
+            b.time = b.lifetime - this.fallTime;
           }
         }
         //Stop/Start when over target
@@ -47,12 +48,12 @@ module.exports = {
         //Variables
         var x = b.data[0];
         var y = b.data[1];
-        var rise = Interp.pow2In.apply(Mathf.curve(b.fin(), 0, this.growTime / b.lifetime));
+        var rise = Interp.pow2In.apply(Mathf.curve(b.fin(), 0, this.riseTime / b.lifetime));
         var fadeOut = 1 - rise;
-        var fadeIn = Mathf.curve(b.fin(), (b.lifetime - this.fadeTime) / b.lifetime, 1);
+        var fadeIn = Mathf.curve(b.fin(), (b.lifetime - this.fallTime) / b.lifetime, 1);
         var fall = 1 - fadeIn;
         var a = fadeOut + fadeIn;
-        var rocket = Interp.pow2In.apply(Mathf.curve(b.fin(), 0, this.rocketTime / b.lifetime)) - Interp.pow2In.apply(Mathf.curve(b.fin(), this.rocketTime / b.lifetime, this.growTime / b.lifetime));
+        var rocket = Interp.pow2In.apply(Mathf.curve(b.fin(), 0, this.engineTime / b.lifetime)) - Interp.pow2In.apply(Mathf.curve(b.fin(), this.engineTime / b.lifetime, this.riseTime / b.lifetime));
         var target = Mathf.curve(b.fin(), 0, 8 / b.lifetime) - Mathf.curve(b.fin(), (b.lifetime - 8) / b.lifetime, 1);
         
         //Target
@@ -73,9 +74,9 @@ module.exports = {
           //Engine stolen from launchpad
           Draw.z(Layer.effect + 0.001);
           Draw.color(Pal.engine);
-          Fill.light(x, y + rise * this.elevation + this.rocketOffset, 10, this.rocketSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+          Fill.light(x, y + rise * this.elevation + this.rocketOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
           for(var i = 0; i < 4; i++){
-            Drawf.tri(x, y + rise * this.elevation + this.rocketOffset, this.rocketSize * 0.375, this.rocketSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id)));
+            Drawf.tri(x, y + rise * this.elevation + this.rocketOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id)));
           }
           //Missile itself
           Draw.z(Layer.flyingUnit + 1);
@@ -95,12 +96,12 @@ module.exports = {
       }
     });
     strike.sprite = "missile";
-    strike.rocketTime = 8;
-    strike.rocketSize = 8;
+    strike.engineTime = 8;
+    strike.engineSize = 8;
     strike.trailSize = 0.5;
     strike.rocketOffset = -8;
-    strike.growTime = 60;
-    strike.fadeTime = 20;
+    strike.riseTime = 60;
+    strike.fallTime = 20;
     strike.elevation = 200;
     strike.collides = false;
     strike.hittable = false;
