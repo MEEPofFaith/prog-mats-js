@@ -35,7 +35,7 @@ const loadFile = (prev, array) => {
 const script = [
   {
     name: "libs",
-    childs: ["funcLib", "multiTurretLib", "bitTurretLib"]
+    childs: ["funcLib"]
   },
   {
     name:"progressed",
@@ -57,7 +57,7 @@ const script = [
           },
           {
             name: "misc",
-            childs: ["blackhole", "chaos", "excalibur", "silo"]
+            childs: ["blackhole", "chaos", "excalibur"]
           },
           {
             name: "missile",

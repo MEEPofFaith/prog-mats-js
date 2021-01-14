@@ -1,4 +1,4 @@
-const bitLib = this.global.pm.bitTurretLib;
+const bitLib = require("libs/turretTypes/bitTurretType");
 const bitBLib = require("libs/bulletTypes/bitBulletType");
 
 const bit = bitLib.new8BitTurret("pixel-i", 8, PowerTurret, PowerTurret.PowerTurretBuild, false);

@@ -1,4 +1,4 @@
-const multiTLib = this.global.pm.multiTurretLib;
+const multiTLib = require("libs/turretTypes/multiTurretType");
 const effect = require("libs/effect");
 
 const unoBullet = extend(BasicBulletType, {});
