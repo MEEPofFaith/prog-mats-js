@@ -14,4 +14,10 @@ missile.homingRange = 400;
 missile.lifetime = 300;
 
 const tisIMissile = extendContent(ItemTurret, "silo", {});
+/**
+ * Easy to read research requirement list
+ *
+ * copper/69
+**/
+tisIMissile.requirements = ItemStack.with(Items.copper, 69);
 tisIMissile.ammo(Items.blastCompound, missile);

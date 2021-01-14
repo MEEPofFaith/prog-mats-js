@@ -5,7 +5,9 @@ reloadTime: 30
 shootEffect: none
 smokeEffect: none
 shootSound: release
-requirements:[]
+requirements:[
+  copper/69
+]
 category: turret
 research: foreshadow
 buildVisibility: sandboxOnly

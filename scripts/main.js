@@ -78,6 +78,10 @@ const script = [
         childs: ["magma"]
       }
     ]
+  },
+  {
+    name: "campaign",
+    childs: ["techtree"]
   }
 ];
 
@@ -97,9 +101,9 @@ for(var i = 0; i < loadedScript.res.length; i++){
 
 if(!Vars.headless){
   Core.app.post(() => {
-        var mod = Vars.mods.locateMod("prog-mats");
-        var change = "mod."+ mod.meta.name + ".";
-        mod.meta.displayName = Core.bundle.get(change + "name");
-        mod.meta.author = Core.bundle.get(change + "author");
-    });
+    var mod = Vars.mods.locateMod("prog-mats");
+    var change = "mod."+ mod.meta.name + ".";
+    mod.meta.displayName = Core.bundle.get(change + "name");
+    mod.meta.author = Core.bundle.get(change + "author");
+  });
 }

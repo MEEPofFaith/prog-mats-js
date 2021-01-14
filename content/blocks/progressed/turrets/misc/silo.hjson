@@ -5,7 +5,5 @@ reloadTime: 30
 shootEffect: none
 smokeEffect: none
 shootSound: release
-requirements:[]
 category: turret
-research: ripple
 buildVisibility: sandboxOnly
