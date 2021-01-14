@@ -15,7 +15,7 @@ missile.homingPower = 0.25;
 missile.homingRange = 400;
 missile.lifetime = 300;
 
-const ohnoMissilesReturns = type.stationaryTurret(ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii");  
+const ohnoMissilesReturns = type.stationaryTurret(ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});  
 /**
  * Easy to read research requirement list
  *
