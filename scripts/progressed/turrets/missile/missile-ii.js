@@ -1,4 +1,4 @@
-const bul = require("libs/strikeBulletType");
+const bul = require("libs/bulletTypes/strikeBulletType");
 const missile = bul.strikeBullet(true, 8, 1, true);
 missile.width = 24;
 missile.height = 24;

@@ -1,4 +1,4 @@
-const bul = require("libs/crossLaserBulletType");
+const bul = require("libs/bulletTypes/crossLaserBulletType");
 const sword = bul.crossLaser(0.3, 0.7, 2, 1, 8, 150, 500, true, true, true);
 sword.length = 400;
 sword.width = 16;

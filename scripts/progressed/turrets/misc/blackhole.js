@@ -18,7 +18,7 @@ const charge = new Effect(38, e => {
   });
 });
 
-const bh = require("libs/blackHoleBulletType");
+const bh = require("libs/bulletTypes/blackHoleBulletType");
 const ballOfSucc = bh.newBlackHole(6, horizonColor, horizonRad, 25);
 
 const kugelblitz = extendContent(PowerTurret, "blackhole", {
