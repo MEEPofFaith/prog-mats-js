@@ -9,13 +9,15 @@
  * @property {Seq}                  objectives      - A sequence of Objectives required to unlock this node. Can be null.
  */
 const node = (parent, contentType, requirements, objectives) => {
-    const tnode = new TechTree.TechNode(TechTree.get(parent), contentType, requirements != null ? requirements : contentType.researchRequirements());
-    let used = new ObjectSet();
-    
-    if(objectives != null){
-        tnode.objectives.addAll(objectives);
-    };
+  const tnode = new TechTree.TechNode(TechTree.get(parent), contentType, requirements != null ? requirements : contentType.researchRequirements());
+  let used = new ObjectSet();
+  
+  if(objectives != null){
+    tnode.objectives.addAll(objectives);
+  };
 };
 const cblock = name => Vars.content.getByName(ContentType.block, "prog-mats-" + name);
 
-//node(Blocks.ripple, cblock("missile-ii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078)));
+//node(Blocks.ripple, cblock("missile-i"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078))); // Yes, you canonically ripped this out of the wreakage.
+//node(cblock("missile-i"), cblock("missile-ii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.nuclearComplex)));
+//node(cblock("missile-ii"), cblock("missile-iii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.Research(Blocks.interplanetaryAccelerator), new Objectives.SectorComplete(SectorPresets.planetaryTerminal)));

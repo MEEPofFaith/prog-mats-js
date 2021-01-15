@@ -85,13 +85,13 @@ module.exports = {
 
         Tmp.v1.trns(b.rotation(), l);
         Tmp.v1.add(b.x, b.y);
-        Drawf.light(Team.derelict, b.x, b.y, Tmp.v1.x, Tmp.v1.y, 15 * fin, this.colors[1], 0.6);
+        Drawf.light(b.team, b.x, b.y, Tmp.v1.x, Tmp.v1.y, 15 * fin, this.colors[1], 0.6);
         
-        Tmp.v1.trns(b.rotation(), mid, cl);
+        Tmp.v1.trns(b.rotation(), cross, -cl[0]);
         Tmp.v1.add(b.x, b.y);
-        Tmp.v2.trns(b.rotation(), mid, -cl);
+        Tmp.v2.trns(b.rotation(), cross, cl[1]);
         Tmp.v2.add(b.x, b.y);
-        Drawf.light(Team.derelict, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, 15 * fin, this.colors[1], 0.6);
+        Drawf.light(b.team, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, 15 * fin, this.colors[1], 0.6);
       }
     });
     holyDestruction.growTime = 5;

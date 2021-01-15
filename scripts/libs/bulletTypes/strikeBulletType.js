@@ -1,5 +1,5 @@
 module.exports = {
-  strikeBullet(autoDrop, autoDropRad, stopRad, resumeSeek){
+  strikeBullet(autoDrop, autoDropRad, stopRad, resumeSeek, startOnOwner, givenData){
     const strike = extend(BasicBulletType, {
       init(b){
         if(!b) return;
@@ -7,7 +7,11 @@ module.exports = {
         
         // (Owner x, Owner y, angle, reset speed)
         // Owner coords are placed in data in case it dies while the bullet is still active. Don't want null errors.
-        b.data = [b.owner.x, b.owner.y, 0, false];
+        if(!givenData){
+          var x = startOnOwner ? b.owner.x : b.x;
+          var y = startOnOwner ? b.owner.y : b.y;
+          b.data = [x, y, 0, false];
+        }
       },
       update(b){
         if(!b) return;
@@ -57,7 +61,7 @@ module.exports = {
         var target = Mathf.curve(b.time, 0, 8) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
         
         //Target
-        var radius = 1 * target;
+        var radius = this.targetRad * target;
         Draw.z(Layer.turret + 1);
         Draw.color(Pal.gray, target);
         Lines.stroke(3);
@@ -101,20 +105,30 @@ module.exports = {
       }
     });
     strike.sprite = "missile";
+    
+    strike.targetRad = 1;
+    
     strike.engineTime = 0;
     strike.engineSize = 8;
     strike.engineOffset = 0;
+    
     strike.bulletOffset = 8;
+    
     strike.trailRnd = 3;
     strike.trailSize = 0.5;
+    
     strike.riseTime = 60;
     strike.fallTime = 20;
     strike.elevation = 200;
+    
     strike.collides = false;
     strike.hittable = false;
     strike.absorbable = false;
-    strike.hitEffect = Fx.none;
+    
+    strike.hitEffect = Fx.blockExplosionSmoke;
     strike.despawnEffect = Fx.massiveExplosion;
+    strike.shootEffect = Fx.none;
+    strike.smokeEffect = Fx.none;
     
     strike.lightRadius = 32;
     strike.lightOpacity = 0.6;

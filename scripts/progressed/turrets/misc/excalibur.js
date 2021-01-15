@@ -181,7 +181,7 @@ arthur.buildType = ent => {
     shoot(type){
       this.useAmmo();
 
-      this.shootLoc.trns(this.rotation - 90, 0, arthur.shootLength);
+      this.shootLoc.trns(this.rotation - 90, 0, arthur.shootLength - this.recoil);
       arthur.chargeBeginEffect.at(this.x + this.shootLoc.x, this.y + this.shootLoc.y, this.rotation);
       
       for(var i = 0; i < arthur.chargeEffects; i++){

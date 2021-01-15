@@ -5,6 +5,7 @@ shootEffect: none
 smokeEffect: none
 shootLength: 0
 shootSound: release
+cooldown: 0.0075
 requirements:[
   copper/69
 ]

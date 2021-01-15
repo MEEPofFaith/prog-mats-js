@@ -14,6 +14,7 @@ module.exports = {
   stationaryTurret(drawBase, type, build, name, obj, objb){
     if(obj == undefined) obj = {};
     if(objb == undefined) objb = {};
+    obj = Object.assign(obj);
     objb = Object.assign({
       draw(){
         if(drawBase) Draw.rect(speennt.baseRegion, this.x, this.y);
@@ -26,17 +27,20 @@ module.exports = {
           Draw.color();
         }
       }
-    });
+    }, objb);
     
     const speennt = extendContent(type, name, obj);
-    speennt.buildType = ent => {
-      ent = extendContent(build, speennt, clone(objb));
-      return ent;
-    }
     
     speennt.rotateSpeed = 9999;
     speennt.shootCone = 360;
     speennt.shootLength = 0;
+    speennt.shootEffect = Fx.none;
+    speennt.smokeEffect = Fx.none;
+    
+    speennt.buildType = ent => {
+      ent = extendContent(build, speennt, clone(objb));
+      return ent;
+    }
     
     return speennt;
   }

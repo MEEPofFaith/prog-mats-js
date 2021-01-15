@@ -1,0 +1,7 @@
+size: 3
+range: 160
+reloadTime: 90
+shootSound: artillery
+cooldown: 0.005
+category: turret
+buildVisibility: sandboxOnly
