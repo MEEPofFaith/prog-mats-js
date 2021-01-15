@@ -11,12 +11,12 @@ const clone = obj => {
 }
 
 module.exports = {
-  stationaryTurret(type, build, name, obj, objb){
+  stationaryTurret(drawBase, type, build, name, obj, objb){
     if(obj == undefined) obj = {};
     if(objb == undefined) objb = {};
     objb = Object.assign({
       draw(){
-        Draw.rect(speennt.baseRegion, this.x, this.y);
+        if(drawBase) Draw.rect(speennt.baseRegion, this.x, this.y);
         Draw.rect(speennt.region, this.x, this.y);
         if(speennt.heatRegion != Core.atlas.find("error") && this.heat > 0.001){
           Draw.color(speennt.heatColor, this.heat);

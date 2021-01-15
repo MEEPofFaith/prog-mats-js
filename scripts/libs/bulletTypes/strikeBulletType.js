@@ -16,8 +16,9 @@ module.exports = {
         var x = b.data[0];
         var y = b.data[1];
         var rise = Interp.pow2In.apply(Mathf.curve(b.time, 0, this.riseTime));
+        var rocket = Interp.pow2In.apply(Mathf.curve(b.time, 0, this.engineTime)) - Interp.pow2In.apply(Mathf.curve(b.time, this.engineTime, this.riseTime));
         if(rise < 0.999){
-          Fx.rocketSmoke.at(x + Mathf.range(this.trailRnd), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd), this.trailSize);
+          Fx.rocketSmoke.at(x + Mathf.range(this.trailRnd * rocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rocket), this.trailSize * rocket);
         }
         
         var target = Units.closestTarget(b.team, b.x, b.y, this.homingRange, e => (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), t => this.collidesGround);
@@ -60,12 +61,12 @@ module.exports = {
         Draw.z(Layer.turret + 1);
         Draw.color(Pal.gray, target);
         Lines.stroke(3);
-        Lines.poly(b.x, b.y, 4, 7 * radius, b.time * 1.5 + Mathf.randomSeed(b.id, 360));
-        Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, b.time * 1.5 + Mathf.randomSeed(b.id, 360));
+        Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+        Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
         Draw.color(b.team.color, target);
         Lines.stroke(1);
-        Lines.poly(b.x, b.y, 4, 7 * radius, b.time * 1.5 + Mathf.randomSeed(b.id, 360));
-        Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, b.time * 1.5 + Mathf.randomSeed(b.id, 360));
+        Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+        Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
         Draw.reset;
         
         //Strike
@@ -75,23 +76,28 @@ module.exports = {
           Draw.color(Pal.engine);
           Fill.light(x, y + rise * this.elevation + this.engineOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
           for(var i = 0; i < 4; i++){
-            Drawf.tri(x, y + rise * this.elevation + this.engineOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id)));
+            Drawf.tri(x, y + rise * this.elevation + this.engineOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
           }
+          Drawf.light(b.team, x, y + rise * this.elevation + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
           //Missile itself
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(this.backColor, a);
           Draw.rect(this.backRegion, x, y + rise * this.elevation + this.bulletOffset, this.width, this.height, 0);
           Draw.color(this.frontColor, a);
           Draw.rect(this.frontRegion, x, y + rise * this.elevation + this.bulletOffset, this.width, this.height, 0);
+          Drawf.light(b.team, x, y + rise * this.elevation + this.bulletOffset, this.lightRadius, this.lightColor, this.lightOpacity);
         }else if(fadeOut == 0 && fadeIn > 0){
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(this.backColor, a);
           Draw.rect(this.backRegion, b.x, b.y + fall * this.elevation, this.width, this.height, 180);
           Draw.color(this.frontColor, a);
           Draw.rect(this.frontRegion, b.x, b.y + fall * this.elevation, this.width, this.height, 180);
+          Drawf.light(b.team, b.x, b.y + fall * this.elevation, this.lightRadius, this.lightColor, this.lightOpacity);
         }
 
         Draw.reset();
+      },
+      drawLight(b){
       }
     });
     strike.sprite = "missile";
@@ -109,6 +115,14 @@ module.exports = {
     strike.absorbable = false;
     strike.hitEffect = Fx.none;
     strike.despawnEffect = Fx.massiveExplosion;
+    
+    strike.lightRadius = 32;
+    strike.lightOpacity = 0.6;
+    strike.lightColor = Pal.engine;
+    
+    strike.engineLightRadius = 56;
+    strike.engineLightOpacity = 0.8;
+    strike.engineLightColor = Pal.engine;
     
     return strike;
   }

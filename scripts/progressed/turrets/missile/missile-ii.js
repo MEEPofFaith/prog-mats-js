@@ -2,20 +2,21 @@ const bul = require("libs/bulletTypes/strikeBulletType");
 const type = require("libs/turretTypes/stationaryTurretType");
 
 const missile = bul.strikeBullet(true, 8, 1, true);
-missile.width = 24;
+missile.width = 12;
 missile.height = 24;
 missile.engineSize = 16;
-missile.trailSize = 0.9;
+missile.trailSize = 0.4;
 missile.bulletOffset = 8;
 missile.damage = 80;
 missile.splashDamage = 300;
 missile.splashDamageRadius = 64;
 missile.speed = 1;
-missile.homingPower = 0.25;
+missile.homingPower = 0.05;
 missile.homingRange = 400;
+missile.cooldown = 0.001;
 missile.lifetime = 300;
 
-const ohnoMissilesReturns = type.stationaryTurret(ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});  
+const ohnoMissilesReturns = type.stationaryTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});  
 /**
  * Easy to read research requirement list
  *

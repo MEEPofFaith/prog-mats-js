@@ -18,4 +18,4 @@ const node = (parent, contentType, requirements, objectives) => {
 };
 const cblock = name => Vars.content.getByName(ContentType.block, "prog-mats-" + name);
 
-node(Blocks.ripple, cblock("missile-ii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078)));
+//node(Blocks.ripple, cblock("missile-ii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078)));
