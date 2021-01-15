@@ -52,7 +52,7 @@ module.exports = {
           
           // Main
           //Start
-          Tmp.v1.trns(b.rotation(), bord);
+          Tmp.v1.trns(b.rotation(), 0);
           Tmp.v1.add(b.x, b.y);
           //Mid
           Tmp.v2.trns(b.rotation(), mid, -(w - bord));
@@ -60,7 +60,7 @@ module.exports = {
           Tmp.v3.trns(b.rotation(), mid, w - bord);
           Tmp.v3.add(b.x, b.y);
           //End
-          Tmp.v4.trns(b.rotation(), l - bord);
+          Tmp.v4.trns(b.rotation(), l);
           Tmp.v4.add(b.x, b.y);
           
           Fill.tri(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y);
@@ -69,7 +69,7 @@ module.exports = {
           // Cross
           for(var j = 0; j < 2; j++){
             //Point
-            Tmp.v1.trns(b.rotation(), cross, (cl[j] - cbord[j]) * Mathf.signs[j]);
+            Tmp.v1.trns(b.rotation(), cross, cl[j] * Mathf.signs[j]);
             Tmp.v1.add(b.x, b.y);
             //Base
             Tmp.v2.trns(b.rotation(), cross + cw[j] - cbord[j]);

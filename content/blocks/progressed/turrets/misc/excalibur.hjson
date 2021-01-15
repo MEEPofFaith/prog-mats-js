@@ -1,11 +1,12 @@
-size: 4
-range: 380
+range: 740
 health: 800
-reloadTime: 30
+reloadTime: 600
 shootEffect: none
 smokeEffect: none
+shootLength: 0
 shootSound: release
-requirements:[]
+requirements:[
+  copper/69
+]
 category: turret
-research: foreshadow
 buildVisibility: sandboxOnly
