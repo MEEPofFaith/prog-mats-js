@@ -139,17 +139,17 @@ arthur.buildType = ent => {
         this.activeAnim = false;
       }
       
-      var openAmount = Mathf.curve(this.chargeTimer / totalTime, 0, arthur.pullTime / totalTime);
-      var closeAmount = Mathf.curve(this.chargeTimer / totalTime, arthur.chargeTime / totalTime, 1);
+      var openAmount = Mathf.curve(this.chargeTimer, 0, arthur.pullTime);
+      var closeAmount = Mathf.curve(this.chargeTimer, arthur.chargeTime, totalTime);
       this.openX = arthur.xOpen * Interp.pow2Out.apply(openAmount) - arthur.xOpen * Interp.pow2In.apply(closeAmount);
       this.openY = arthur.yOpen * Interp.pow5In.apply(openAmount) - arthur.yOpen * Interp.pow5Out.apply(closeAmount);
       
       if(this.activeAnim){
-        var L1 = Mathf.curve(this.chargeTimer / totalTime, arthur.pullTime / totalTime, (arthur.pullTime + arthur.baseLightSpacing) / totalTime) - closeAmount;
-        var L2 = Mathf.curve(this.chargeTimer / totalTime, (arthur.pullTime + arthur.baseLightSpacing) / totalTime, (arthur.pullTime + 2 * arthur.baseLightSpacing) / totalTime) - closeAmount;
-        var L3 = Mathf.curve(this.chargeTimer / totalTime, (arthur.chargeTime - arthur.holyLightDelay - 4 * arthur.holyLightSpacing) / totalTime, (arthur.chargeTime - arthur.holyLightDelay - 3 * arthur.holyLightSpacing) / totalTime) - closeAmount;
-        var L4 = Mathf.curve(this.chargeTimer / totalTime, (arthur.chargeTime - arthur.holyLightDelay - 3 * arthur.holyLightSpacing) / totalTime, (arthur.chargeTime - arthur.holyLightDelay - 2 * arthur.holyLightSpacing) / totalTime) - closeAmount;
-        var L5 = Mathf.curve(this.chargeTimer / totalTime, (arthur.chargeTime - arthur.holyLightDelay - 2 * arthur.holyLightSpacing) / totalTime, (arthur.chargeTime - arthur.holyLightDelay - arthur.holyLightSpacing) / totalTime) - closeAmount;
+        var L1 = Mathf.curve(this.chargeTimer, arthur.pullTime, (arthur.pullTime + arthur.baseLightSpacing)) - closeAmount;
+        var L2 = Mathf.curve(this.chargeTimer, (arthur.pullTime + arthur.baseLightSpacing), (arthur.pullTime + 2 * arthur.baseLightSpacing)) - closeAmount;
+        var L3 = Mathf.curve(this.chargeTimer, (arthur.chargeTime - arthur.holyLightDelay - 4 * arthur.holyLightSpacing), (arthur.chargeTime - arthur.holyLightDelay - 3 * arthur.holyLightSpacing)) - closeAmount;
+        var L4 = Mathf.curve(this.chargeTimer, (arthur.chargeTime - arthur.holyLightDelay - 3 * arthur.holyLightSpacing), (arthur.chargeTime - arthur.holyLightDelay - 2 * arthur.holyLightSpacing)) - closeAmount;
+        var L5 = Mathf.curve(this.chargeTimer, (arthur.chargeTime - arthur.holyLightDelay - 2 * arthur.holyLightSpacing), (arthur.chargeTime - arthur.holyLightDelay - arthur.holyLightSpacing)) - closeAmount;
         this.cellLights = [L1, L2, L3, L4, L5];
       }else{
         this.cellLights = [0, 0, 0, 0, 0];
