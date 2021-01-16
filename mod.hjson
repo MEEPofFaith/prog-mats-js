@@ -2,9 +2,14 @@ name: prog-mats
 displayName: "[accent]Progressed Materials"
 author:
   '''
-  [accent]MEEP of Faith[]
+  [accent]Creator:
+      MEEP of Faith[]
   
-  Contributors: ThirstyBoi, Goober, and anyone I stole code from.
+  Contributors:
+      ThirstyBoi (Eruptor sprites)
+      Goober (Kugelblitz and Popeshadow sprites)
+      VozDuh (Missile turret sprites, new icon)
+      Anyone I stole code from
   '''
 description:
   '''
@@ -13,4 +18,4 @@ description:
   The name definitely isn't made of the synonyms of "Advance" and "Content".
   '''
 version: 0.32
-minGameVersion: 122
+minGameVersion: 123

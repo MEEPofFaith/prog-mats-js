@@ -17,31 +17,30 @@ module.exports = {
     obj = Object.assign(obj);
     objb = Object.assign({
       draw(){
-        if(drawBase) Draw.rect(speennt.baseRegion, this.x, this.y);
-        Draw.rect(speennt.region, this.x, this.y);
-        if(speennt.heatRegion != Core.atlas.find("error") && this.heat > 0.001){
-          Draw.color(speennt.heatColor, this.heat);
+        if(drawBase) Draw.rect(nospin.baseRegion, this.x, this.y);
+        Draw.rect(nospin.region, this.x, this.y);
+        if(nospin.heatRegion != Core.atlas.find("error") && this.heat > 0.001){
+          Draw.color(nospin.heatColor, this.heat);
           Draw.blend(Blending.additive);
-          Draw.rect(speennt.heatRegion, this.x, this.y);
+          Draw.rect(nospin.heatRegion, this.x, this.y);
           Draw.blend();
           Draw.color();
         }
       }
     }, objb);
     
-    const speennt = extendContent(type, name, obj);
+    const nospin = extendContent(type, name, obj);
     
-    speennt.rotateSpeed = 9999;
-    speennt.shootCone = 360;
-    speennt.shootLength = 0;
-    speennt.shootEffect = Fx.none;
-    speennt.smokeEffect = Fx.none;
+    nospin.rotateSpeed = 9999;
+    nospin.shootLength = 0;
+    nospin.shootEffect = Fx.none;
+    nospin.smokeEffect = Fx.none;
     
-    speennt.buildType = ent => {
-      ent = extendContent(build, speennt, clone(objb));
+    nospin.buildType = ent => {
+      ent = extendContent(build, nospin, clone(objb));
       return ent;
     }
     
-    return speennt;
+    return nospin;
   }
 }

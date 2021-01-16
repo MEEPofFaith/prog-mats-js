@@ -1,11 +1,11 @@
 const bul = require("libs/bulletTypes/strikeBulletType");
 const type = require("libs/turretTypes/stationaryTurretType");
 
-const missile = bul.strikeBullet(true, 8, 1, true, true, false);
+const missile = bul.strikeBullet(true, 8, 8, false, true, false);
 missile.width = 12;
 missile.height = 24;
 missile.engineSize = 16;
-missile.trailSize = 0.4;
+missile.trailSize = 0.5;
 missile.bulletOffset = 8;
 missile.damage = 80;
 missile.splashDamage = 300;
@@ -14,8 +14,13 @@ missile.speed = 1;
 missile.homingPower = 0.05;
 missile.homingRange = 400;
 missile.lifetime = 300;
+missile.elevation = 600;
+missile.riseTime = 90;
+missile.fallTime = 45;
 missile.ammmoMultiplier = 1;
 missile.hitSound = Sounds.bang;
+missile.shadowY = 8;
+missile.hitShake = 15;
 
 const ohnoMissilesReturns = type.stationaryTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});  
 /**

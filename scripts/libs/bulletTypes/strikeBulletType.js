@@ -19,8 +19,8 @@ module.exports = {
         var owner = b.owner;
         var x = b.data[0];
         var y = b.data[1];
-        var rise = Interp.pow2In.apply(Mathf.curve(b.time, 0, this.riseTime));
-        var rocket = Interp.pow2In.apply(Mathf.curve(b.time, 0, this.engineTime)) - Interp.pow2In.apply(Mathf.curve(b.time, this.engineTime, this.riseTime));
+        var rise = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseTime));
+        var rocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.engineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.engineTime, this.riseTime));
         if(rise < 0.999){
           Fx.rocketSmoke.at(x + Mathf.range(this.trailRnd * rocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rocket), this.trailSize * rocket);
         }
@@ -52,13 +52,21 @@ module.exports = {
         //Variables
         var x = b.data[0];
         var y = b.data[1];
-        var rise = Interp.pow2In.apply(Mathf.curve(b.time, 0, this.riseTime));
+        var rise = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseTime));
         var fadeOut = 1 - rise;
         var fadeIn = Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime);
         var fall = 1 - fadeIn;
         var a = fadeOut + fadeIn;
-        var rocket = Interp.pow2In.apply(Mathf.curve(b.time, 0, this.engineTime)) - Interp.pow2In.apply(Mathf.curve(b.time, this.engineTime, this.riseTime));
+        var rocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.engineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.engineTime, this.riseTime));
         var target = Mathf.curve(b.time, 0, 8) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
+        var rW = this.width * (1 + rise);
+        var rH = this.height * (1 + rise);
+        var fW = this.width * (1 + fall);
+        var fH = this.height * (1 + fall);
+        Tmp.v1.trns(225, rise * this.elevation * 2);
+        Tmp.v2.trns(225, fall * this.elevation * 2);
+        var rY = y + rise * this.elevation;
+        var fY = b.y + fall * this.elevation;
         
         //Target
         var radius = this.targetRad * target;
@@ -73,30 +81,39 @@ module.exports = {
         Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
         Draw.reset;
         
-        //Strike
+        //Missile
         if(fadeOut > 0 && fadeIn == 0){
           //Engine stolen from launchpad
           Draw.z(Layer.effect + 0.001);
           Draw.color(Pal.engine);
-          Fill.light(x, y + rise * this.elevation + this.engineOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+          Fill.light(x, rY + this.engineOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
           for(var i = 0; i < 4; i++){
-            Drawf.tri(x, y + rise * this.elevation + this.engineOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+            Drawf.tri(x, rY + this.engineOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
           }
-          Drawf.light(b.team, x, y + rise * this.elevation + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
+          Drawf.light(b.team, x, rY + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
           //Missile itself
-          Draw.z(Layer.flyingUnit + 1);
+          Draw.z(Layer.weather - 1);
           Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, x, y + rise * this.elevation + this.bulletOffset, this.width, this.height, 0);
+          Draw.rect(this.backRegion, x, rY + this.bulletOffset, rW, rH, 0);
           Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, x, y + rise * this.elevation + this.bulletOffset, this.width, this.height, 0);
-          Drawf.light(b.team, x, y + rise * this.elevation + this.bulletOffset, this.lightRadius, this.lightColor, this.lightOpacity);
+          Draw.rect(this.frontRegion, x, rY + this.bulletOffset, rW, rH, 0);
+          Drawf.light(b.team, x, rY + this.bulletOffset, this.lightRadius, this.lightColor, this.lightOpacity);
+          //Missile shadow
+          Draw.z(Layer.flyingUnit + 1);
+          Draw.color(0, 0, 0, 0.22 * a);
+          Draw.rect(this.backRegion, x + this.shadowX + Tmp.v1.x, rY + this.shadowY + Tmp.v1.y, rW, rH, this.shadowRot);
         }else if(fadeOut == 0 && fadeIn > 0){
-          Draw.z(Layer.flyingUnit + 1);
+          //Missile itself
+          Draw.z(Layer.weather - 1);
           Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, b.x, b.y + fall * this.elevation, this.width, this.height, 180);
+          Draw.rect(this.backRegion, b.x, fY, fW, fH, 180);
           Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, b.x, b.y + fall * this.elevation, this.width, this.height, 180);
-          Drawf.light(b.team, b.x, b.y + fall * this.elevation, this.lightRadius, this.lightColor, this.lightOpacity);
+          Draw.rect(this.frontRegion, b.x, fY, fW, fH, 180);
+          Drawf.light(b.team, b.x, fY, this.lightRadius, this.lightColor, this.lightOpacity);
+          //Missile shadow
+          Draw.z(Layer.flyingUnit + 1);
+          Draw.color(0, 0, 0, 0.22 * a);
+          Draw.rect(this.backRegion, b.x + this.shadowX + Tmp.v2.x, fY + this.shadowY + Tmp.v2.y, fW, fH, this.shadowRot + 180);
         }
 
         Draw.reset();
@@ -105,6 +122,10 @@ module.exports = {
       }
     });
     strike.sprite = "missile";
+    
+    strike.shadowRot = 0;
+    strike.shadowX = 0;
+    strike.shadowY = 0;
     
     strike.targetRad = 1;
     

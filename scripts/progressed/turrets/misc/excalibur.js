@@ -61,6 +61,8 @@ arthur.buildType = ent => {
       
       Draw.rect(arthur.baseRegion, this.x, this.y);
       
+      Draw.z(Layer.turret);
+      
       Drawf.shadow(arthur.tBase, x - arthur.size / (4/3), y - arthur.size / (4/3), this.rotation - 90);
       Drawf.shadow(arthur.sides[0], sX[0] - arthur.size / (4/3), sY[0] - arthur.size / (4/3), this.rotation - 90);
       Drawf.shadow(arthur.sides[1], sX[1] - arthur.size / (4/3), sY[1] - arthur.size / (4/3), this.rotation - 90);
