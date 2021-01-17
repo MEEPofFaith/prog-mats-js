@@ -12,6 +12,7 @@ module.exports = {
           var y = startOnOwner ? b.owner.y : b.y;
           b.data = [x, y, 0, false];
         }
+        b.fdata = -69420;
       },
       update(b){
         if(!b) return;
@@ -21,8 +22,13 @@ module.exports = {
         var y = b.data[1];
         var rise = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseTime));
         var rocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.engineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.engineTime, this.riseTime));
-        if(rise < 0.999){
-          Fx.rocketSmoke.at(x + Mathf.range(this.trailRnd * rocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rocket), this.trailSize * rocket);
+        if(this.weaveWidth > 0){
+          var weave = Mathf.sin(b.time * this.weaveSpeed) * this.weaveWidth * Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1))] * rise;
+        }else{
+          var weave = 0;
+        }
+        if(rise < 0.999 && Mathf.chanceDelta(this.smokeTrailChance)){
+          Fx.rocketSmoke.at(x + weave + Mathf.range(this.trailRnd * rocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rocket), this.trailSize * rocket);
         }
         
         var target = Units.closestTarget(b.team, b.x, b.y, this.homingRange, e => (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), t => this.collidesGround);
@@ -46,7 +52,22 @@ module.exports = {
           }
         }
         
-        this.super$update(b);
+        if(this.homingPower > 0 && b.time >= this.homingDelay){
+          if(target != null){
+            b.vel.setAngle(Mathf.slerpDelta(b.rotation(), b.angleTo(target), this.homingPower));
+          }
+        }
+
+        if(this.weaveMag > 0){
+          var scl = Mathf.randomSeed(b.id, 0.9, 1.1);
+          b.vel.rotate(Mathf.sin(b.time + Mathf.PI * this.weaveScale/2 * scl, this.weaveScale * scl, this.weaveMag) * Time.delta);
+        }
+
+        if(this.trailChance > 0){
+          if(Mathf.chanceDelta(this.trailChance)){
+            this.trailEffect.at(b.x, b.y, this.trailParam, this.teamTrail ? b.team.color : this.trailColor);
+          }
+        }
       },
       draw(b){
         //Variables
@@ -67,10 +88,23 @@ module.exports = {
         Tmp.v2.trns(225, fall * this.elevation * 2);
         var rY = y + rise * this.elevation;
         var fY = b.y + fall * this.elevation;
+        var side = Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1))];
+        var weave = Mathf.sin(b.time * this.weaveSpeed) * this.weaveWidth * side;
+        if(this.weaveWidth > 0){
+          var rWeave = weave * rise;
+          var fWeave = weave * fall;
+          var rot = Mathf.sin(b.time * this.weaveSpeed / 2) * 45 * side;
+        }else{
+          var rWeave = 0;
+          var fWeave = 0;
+          var rot = 0;
+        }
+        var rX = x + rWeave;
+        var fX = b.x + fWeave;
         
         //Target
         var radius = this.targetRad * target;
-        Draw.z(Layer.turret + 1);
+        Draw.z(Layer.flyingUnitLow - 1);
         Draw.color(Pal.gray, target);
         Lines.stroke(3);
         Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
@@ -86,34 +120,34 @@ module.exports = {
           //Engine stolen from launchpad
           Draw.z(Layer.effect + 0.001);
           Draw.color(Pal.engine);
-          Fill.light(x, rY + this.engineOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+          Fill.light(rX, rY + this.engineOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
           for(var i = 0; i < 4; i++){
-            Drawf.tri(x, rY + this.engineOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+            Drawf.tri(rX, rY + this.engineOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
           }
-          Drawf.light(b.team, x, rY + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
+          Drawf.light(b.team, rX, rY + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
           //Missile itself
           Draw.z(Layer.weather - 1);
           Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, x, rY + this.bulletOffset, rW, rH, 0);
+          Draw.rect(this.backRegion, rX, rY + this.bulletOffset, rW, rH, rot);
           Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, x, rY + this.bulletOffset, rW, rH, 0);
-          Drawf.light(b.team, x, rY + this.bulletOffset, this.lightRadius, this.lightColor, this.lightOpacity);
+          Draw.rect(this.frontRegion, rX, rY + this.bulletOffset, rW, rH, rot);
+          Drawf.light(b.team, rX, rY + this.bulletOffset, this.lightRadius, this.lightColor, this.lightOpacity);
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, x + this.shadowX + Tmp.v1.x, rY + this.shadowY + Tmp.v1.y, rW, rH, this.shadowRot);
+          Draw.rect(this.backRegion, rX + this.shadowX + Tmp.v1.x, rY + this.shadowY + Tmp.v1.y, rW, rH, rot + this.shadowRot);
         }else if(fadeOut == 0 && fadeIn > 0){
           //Missile itself
           Draw.z(Layer.weather - 1);
           Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, b.x, fY, fW, fH, 180);
+          Draw.rect(this.backRegion, fX, fY, fW, fH, rot + 180);
           Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, b.x, fY, fW, fH, 180);
-          Drawf.light(b.team, b.x, fY, this.lightRadius, this.lightColor, this.lightOpacity);
+          Draw.rect(this.frontRegion, fX, fY, fW, fH, rot + 180);
+          Drawf.light(b.team, fX, fY, this.lightRadius, this.lightColor, this.lightOpacity);
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, b.x + this.shadowX + Tmp.v2.x, fY + this.shadowY + Tmp.v2.y, fW, fH, this.shadowRot + 180);
+          Draw.rect(this.backRegion, fX + this.shadowX + Tmp.v2.x, fY + this.shadowY + Tmp.v2.y, fW, fH, rot + this.shadowRot + 180);
         }
 
         Draw.reset();
@@ -122,10 +156,16 @@ module.exports = {
       }
     });
     strike.sprite = "missile";
+    strike.trailChance = 0.5;
+    strike.smokeTrailChance = 0.75;
+    strike.teamTrail = true;
     
     strike.shadowRot = 0;
     strike.shadowX = 0;
     strike.shadowY = 0;
+    
+    strike.weaveWidth = 0;
+    strike.weaveSpeed = 0;
     
     strike.targetRad = 1;
     

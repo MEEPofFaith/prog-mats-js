@@ -1,5 +1,8 @@
 const bul = require("libs/bulletTypes/strikeBulletType");
-const type = require("libs/turretTypes/stationaryTurretType");
+const eff = require("libs/effect");
+
+const trail = eff.trailEffect(50, false, 1);
+trail.layer = Layer.flyingUnitLow - 2;
 
 const missile = bul.strikeBullet(false, 3, 6, false, false, true);
 missile.width = 6;
@@ -7,12 +10,12 @@ missile.height = 8;
 missile.engineSize = 5;
 missile.trailSize = 0.2;
 missile.bulletOffset = 2;
-missile.damage = 8;
-missile.splashDamage = 12;
-missile.splashDamageRadius = 16;
+missile.damage = 28;
+missile.splashDamage = 72;
+missile.splashDamageRadius = 30;
 missile.speed = 2.4;
-missile.homingPower = 0.05;
-missile.homingRange = 400;
+missile.homingPower = 0.035;
+missile.homingRange = 200;
 missile.cooldown = 0.001;
 missile.lifetime = 90;
 missile.elevation = 300;
@@ -23,7 +26,11 @@ missile.targetRad = 0.5;
 missile.hitSound = Sounds.explosion;
 missile.shadowY = 2;
 missile.collidesAir = false;
-missile.hitShake = 5;
+missile.hitShake = 3;
+missile.weaveWidth = 12;
+missile.weaveSpeed = 1;
+missile.trailParam = 3;
+missile.trailEffect = trail;
 
 const actualSwarmer = extendContent(ItemTurret, "missile-i", {
   load(){

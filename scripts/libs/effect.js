@@ -41,5 +41,17 @@ module.exports = {
     });
     
     return smallBlast;
+  },
+  trailEffect(lifetime, bordered, border){
+    const trail = new Effect(lifetime, e => {
+      if(bordered){
+        Draw.color(Pal.gray);
+        Fill.circle(e.x, e.y, e.rotation * e.fout() + border);
+      }
+      Draw.color(e.color);
+      Fill.circle(e.x, e.y, e.rotation * e.fout());
+    });
+    
+    return trail;
   }
 }

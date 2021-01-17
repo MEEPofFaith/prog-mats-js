@@ -1,0 +1,46 @@
+const bul = require("libs/bulletTypes/strikeBulletType");
+const type = require("libs/turretTypes/stationaryTurretType");
+const eff = require("libs/effect");
+
+const trail = eff.trailEffect(240, false, 1);
+trail.layer = Layer.flyingUnitLow - 2;
+
+const missile = bul.strikeBullet(true, 8, 8, false, true, false);
+missile.width = 20;
+missile.height = 40;
+missile.engineSize = 24;
+missile.trailSize = 1;
+missile.bulletOffset = 16;
+missile.damage = 15000;
+missile.splashDamage = 30000;
+missile.splashDamageRadius = 256;
+missile.speed = 1;
+missile.homingPower = 0.05;
+missile.homingRange = 4440;
+missile.lifetime = 4500;
+missile.elevation = 900;
+missile.riseTime = 240;
+missile.fallTime = 90;
+missile.ammmoMultiplier = 1;
+missile.hitSound = Sounds.bang;
+missile.shadowY = 16;
+missile.hitShake = 150;
+missile.trailParam = 8;
+missile.targetRad = 2;
+missile.trailChance = 0.1;
+missile.trailEffect = trail;
+
+const NUKE = type.stationaryTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
+  icons(){
+    return [this.region];
+  }
+}, {});  
+/**
+ * Easy to read research requirement list
+ *
+ * copper/69
+**/
+NUKE.requirements = ItemStack.with(Items.copper, 69);
+NUKE.ammo(Items.blastCompound, missile);
+NUKE.ammoPerShot = 20;
+NUKE.maxAmmo = 40;

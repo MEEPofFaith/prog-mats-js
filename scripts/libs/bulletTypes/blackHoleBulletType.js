@@ -209,14 +209,16 @@ module.exports = {
       
       Groups.bullet.intersect(e.x - succRange, e.y - succRange, succRange * 2, succRange * 2, cons(b => {
         if(b != null){
-          if(Mathf.within(e.x, e.y, b.x, b.y, succRange) && b.type.speed >= 0.1){
-            var dist = Mathf.dst(e.x, e.y, b.x, b.y);
-            var strength = e.data[2][2] * succMul - Interp.pow3Out.apply((dist - range) / succRange) * e.data[2][3] * succMul;
-            
-            b.rotation(Mathf.slerpDelta(b.rotation(), b.angleTo(e.x, e.y), strength));
-            
-            if(Mathf.within(e.x, e.y, b.x, b.y, range)){
-              clearBullet(b, bulletDissapear);
+          if(b.fdata != -69420){
+            if(Mathf.within(e.x, e.y, b.x, b.y, succRange) && b.type.speed >= 0.1){
+              var dist = Mathf.dst(e.x, e.y, b.x, b.y);
+              var strength = e.data[2][2] * succMul - Interp.pow3Out.apply((dist - range) / succRange) * e.data[2][3] * succMul;
+              
+              b.rotation(Mathf.slerpDelta(b.rotation(), b.angleTo(e.x, e.y), strength));
+              
+              if(Mathf.within(e.x, e.y, b.x, b.y, range)){
+                clearBullet(b, bulletDissapear);
+              }
             }
           }
         }
@@ -258,41 +260,43 @@ module.exports = {
             //Adapted from Point Defence from AdvanceContent, translated to v6 by me.
             Groups.bullet.intersect(b.x - b.data[6][0], b.y - b.data[6][0], b.data[6][0] * 2, b.data[6][0] * 2, cons(e => {
               if(e != null){
-                if(Mathf.within(b.x, b.y, e.x, e.y, b.data[6][0]) && e != b && e.team != b.team && e.type.speed >= 0.1){
-                  var dist = Mathf.dst(b.x, b.y, e.x, e.y);
-                  var strength = b.data[4] - Interp.pow3Out.apply((dist - b.data[6][1]) / b.data[6][0]) * b.data[5];
-                  
-                  e.rotation(Mathf.slerpDelta(e.rotation(), e.angleTo(b), strength));
-                  
-                  if(Mathf.within(b.x, b.y, e.x, e.y, b.data[6][1])){
-                    if(e.data != null && e.data.length > 0 && !(e.type instanceof MassDriverBolt)){
-                      if(b.data[0] == e.data[0]){
-                        var radius = (b.data[1] + e.data[1]) * 8;
-                        var cSuccPower = (b.data[2] + e.data[2]) / 2;
-                        var cSuccSlcPower = (b.data[3] + e.data[3]) / 2;
-                        var cBulletPower = (b.data[4] + e.data[4]) / 2;
-                        var cBulletPowerRed = (b.data[5] + e.data[5]) / 2;
-                        var cSuccPowerMul = (b.data[7] + e.data[7]) / 2;
-                        var cSuccRangeMul = (b.data[8] + e.data[8]) / 2;
-                        
-                        var cForce = [cSuccPower, cSuccSlcPower, cBulletPower, cBulletPowerRed]
-                        
-                        var collideX = (b.x + e.x) / 2;
-                        var collideY = (b.y + e.y) / 2;
-                        
-                        this.cataclysmEffect.at(collideX, collideY, Mathf.random(360), [[radius, cSuccPowerMul, cSuccRangeMul], [b.team.color, e.team.color], cForce]);
-                        
-                        Effect.shake(radius / 1.5, radius * 1.5, collideX, collideY);
-                        
-                        clearBullet(e, Fx.none);
-                        clearBullet(b, Fx.none);
+                if(e.fdata != -69420){
+                  if(Mathf.within(b.x, b.y, e.x, e.y, b.data[6][0]) && e != b && e.team != b.team && e.type.speed >= 0.1){
+                    var dist = Mathf.dst(b.x, b.y, e.x, e.y);
+                    var strength = b.data[4] - Interp.pow3Out.apply((dist - b.data[6][1]) / b.data[6][0]) * b.data[5];
+                    
+                    e.rotation(Mathf.slerpDelta(e.rotation(), e.angleTo(b), strength));
+                    
+                    if(Mathf.within(b.x, b.y, e.x, e.y, b.data[6][1])){
+                      if(e.data != null && e.data.length > 0 && !(e.type instanceof MassDriverBolt)){
+                        if(b.data[0] == e.data[0]){
+                          var radius = (b.data[1] + e.data[1]) * 8;
+                          var cSuccPower = (b.data[2] + e.data[2]) / 2;
+                          var cSuccSlcPower = (b.data[3] + e.data[3]) / 2;
+                          var cBulletPower = (b.data[4] + e.data[4]) / 2;
+                          var cBulletPowerRed = (b.data[5] + e.data[5]) / 2;
+                          var cSuccPowerMul = (b.data[7] + e.data[7]) / 2;
+                          var cSuccRangeMul = (b.data[8] + e.data[8]) / 2;
+                          
+                          var cForce = [cSuccPower, cSuccSlcPower, cBulletPower, cBulletPowerRed]
+                          
+                          var collideX = (b.x + e.x) / 2;
+                          var collideY = (b.y + e.y) / 2;
+                          
+                          this.cataclysmEffect.at(collideX, collideY, Mathf.random(360), [[radius, cSuccPowerMul, cSuccRangeMul], [b.team.color, e.team.color], cForce]);
+                          
+                          Effect.shake(radius / 1.5, radius * 1.5, collideX, collideY);
+                          
+                          clearBullet(e, Fx.none);
+                          clearBullet(b, Fx.none);
+                        }else{
+                          clearBullet(e, this.succEffect);
+                          b.damage += fLib.bulletDamage(e.type) * e.damageMultiplier() * this.bulletAbsorbPercent;
+                        }
                       }else{
                         clearBullet(e, this.succEffect);
                         b.damage += fLib.bulletDamage(e.type) * e.damageMultiplier() * this.bulletAbsorbPercent;
                       }
-                    }else{
-                      clearBullet(e, this.succEffect);
-                      b.damage += fLib.bulletDamage(e.type) * e.damageMultiplier() * this.bulletAbsorbPercent;
                     }
                   }
                 }
@@ -306,6 +310,7 @@ module.exports = {
                 //unit.damage(dealt);
                 b.damage += dealt * this.damageIncreasePercent / 30; //Why / 30? Because it hits 30 times a second.
                 unit.maxHealth -= dealt * this.maxHealthReduction;
+                if(unit.maxHealth < 0) unit.maxHealth = 0.001;
                 
                 absorb.at(b.x, b.y, Angles.angle(b.x, b.y, unit.x, unit.y), [unit, Mathf.dst(b.x, b.y, unit.x, unit.y), unit.rotation, unit.mounts]);
                 

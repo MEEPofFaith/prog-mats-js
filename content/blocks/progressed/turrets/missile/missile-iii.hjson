@@ -1,9 +1,8 @@
-size: 4
-range: 280
-reloadTime: 180
+size: 7
+range: 4400
+reloadTime: 600
 shootSound: explosionbig
 cooldown: 0.001
-shootShake: 5
-inaccuracy: 5
+shootShake: 10
 category: turret
 buildVisibility: sandboxOnly
