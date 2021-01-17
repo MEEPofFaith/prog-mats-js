@@ -147,7 +147,7 @@ module.exports = {
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, fX + this.shadowX + Tmp.v2.x, fY + this.shadowY + Tmp.v2.y, fW, fH, rot + this.shadowRot + 180);
+          Draw.rect(this.backRegion, fX + this.shadowX + Tmp.v2.x, fY + this.fallShadowY + Tmp.v2.y, fW, fH, rot + this.shadowRot + 180);
         }
 
         Draw.reset();
@@ -163,6 +163,7 @@ module.exports = {
     strike.shadowRot = 0;
     strike.shadowX = 0;
     strike.shadowY = 0;
+    strike.fallShadowY = 0;
     
     strike.weaveWidth = 0;
     strike.weaveSpeed = 0;
