@@ -1,6 +1,6 @@
 size: 7
 range: 4400
-reloadTime: 600
+reloadTime: 3000
 shootSound: explosionbig
 cooldown: 0.001
 shootShake: 10

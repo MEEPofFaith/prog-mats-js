@@ -118,7 +118,7 @@ module.exports = {
         //Missile
         if(fadeOut > 0 && fadeIn == 0){
           //Engine stolen from launchpad
-          Draw.z(Layer.effect + 0.001);
+          Draw.z(Layer.weather - 2);
           Draw.color(Pal.engine);
           Fill.light(rX, rY + this.engineOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
           for(var i = 0; i < 4; i++){
@@ -135,19 +135,19 @@ module.exports = {
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, rX + this.shadowX + Tmp.v1.x, rY + this.shadowY + Tmp.v1.y, rW, rH, rot + this.shadowRot);
+          Draw.rect(this.backRegion, rX + Tmp.v1.x, rY + this.bulletOffset + Tmp.v1.y, rW, rH, rot + this.shadowRot);
         }else if(fadeOut == 0 && fadeIn > 0){
           //Missile itself
           Draw.z(Layer.weather - 1);
           Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, fX, fY, fW, fH, rot + 180);
+          Draw.rect(this.backRegion, fX, fY + this.bulletOffset, fW, fH, rot + 180);
           Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, fX, fY, fW, fH, rot + 180);
+          Draw.rect(this.frontRegion, fX, fY + this.bulletOffset, fW, fH, rot + 180);
           Drawf.light(b.team, fX, fY, this.lightRadius, this.lightColor, this.lightOpacity);
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, fX + this.shadowX + Tmp.v2.x, fY + this.fallShadowY + Tmp.v2.y, fW, fH, rot + this.shadowRot + 180);
+          Draw.rect(this.backRegion, fX + Tmp.v2.x, fY + this.bulletOffset + Tmp.v2.y, fW, fH, rot + this.shadowRot + 180);
         }
 
         Draw.reset();
@@ -161,9 +161,6 @@ module.exports = {
     strike.teamTrail = true;
     
     strike.shadowRot = 0;
-    strike.shadowX = 0;
-    strike.shadowY = 0;
-    strike.fallShadowY = 0;
     
     strike.weaveWidth = 0;
     strike.weaveSpeed = 0;
