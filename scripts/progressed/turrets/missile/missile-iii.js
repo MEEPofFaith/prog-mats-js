@@ -6,6 +6,7 @@ const trail = eff.trailEffect(240, false, 1);
 trail.layer = Layer.flyingUnitLow - 2;
 
 const missile = bul.strikeBullet(true, 8, 8, false, true, false);
+missile.sprite = "prog-mats-nuke";
 missile.width = 20;
 missile.height = 40;
 missile.engineSize = 24;

@@ -104,6 +104,12 @@ module.exports = {
         
         //Target
         var radius = this.targetRad * target;
+        var mis = this.sprite == "missile";
+        var tY = mis ? rY + this.bulletOffset : rY;
+        var bY = mis ? fY + this.bulletOffset : fY;
+        var engineY = mis ? rY + this.engineOffset : rY;
+        var tW = mis ? rW : this.frontRegion.width * Draw.scl, tH = mis ? rH : this.frontRegion.height * Draw.scl;
+        var bW = mis ? fW : this.backRegion.width * Draw.scl, bH = mis ? fH : this.backRegion.height * Draw.scl;
         Draw.z(Layer.flyingUnitLow - 1);
         Draw.color(Pal.gray, target);
         Lines.stroke(3);
@@ -120,34 +126,46 @@ module.exports = {
           //Engine stolen from launchpad
           Draw.z(Layer.weather - 2);
           Draw.color(Pal.engine);
-          Fill.light(rX, rY + this.engineOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+          Fill.light(rX, engineY, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
           for(var i = 0; i < 4; i++){
-            Drawf.tri(rX, rY + this.engineOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+            Drawf.tri(rX, engineY, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
           }
-          Drawf.light(b.team, rX, rY + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
+          Drawf.light(b.team, rX, engineY, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
           //Missile itself
           Draw.z(Layer.weather - 1);
-          Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, rX, rY + this.bulletOffset, rW, rH, rot);
-          Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, rX, rY + this.bulletOffset, rW, rH, rot);
-          Drawf.light(b.team, rX, rY + this.bulletOffset, this.lightRadius, this.lightColor, this.lightOpacity);
+          if(mis){
+            Draw.color(this.backColor, a);
+            Draw.rect(this.backRegion, rX, rY + this.bulletOffset, rW, rH, rot);
+          }
+          if(mis){
+            Draw.color(this.frontColor, a);
+          }else{
+            Draw.color();
+          }
+          Draw.rect(this.frontRegion, rX, tY, tW, tH, rot);
+          Drawf.light(b.team, rX, tY, this.lightRadius, this.lightColor, this.lightOpacity);
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, rX + Tmp.v1.x, rY + this.bulletOffset + Tmp.v1.y, rW, rH, rot + this.shadowRot);
+          Draw.rect(this.backRegion, rX + Tmp.v1.x, tY + Tmp.v1.y, tW, tH, rot + this.shadowRot);
         }else if(fadeOut == 0 && fadeIn > 0){
           //Missile itself
           Draw.z(Layer.weather - 1);
-          Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, fX, fY + this.bulletOffset, fW, fH, rot + 180);
-          Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, fX, fY + this.bulletOffset, fW, fH, rot + 180);
-          Drawf.light(b.team, fX, fY, this.lightRadius, this.lightColor, this.lightOpacity);
+          if(mis){
+            Draw.color(this.backColor, a);
+          }else{
+            Draw.color();
+          }
+          Draw.rect(this.backRegion, fX, bY, bW, bH, rot + 180);
+          if(mis){
+            Draw.color(this.frontColor, a);
+            Draw.rect(this.frontRegion, fX, fY, fW, fH, rot + 180);
+            Drawf.light(b.team, fX, bY, this.lightRadius, this.lightColor, this.lightOpacity);
+          }
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, fX + Tmp.v2.x, fY + this.bulletOffset + Tmp.v2.y, fW, fH, rot + this.shadowRot + 180);
+          Draw.rect(this.backRegion, fX + Tmp.v2.x, bY + Tmp.v2.y, bW, bH, rot + this.shadowRot + 180);
         }
 
         Draw.reset();
