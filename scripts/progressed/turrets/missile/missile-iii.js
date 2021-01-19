@@ -1,15 +1,16 @@
-const bul = require("libs/bulletTypes/strikeBulletType");
+const bul = require("libs/bulletTypes/nukeBulletType");
 const type = require("libs/turretTypes/stationaryTurretType");
 const eff = require("libs/effect");
 
 const trail = eff.trailEffect(240, false, 1);
 trail.layer = Layer.flyingUnitLow - 2;
 
-const missile = bul.strikeBullet(true, 8, 8, false, true, false);
+const missile = bul.nukeBullet(true, 8, 8, false, true, false);
 missile.sprite = "prog-mats-nuke";
 missile.width = 20;
 missile.height = 40;
-missile.engineSize = 24;
+missile.riseEngineSize = 24;
+missile.fallEngineSize = 14;
 missile.trailSize = 1;
 missile.bulletOffset = 20;
 missile.damage = 15000;
@@ -29,6 +30,8 @@ missile.trailParam = 8;
 missile.targetRad = 2;
 missile.trailChance = 0.2;
 missile.trailEffect = trail;
+missile.riseSpin = 720;
+missile.fallSpin = 180;
 
 const NUKE = type.stationaryTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
   icons(){

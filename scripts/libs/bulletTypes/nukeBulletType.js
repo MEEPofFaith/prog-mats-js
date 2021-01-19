@@ -1,5 +1,5 @@
 module.exports = {
-  strikeBullet(autoDrop, autoDropRad, stopRad, resumeSeek, startOnOwner, givenData){
+  nukeBullet(autoDrop, autoDropRad, stopRad, resumeSeek, startOnOwner, givenData){
     const strike = extend(BasicBulletType, {
       init(b){
         if(!b) return;
@@ -21,14 +21,14 @@ module.exports = {
         var x = b.data[0];
         var y = b.data[1];
         var rise = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseTime));
-        var rocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.engineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.engineTime, this.riseTime));
+        var rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.riseEngineTime, this.riseTime));
         if(this.weaveWidth > 0){
           var weave = Mathf.sin(b.time * this.weaveSpeed) * this.weaveWidth * Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1))] * rise;
         }else{
           var weave = 0;
         }
         if(rise < 0.999 && Mathf.chanceDelta(this.smokeTrailChance)){
-          Fx.rocketSmoke.at(x + weave + Mathf.range(this.trailRnd * rocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rocket), this.trailSize * rocket);
+          Fx.rocketSmoke.at(x + weave + Mathf.range(this.trailRnd * rRocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rRocket), this.trailSize * rRocket);
         }
         
         var target = Units.closestTarget(b.team, b.x, b.y, this.homingRange, e => (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), t => this.collidesGround);
@@ -77,13 +77,15 @@ module.exports = {
         var fadeOut = 1 - rise;
         var fadeIn = Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime);
         var fall = 1 - fadeIn;
-        var a = fadeOut + fadeIn;
-        var rocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.engineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.engineTime, this.riseTime));
+        var a = fadeOut + Interp.pow5Out.apply(fadeIn);
+        var rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.riseEngineTime, this.riseTime));
+        var fRocket = Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime - this.fallTime + this.fallEngineTime));
         var target = Mathf.curve(b.time, 0, 8) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
         var rW = this.width * (1 + rise);
         var rH = this.height * (1 + rise);
         var fW = this.width * (1 + fall);
         var fH = this.height * (1 + fall);
+        var rot = rise * this.riseSpin + fadeIn * this.fallSpin;
         Tmp.v1.trns(225, rise * this.elevation * 2);
         Tmp.v2.trns(225, fall * this.elevation * 2);
         var rY = y + rise * this.elevation;
@@ -93,11 +95,9 @@ module.exports = {
         if(this.weaveWidth > 0){
           var rWeave = weave * rise;
           var fWeave = weave * fall;
-          var rot = Mathf.sin(b.time * this.weaveSpeed / 2) * 45 * side;
         }else{
           var rWeave = 0;
           var fWeave = 0;
-          var rot = 0;
         }
         var rX = x + rWeave;
         var fX = b.x + fWeave;
@@ -119,35 +119,43 @@ module.exports = {
         if(fadeOut > 0 && fadeIn == 0){
           //Engine stolen from launchpad
           Draw.z(Layer.weather - 2);
-          Draw.color(Pal.engine);
-          Fill.light(rX, rY + this.engineOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+          Draw.color(this.engineLightColor);
+          Fill.light(rX, rY, 10, this.riseEngineSize * 1.5625 * rRocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rRocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
           for(var i = 0; i < 4; i++){
-            Drawf.tri(rX, rY + this.engineOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+            Drawf.tri(rX, rY, this.riseEngineSize * 0.375, this.riseEngineSize * 2.5 * rRocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
           }
-          Drawf.light(b.team, rX, rY + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
+          Drawf.light(b.team, rX, rY, this.riseEngineLightRadius * rRocket, this.engineLightColor, this.engineLightOpacity * rRocket);
           //Missile itself
           Draw.z(Layer.weather - 1);
-          Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, rX, rY + this.bulletOffset, rW, rH, rot);
-          Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, rX, rY + this.bulletOffset, rW, rH, rot);
-          Drawf.light(b.team, rX, rY + this.bulletOffset, this.lightRadius, this.lightColor, this.lightOpacity);
+          Draw.color();
+          Draw.alpha(a);
+          Draw.rect(this.frontRegion, rX, rY, this.frontRegion.width * Draw.scl, this.frontRegion.height * Draw.scl, rot);
+          Drawf.light(b.team, rX, rY, this.lightRadius, this.lightColor, this.lightOpacity);
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, rX + Tmp.v1.x, rY + this.bulletOffset + Tmp.v1.y, rW, rH, rot + this.shadowRot);
+          Draw.rect(this.frontRegion, rX + Tmp.v1.x, rY + Tmp.v1.y, this.frontRegion.width * Draw.scl, this.frontRegion.height * Draw.scl, rot + this.shadowRot);
         }else if(fadeOut == 0 && fadeIn > 0){
           //Missile itself
-          Draw.z(Layer.weather - 1);
-          Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, fX, fY + this.bulletOffset, fW, rH, rot + 180);
-          Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, fX, fY, fW, fH, rot + 180);
-          Drawf.light(b.team, fX, fY + this.bulletOffset, this.lightRadius, this.lightColor, this.lightOpacity);
+          Draw.z(Layer.weather - 2);
+          Draw.color();
+          Draw.alpha(a);
+          Draw.rect(this.backRegion, fX, fY, this.backRegion.width * Draw.scl, this.backRegion.height * Draw.scl, rot + 180);
+          Drawf.light(b.team, fX, fY, this.lightRadius, this.lightColor, this.lightOpacity);
+          //Engine stolen from launchpad
+          if(this.fallEngineSize > 0){
+            Draw.z(Layer.weather - 1);
+            Draw.color(this.engineLightColor);
+            Fill.light(fX, fY, 10, this.fallEngineSize * 1.5625 * fRocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, fRocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+            for(var i = 0; i < 4; i++){
+              Drawf.tri(fX, fY, this.fallEngineSize * 0.375, this.fallEngineSize * 2.5 * fRocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+            }
+            Drawf.light(b.team, fX, fY, this.fallEngineLightRadius * fRocket, this.engineLightColor, this.engineLightOpacity * fRocket);
+          }
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, fX + Tmp.v2.x, fY + this.bulletOffset + Tmp.v2.y, fW, rH, rot + this.shadowRot + 180);
+          Draw.rect(this.backRegion, fX + Tmp.v2.x, fY + Tmp.v2.y, this.backRegion.width * Draw.scl, this.backRegion.height * Draw.scl, rot + this.shadowRot + 180);
         }
 
         Draw.reset();
@@ -155,7 +163,7 @@ module.exports = {
       drawLight(b){
       }
     });
-    strike.sprite = "missile";
+    strike.sprite = "nuke";
     strike.trailChance = 0.5;
     strike.smokeTrailChance = 0.75;
     strike.teamTrail = true;
@@ -167,11 +175,11 @@ module.exports = {
     
     strike.targetRad = 1;
     
-    strike.engineTime = 0;
-    strike.engineSize = 8;
+    strike.riseEngineTime = 0;
+    strike.riseEngineSize = 8;
+    strike.fallEngineTime = 8;
+    strike.fallEngineSize = 6;
     strike.engineOffset = 0;
-    
-    strike.bulletOffset = 8;
     
     strike.trailRnd = 3;
     strike.trailSize = 0.5;
@@ -193,9 +201,13 @@ module.exports = {
     strike.lightOpacity = 0.6;
     strike.lightColor = Pal.engine;
     
-    strike.engineLightRadius = 56;
+    strike.riseEngineLightRadius = 56;
+    strike.fallEngineLightRadius = 42;
     strike.engineLightOpacity = 0.8;
     strike.engineLightColor = Pal.engine;
+    
+    strike.riseSpin = 0;
+    strike.fallSpin = 0;
     
     return strike;
   }
