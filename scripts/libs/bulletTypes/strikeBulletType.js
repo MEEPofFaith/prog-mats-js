@@ -93,12 +93,13 @@ module.exports = {
         if(this.weaveWidth > 0){
           var rWeave = weave * rise;
           var fWeave = weave * fall;
-          var rot = Mathf.sin(b.time * this.weaveSpeed / 2) * 45 * side;
+          var rot = Mathf.sin(b.time * this.weaveSpeed / 2) * 45 * side * rise * fall;
         }else{
           var rWeave = 0;
           var fWeave = 0;
           var rot = 0;
         }
+        Tmp.v3.trns(rot, 0, -this.bulletOffset - this.engineOffset);
         var rX = x + rWeave;
         var fX = b.x + fWeave;
         
@@ -120,9 +121,9 @@ module.exports = {
           //Engine stolen from launchpad
           Draw.z(Layer.weather - 2);
           Draw.color(Pal.engine);
-          Fill.light(rX, rY + this.engineOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+          Fill.light(rX + Tmp.v3.x, rY + Tmp.v3.y + this.bulletOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
           for(var i = 0; i < 4; i++){
-            Drawf.tri(rX, rY + this.engineOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+            Drawf.tri(rX + Tmp.v3.x, rY + Tmp.v3.y + this.bulletOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
           }
           Drawf.light(b.team, rX, rY + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
           //Missile itself
@@ -140,14 +141,14 @@ module.exports = {
           //Missile itself
           Draw.z(Layer.weather - 1);
           Draw.color(this.backColor, a);
-          Draw.rect(this.backRegion, fX, fY + this.bulletOffset, fW, rH, rot + 180);
+          Draw.rect(this.backRegion, fX, fY + this.bulletOffset, fW, fH, rot + 180);
           Draw.color(this.frontColor, a);
-          Draw.rect(this.frontRegion, fX, fY, fW, fH, rot + 180);
+          Draw.rect(this.frontRegion, fX, fY + this.bulletOffset, fW, fH, rot + 180);
           Drawf.light(b.team, fX, fY + this.bulletOffset, this.lightRadius, this.lightColor, this.lightOpacity);
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, fX + Tmp.v2.x, fY + this.bulletOffset + Tmp.v2.y, fW, rH, rot + this.shadowRot + 180);
+          Draw.rect(this.backRegion, fX + Tmp.v2.x, fY + this.bulletOffset + Tmp.v2.y, fW, fH, rot + this.shadowRot + 180);
         }
 
         Draw.reset();
