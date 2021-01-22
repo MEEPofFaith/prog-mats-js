@@ -38,10 +38,10 @@ const script = [
     childs: ["funcLib"]
   },
   {
-    name:"progressed",
+    name: "turrets",
     childs:[
       {
-        name: "turrets",
+        name: "progressed",
         childs:[
           {
             name: "eruptor",
@@ -72,14 +72,24 @@ const script = [
             childs: ["pixel-i"]
           }
         ]
-      },
+      }
+    ]
+  },
+  {
+    name: "production",
+    childs: [
       {
-        name: "production",
-        childs: ["hadron"]
-      },
+        name: "progressed",
+        childs:["hadron"]
+      }
+    ]
+  },
+  {
+    name: "liquids",
+    childs: [
       {
-        name: "liquids",
-        childs: ["magma"]
+        name: "progressed",
+        childs:["magma"]
       }
     ]
   },

@@ -5,6 +5,8 @@ const eff = require("libs/effect");
 const trail = eff.trailEffect(120, false, 1);
 trail.layer = Layer.flyingUnitLow - 2;
 
+const boom = eff.scaledLargeBlast(1.5);
+
 const missile = bul.strikeBullet(true, 8, 8, false, true, false);
 missile.width = 12;
 missile.height = 24;
@@ -27,6 +29,7 @@ missile.hitShake = 8;
 missile.trailParam = 5;
 missile.trailChance = 0.2;
 missile.trailEffect = trail;
+missile.despawnEffect = boom;
 
 const ohnoMissilesReturns = type.stationaryTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});  
 /**

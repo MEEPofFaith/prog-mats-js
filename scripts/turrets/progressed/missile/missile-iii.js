@@ -5,6 +5,8 @@ const eff = require("libs/effect");
 const trail = eff.trailEffect(240, false, 1);
 trail.layer = Layer.flyingUnitLow - 2;
 
+const boom = eff.scaledNuclearExplosion(4, 0.75, 80, true);
+
 const missile = bul.nukeBullet(true, 8, 8, false, true, false);
 missile.sprite = "prog-mats-nuke";
 missile.width = 20;
@@ -30,6 +32,7 @@ missile.trailParam = 8;
 missile.targetRad = 2;
 missile.trailChance = 0.2;
 missile.trailEffect = trail;
+missile.despawnEffect = boom;
 missile.riseSpin = 720;
 missile.fallSpin = 180;
 
