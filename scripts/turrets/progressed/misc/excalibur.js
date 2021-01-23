@@ -1,5 +1,5 @@
 const bul = require("libs/bulletTypes/crossLaserBulletType");
-const sword = bul.crossLaser(0.3, 0.7, 3.5, 2, 18, 300, 1000, true, true, true);
+const sword = bul.crossLaser(0.3, 0.7, 3.5, 2, 18, 300, 5000, true, true, true);
 sword.length = 800;
 sword.width = 26;
 sword.growTime = 10;
@@ -185,6 +185,7 @@ arthur.buildType = ent => {
 
       this.shootLoc.trns(this.rotation - 90, 0, arthur.shootLength - this.recoil);
       arthur.chargeBeginEffect.at(this.x + this.shootLoc.x, this.y + this.shootLoc.y, this.rotation);
+      arthur.chargeSound.at(this.x + this.shootLoc.x, this.y + this.shootLoc.y, 1);
       
       for(var i = 0; i < arthur.chargeEffects; i++){
         Time.run(Mathf.random(arthur.chargeMaxDelay), run(() => {
@@ -197,7 +198,7 @@ arthur.buildType = ent => {
 
       Time.run(arthur.chargeTime, run(() => {
         if(!this.isValid()) return;
-        this.recoil = arthur.recoilAmount;
+        this.effects();
         this.heat = 1;
         type.create(this, this.team, this.x + this.shootLoc.x, this.y + this.shootLoc.y, this.rotation, 1, 1);
         this.charging = false;
@@ -214,6 +215,8 @@ arthur.buildType = ent => {
 };
 arthur.heatColor = Color.valueOf("F3E979");
 arthur.chargeTime = 180;
+arthur.chargeSound = loadSound("popeshadowCharge");
+arthur.shootSound = loadSound("popeshadowBlast");
 arthur.pullTime = 60;
 arthur.closeTime = 90;
 arthur.baseLightSpacing = 30;

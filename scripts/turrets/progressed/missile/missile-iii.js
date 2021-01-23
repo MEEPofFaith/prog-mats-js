@@ -82,6 +82,11 @@ NUKE.buildType = ent => {
       }else{
         this.speedScl = Mathf.lerpDelta(this.speedScl, 0, 0.05);
       }
+    },
+    updateCooling(){
+      if(this.hasAmmo()){
+        this.super$updateCooling();
+      }
     }
   });
   ent.setEffs();
