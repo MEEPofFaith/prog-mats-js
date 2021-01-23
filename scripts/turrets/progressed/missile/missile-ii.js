@@ -30,6 +30,7 @@ missile.trailParam = 5;
 missile.trailChance = 0.2;
 missile.trailEffect = trail;
 missile.despawnEffect = boom;
+missile.targetPred = (u, x, y) => -u.maxHealth;
 
 const ohnoMissilesReturns = type.stationaryTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});  
 /**
@@ -41,6 +42,7 @@ ohnoMissilesReturns.requirements = ItemStack.with(Items.copper, 69);
 ohnoMissilesReturns.ammo(Items.blastCompound, missile);
 ohnoMissilesReturns.ammoPerShot = 3;
 ohnoMissilesReturns.maxAmmo = 6;
+ohnoMissilesReturns.unitSort = (u, x, y) => -u.maxHealth;
 
 /**
   * Plans:

@@ -17,7 +17,7 @@ missile.trailSize = 1;
 missile.bulletOffset = 20;
 missile.damage = 15000;
 missile.splashDamage = 30000;
-missile.splashDamageRadius = 800;
+missile.splashDamageRadius = 240;
 missile.speed = 1;
 missile.homingPower = 0.05;
 missile.homingRange = 4440;
@@ -35,6 +35,7 @@ missile.trailEffect = trail;
 missile.despawnEffect = boom;
 missile.riseSpin = 720;
 missile.fallSpin = 180;
+missile.targetPred = (u, x, y) => -u.maxHealth;
 
 const NUKE = extendContent(ItemTurret, "missile-iii", {
   load(){
@@ -98,3 +99,4 @@ NUKE.requirements = ItemStack.with(Items.copper, 69);
 NUKE.ammo(Items.blastCompound, missile);
 NUKE.ammoPerShot = 20;
 NUKE.maxAmmo = 40;
+NUKE.unitSort = (u, x, y) => -u.maxHealth;

@@ -31,7 +31,8 @@ module.exports = {
           Fx.rocketSmoke.at(x + weave + Mathf.range(this.trailRnd * rocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rocket), this.trailSize * rocket);
         }
         
-        var target = Units.closestTarget(b.team, b.x, b.y, this.homingRange, e => (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), t => this.collidesGround);
+        var target = Units.bestTarget(b.team, b.x, b.y, this.homingRange, e => !e.dead && (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), b => true, this.targetPred);
+        
         //Instant drop
         var dropTime = (1 - Mathf.curve(b.time, 0, this.riseTime)) + Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime);
         if(autoDrop && dropTime == 0 && target != null){
@@ -162,6 +163,8 @@ module.exports = {
     strike.trailChance = 0.5;
     strike.smokeTrailChance = 0.75;
     strike.teamTrail = true;
+    
+    strike.targetPred = (u, x, y) => Mathf.dst2(x, y, u.x, u.y);
     
     strike.shadowRot = 0;
     

@@ -133,7 +133,7 @@ var shift = 1;
 actualSwarmer.requirements = ItemStack.with(Items.copper, 69);
 actualSwarmer.burstSpacing = 5;
 actualSwarmer.shots = 9;
-actualSwarmer.inaccuracy = 45;
+actualSwarmer.inaccuracy = 30;
 actualSwarmer.ammo(Items.blastCompound, missile);
 actualSwarmer.shootEffect = Fx.none;
 actualSwarmer.smokeEffect = Fx.none;
