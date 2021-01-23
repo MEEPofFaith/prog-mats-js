@@ -2,7 +2,7 @@ const bul = require("libs/bulletTypes/strikeBulletType");
 const eff = require("libs/effect");
 
 const trail = eff.trailEffect(50, false, 1);
-trail.layer = Layer.flyingUnitLow - 2;
+trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(0.5);
 
@@ -33,6 +33,7 @@ missile.weaveSpeed = 1;
 missile.trailParam = 3;
 missile.trailEffect = trail;
 missile.despawnEffect = boom;
+// missile.rocketEffect = Fx.rocketSmokeLarge;
 
 const actualSwarmer = extendContent(ItemTurret, "missile-i", {
   load(){

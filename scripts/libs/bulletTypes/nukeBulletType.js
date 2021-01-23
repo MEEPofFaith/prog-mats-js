@@ -28,7 +28,7 @@ module.exports = {
           var weave = 0;
         }
         if(rise < 0.999 && Mathf.chanceDelta(this.smokeTrailChance)){
-          Fx.rocketSmoke.at(x + weave + Mathf.range(this.trailRnd * rRocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rRocket), this.trailSize * rRocket);
+          this.rocketEffect.at(x + weave + Mathf.range(this.trailRnd * rRocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rRocket), this.trailSize * rRocket);
         }
         
         var target = Units.bestTarget(b.team, b.x, b.y, this.homingRange, e => !e.dead && (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), b => true, this.targetPred);
@@ -107,7 +107,7 @@ module.exports = {
         
         //Target
         var radius = this.targetRad * target;
-        Draw.z(Layer.flyingUnitLow - 1);
+        Draw.z(Layer.bullet + 1);
         Draw.color(Pal.gray, target);
         Lines.stroke(3);
         Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
@@ -170,6 +170,7 @@ module.exports = {
     strike.trailChance = 0.5;
     strike.smokeTrailChance = 0.75;
     strike.teamTrail = true;
+    strike.rocketEffect = Fx.rocketSmoke;
     
     strike.targetPred = (u, x, y) => Mathf.dst2(x, y, u.x, u.y);
     

@@ -3,17 +3,17 @@ const type = require("libs/turretTypes/stationaryTurretType");
 const eff = require("libs/effect");
 
 const trail = eff.trailEffect(240, false, 1);
-trail.layer = Layer.flyingUnitLow - 2;
+trail.layer = Layer.bullet;
 
 const boom = eff.scaledNuclearExplosion(4, 0.75, 80, true);
 
-const missile = bul.nukeBullet(true, 32, 20, false, true, false);
+const missile = bul.nukeBullet(true, 40, 20, false, true, false);
 missile.sprite = "prog-mats-nuke";
 missile.width = 20;
 missile.height = 40;
 missile.riseEngineSize = 24;
 missile.fallEngineSize = 14;
-missile.trailSize = 1;
+missile.trailSize = 0.7;
 missile.bulletOffset = 20;
 missile.damage = 15000;
 missile.splashDamage = 30000;
