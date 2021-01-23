@@ -7,7 +7,7 @@ trail.layer = Layer.flyingUnitLow - 2;
 
 const boom = eff.scaledNuclearExplosion(4, 0.75, 80, true);
 
-const missile = bul.nukeBullet(true, 8, 8, false, true, false);
+const missile = bul.nukeBullet(true, 32, 20, false, true, false);
 missile.sprite = "prog-mats-nuke";
 missile.width = 20;
 missile.height = 40;
@@ -27,7 +27,7 @@ missile.riseTime = 240;
 missile.fallTime = 90;
 missile.ammmoMultiplier = 1;
 missile.hitSound = Sounds.bang;
-missile.hitShake = 50;
+missile.hitShake = 30;
 missile.trailParam = 8;
 missile.targetRad = 2;
 missile.trailChance = 0.2;
@@ -48,13 +48,21 @@ const NUKE = extendContent(ItemTurret, "missile-iii", {
 
 NUKE.buildType = ent => {
   ent = extendContent(ItemTurret.ItemTurretBuild, NUKE, {
+    setEffs(){
+      this.speedScl = 0;
+    },
     draw(){
       Draw.rect(NUKE.baseRegion, this.x, this.y);
       
-      var reload = Mathf.curve(this.reload, NUKE.reloadTime / 3, NUKE.reloadTime / 3 * 2);
-      Draw.alpha(reload);
-      Draw.rect(NUKE.nukeRegion, this.x, this.y - (NUKE.nukeRegion.height / 4 * (1 - reload)));
-      Draw.reset();
+      // Don't use this is clips through the bottom anyways.
+      // var reload = Mathf.curve(this.reload, NUKE.reloadTime / 3, NUKE.reloadTime / 3 * 2);
+      // Draw.alpha(reload);
+      // Draw.rect(NUKE.nukeRegion, this.x, this.y - (NUKE.nukeRegion.height / 4 * (1 - reload)));
+      // Draw.reset();
+      
+      Draw.draw(Draw.z(), () => {
+        Drawf.construct(this.x, this.y, NUKE.nukeRegion, 0, this.reload / NUKE.reloadTime, this.speedScl, this.reload);
+      });
       
       Draw.rect(NUKE.region, this.x, this.y);
       
@@ -65,8 +73,17 @@ NUKE.buildType = ent => {
         Draw.blend();
         Draw.color();
       }
+    },
+    updateTile(){
+      this.super$updateTile();
+      if(this.reload < NUKE.reloadTime){
+        this.speedScl = Mathf.lerpDelta(this.speedScl, 1, 0.05);
+      }else{
+        this.speedScl = Mathf.lerpDelta(this.speedScl, 0, 0.05);
+      }
     }
   });
+  ent.setEffs();
   return ent;
 };
 /**

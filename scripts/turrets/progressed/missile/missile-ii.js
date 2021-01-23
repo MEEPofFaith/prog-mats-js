@@ -7,7 +7,7 @@ trail.layer = Layer.flyingUnitLow - 2;
 
 const boom = eff.scaledLargeBlast(1.5);
 
-const missile = bul.strikeBullet(true, 8, 8, false, true, false);
+const missile = bul.strikeBullet(true, 8, 4, false, true, false);
 missile.width = 12;
 missile.height = 24;
 missile.engineSize = 16;
