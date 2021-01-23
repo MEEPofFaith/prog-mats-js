@@ -27,7 +27,7 @@ missile.riseTime = 240;
 missile.fallTime = 90;
 missile.ammmoMultiplier = 1;
 missile.hitSound = Sounds.bang;
-missile.hitShake = 150;
+missile.hitShake = 50;
 missile.trailParam = 8;
 missile.targetRad = 2;
 missile.trailChance = 0.2;
@@ -36,16 +36,47 @@ missile.despawnEffect = boom;
 missile.riseSpin = 720;
 missile.fallSpin = 180;
 
-const NUKE = type.stationaryTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
+const NUKE = extendContent(ItemTurret, "missile-iii", {
+  load(){
+    this.super$load();
+    this.nukeRegion = Core.atlas.find("prog-mats-nuke");
+  },
   icons(){
-    return [this.region];
+    return [this.baseRegion, this.region];
   }
-}, {});  
+});
+
+NUKE.buildType = ent => {
+  ent = extendContent(ItemTurret.ItemTurretBuild, NUKE, {
+    draw(){
+      Draw.rect(NUKE.baseRegion, this.x, this.y);
+      
+      var reload = Mathf.curve(this.reload, NUKE.reloadTime / 3, NUKE.reloadTime / 3 * 2);
+      Draw.alpha(reload);
+      Draw.rect(NUKE.nukeRegion, this.x, this.y - (NUKE.nukeRegion.height / 4 * (1 - reload)));
+      Draw.reset();
+      
+      Draw.rect(NUKE.region, this.x, this.y);
+      
+      if(Core.atlas.isFound(NUKE.heatRegion) && this.heat > 0.001){
+        Draw.color(NUKE.heatColor, this.heat);
+        Draw.blend(Blending.additive);
+        Draw.rect(NUKE.heatRegion, this.x, this.y);
+        Draw.blend();
+        Draw.color();
+      }
+    }
+  });
+  return ent;
+};
 /**
  * Easy to read research requirement list
  *
  * copper/69
 **/
+NUKE.reloadTime = 1500;
+NUKE.outlineIcon = false;
+NUKE.shootLength = 0;
 NUKE.requirements = ItemStack.with(Items.copper, 69);
 NUKE.ammo(Items.blastCompound, missile);
 NUKE.ammoPerShot = 20;
