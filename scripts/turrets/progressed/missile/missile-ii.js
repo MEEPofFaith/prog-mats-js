@@ -1,5 +1,5 @@
-const bul = require("libs/bulletTypes/strikeBulletType");
-const type = require("libs/turretTypes/stationaryTurretType");
+const bul = require("libs/bulletTypes/nukeBulletType");
+const type = require("libs/turretTypes/missileTurretType");
 const eff = require("libs/effect");
 
 const trail = eff.trailEffect(120, false, 1);
@@ -7,12 +7,13 @@ trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(1.5);
 
-const missile = bul.strikeBullet(true, 8, 4, false, true, false);
+const missile = bul.nukeBullet(true, 15, 10, true, true, false);
+missile.sprite = "prog-mats-strike";
 missile.width = 12;
 missile.height = 24;
-missile.engineSize = 16;
+missile.riseEngineSize = 16;
+missile.fallEngineSize = 8;
 missile.trailSize = 0.7;
-missile.bulletOffset = 12;
 missile.damage = 80;
 missile.splashDamage = 750;
 missile.splashDamageRadius = 64;
@@ -30,9 +31,11 @@ missile.trailParam = 5;
 missile.trailChance = 0.2;
 missile.trailEffect = trail;
 missile.despawnEffect = boom;
-missile.targetPred = (u, x, y) => -u.maxHealth;
+missile.riseSpin = 360;
+missile.fallSpin = 135;
+missile.unitSort = (u, x, y) => -u.maxHealth;
 
-const ohnoMissilesReturns = type.stationaryTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});  
+const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", "prog-mats-strike", {}, {});
 /**
  * Easy to read research requirement list
  *

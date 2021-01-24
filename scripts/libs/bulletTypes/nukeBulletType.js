@@ -31,7 +31,7 @@ module.exports = {
           this.rocketEffect.at(x + weave + Mathf.range(this.trailRnd * rRocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rRocket), this.trailSize * rRocket);
         }
         
-        var target = Units.bestTarget(b.team, b.x, b.y, this.homingRange, e => !e.dead && (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), b => true, this.targetPred);
+        var target = Units.bestTarget(b.team, b.x, b.y, this.homingRange, e => !e.dead && (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), b => true, this.unitSort);
         
         //Instant drop
         var dropTime = (1 - Mathf.curve(b.time, 0, this.riseTime)) + Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime);
@@ -108,6 +108,11 @@ module.exports = {
         //Target
         var radius = this.targetRad * target;
         Draw.z(Layer.bullet + 1);
+        if(autoDrop){
+          Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * target);
+          Fill.circle(b.x, b.y, autoDropRad * target);
+        }
+        Draw.z(Layer.bullet + 1);
         Draw.color(Pal.gray, target);
         Lines.stroke(3);
         Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
@@ -151,14 +156,14 @@ module.exports = {
             Draw.color(this.engineLightColor);
             Fill.light(fX, fY, 10, this.fallEngineSize * 1.5625 * fRocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, fRocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
             for(var i = 0; i < 4; i++){
-              Drawf.tri(fX, fY, this.fallEngineSize * 0.375, this.fallEngineSize * 2.5 * fRocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+              Drawf.tri(fX, fY, this.fallEngineSize * 0.375, this.fallEngineSize * 2.5 * fRocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id + 2, 360)));
             }
             Drawf.light(b.team, fX, fY, this.fallEngineLightRadius * fRocket, this.engineLightColor, this.engineLightOpacity * fRocket);
           }
           //Missile shadow
           Draw.z(Layer.flyingUnit + 1);
           Draw.color(0, 0, 0, 0.22 * a);
-          Draw.rect(this.backRegion, fX + Tmp.v2.x, fY + Tmp.v2.y, this.backRegion.width * Draw.scl, this.backRegion.height * Draw.scl, rot + this.shadowRot + 180);
+          Draw.rect(this.backRegion, fX + Tmp.v2.x, fY + Tmp.v2.y, this.backRegion.width * Draw.scl, this.backRegion.height * Draw.scl, rot + this.shadowRot + 180 + Mathf.randomSeed(b.id + 3, 360));
         }
 
         Draw.reset();
@@ -172,7 +177,7 @@ module.exports = {
     strike.teamTrail = true;
     strike.rocketEffect = Fx.rocketSmoke;
     
-    strike.targetPred = (u, x, y) => Mathf.dst2(x, y, u.x, u.y);
+    strike.unitSort = (u, x, y) => Mathf.dst2(x, y, u.x, u.y);
     
     strike.shadowRot = 0;
     

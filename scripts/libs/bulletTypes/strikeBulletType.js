@@ -109,6 +109,10 @@ module.exports = {
         //Target
         var radius = this.targetRad * target;
         Draw.z(Layer.bullet + 1);
+        if(autoDrop){
+          Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * target);
+          Fill.circle(b.x, b.y, autoDropRad * target);
+        }
         Draw.color(Pal.gray, target);
         Lines.stroke(3);
         Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
