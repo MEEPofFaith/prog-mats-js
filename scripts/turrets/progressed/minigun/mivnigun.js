@@ -117,6 +117,20 @@ quadMinigun.ammo(
   Items.blastCompound, MiniBlast,
   Items.thorium, MiniThorium
 );
+/*
+  requirements:[
+    copper/650
+    graphite/600
+    titanium/120
+    plastanium/325
+    thorium/160
+    techtanite/240
+  ]
+*/
+// quadMinigun.requirements(Category.turret, ItemStack.with(Items.copper, 650, Items.graphite, 600, Items.titanium, 120, Items.thorium, 160, Items.plastanium, 325, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 240));
+quadMinigun.requirements = ItemStack.with(Items.copper, 650, Items.graphite, 600, Items.titanium, 120, Items.thorium, 160, Items.plastanium, 325, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 240);
+quadMinigun.category = Category.turret;
+quadMinigun.buildVisibility = BuildVisibility.shown;
 
 quadMinigun.buildType = ent => {
   ent = extendContent(ItemTurret.ItemTurretBuild, quadMinigun, {

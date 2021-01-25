@@ -1,8 +1,0 @@
-requirements: [
-  copper/55
-  lead/35
-  metaglass/15
-  graphite/25
-]
-category: turret
-research: hail

@@ -162,6 +162,22 @@ magmaRiser.ammoUseEffect = Fx.none;
 magmaRiser.capClosing = 0.01;
 magmaRiser.heatColor = Color.valueOf("f08913");
 
+/**
+  * requirements:[
+  *   copper/350
+  *   lead/550
+  *   graphite/550
+  *   silicon/600
+  *   titanium/350
+  *   surge-alloy/350
+  *   techtanite/200
+  * ]
+*/
+// magmaRiser.requirements(Category.turret, ItemStack.with(Items.copper, 350, Items.lead, 550, Items.graphite, 550, Items.silicon, 600, Items.titanium, 350, Items.surgeAlloy, 200, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 200));
+magmaRiser.requirements = ItemStack.with(Items.copper, 350, Items.lead, 550, Items.graphite, 550, Items.silicon, 600, Items.titanium, 350, Items.surgeAlloy, 200, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 200);
+magmaRiser.category = Category.turret;
+magmaRiser.buildVisibility = BuildVisibility.shown;
+
 const shootLoc = new Vec2();
 
 magmaRiser.buildType = ent => {

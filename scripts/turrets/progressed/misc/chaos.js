@@ -147,6 +147,16 @@ chaosArray.shootY = -16;
 chaosArray.shootShake = 150
 chaosArray.coolantMultiplier = 1;
 
+//16000 of every vanilla item + 16000 techtanite
+let stack = [];
+Vars.content.items().each(e => {
+  if(e.minfo.mod === null) stack.push(new ItemStack(e, 1));
+});
+stack.push(new ItemStack(Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 1));
+chaosArray.requirements = new ItemStack.mult(stack, 16000);
+chaosArray.category = Category.turret;
+chaosArray.buildVisibility = BuildVisibility.shown;
+
 const liquidPerSec = 150 / 60;
 chaosArray.consumes.add(new ConsumeLiquidFilter(l => l.temperature <= 0.5 && l.flammability < 0.1, liquidPerSec)).update(false);
 

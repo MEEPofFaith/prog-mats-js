@@ -42,9 +42,13 @@ const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "
  *
  * copper/69
 **/
+// NUKE.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
+NUKE.requirements = ItemStack.with(Items.copper, 69);
+NUKE.category = Category.turret;
+NUKE.buildVisibility = BuildVisibility.sandboxOnly;
+
 NUKE.reloadTime = 1500;
 NUKE.shootLength = 0;
-NUKE.requirements = ItemStack.with(Items.copper, 69);
 NUKE.ammo(Items.blastCompound, missile);
 NUKE.ammoPerShot = 20;
 NUKE.maxAmmo = 40;

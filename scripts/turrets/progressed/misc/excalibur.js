@@ -228,3 +228,13 @@ arthur.size = 6;
 arthur.recoilAmount = 8;
 arthur.restitution = 0.005;
 arthur.shootType = sword;
+
+/*
+  requirements: [
+    copper/69
+  ]
+*/
+// arthur.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
+arthur.requirements = ItemStack.with(Items.copper, 69);
+arthur.category = Category.turret;
+arthur.buildVisibility = BuildVisibility.sandboxOnly;

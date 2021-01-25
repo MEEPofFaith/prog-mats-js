@@ -46,7 +46,22 @@ kugelblitz.recoilAmount = 2;
 kugelblitz.heatColor = Color.valueOf("000000");
 kugelblitz.restitution = 0.015;
 kugelblitz.cooldown = 0.005;
-kugelblitz.shootY = -16;
+kugelblitz.shootLength = 0;
+/*
+  requirements:[
+    titanium/100
+    thorium/150
+    surge-alloy/250
+    plastanium/250
+    silicon/800
+    phase-fabric/500
+    techtanite/500
+  ]
+*/
+// kugelblitz.requirements(Category.turret, ItemStack.with(Items.titanium, 100, Items.thorium, 150, Items.plastanium, 250, Items.surgeAlloy, 250, Items.silicon, 800, Items.phaseFabric, 500, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 500));
+kugelblitz.requirements = ItemStack.with(Items.titanium, 100, Items.thorium, 150, Items.plastanium, 250, Items.surgeAlloy, 250, Items.silicon, 800, Items.phaseFabric, 500, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 500);
+kugelblitz.category = Category.turret;
+kugelblitz.buildVisibility = BuildVisibility.shown;
 
 const tmpCol = new Color();
 const pow6In = new Interp.PowIn(6);
@@ -89,28 +104,6 @@ kugelblitz.buildType = ent => {
       this.super$updateTile();
       
       this._spaceAlpha = Mathf.lerpDelta(this._spaceAlpha, Mathf.num(this.cons.valid()), 0.1);
-    },
-    shoot(type){
-      this.useAmmo();
-
-      this.shootLoc.trns(this.rotation - 90, 0, kugelblitz.size * 4 - this.recoil + kugelblitz.shootY);
-      kugelblitz.chargeBeginEffect.at(this.x + this.shootLoc.x, this.y + this.shootLoc.y, this.rotation);
-      
-      for(var i = 0; i < kugelblitz.chargeEffects; i++){
-        Time.run(Mathf.random(kugelblitz.chargeMaxDelay), run(() => {
-          kugelblitz.chargeEffect.at(this.x + this.shootLoc.x, this.y + this.shootLoc.y, this.rotation, kugelblitz.shootType.blackHoleSize);
-        }));
-      }
-      
-      this.charging = true;
-
-      Time.run(kugelblitz.chargeTime, run(() => {
-        if(!this.isValid()) return;
-        this.recoil = kugelblitz.recoilAmount;
-        this.heat = 1;
-        type.create(this, this.team, this.x + this.shootLoc.x, this.y + this.shootLoc.y, this.rotation, 1, 1);
-        this.charging = false;
-      }));
     }
   });
   ent.shootLoc = new Vec2();

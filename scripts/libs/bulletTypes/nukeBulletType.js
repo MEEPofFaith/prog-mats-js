@@ -107,8 +107,8 @@ module.exports = {
         
         //Target
         var radius = this.targetRad * target;
-        Draw.z(Layer.bullet + 1);
         if(autoDrop){
+          Draw.z(Layer.bullet - 1);
           Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * target);
           Fill.circle(b.x, b.y, autoDropRad * target);
         }

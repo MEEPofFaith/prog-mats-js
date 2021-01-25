@@ -1,0 +1,6 @@
+range: 225
+health: 1800
+shootCone: 20
+targetAir: true
+targetGround: true
+rotateSpeed: 2

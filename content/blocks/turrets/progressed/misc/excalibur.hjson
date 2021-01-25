@@ -5,8 +5,3 @@ shootEffect: none
 smokeEffect: none
 shootLength: 0
 cooldown: 0.0075
-requirements:[
-  copper/69
-]
-category: turret
-buildVisibility: sandboxOnly

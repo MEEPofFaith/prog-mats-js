@@ -41,7 +41,11 @@ const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.Ite
  *
  * copper/69
 **/
+// ohnoMissilesReturns.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
 ohnoMissilesReturns.requirements = ItemStack.with(Items.copper, 69);
+ohnoMissilesReturns.category = Category.turret;
+ohnoMissilesReturns.buildVisibility = BuildVisibility.sandboxOnly;
+
 ohnoMissilesReturns.ammo(Items.blastCompound, missile);
 ohnoMissilesReturns.ammoPerShot = 3;
 ohnoMissilesReturns.maxAmmo = 6;

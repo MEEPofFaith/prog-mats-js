@@ -6,5 +6,3 @@ shootSound: explosionbig
 cooldown: 0.001
 shootShake: 5
 inaccuracy: 5
-category: turret
-buildVisibility: sandboxOnly

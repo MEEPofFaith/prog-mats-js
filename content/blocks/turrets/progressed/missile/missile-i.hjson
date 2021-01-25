@@ -6,5 +6,3 @@ shootSound: artillery
 cooldown: 0.005
 shootShake: 1
 targetAir: false
-category: turret
-buildVisibility: sandboxOnly

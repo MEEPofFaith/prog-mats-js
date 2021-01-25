@@ -21,3 +21,16 @@ pew.weaveScale = 10;
 pew.weaveMag = 2;
 
 bit.shootType = pew;
+
+/*
+  requirements: [
+    copper/50
+    lead/60
+    silicon/40
+    titanium/30
+  ]
+*/
+// bit.requirements(Category.turret, ItemStack.with(Items.copper, 50, Items.lead, 60, Items.silicon, 40, Items.titanium, 30));
+bit.requirements = ItemStack.with(Items.copper, 50, Items.lead, 60, Items.silicon, 40, Items.titanium, 30);
+bit.category = Category.turret;
+bit.buildVisibility = BuildVisibility.shown;

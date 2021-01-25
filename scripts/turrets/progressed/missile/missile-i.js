@@ -124,14 +124,18 @@ actualSwarmer.buildType = ent => {
   ent.setEffs();
   return ent;
 };
+var offset = 8;
+var shift = 1;
 /**
  * Easy to read research requirement list
  *
  * copper/69
 **/
-var offset = 8;
-var shift = 1;
+// actualSwarmer.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
 actualSwarmer.requirements = ItemStack.with(Items.copper, 69);
+actualSwarmer.category = Category.turret;
+actualSwarmer.buildVisibility = BuildVisibility.sandboxOnly;
+
 actualSwarmer.burstSpacing = 5;
 actualSwarmer.shots = 9;
 actualSwarmer.inaccuracy = 30;

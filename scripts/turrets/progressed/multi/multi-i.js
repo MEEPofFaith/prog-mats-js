@@ -73,8 +73,7 @@ mainBullet.lifetime = 60;
 mainBullet.shootEffect = Fx.shootSmall;
 mainBullet.smokeEffect = Fx.shootSmallSmoke;
 
-//Coalescence -> Amalgamation -> Conglomeration
-//Or maybe Aggregate -> Assimilation -> Amalgamation
+//Aggregate -> Assimilation -> Amalgamation
 const jumble = multiTLib.newMultiTurret("multi-i", weapons, Items.graphite, mainBullet, 80, 20, "Aggregate");
 jumble.size = 2;
 jumble.range = 15 * 8;
@@ -82,3 +81,17 @@ jumble.maxAmmo = 225;
 jumble.ammoPerShot = 12;
 jumble.recoil = 2;
 jumble.reloadTime = 21;
+
+/*
+  requirements: [
+    copper/135
+    lead/75
+    metaglass/40
+    graphite/80
+    silicon/50
+  ]
+*/
+// jumble.requirements(Category.turret, ItemStack.with(Items.copper, 135, Items.lead, 75, Items.metaglass, 40, Items.graphite, 80, Items.silicon, 50));
+jumble.requirements = ItemStack.with(Items.copper, 135, Items.lead, 75, Items.metaglass, 40, Items.graphite, 80, Items.silicon, 50);
+jumble.category = Category.turret;
+jumble.buildVisibility = BuildVisibility.shown;

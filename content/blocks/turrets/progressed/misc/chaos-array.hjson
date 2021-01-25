@@ -1,0 +1,7 @@
+powerUse: 3000
+range: 560
+recoilAmount: 8
+rotateSpeed: 0.3
+shootCone: 35
+cooldown: 0.0015
+restitution: 0.008

@@ -72,6 +72,19 @@ teslaRing.lightningColor = lightningCol;
 teslaRing.shootSound = Sounds.spark;
 teslaRing.shootEffect = Fx.sparkShoot;
 
+/*
+  requirements:[
+    copper/45
+    lead/60
+    silicon/25
+    titanium/25
+  ]
+*/
+// teslaRing.requirements(Category.turret, ItemStack.with(Items.copper, 45, Items.lead, 60, Items.silicon, 25, Items.titanium, 25));
+teslaRing.requirements = ItemStack.with(Items.copper, 45, Items.lead, 60, Items.silicon, 25, Items.titanium, 25);
+teslaRing.category = Category.turret;
+teslaRing.buildVisibility = BuildVisibility.shown;
+
 const shootLoc = new Vec2();
 const inacc = new Vec2();
 

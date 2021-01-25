@@ -9,13 +9,3 @@ restitution: 0.01
 shootSound: none
 ambientSound: beam
 ambientSoundVolume: 2
-requirements:[
-  copper/200
-  lead/300
-  graphite/300
-  silicon/325
-  titanium/200
-  thorium/200
-]
-category: turret
-research: fuse
