@@ -108,11 +108,11 @@ module.exports = {
         //Target
         var radius = this.targetRad * target;
         if(autoDrop){
-          Draw.z(Layer.bullet - 1);
+          Draw.z(Layer.bullet + 0.001);
           Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * target);
           Fill.circle(b.x, b.y, autoDropRad * target);
         }
-        Draw.z(Layer.bullet + 1);
+        Draw.z(Layer.bullet + 0.002);
         Draw.color(Pal.gray, target);
         Lines.stroke(3);
         Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
@@ -126,13 +126,15 @@ module.exports = {
         //Missile
         if(fadeOut > 0 && fadeIn == 0){
           //Engine stolen from launchpad
-          Draw.z(Layer.weather - 2);
-          Draw.color(this.engineLightColor);
-          Fill.light(rX, rY, 10, this.riseEngineSize * 1.5625 * rRocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rRocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
-          for(var i = 0; i < 4; i++){
-            Drawf.tri(rX, rY, this.riseEngineSize * 0.375, this.riseEngineSize * 2.5 * rRocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+          if(this.riseEngineSize > 0){
+            Draw.z(Layer.effect + 0.001);
+            Draw.color(this.engineLightColor);
+            Fill.light(rX, rY, 10, this.riseEngineSize * 1.5625 * rRocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rRocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+            for(var i = 0; i < 4; i++){
+              Drawf.tri(rX, rY, this.riseEngineSize * 0.375, this.riseEngineSize * 2.5 * rRocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+            }
+            Drawf.light(b.team, rX, rY, this.riseEngineLightRadius * rRocket, this.engineLightColor, this.engineLightOpacity * rRocket);
           }
-          Drawf.light(b.team, rX, rY, this.riseEngineLightRadius * rRocket, this.engineLightColor, this.engineLightOpacity * rRocket);
           //Missile itself
           Draw.z(Layer.weather - 1);
           Draw.color();

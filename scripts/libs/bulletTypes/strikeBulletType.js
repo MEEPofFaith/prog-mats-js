@@ -109,11 +109,11 @@ module.exports = {
         //Target
         var radius = this.targetRad * target;
         if(autoDrop){
-          Draw.z(Layer.bullet - 1);
+          Draw.z(Layer.bullet + 0.001);
           Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * target);
           Fill.circle(b.x, b.y, autoDropRad * target);
         }
-        Draw.z(Layer.bullet + 1);
+        Draw.z(Layer.bullet + 0.002);
         Draw.color(Pal.gray, target);
         Lines.stroke(3);
         Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
@@ -127,13 +127,15 @@ module.exports = {
         //Missile
         if(fadeOut > 0 && fadeIn == 0){
           //Engine stolen from launchpad
-          Draw.z(Layer.weather - 2);
-          Draw.color(Pal.engine);
-          Fill.light(rX + Tmp.v3.x, rY + Tmp.v3.y + this.bulletOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
-          for(var i = 0; i < 4; i++){
-            Drawf.tri(rX + Tmp.v3.x, rY + Tmp.v3.y + this.bulletOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+          if(this.engineSize > 0){
+            Draw.z(Layer.effect + 0.001);
+            Draw.color(Pal.engine);
+            Fill.light(rX + Tmp.v3.x, rY + Tmp.v3.y + this.bulletOffset, 10, this.engineSize * 1.5625 * rocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+            for(var i = 0; i < 4; i++){
+              Drawf.tri(rX + Tmp.v3.x, rY + Tmp.v3.y + this.bulletOffset, this.engineSize * 0.375, this.engineSize * 2.5 * rocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
+            }
+            Drawf.light(b.team, rX, rY + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
           }
-          Drawf.light(b.team, rX, rY + this.engineOffset, this.engineLightRadius * rocket, this.engineLightColor, this.engineLightOpacity * rocket);
           //Missile itself
           Draw.z(Layer.weather - 1);
           Draw.color(this.backColor, a);
