@@ -109,7 +109,7 @@ hadron.buildType = ent => {
       Draw.z(Layer.block);
       Draw.rect(hadron.bottomRegion, this.x, this.y);
       
-      if(this.progress > 0){
+      if(this.progress > hadron.collideStart){
         for(var i = 0; i < 2; i++){
           p1.trns(this._curRot[i], this._dist[i]);
           p1.add(this.x, this.y);
@@ -126,9 +126,11 @@ hadron.buildType = ent => {
           Draw.color(this._color[i]);
           Lines.stroke(this._stroke);
           Fill.circle(points[0].x, points[0].y, Lines.getStroke() * hadron.particleSize);
+          // Drawf.light(this.team, points[0].x, points[0].y, Lines.getStroke() * hadron.particleSize * 2, Draw.getColor(), 0.7);
           for(var j = 0; j < 4; j++){
             Lines.stroke(this._stroke * hadron.strokes[j]);
             Lines.line(points[j].x, points[j].y, points[j + 1].x, points[j + 1].y);
+            // Drawf.light(this.team, points[j].x, points[j].y, points[j + 1].x, points[j + 1].y, Lines.getStroke() * 2, Draw.getColor(), 0.7);
           }
           Draw.color();
         }
@@ -163,7 +165,9 @@ hadron.buildType = ent => {
     updateTile(){
       this.super$updateTile();
       
-      if(this.progress <= 0){
+      print(this._heat);
+      
+      if(this.progress >= 1){
         if(Mathf.chance(0.5)){
           this._color = [Items.titanium.color, Items.thorium.color];
         }else{
@@ -189,21 +193,20 @@ hadron.buildType = ent => {
         this._dist[i] = Mathf.lerp(hadron.collidePoint + hadron.collideSep * side, hadron.collidePoint, this._colliding);
         
         if(this.progress <= hadron.collideStart && this.progress > 0){
-          this._heat = Mathf.lerpDelta(this._beforeHeat, 1, this._before);
           this._length[i] = 0;
         }else if(this.progress > hadron.collideStart && this.progress < hadron.collideEnd){
           this._length[i] = Mathf.lerp(hadron.lengthStart, hadron.lengthEnd, this._interpColliding) * side;
-          
-          this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
         }else if(this.progress >= hadron.collideEnd){
           this._length[i] = Mathf.lerp(hadron.lengthEnd, 0, this._after) * side;
-          
-          this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
-        }else{
-          this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
         }
         
         this._length[i] = equalArcLen(hadron.collidePoint, this._dist[i], this._length[i]);
+      }
+      
+      if(this.progress <= hadron.collideStart && this.progress > 0){
+        this._heat = Mathf.lerp(this._beforeHeat, 1, this._before);
+      }else{
+        this._heat = Mathf.lerpDelta(this._heat, 0, hadron.cooldown);
       }
       
       if(this.progress >= hadron.collideStart && this.progress <= hadron.collideEnd && !this._released){

@@ -32,10 +32,20 @@ const loadFile = (prev, array) => {
 };
 
 //Basically just folders and the stuff inside those folders.
+//First load libraries, then items, then stuff that may or may not need those items.
 const script = [
   {
     name: "libs",
     childs: ["funcLib"]
+  },
+  {
+    name: "items",
+    childs: [
+      {
+        name: "progressed",
+        childs:["techtanite"]
+      }
+    ]
   },
   {
     name: "turrets",
@@ -95,7 +105,7 @@ const script = [
   },
   {
     name: "campaign",
-    childs: ["techtree"]
+    childs: ["techtree"] //Put this last. Make sure everything is loaded.
   }
 ];
 

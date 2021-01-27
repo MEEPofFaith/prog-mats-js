@@ -44,16 +44,18 @@ module.exports = {
       },
       updateTile(){
         this.super$updateTile();
-        if(this.reload < nospin.reloadTime && this.hasAmmo()){
+        
+        if(this.reload < nospin.reloadTime && this.hasAmmo() && this.consValid()){
           this._speedScl = Mathf.lerpDelta(this._speedScl, 1, 0.05);
         }else{
           this._speedScl = Mathf.lerpDelta(this._speedScl, 0, 0.05);
         }
       },
       updateCooling(){
-        if(this.hasAmmo()){
-          this.super$updateCooling();
-        }
+        if(this.hasAmmo() && this.consValid()) this.super$updateCooling();
+      },
+      updateShooting(){
+        if(this.hasAmmo() && this.consValid()) this.super$updateShooting();
       }
     }, objb);
     

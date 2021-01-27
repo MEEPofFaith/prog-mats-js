@@ -9,14 +9,20 @@
  * @property {Seq}                  objectives      - A sequence of Objectives required to unlock this node. Can be null.
  */
 const node = (parent, contentType, requirements, objectives) => {
-  const tnode = new TechTree.TechNode(TechTree.get(parent), contentType, requirements != null ? requirements : contentType.researchRequirements());
-  let used = new ObjectSet();
-  
-  if(objectives != null){
-    tnode.objectives.addAll(objectives);
-  };
+  if(parent != null && contentType != null){
+    const tnode = new TechTree.TechNode(TechTree.get(parent), contentType, requirements != null ? requirements : contentType.researchRequirements());
+    let used = new ObjectSet();
+    
+    if(objectives != null) tnode.objectives.addAll(objectives);
+  }else{
+    print(parent + " or " + contentType + " is null.");
+  }
 };
 const cblock = name => Vars.content.getByName(ContentType.block, "prog-mats-" + name);
+const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + name);
+
+/** Items */
+node(Items.surgeAlloy, citem("techtanite"), null, null);
 
 /** Production */
 node(Blocks.plastaniumCompressor, cblock("mindron-collider"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.impact0078)));

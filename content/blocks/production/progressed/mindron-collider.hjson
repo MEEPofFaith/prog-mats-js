@@ -1,17 +1,18 @@
-outputItem: techtanite/3
 craftTime: 300
 ambientSound: none
 hasPower: true
 baseExplosiveness: 5
+itemCapacity: 15
 consumes:{
   items:{
     items:[
-      titanium/4
-      thorium/4
+      titanium/7
+      thorium/7
     ]
   }
   power:{
     usage: 14
   }
 }
+outputItem: techtanite/4
 size: 5
