@@ -15,7 +15,7 @@ const arthur = extendContent(PowerTurret, "excalibur", {
     this.cells = [];
     this.lightRegions = [];
     
-    this.baseRegion = Core.atlas.find("prog-mats-block-6");
+    this.baseRegion = Core.atlas.find("prog-mats-block-" + this.size);
     this.tBase = Core.atlas.find(this.name + "-bottom");
     this.tCross = Core.atlas.find(this.name + "-top");
     for(var i = 0; i < 2; i++){
