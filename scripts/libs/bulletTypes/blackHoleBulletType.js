@@ -162,6 +162,15 @@ module.exports = {
             }
           });
           
+          if(b.time < expandTime + 5){
+            fLib.trueEachTile(b.x, b.y, range, tile => {
+              tile.setAir();
+              tile.setFloor(Blocks.space);
+              Vars.world.notifyChanged(tile);
+            });
+            Events.fire(new WorldLoadEvent());
+          }
+          
           var succMul = b.data[0][1];
           var succRange = b.data[0][0] * b.data[0][2] * expand;
           Units.nearbyEnemies(null, b.x - succRange, b.y - succRange, succRange * 2, succRange * 2, cons(unit => {
