@@ -23,9 +23,13 @@ const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + na
 
 /** Items */
 node(Items.surgeAlloy, citem("techtanite"), null, null);
+// node(Items.thorium, citem("missile-shell"), null, Seq.with(new Objectives.Research(cblock("missile-ii"))));
 
 /** Production */
 node(Blocks.plastaniumCompressor, cblock("mindron-collider"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.impact0078)));
+// node(cblock("mindron-collider"), cblock("shell-press"), null, Seq.with(new Objectives.Research(cblock("missile-i"))));
+// node(cblock("shell-press"), cblock("missile-crafter"), null, Seq.with(new Objectives.Research(cblock("missile-i"))));
+// node(cblock("missile-crafter"), cblock("nuke-crafter"), null, Seq.with(new Objectives.Research(cblock("missile-ii"))));
 
 /** Turret */
 
@@ -50,7 +54,7 @@ node(Blocks.foreshadow, cblock("chaos-array"), null, sectors);
 
 // Missile
 //node(Blocks.ripple, cblock("missile-i"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078))); // Yes, you canonically ripped this out of the wreakage.
-//node(cblock("missile-i"), cblock("missile-ii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.nuclearComplex)));
+//node(cblock("missile-i"), cblock("missile-ii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.nuclearComplex), new Objectives.Research(citem("missile-shell"))));
 //node(cblock("missile-ii"), cblock("missile-iii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.Research(Blocks.interplanetaryAccelerator), new Objectives.SectorComplete(SectorPresets.planetaryTerminal))); // Big nuke big pad
 
 //Multi

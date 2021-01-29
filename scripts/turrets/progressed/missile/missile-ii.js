@@ -2,6 +2,8 @@ const bul = require("libs/bulletTypes/nukeBulletType");
 const type = require("libs/turretTypes/missileTurretType");
 const eff = require("libs/effect");
 
+const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + name);
+
 const trail = eff.trailEffect(120, false, 1);
 trail.layer = Layer.bullet;
 
@@ -9,8 +11,6 @@ const boom = eff.scaledLargeBlast(1.5);
 
 const missile = bul.nukeBullet(true, 15, 10, true, true, false);
 missile.sprite = "prog-mats-strike";
-missile.width = 12;
-missile.height = 24;
 missile.riseEngineSize = 16;
 missile.fallEngineSize = 8;
 missile.trailSize = 0.7;
@@ -35,6 +35,32 @@ missile.riseSpin = 360;
 missile.fallSpin = 135;
 missile.unitSort = (u, x, y) => -u.maxHealth;
 
+const emp = bul.nukeBullet(true, 15, 10, true, true, false);
+bul.sprite = "prog-mats-strike";
+bul.riseEngineSize = 16;
+bul.fallEngineSize = 8;
+bul.trailSize = 0.7;
+bul.damage = 24;
+bul.splashDamage = 750;
+bul.splashDamageRadius = 64;
+bul.speed = 3;
+bul.homingPower = 0.05;
+bul.homingRange = 320;
+bul.lifetime = 300;
+bul.elevation = 600;
+bul.riseTime = 90;
+bul.fallTime = 45;
+bul.ammmoMultiplier = 1;
+bul.hitSound = Sounds.bang;
+bul.hitShake = 8;
+bul.trailParam = 5;
+bul.trailChance = 0.2;
+bul.trailEffect = trail;
+bul.despawnEffect = boom;
+bul.riseSpin = 360;
+bul.fallSpin = 135;
+bul.unitSort = (u, x, y) => -u.maxHealth;
+
 const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", "prog-mats-strike", {}, {});
 /**
  * Easy to read research requirement list
@@ -46,9 +72,8 @@ ohnoMissilesReturns.requirements = ItemStack.with(Items.copper, 69);
 ohnoMissilesReturns.category = Category.turret;
 ohnoMissilesReturns.buildVisibility = BuildVisibility.sandboxOnly;
 
-ohnoMissilesReturns.ammo(Items.blastCompound, missile);
-ohnoMissilesReturns.ammoPerShot = 3;
-ohnoMissilesReturns.maxAmmo = 6;
+ohnoMissilesReturns.ammo(citem("basic-missile"), missile, citem("emp-missile"), emp);
+ohnoMissilesReturns.maxAmmo = 3;
 ohnoMissilesReturns.unitSort = (u, x, y) => -u.maxHealth;
 
 /**

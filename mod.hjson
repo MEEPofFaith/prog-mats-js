@@ -18,5 +18,6 @@ description:
   
   The name definitely isn't made of the synonyms of "Advance" and "Content".
   '''
+dependencies: ["multi-lib"]
 version: 0.33
 minGameVersion: 123

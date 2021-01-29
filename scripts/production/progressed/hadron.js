@@ -165,8 +165,6 @@ hadron.buildType = ent => {
     updateTile(){
       this.super$updateTile();
       
-      print(this._heat);
-      
       if(this.progress >= 1){
         if(Mathf.chance(0.5)){
           this._color = [Items.titanium.color, Items.thorium.color];

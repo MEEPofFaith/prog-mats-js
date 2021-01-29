@@ -43,7 +43,25 @@ const script = [
     childs: [
       {
         name: "progressed",
-        childs:["techtanite"]
+        childs:["techtanite", "mShell", "nShell",
+          {
+            name: "missile",
+            childs:["basicM", "empM"]
+          },
+          {
+            name: "nuke",
+            childs:[]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    name: "production",
+    childs: [
+      {
+        name: "progressed",
+        childs:["hadron", "shellPress", "missileCrafter"]
       }
     ]
   },
@@ -82,15 +100,6 @@ const script = [
             childs: ["pixel-i"]
           }
         ]
-      }
-    ]
-  },
-  {
-    name: "production",
-    childs: [
-      {
-        name: "progressed",
-        childs:["hadron"]
       }
     ]
   },
