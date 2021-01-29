@@ -142,6 +142,11 @@ module.exports = {
     absorb.layer = Layer.flyingUnit + 1;
     
     const cataclysm = extend(BulletType, {
+      init(b){
+        if(!b) return;
+        this.super$init(b);
+        b.fdata = -69420;
+      },
       update(b){
         if(!b) return;
         if(b.timer.get(1, 2)){
