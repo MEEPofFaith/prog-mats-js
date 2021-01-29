@@ -141,96 +141,110 @@ module.exports = {
     });
     absorb.layer = Layer.flyingUnit + 1;
     
-    const cataclysm = new Effect(60 * 60, 8000, e => {
-      var expandTime = 15;
-      
-      const interp = new Interp.PowOut(2);
-      var endGrow = 25 * 60;
-      var startShrink = 3450;
-      var fslope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, endGrow) - Mathf.curve(e.time, startShrink, e.lifetime);
-      var fHalfSlope = Mathf.curve(interp.apply(e.fin()) * e.lifetime, 0, endGrow);
-      var fin = Mathf.curve(e.time, 0, 90);
-      
-      var expand = Mathf.curve(e.time, 0, expandTime) - Mathf.curve(e.time, startShrink, e.lifetime);
-      var darkness = Mathf.curve(e.time, 0, 7.5 * 60);
-      
-      Draw.color(Color.darkGray, Color.black, darkness);
-      Draw.alpha(expand);
-      Lines.stroke(8);
-      Lines.circle(e.x, e.y, expand * e.data[0][0]);
-      Fill.circle(e.x, e.y, expand * e.data[0][0]);
-      
-      e.scaled(expandTime, cons(s => {
-        Draw.color(Color.black);
-        Lines.stroke(s.fin() * 24);
-        Lines.circle(e.x, e.y, s.fin() * e.data[0][0]);
-        Draw.reset();
-      }))
-      
-      var number = [Mathf.round(e.data[0][0] * 0.8), Mathf.round(e.data[0][0] * 0.1)];
-      var size = fslope * (e.data[0][0] / 5);
-      var jiggle = 1;
-      
-      Angles.randLenVectors(e.id, number[0], interp.apply(fin) * (e.data[0][0] + e.data[0][0] / 2), (x, y) => {
-        Draw.color(Color.black);
-        Fill.circle(e.x + x + Mathf.range(jiggle), e.y + y + Mathf.range(jiggle), size / 2);
-      });
-      
-      Angles.randLenVectors(e.id + 1, number[1], interp.apply(fin) * (e.data[0][0] + e.data[0][0] / 2), (x, y) => {
-        Draw.color(e.data[1][0], Color.black, fHalfSlope);
-        Fill.circle(e.x + x + Mathf.range(jiggle), e.y + y + Mathf.range(jiggle), size / 2);
-      });
-      
-      Angles.randLenVectors(e.id - 1, number[1], interp.apply(fin) * (e.data[0][0] + e.data[0][0] / 2), (x, y) => {
-        Draw.color(e.data[1][1], Color.black, fHalfSlope);
-        Fill.circle(e.x + x + Mathf.range(jiggle), e.y + y + Mathf.range(jiggle), size / 2);
-      });
-      
-      var range = e.data[0][0] * expand;
-      Units.nearbyEnemies(null, e.x - range, e.y - range, range * 2, range * 2, unit => {
-        if(unit.within(e.x, e.y, range)){
-          unit.kill();
-        }
-      });
-      
-      fLib.trueEachBlock(e.x, e.y, range, build => {
-        if(!build.dead && build.block != null){
-          build.kill();
-        }
-      });
-      
-      var succMul = e.data[0][1];
-      var succRange = e.data[0][0] * e.data[0][2] * expand;
-      Units.nearbyEnemies(null, e.x - succRange, e.y - succRange, succRange * 2, succRange * 2, cons(unit => {
-        if(unit.within(e.x, e.y, succRange)){
-          unit.impulse(Tmp.v1.set(e.x, e.y).sub(unit).limit((e.data[2][0] + Interp.pow3In.apply(1 - (unit.dst(e.x, e.y) - range) / succRange) * e.data[2][1]) * succMul));
-        };
-      }));
-      
-      Groups.bullet.intersect(e.x - succRange, e.y - succRange, succRange * 2, succRange * 2, cons(b => {
-        if(b != null){
-          if(b.fdata != -69420){
-            if(Mathf.within(e.x, e.y, b.x, b.y, succRange) && b.type.speed >= 0.1){
-              var dist = Mathf.dst(e.x, e.y, b.x, b.y);
-              var strength = e.data[2][2] * succMul - Interp.pow3Out.apply((dist - range) / succRange) * e.data[2][3] * succMul;
-              
-              b.rotation(Mathf.slerpDelta(b.rotation(), b.angleTo(e.x, e.y), strength));
-              
-              if(Mathf.within(e.x, e.y, b.x, b.y, range)){
-                clearBullet(b, bulletDissapear);
+    const cataclysm = extend(BulletType, {
+      update(b){
+        if(!b) return;
+        if(b.timer.get(1, 2)){
+          var expandTime = 15;
+          var startShrink = 3450;
+          var expand = Mathf.curve(b.time, 0, expandTime) - Mathf.curve(b.time, startShrink, b.lifetime);
+          
+          var range = b.data[0][0] * expand;
+          Units.nearbyEnemies(null, b.x - range, b.y - range, range * 2, range * 2, unit => {
+            if(unit.within(b.x, b.y, range)){
+              unit.kill();
+            }
+          });
+          
+          fLib.trueEachBlock(b.x, b.y, range, build => {
+            if(!build.dead && build.block != null){
+              build.kill();
+            }
+          });
+          
+          var succMul = b.data[0][1];
+          var succRange = b.data[0][0] * b.data[0][2] * expand;
+          Units.nearbyEnemies(null, b.x - succRange, b.y - succRange, succRange * 2, succRange * 2, cons(unit => {
+            if(unit.within(b.x, b.y, succRange)){
+              unit.impulse(Tmp.v1.set(b.x, b.y).sub(unit).limit((b.data[2][0] + Interp.pow3In.apply(1 - (unit.dst(b.x, b.y) - range) / succRange) * b.data[2][1]) * succMul));
+            };
+          }));
+          
+          Groups.bullet.intersect(b.x - succRange, b.y - succRange, succRange * 2, succRange * 2, cons(e => {
+            if(e != null){
+              if(e.fdata != -69420){
+                if(Mathf.within(b.x, b.y, e.x, e.y, succRange) && e.type.speed >= 0.1){
+                  var dist = Mathf.dst(b.x, b.y, e.x, e.y);
+                  var strength = b.data[2][2] * succMul - Interp.pow3Out.apply((dist - range) / succRange) * b.data[2][3] * succMul;
+                  
+                  e.rotation(Mathf.slerpDelta(e.rotation(), e.angleTo(b.x, b.y), strength));
+                  
+                  if(Mathf.within(b.x, b.y, e.x, e.y, range)){
+                    clearBullet(e, bulletDissapear);
+                  }
+                }
               }
             }
-          }
+          }));
         }
-      }));
+      },
+      draw(b){
+        if(!b) return;
+        var expandTime = 15;
       
-      /*SoundControl.silenced = true;
-      
-      if(e.time == e.lifetime){
-        SoundControl.silenced = false;
-      }*/
+        const interp = new Interp.PowOut(2);
+        var endGrow = 25 * 60;
+        var startShrink = 3450;
+        var fslope = Mathf.curve(interp.apply(b.fin()) * b.lifetime, 0, endGrow) - Mathf.curve(b.time, startShrink, b.lifetime);
+        var fHalfSlope = Mathf.curve(interp.apply(b.fin()) * b.lifetime, 0, endGrow);
+        var fin = Mathf.curve(b.time, 0, 90);
+        
+        var expand = Mathf.curve(b.time, 0, expandTime) - Mathf.curve(b.time, startShrink, b.lifetime);
+        var darkness = Mathf.curve(b.time, 0, 7.5 * 60);
+        
+        Draw.z(Layer.max);
+        
+        Draw.color(Color.darkGray, Color.black, darkness);
+        Draw.alpha(expand);
+        Lines.stroke(8);
+        Lines.circle(b.x, b.y, expand * b.data[0][0]);
+        Fill.circle(b.x, b.y, expand * b.data[0][0]);
+        
+        var scaled = Mathf.curve(b.time, 0, expandTime);
+        if(scaled < 1){
+          Draw.color(Color.black);
+          Lines.stroke(scaled * 24);
+          Lines.circle(b.x, b.y, scaled * b.data[0][0]);
+          Draw.reset();
+        }
+        
+        var number = [Mathf.round(b.data[0][0] * 0.8), Mathf.round(b.data[0][0] * 0.1)];
+        var size = fslope * (b.data[0][0] / 5);
+        var jiggle = 1;
+        
+        Angles.randLenVectors(b.id, number[0], interp.apply(fin) * (b.data[0][0] + b.data[0][0] / 2), (x, y) => {
+          Draw.color(Color.black);
+          Fill.circle(b.x + x + Mathf.range(jiggle), b.y + y + Mathf.range(jiggle), size / 2);
+        });
+        
+        Angles.randLenVectors(b.id + 1, number[1], interp.apply(fin) * (b.data[0][0] + b.data[0][0] / 2), (x, y) => {
+          Draw.color(b.data[1][0], Color.black, fHalfSlope);
+          Fill.circle(b.x + x + Mathf.range(jiggle), b.y + y + Mathf.range(jiggle), size / 2);
+        });
+        
+        Angles.randLenVectors(b.id - 1, number[1], interp.apply(fin) * (b.data[0][0] + b.data[0][0] / 2), (x, y) => {
+          Draw.color(b.data[1][1], Color.black, fHalfSlope);
+          Fill.circle(b.x + x + Mathf.range(jiggle), b.y + y + Mathf.range(jiggle), size / 2);
+        });
+      }
     });
-    cataclysm.layer = Layer.max;
+    cataclysm.speed = 0;
+    cataclysm.lifetime = 60 * 60;
+    cataclysm.damage = 0;
+    cataclysm.collides = false;
+    cataclysm.hittable = false;
+    cataclysm.absorbable = false;
+    cataclysm.drawSize = 8000;
 
     const blackHole = extend(BasicBulletType, {
       load(){
@@ -278,12 +292,14 @@ module.exports = {
                           var cSuccPowerMul = (b.data[7] + e.data[7]) / 2;
                           var cSuccRangeMul = (b.data[8] + e.data[8]) / 2;
                           
-                          var cForce = [cSuccPower, cSuccSlcPower, cBulletPower, cBulletPowerRed]
+                          var cSize = [radius, cSuccPowerMul, cSuccRangeMul];
+                          var cCol = [b.team.color, e.team.color];
+                          var cForce = [cSuccPower, cSuccSlcPower, cBulletPower, cBulletPowerRed];
                           
                           var collideX = (b.x + e.x) / 2;
                           var collideY = (b.y + e.y) / 2;
                           
-                          this.cataclysmEffect.at(collideX, collideY, Mathf.random(360), [[radius, cSuccPowerMul, cSuccRangeMul], [b.team.color, e.team.color], cForce]);
+                          cataclysm.create(b.owner, b.team, collideX, collideY, Mathf.random(360), 69, 1, 1, [cSize, cCol, cForce]);
                           
                           Effect.shake(radius / 1.5, radius * 1.5, collideX, collideY);
                           
@@ -380,8 +396,7 @@ module.exports = {
     blackHole.succEffect = bulletDissapear;
     blackHole.shootEffect = Fx.none;
     blackHole.smokeEffect = Fx.none;
-
-    blackHole.cataclysmEffect = cataclysm;
+    
     blackHole.cataclysmRadius = 15; //In tiles
 
     blackHole.succRadius = 64;
