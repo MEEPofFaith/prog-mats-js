@@ -20,6 +20,8 @@ const arthur = extendContent(PowerTurret, "excalibur", {
     this.tCross = Core.atlas.find(this.name + "-top");
     for(var i = 0; i < 2; i++){
       this.sides[i] = Core.atlas.find(this.name + "-side" + i);
+    }
+    for(var i = 0; i < 3; i++){
       this.outlineRegions[i] = Core.atlas.find(this.name + "-outline-" + i);
     }
     for(var i = 0; i < 8; i++){
@@ -63,17 +65,19 @@ arthur.buildType = ent => {
       
       Draw.z(Layer.turret);
       
-      Drawf.shadow(arthur.tBase, x - arthur.size / (4/3), y - arthur.size / (4/3), this.rotation - 90);
-      Drawf.shadow(arthur.sides[0], sX[0] - arthur.size / (4/3), sY[0] - arthur.size / (4/3), this.rotation - 90);
-      Drawf.shadow(arthur.sides[1], sX[1] - arthur.size / (4/3), sY[1] - arthur.size / (4/3), this.rotation - 90);
+      Drawf.shadow(arthur.outlineRegions[0], x - (arthur.size / 2), y - (arthur.size / 2), this.rotation - 90);
+      for(var i = 0; i < 2; i++){
+        Drawf.shadow(arthur.outlineRegions[i + 1], sX[i] - (arthur.size / 2), sY[i] - (arthur.size / 2), this.rotation - 90);
+      }
       
       Draw.rect(arthur.outlineRegions[0], x, y, this.rotation - 90);
       for(var i = 0; i < 2; i++){
-        Draw.rect(arthur.outlineRegions[1], sX[i], sY[i], arthur.outlineRegions[1].width / 4 * Mathf.signs[i], arthur.outlineRegions[1].height / 4, this.rotation - 90);
+        Draw.rect(arthur.outlineRegions[i + 1], sX[i], sY[i], this.rotation - 90);
       }
       Draw.rect(arthur.tBase, x, y, this.rotation - 90);
-      Draw.rect(arthur.sides[0], sX[0], sY[0], this.rotation - 90);
-      Draw.rect(arthur.sides[1], sX[1], sY[1], this.rotation - 90);
+      for(var i = 0; i < 2; i++){
+        Draw.rect(arthur.sides[i], sX[i], sY[i], this.rotation - 90);
+      }
       
       if(this.activeAnim){
         Draw.color(Color.valueOf("F3E979"));

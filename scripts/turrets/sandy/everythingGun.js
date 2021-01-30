@@ -7,20 +7,24 @@ const everythingGun = extendContent(PowerTurret, "everything-gun", {
     this.super$init();
     Vars.content.units().each(u => {
       u.weapons.each(w => {
-        if(!w.bullet.killShooter){
-          if(this.bullets.indexOf(w.bullet) == -1){
-            this.sounds.push(w.shootSound);
-            this.bullets.push(w.bullet);
-          };
+        if(w.bullet != null){
+          if(!w.bullet.killShooter){
+            if(this.bullets.indexOf(w.bullet) == -1){
+              this.sounds.push(w.shootSound);
+              this.bullets.push(w.bullet);
+            };
+          }
         }
       });
     });
     Vars.content.blocks().each(b => {
       if(b != Vars.content.getByName(ContentType.block, "prog-mats-everything-gun") && b instanceof Turret){
         if(b instanceof PowerTurret){
-          if(this.bullets.indexOf(b.shootType) == -1){
-            this.sounds.push(b.shootSound);
-            this.bullets.push(b.shootType);
+          if(b.shootType != null){
+            if(this.bullets.indexOf(b.shootType) == -1){
+              this.sounds.push(b.shootSound);
+              this.bullets.push(b.shootType);
+            }
           }
         }else if(b instanceof ItemTurret){
           Vars.content.items().each(i => {
@@ -38,12 +42,13 @@ const everythingGun = extendContent(PowerTurret, "everything-gun", {
   setStats(){
     this.super$setStats();
     this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, "[red]yes[]");
+    this.stats.add(Stat.damage, "[accent]yes[]");
   },
+  health: 12345,
   reloadTime: 1,
   size: 6,
   category: Category.turret,
-  requirements: ItemStack.with(Items.copper, 69),
+  requirements: ItemStack.with(),
   buildVisibility: BuildVisibility.sandboxOnly,
   powerUse: Mathf.PI,
   shootType: Bullets.standardCopper,
@@ -51,6 +56,7 @@ const everythingGun = extendContent(PowerTurret, "everything-gun", {
   shootLength: 0,
   shootCone: 360,
   rotateSpeed: 360,
+  cooldown: 0.01,
   sounds: [],
   bullets: []
 });
@@ -60,7 +66,7 @@ const swirl = new Effect(90, e => {
   Tmp.v1.add(e.x, e.y);
   
   Draw.color(e.color, Color.black, 0.25 + e.fin() * 0.75);
-  Fill.circle(Tmp.v1.x , Tmp.v1.y, 8 * e.fout());
+  Fill.circle(Tmp.v1.x , Tmp.v1.y, e.data * e.fout());
 });
 swirl.layer = Layer.turret;
 
@@ -68,13 +74,14 @@ everythingGun.buildType = ent => {
   ent = extendContent(PowerTurret.PowerTurretBuild, everythingGun, {
     setEffs(){
       this._sel = Mathf.round(Mathf.random(everythingGun.bullets.length - 1));
+      this._drawRot = Mathf.random(360);
     },
     updateTile(){
       this.super$updateTile();
       if(Mathf.chanceDelta(1)){
-        swirl.at(this.x, this.y, Mathf.random(180, 720), this.team.color);
-        swirl.at(this.x, this.y, Mathf.random(180, 720), this.team.color);
+        swirl.at(this.x, this.y, Mathf.random(180, 720), this.team.color, 10 + Mathf.sin(Time.time / 30) * 3);
       }
+      this._drawRot -= Time.delta * (0.01 + (Interp.pow2In.apply(this.heat) * 4.99));
     },
     updateShooting(){
       if(this.reload >= everythingGun.reloadTime){
@@ -105,6 +112,9 @@ everythingGun.buildType = ent => {
     },
     draw(){
       Draw.rect(everythingGun.baseRegion, this.x, this.y);
+      Draw.z(Layer.turret);
+      Drawf.shadow(everythingGun.region, this.x - (everythingGun.size / 2), this.y - (everythingGun.size / 2), this._drawRot);
+      Draw.rect(everythingGun.region, this.x, this.y, this._drawRot);
     },
     useAmmo(){
       return everythingGun.bullets[this._sel];

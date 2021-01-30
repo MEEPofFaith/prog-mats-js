@@ -201,7 +201,7 @@ lavaRiser.buildType = ent => {
         Draw.rect(lavaRiser.outlines[i + 1], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
-      Drawf.shadow(lavaRiser.turretRegion, this.x + back.x - (lavaRiser.size / (1 + (1/3))), this.y + back.y - (lavaRiser.size / (1 + (1/3))), this.rotation - 90);
+      Drawf.shadow(lavaRiser.outlines[0], this.x + back.x - (lavaRiser.size / 2), this.y + back.y - (lavaRiser.size / 2), this.rotation - 90);
       Draw.rect(lavaRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       if(this.heat > 0.00001){

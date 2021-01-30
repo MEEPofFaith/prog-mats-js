@@ -233,7 +233,7 @@ module.exports = {
           Tmp.v4.trns(this.rotation, -this.recoil);
           Tmp.v4.add(this.x, this.y);
           
-          Drawf.shadow(multiTur.region, Tmp.v4.x - multiTur.size * 2, Tmp.v4.y - multiTur.size * 2, this.rotation - 90);
+          Drawf.shadow(multiTur.outline, Tmp.v4.x - (multiTur.size / 2), Tmp.v4.y - (multiTur.size / 2), this.rotation - 90);
           Draw.rect(multiTur.outline, Tmp.v4.x, Tmp.v4.y, this.rotation - 90);
           Draw.rect(multiTur.region, Tmp.v4.x, Tmp.v4.y, this.rotation - 90);
           
@@ -248,7 +248,7 @@ module.exports = {
           for(var i = 0; i < amount; i++){
             let loc = this.mountLocations(i);
             
-            Drawf.shadow(multiTur.turrets[i][0], loc[2] - mounts[i].elevation, loc[3] - mounts[i].elevation, this._rotations[i] - 90);
+            Drawf.shadow(multiTur.turrets[i][1], loc[2] - mounts[i].elevation, loc[3] - mounts[i].elevation, this._rotations[i] - 90);
           }
           
           for(var i = 0; i < amount; i++){

@@ -214,7 +214,7 @@ magmaRiser.buildType = ent => {
         Draw.rect(magmaRiser.outlines[i + 5], this.x + open.x + back.x, this.y + open.y + back.y, this.rotation - 90);
       }
       
-      Drawf.shadow(magmaRiser.turretRegion, this.x + back.x - (magmaRiser.size / (1 + (1/3))), this.y + back.y - (magmaRiser.size / (1 + (1/3))), this.rotation - 90);
+      Drawf.shadow(magmaRiser.outlines[0], this.x + back.x - (magmaRiser.size / 2), this.y + back.y - (magmaRiser.size / 2), this.rotation - 90);
       Draw.rect(magmaRiser.turretRegion, this.x + back.x, this.y + back.y, this.rotation - 90);
       
       if(this.heat > 0.00001){

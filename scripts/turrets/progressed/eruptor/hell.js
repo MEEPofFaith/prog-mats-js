@@ -200,7 +200,7 @@ hellRiser.buildType = ent => {
       
       Draw.z(Layer.turret + 1);
       
-      Drawf.shadow(hellRiser.bottomRegion, this.x - (hellRiser.size / (1 + (1 / 3))), this.y - (hellRiser.size / (1 + (1 / 3))));
+      Drawf.shadow(hellRiser.bottomRegion, this.x - (hellRiser.size / 2), this.y - (hellRiser.size / 2));
       
       Draw.rect(hellRiser.outlines[0], this.x, this.y);
       
@@ -226,7 +226,7 @@ hellRiser.buildType = ent => {
         side.trns(drawRotation, 0, this.recoil);
         
         //Side shadows
-        Drawf.shadow(hellRiser.sideRegion, this.x + side.x - hellRiser.sideHeight, this.y + side.y - hellRiser.sideHeight, drawRotation);
+        Drawf.shadow(hellRiser.outlines[0], this.x + side.x - hellRiser.sideHeight, this.y + side.y - hellRiser.sideHeight, drawRotation);
         
         //Side outlines
         for(var j = 0; j < 5; j++){

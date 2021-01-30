@@ -50,7 +50,7 @@ module.exports = {
             }*/
             //End Debug
             
-            Drawf.shadow(bit.bits[curRot], tr.x - (bit.size / 2), tr.y - (bit.size / 2), 0);
+            Drawf.shadow(bit.outlines[curRot], tr.x - (bit.size / 2), tr.y - (bit.size / 2), 0);
             Draw.rect(bit.outlines[curRot], tr.x, tr.y, 0);
             Draw.rect(bit.bits[curRot], tr.x, tr.y, 0);
 
@@ -69,7 +69,7 @@ module.exports = {
             tr.trns(rot + 90, -this.recoil);
             tr.add(this.x, this.y);
             
-            Drawf.shadow(bit.bits[0], tr.x - (bit.size / 2), tr.y - (bit.size / 2), rot);
+            Drawf.shadow(bit.outlines[0], tr.x - (bit.size / 2), tr.y - (bit.size / 2), rot);
             Draw.rect(bit.outlines[0], tr.x, tr.y, rot);
             Draw.rect(bit.bits[0], tr.x, tr.y, rot);
 
