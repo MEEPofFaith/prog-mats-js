@@ -7,7 +7,7 @@ module.exports = {
         
         // (Owner x, Owner y, angle, reset speed)
         // Owner coords are placed in data in case it dies while the bullet is still active. Don't want null errors.
-        if(!givenData){
+        if(!givenData || givenData && b.data == null){
           var x = startOnOwner ? b.owner.x : b.x;
           var y = startOnOwner ? b.owner.y : b.y;
           b.data = [x, y, 0, false];

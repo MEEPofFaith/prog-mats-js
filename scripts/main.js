@@ -100,6 +100,10 @@ const script = [
             childs: ["pixel-i"]
           }
         ]
+      },
+      {
+        name: "sandy",
+        childs: ["everythingGun"]
       }
     ]
   },
