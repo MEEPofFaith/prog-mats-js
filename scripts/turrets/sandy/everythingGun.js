@@ -1,3 +1,16 @@
+const bfrit = (b, lifetime) => {
+  if(b.fragBullet == null){
+    var dmg = b.damage + b.splashDamage + b.lightningDamage * b.lightning * b.lightningLength;
+  }else{
+    var dmg = b.damage + b.splashDamage + b.lightningDamage * b.lightning * b.lightningLength + bfrit(b.fragBullet, b.lifetime) * b.fragBullets;
+  }
+  if(b instanceof ContinuousLaserBulletType){
+    return dmg * lifetime / 5;
+  }else{
+    return dmg;
+  }
+};
+
 const everythingGun = extendContent(PowerTurret, "everything-gun", {
   load(){
     this.super$load();
@@ -10,8 +23,7 @@ const everythingGun = extendContent(PowerTurret, "everything-gun", {
         if(w.bullet != null){
           if(!w.bullet.killShooter){
             if(this.bullets.indexOf(w.bullet) == -1){
-              this.sounds.push(w.shootSound);
-              this.bullets.push(w.bullet);
+              this.bullets.add([w.bullet, w.shootSound, w.bullet.lifetime]);
             };
           }
         }
@@ -22,22 +34,22 @@ const everythingGun = extendContent(PowerTurret, "everything-gun", {
         if(b instanceof PowerTurret){
           if(b.shootType != null){
             if(this.bullets.indexOf(b.shootType) == -1){
-              this.sounds.push(b.shootSound);
-              this.bullets.push(b.shootType);
+              this.bullets.add([b.shootType, b.shootSound, b.shootType.lifetime]);
             }
           }
         }else if(b instanceof ItemTurret){
           Vars.content.items().each(i => {
             if(b.ammoTypes.get(i) != null){
               if(this.bullets.indexOf(b.ammoTypes.get(i)) == -1){
-                this.sounds.push(b.shootSound);
-                this.bullets.push(b.ammoTypes.get(i));
+                this.bullets.add([b.ammoTypes.get(i), b.shootSound, b.ammoTypes.get(i).lifetime]);
               }
             }
           });
         }
       }
     });
+    
+    this.bullets.sort(floatf(b => {return bfrit(b[0], b[2])}));
   },
   setStats(){
     this.super$setStats();
@@ -57,8 +69,7 @@ const everythingGun = extendContent(PowerTurret, "everything-gun", {
   shootCone: 360,
   rotateSpeed: 360,
   cooldown: 0.01,
-  sounds: [],
-  bullets: []
+  bullets: new Seq()
 });
 
 const swirl = new Effect(90, e => {
@@ -73,7 +84,8 @@ swirl.layer = Layer.turret;
 everythingGun.buildType = ent => {
   ent = extendContent(PowerTurret.PowerTurretBuild, everythingGun, {
     setEffs(){
-      this._sel = Mathf.round(Mathf.random(everythingGun.bullets.length - 1));
+      this._bias = 0.1;
+      this._sel = 0;
       this._drawRot = Mathf.random(360);
     },
     updateTile(){
@@ -82,10 +94,15 @@ everythingGun.buildType = ent => {
         swirl.at(this.x, this.y, Mathf.random(180, 720), this.team.color, 10 + Mathf.sin(Time.time / 30) * 3);
       }
       this._drawRot -= Time.delta * (0.01 + (Interp.pow2In.apply(this.heat) * 4.99));
+      if(this.isShooting()){
+        this._bias *= Mathf.pow(1.003, Time.delta);
+      }else{
+        this._bias = Mathf.lerpDelta(this._bias, 0.1, 0.01);
+      }
     },
     updateShooting(){
       if(this.reload >= everythingGun.reloadTime){
-        this._sel = Mathf.round(Mathf.random(everythingGun.bullets.length - 1));
+        this._sel = Mathf.clamp(Mathf.floor(1 / (((1 / Mathf.random()) - 1) / this._bias + 1) * everythingGun.bullets.size), 0, everythingGun.bullets.size - 1);
         
         let type = this.peekAmmo();
 
@@ -102,7 +119,7 @@ everythingGun.buildType = ent => {
 
       fshootEffect.at(this.x + everythingGun.tr.x, this.y + everythingGun.tr.y, this.rotation);
       fsmokeEffect.at(this.x + everythingGun.tr.x, this.y + everythingGun.tr.y, this.rotation);
-      everythingGun.sounds[this._sel].at(this.x + everythingGun.tr.x, this.y + everythingGun.tr.y, Mathf.random(0.9, 1.1));
+      everythingGun.bullets.get(this._sel)[1].at(this.x + everythingGun.tr.x, this.y + everythingGun.tr.y, Mathf.random(0.9, 1.1));
 
       if(everythingGun.shootShake > 0){
         Effect.shake(everythingGun.shootShake, everythingGun.shootShake, this);
@@ -117,10 +134,10 @@ everythingGun.buildType = ent => {
       Draw.rect(everythingGun.region, this.x, this.y, this._drawRot);
     },
     useAmmo(){
-      return everythingGun.bullets[this._sel];
+      return everythingGun.bullets.get(this._sel)[0];
     },
     peekAmmo(){
-      return everythingGun.bullets[this._sel];
+      return everythingGun.bullets.get(this._sel)[0];
     }
   });
   ent.setEffs();
