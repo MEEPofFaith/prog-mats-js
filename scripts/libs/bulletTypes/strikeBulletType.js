@@ -109,9 +109,10 @@ module.exports = {
         //Target
         var radius = this.targetRad * target;
         if(autoDrop){
+          var dropRadius = Mathf.curve(b.time, this.riseTime - 8, this.riseTime) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
           Draw.z(Layer.bullet + 0.001);
-          Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * target);
-          Fill.circle(b.x, b.y, autoDropRad * target);
+          Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * dropRadius);
+          Fill.circle(b.x, b.y, autoDropRad * dropRadius);
         }
         Draw.z(Layer.bullet + 0.002);
         Draw.color(Pal.gray, target);
