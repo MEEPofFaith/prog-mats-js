@@ -37,7 +37,7 @@ missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y);
 
 const emp = bul.nukeBullet(true, 15, 10, true, true, false);
 emp.sprite = "prog-mats-strike-emp";
-emp.reloadMultiplier = 0.75;
+emp.reloadMultiplier = 1.25;
 emp.riseEngineSize = 16;
 emp.fallEngineSize = 8;
 emp.trailSize = 0.7;
