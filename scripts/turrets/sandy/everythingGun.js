@@ -94,7 +94,7 @@ everythingGun.buildType = ent => {
         swirl.at(this.x, this.y, Mathf.random(180, 720), this.team.color, 10 + Mathf.sin(Time.time / 30) * 3);
       }
       this._drawRot -= Time.delta * (0.01 + (Interp.pow2In.apply(this.heat) * 4.99));
-      if(this.isShooting()){
+      if(this.isShooting() && this.consValid()){
         this._bias *= Mathf.pow(1.003, Time.delta);
       }else{
         this._bias = Mathf.lerpDelta(this._bias, 0.1, 0.01);
