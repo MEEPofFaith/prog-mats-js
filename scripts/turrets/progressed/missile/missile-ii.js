@@ -24,7 +24,6 @@ missile.lifetime = 300;
 missile.elevation = 600;
 missile.riseTime = 90;
 missile.fallTime = 45;
-missile.ammmoMultiplier = 1;
 missile.hitSound = Sounds.bang;
 missile.hitShake = 8;
 missile.trailParam = 5;
@@ -51,7 +50,6 @@ emp.lifetime = 200;
 emp.elevation = 600;
 emp.riseTime = 70;
 emp.fallTime = 30;
-emp.ammmoMultiplier = 1;
 emp.hitSound = Sounds.bang;
 emp.hitShake = 8;
 emp.trailParam = 5;
@@ -73,7 +71,7 @@ ohnoMissilesReturns.category = Category.turret;
 ohnoMissilesReturns.buildVisibility = BuildVisibility.sandboxOnly;
 
 ohnoMissilesReturns.ammo(citem("basic-missile"), missile, citem("emp-missile"), emp);
-ohnoMissilesReturns.maxAmmo = 3;
+ohnoMissilesReturns.maxAmmo = 5;
 ohnoMissilesReturns.unitSort = (u, x, y) => -u.maxHealth;
 
 /**
