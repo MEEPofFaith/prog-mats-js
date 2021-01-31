@@ -34,9 +34,9 @@ missile.trailEffect = trail;
 missile.despawnEffect = boom;
 missile.riseSpin = 720;
 missile.fallSpin = 180;
-missile.unitSort = (u, x, y) => -u.maxHealth;
+missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y);
 
-const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", "prog-mats-nuke", {}, {});
+const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {}, {});
 /**
  * Easy to read research requirement list
  *

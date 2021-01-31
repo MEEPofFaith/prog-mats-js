@@ -11,33 +11,31 @@ const clone = obj => {
 }
 
 module.exports = {
-  missileTurret(drawBase, type, build, name, missile, obj, objb){
+  missileTurret(drawBase, type, build, name, obj, objb){
     if(obj == undefined) obj = {};
     if(objb == undefined) objb = {};
     obj = Object.assign({
-      load(){
-        this.super$load();
-        this.missileRegion = Core.atlas.find(missile);
-      },
       icons(){
-        var regions = drawBase ? [this.baseRegion, this.region, this.missileRegion] : [this.region, this.missileRegion];
-        return regions;
+        return drawBase ? [this.baseRegion, this.region] : [this.region];
       }
     }, obj);
     
     objb = Object.assign({
       draw(){
-        if(drawBase) Draw.rect(nospin.baseRegion, this.x, this.y);
-        Draw.rect(nospin.region, this.x, this.y);
+        if(drawBase) Draw.rect(missileSilo.baseRegion, this.x, this.y);
+        Draw.rect(missileSilo.region, this.x, this.y);
         
-        Draw.draw(Draw.z(), () => {
-          Drawf.construct(this.x, this.y, nospin.missileRegion, 0, this.reload / nospin.reloadTime, this._speedScl, this.reload);
-        });
+        if(this.hasAmmo() && this.peekAmmo() != null){
+          Draw.draw(Draw.z(), () => {
+            let missileRegion = Core.atlas.find(this.peekAmmo().sprite);
+            Drawf.construct(this.x, this.y, missileRegion, 0, this.reload / missileSilo.reloadTime, this._speedScl, this.reload);
+          });
+        }
         
-        if(Core.atlas.isFound(nospin.heatRegion) && this.heat > 0.001){
-          Draw.color(nospin.heatColor, this.heat);
+        if(Core.atlas.isFound(missileSilo.heatRegion) && this.heat > 0.001){
+          Draw.color(missileSilo.heatColor, this.heat);
           Draw.blend(Blending.additive);
-          Draw.rect(nospin.heatRegion, this.x, this.y);
+          Draw.rect(missileSilo.heatRegion, this.x, this.y);
           Draw.blend();
           Draw.color();
         }
@@ -45,7 +43,7 @@ module.exports = {
       updateTile(){
         this.super$updateTile();
         
-        if(this.reload < nospin.reloadTime && this.hasAmmo() && this.consValid()){
+        if(this.reload < missileSilo.reloadTime && this.hasAmmo() && this.consValid()){
           this._speedScl = Mathf.lerpDelta(this._speedScl, 1, 0.05);
         }else{
           this._speedScl = Mathf.lerpDelta(this._speedScl, 0, 0.05);
@@ -56,23 +54,27 @@ module.exports = {
       },
       updateShooting(){
         if(this.hasAmmo() && this.consValid()) this.super$updateShooting();
+      },
+      handleItem(source, item){
+        this.reload = 0; //Sorry, but you can't just turn a half-built missile into a different type of missile. Gotta restart construction.
+        this.super$handleItem(source, item);
       }
     }, objb);
     
-    const nospin = extendContent(type, name, obj);
+    const missileSilo = extendContent(type, name, obj);
     
-    nospin.rotateSpeed = 9999;
-    nospin.shootLength = 0;
-    nospin.shootEffect = Fx.none;
-    nospin.smokeEffect = Fx.none;
-    nospin.outlineIcon = false;
+    missileSilo.rotateSpeed = 9999;
+    missileSilo.shootLength = 0;
+    missileSilo.shootEffect = Fx.none;
+    missileSilo.smokeEffect = Fx.none;
+    missileSilo.outlineIcon = false;
     
-    nospin.buildType = ent => {
-      ent = extendContent(build, nospin, clone(objb));
+    missileSilo.buildType = ent => {
+      ent = extendContent(build, missileSilo, clone(objb));
       ent._speedScl = 0;
       return ent;
     }
     
-    return nospin;
+    return missileSilo;
   }
 }
