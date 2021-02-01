@@ -50,7 +50,7 @@ const script = [
           },
           {
             name: "nuke",
-            childs:[]
+            childs:["basicN", "empN"]
           }
         ]
       }

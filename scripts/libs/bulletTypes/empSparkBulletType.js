@@ -1,6 +1,6 @@
 module.exports = {
-  spark(dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd){
-    const paralyze = extend(StatusEffect, "cease", {
+  spark(statusName, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd){
+    const paralyze = extend(StatusEffect, statusName, {
       damageMultipler: dmgMult,
       healthMultiplier: healthMult,
       speedMultiplier: speedMult,
@@ -10,11 +10,12 @@ module.exports = {
       effect: Fx.lightningCharge,
       update(unit, time){
         unit.apply(StatusEffects.shocked, 10);
+        var strength = Mathf.clamp(time / 120); //mmm yes steal
         for(var i = 0; i < unit.mounts.length; i++){
           var mount = unit.mounts[i];
           var weapon = mount.weapon;
           if(weapon.rotate){
-            mount.rotation += Mathf.range(rotRnd);
+            mount.rotation += Mathf.range(rotRnd * strength);
           }
         }
         this.super$update(unit, time);
@@ -28,7 +29,7 @@ module.exports = {
       collidesTiles: false,
       pierce: true,
       status: paralyze,
-      statusDuration: 600,
+      statusDuration: 60 * 5,
       trailEffect: Fx.lightningCharge,
       trailChance: 0.5,
       hitColor: Pal.lancerLaser,

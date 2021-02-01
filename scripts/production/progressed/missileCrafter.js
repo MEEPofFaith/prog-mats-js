@@ -17,7 +17,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
   },*/
   {//1 (Missile)
     input: {
-      items: ["prog-mats-missile-shell/5", "thorium/5", "blast-compound/5"],
+      items: ["prog-mats-missile-shell/1", "thorium/5", "blast-compound/5"],
       power: 3
     },
     output:{
@@ -27,7 +27,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
   },
   {//2 (Nuke)
     input: {
-      items: ["prog-mats-missile-shell/5", "silicon/5", "copper/10", "lead/10"],
+      items: ["prog-mats-missile-shell/1", "silicon/5", "copper/10", "lead/10"],
       power: 5
     },
     output:{

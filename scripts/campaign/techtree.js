@@ -23,7 +23,10 @@ const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + na
 
 /** Items */
 node(Items.surgeAlloy, citem("techtanite"), null, null);
-// node(Items.thorium, citem("missile-shell"), null, Seq.with(new Objectives.Research(cblock("missile-ii"))));
+// node(Items.thorium, citem("missile-shell"), ItemStack.with(), Seq.with(new Objectives.Research(cblock("missile-ii"))));
+// node(citem("missile-shell"), citem("basic-missile"), ItemStack.with(), Seq.with(new Objectives.Research(cblock("missile-ii"))));
+// node(citem("missile-shell"), citem("nuke-shell"), ItemStack.with(), Seq.with(new Objectives.Research(cblock("missile-iii"))));
+// node(citem("nuke-shell"), citem("basic-nuke"), ItemStack.with(), Seq.with(new Objectives.Research(cblock("missile-iii"))));
 
 /** Production */
 node(Blocks.plastaniumCompressor, cblock("mindron-collider"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.impact0078)));

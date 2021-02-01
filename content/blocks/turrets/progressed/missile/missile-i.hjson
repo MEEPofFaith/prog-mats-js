@@ -1,7 +1,7 @@
 health: 1430
 size: 3
 range: 160
-reloadTime: 45
+reloadTime: 75
 shootSound: artillery
 cooldown: 0.005
 shootShake: 1

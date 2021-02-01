@@ -7,6 +7,7 @@ trail.layer = Layer.bullet;
 const boom = eff.scaledLargeBlast(0.5);
 
 const missile = bul.strikeBullet(false, 0, 6, false, false, true);
+missile.sprite = "prog-mats-storm";
 missile.width = 6;
 missile.height = 8;
 missile.engineSize = 5;
@@ -23,7 +24,7 @@ missile.lifetime = 90;
 missile.elevation = 300;
 missile.riseTime = 30;
 missile.fallTime = 20;
-missile.ammmoMultiplier = 7;
+missile.ammmoMultiplier = 4;
 missile.targetRad = 0.5;
 missile.hitSound = Sounds.explosion;
 missile.collidesAir = false;
@@ -49,16 +50,32 @@ actualSwarmer.buildType = ent => {
   ent = extendContent(ItemTurret.ItemTurretBuild, actualSwarmer, {
     setEffs(){
       this.heats = [];
+      this.shot = [];
       for(var i = 0; i < 9; i++){
         this.heats[i] = 0;
+        this.shot[i] = false;
       }
       this.firing = false;
+      this._speedScl = 0;
     },
     draw(){
       Draw.rect(actualSwarmer.baseRegion, this.x, this.y);
       Draw.rect(actualSwarmer.region, this.x, this.y);
       
-      for(var i = 0; i < 9; i++){
+      if(this.hasAmmo() && this.peekAmmo() != null){
+        Draw.draw(Draw.z(), () => {
+          for(var i = 0; i < actualSwarmer.shots; i++){
+            if(!this.shot[i]){
+              let x = actualSwarmer.xOffsets[i] + this.x;
+              let y = actualSwarmer.yOffsets[i] + this.y;
+              let missileRegion = Core.atlas.find(this.peekAmmo().sprite);
+              Drawf.construct(x, y, missileRegion, 0, this.reload / actualSwarmer.reloadTime, this._speedScl, this.reload);
+            }
+          }
+        });
+      }
+      
+      for(var i = 0; i < actualSwarmer.shots; i++){
         if(actualSwarmer.heatRegions[i] != Core.atlas.find("error") && this.heats[i] > 0.001){
           Draw.color(actualSwarmer.heatColor, this.heats[i]);
           Draw.blend(Blending.additive);
@@ -73,9 +90,15 @@ actualSwarmer.buildType = ent => {
       for(var i = 0; i < 9; i++){
         this.heats[i] = Mathf.lerpDelta(this.heats[i], 0, actualSwarmer.cooldown);
       }
+      
+      if(this.reload < actualSwarmer.reloadTime && this.hasAmmo() && this.consValid() && !this.firing){
+        this._speedScl = Mathf.lerpDelta(this._speedScl, 1, 0.05);
+      }else{
+        this._speedScl = Mathf.lerpDelta(this._speedScl, 0, 0.05);
+      }
     },
     updateCooling(){
-      if(!this.firing){
+      if(!this.firing && this.hasAmmo() && this.consValid()){
         const liquid = this.liquids.current();
         var maxUsed = actualSwarmer.consumes.get(ConsumeType.liquid).amount;
 
@@ -89,14 +112,14 @@ actualSwarmer.buildType = ent => {
       }
     },
     updateShooting(){
-      if(this.reload > actualSwarmer.reloadTime && !this.firing){
-        var type = this.peekAmmo();
-        
-        this.shoot(type);
-        
-        this.reload = 0;
-      }else if(!this.firing){
-        this.reload += Time.delta * this.peekAmmo().reloadMultiplier * this.baseReloadSpeed();
+      if(this.hasAmmo() && this.consValid()){
+        if(this.reload > actualSwarmer.reloadTime && !this.firing){
+          var type = this.peekAmmo();
+          
+          this.shoot(type);
+        }else if(!this.firing){
+          this.reload += Time.delta * this.peekAmmo().reloadMultiplier * this.baseReloadSpeed();
+        }
       }
     },
     shoot(type){
@@ -107,25 +130,28 @@ actualSwarmer.buildType = ent => {
         Time.run(actualSwarmer.burstSpacing * i, () => {
           if(!this.isValid() || !this.hasAmmo()) return;
           var x = actualSwarmer.xOffsets[sel] + this.x;
-          var y = actualSwarmer.yOffsets[sel] + this.y
+          var y = actualSwarmer.yOffsets[sel] + this.y;
           
           type.create(this, this.team, x, y, this.rotation + Mathf.range(actualSwarmer.inaccuracy), -1, 1 + Mathf.range(actualSwarmer.velocityInaccuracy), 1, [x, y, 0, false]);
           this.effects();
           this.useAmmo();
           this.heats[sel] = 1;
+          this.shot[sel] = true;
         });
       }
       
       Time.run(actualSwarmer.burstSpacing * actualSwarmer.shots, () => {
+        this.reload = 0;
         this.firing = false;
+        for(var i = 0; i < actualSwarmer.shots; i++){
+          this.shot[i] = false;
+        }
       });
     }
   });
   ent.setEffs();
   return ent;
 };
-var offset = 8;
-var shift = 1;
 /**
  * Easy to read research requirement list
  *
@@ -136,13 +162,13 @@ actualSwarmer.requirements = ItemStack.with(Items.copper, 69);
 actualSwarmer.category = Category.turret;
 actualSwarmer.buildVisibility = BuildVisibility.sandboxOnly;
 
-actualSwarmer.burstSpacing = 5;
+actualSwarmer.burstSpacing = 7;
 actualSwarmer.shots = 9;
 actualSwarmer.inaccuracy = 30;
 actualSwarmer.ammo(Items.blastCompound, missile);
 actualSwarmer.shootEffect = Fx.none;
 actualSwarmer.smokeEffect = Fx.none;
 actualSwarmer.maxAmmo = 36;
-actualSwarmer.xOffsets = [-offset, 0, offset, -offset + shift, 0, offset - shift, -offset, 0, offset];
-actualSwarmer.yOffsets = [offset, offset - shift, offset, 0, 0, 0, -offset, -offset + shift, -offset];
+actualSwarmer.xOffsets = [-31/4, 0, 31/4, -29/4, 0, 29/4, -31/4, 0, 31/4];
+actualSwarmer.yOffsets = [31/4, 29/4, 31/4, 0, 0, 0, -31/4, -29/4, -31/4];
 actualSwarmer.rotateSpeed = 9999;

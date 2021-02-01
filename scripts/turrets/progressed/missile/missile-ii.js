@@ -1,4 +1,4 @@
-const bul = require("libs/bulletTypes/nukeBulletType");
+const bul = require("libs/bulletTypes/strikeBulletType");
 const shock = require("libs/bulletTypes/empSparkBulletType");
 const type = require("libs/turretTypes/missileTurretType");
 const eff = require("libs/effect");
@@ -12,15 +12,15 @@ const boom = eff.scaledLargeBlast(1.5);
 
 //(autodrop, drop radius, stop radius, unstop?, start on owner, given data);
 
-const missile = bul.nukeBullet(true, 15, 10, true, true, false);
-missile.sprite = "prog-mats-strike";
+const missile = bul.strikeBullet(true, 15, 10, true, true, false);
+missile.sprite = "prog-mats-strikeb";
 missile.riseEngineSize = 16;
 missile.fallEngineSize = 8;
 missile.trailSize = 0.7;
 missile.damage = 80;
 missile.splashDamage = 750;
 missile.splashDamageRadius = 64;
-missile.speed = 1;
+missile.speed = 2;
 missile.homingPower = 0.05;
 missile.homingRange = 320;
 missile.lifetime = 300;
@@ -37,8 +37,8 @@ missile.riseSpin = 360;
 missile.fallSpin = 135;
 missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y);
 
-const emp = bul.nukeBullet(true, 30, 10, true, true, false);
-emp.sprite = "prog-mats-strike-emp";
+const emp = bul.strikeBullet(true, 30, 10, true, true, false);
+emp.sprite = "prog-mats-emp-strikeb";
 emp.reloadMultiplier = 0.5;
 emp.riseEngineSize = 16;
 emp.fallEngineSize = 8;
@@ -46,7 +46,7 @@ emp.trailSize = 0.7;
 emp.damage = 80;
 emp.splashDamage = 150;
 emp.splashDamageRadius = 48;
-emp.speed = 2;
+emp.speed = 3;
 emp.homingPower = 0.075;
 emp.homingRange = 320;
 emp.lifetime = 240;
@@ -63,7 +63,8 @@ emp.riseSpin = 270;
 emp.fallSpin = 90;
 emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
-emp.fragBullet = shock.spark(0.9, 1, 0.25, 0.25, 0, 30);
+// (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
+emp.fragBullet = shock.spark("prog-mats-no", 0.9, 1, 0.25, 0.4, 0, 20);
 
 const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});
 /**

@@ -1,6 +1,6 @@
 const multiLib = require("multi-lib/library");
 
-const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafterBuild, "shell-press", [
+const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafterBuild, "missile-crafter", [
   /*default form for each recipes. You can change values.
   {
     input: {
@@ -17,21 +17,21 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
   },*/
   {//1 (Missile)
     input: {
-      items: ["titanium/5", "copper/5", "lead/5"],
+      items: ["prog-mats-nuke-shell/1", "thorium/25", "blast-compound/25"],
       power: 3
     },
     output:{
-      items: ["prog-mats-missile-shell/2"]
+      items: ["prog-mats-basic-nuke/1"]
     },
     craftTime: 60
   },
   {//2 (Nuke)
     input: {
-      items: ["titanium/10", "surge-alloy/10", "prog-mats-techtanite/10"],
+      items: ["prog-mats-nuke-shell/1", "silicon/30", "copper/50", "lead/60"],
       power: 5
     },
     output:{
-      items: ["prog-mats-nuke-shell/1"]
+      items: ["prog-mats-emp-nuke/1"]
     },
     craftTime: 90
   }
@@ -64,7 +64,7 @@ hasPower
 
 shellPress.itemCapacity = 30;
 shellPress.liquidCapacity = 20;
-shellPress.size = 4;
+shellPress.size = 6;
 shellPress.health = 100;
 shellPress.craftEffect = Fx.pulverizeMedium;
 shellPress.updateEffect = Fx.none;
