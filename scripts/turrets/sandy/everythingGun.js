@@ -23,7 +23,7 @@ const everythingGun = extendContent(PowerTurret, "everything-gun", {
         if(w.bullet != null){
           if(!w.bullet.killShooter){
             if(this.bullets.indexOf(w.bullet) == -1){
-              this.bullets.add([w.bullet, w.shootSound, w.bullet.lifetime]);
+              this.bullets.add([w.bullet, w.shootSound, w.bullet.lifetime, false]);
             };
           }
         }
@@ -31,17 +31,23 @@ const everythingGun = extendContent(PowerTurret, "everything-gun", {
     });
     Vars.content.blocks().each(b => {
       if(b != Vars.content.getByName(ContentType.block, "prog-mats-everything-gun") && b instanceof Turret){
-        if(b instanceof PowerTurret){
+        if(b instanceof LaserTurret){
           if(b.shootType != null){
             if(this.bullets.indexOf(b.shootType) == -1){
-              this.bullets.add([b.shootType, b.shootSound, b.shootType.lifetime]);
+              this.bullets.add([b.shootType, b.shootSound, b.shootType.lifetime + b.shootDuration, true]);
+            }
+          }
+        }else if(b instanceof PowerTurret){
+          if(b.shootType != null){
+            if(this.bullets.indexOf(b.shootType) == -1){
+              this.bullets.add([b.shootType, b.shootSound, b.shootType.lifetime, false]);
             }
           }
         }else if(b instanceof ItemTurret){
           Vars.content.items().each(i => {
             if(b.ammoTypes.get(i) != null){
               if(this.bullets.indexOf(b.ammoTypes.get(i)) == -1){
-                this.bullets.add([b.ammoTypes.get(i), b.shootSound, b.ammoTypes.get(i).lifetime]);
+                this.bullets.add([b.ammoTypes.get(i), b.shootSound, b.ammoTypes.get(i).lifetime, false]);
               }
             }
           });
@@ -50,6 +56,7 @@ const everythingGun = extendContent(PowerTurret, "everything-gun", {
     });
     
     this.bullets.sort(floatf(b => {return bfrit(b[0], b[2])}));
+    // this.bullets.each(b => print("Bullet " + b[0] + " deals " + bfrit(b[0], b[2]) + " total damage."));
   },
   setStats(){
     this.super$setStats();
@@ -97,7 +104,7 @@ everythingGun.buildType = ent => {
       if(this.isShooting() && this.consValid()){
         this._bias *= Mathf.pow(1.003, Time.delta);
       }else{
-        this._bias = Mathf.lerpDelta(this._bias, 0.1, 0.01);
+        this._bias = Mathf.lerpDelta(this._bias, 0.1, everythingGun.cooldown);
       }
     },
     updateShooting(){
@@ -132,6 +139,12 @@ everythingGun.buildType = ent => {
       Draw.z(Layer.turret);
       Drawf.shadow(everythingGun.region, this.x - (everythingGun.size / 2), this.y - (everythingGun.size / 2), this._drawRot);
       Draw.rect(everythingGun.region, this.x, this.y, this._drawRot);
+    },
+    bullet(type, angle){
+      var lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(this.x + everythingGun.tr.x, this.y + everythingGun.tr.y, this.targetPos.x, this.targetPos.y) / type.range(), everythingGun.minRange / type.range(), everythingGun.range / type.range()) : 1;
+      var laserScl = everythingGun.bullets.get(this._sel)[3] ? everythingGun.bullets.get(this._sel)[2]/this.peekAmmo().lifetime : 1;
+      
+      type.create(this, this.team, this.x + everythingGun.tr.x, this.y + everythingGun.tr.y, angle, 1 + Mathf.range(everythingGun.velocityInaccuracy), lifeScl * laserScl);
     },
     useAmmo(){
       return everythingGun.bullets.get(this._sel)[0];
