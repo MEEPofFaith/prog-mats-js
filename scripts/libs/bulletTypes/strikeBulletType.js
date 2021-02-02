@@ -13,6 +13,8 @@ module.exports = {
           b.data = [x, y, 0, false];
         }
         b.fdata = -69420;
+        
+        this.drawSize = this.elevation + 24;
       },
       update(b){
         if(!b) return;
@@ -108,10 +110,10 @@ module.exports = {
         //Target
         var radius = this.targetRad * target;
         if(autoDrop){
-          var dropRadius = Mathf.curve(b.time, this.riseTime - 8, this.riseTime) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
+          var dropAlpha = Mathf.curve(b.time, this.riseTime * 2/3, this.riseTime) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
           Draw.z(Layer.bullet + 0.001);
-          Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * dropRadius);
-          Fill.circle(b.x, b.y, autoDropRad * dropRadius);
+          Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * dropAlpha);
+          Fill.circle(b.x, b.y, autoDropRad);
         }
         Draw.z(Layer.bullet + 0.002);
         Draw.color(Pal.gray, target);

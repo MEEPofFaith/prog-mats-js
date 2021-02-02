@@ -146,6 +146,7 @@ module.exports = {
         if(!b) return;
         this.super$init(b);
         b.fdata = -69420;
+        this.drawSize = b.data[0][0] + 24;
       },
       update(b){
         if(!b) return;
@@ -167,7 +168,7 @@ module.exports = {
             }
           });
           
-          if(b.time < expandTime + 5){
+          if(b.time < (expandTime + 2) * Time.delta){
             fLib.trueEachTile(b.x, b.y, range, tile => {
               tile.setAir();
               tile.setFloor(Blocks.space);
@@ -258,7 +259,6 @@ module.exports = {
     cataclysm.collides = false;
     cataclysm.hittable = false;
     cataclysm.absorbable = false;
-    cataclysm.drawSize = 8000;
 
     const blackHole = extend(BasicBulletType, {
       load(){

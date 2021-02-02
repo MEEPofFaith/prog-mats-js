@@ -58,6 +58,9 @@ module.exports = {
       handleItem(source, item){
         this.reload = 0; //Sorry, but you can't just turn a half-built missile into a different type of missile. Gotta restart construction.
         this.super$handleItem(source, item);
+      },
+      turnToTarget(targetRot){
+        this.rotation = targetRot;
       }
     }, objb);
     

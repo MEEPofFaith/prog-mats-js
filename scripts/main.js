@@ -43,11 +43,13 @@ const script = [
     childs: [
       {
         name: "progressed",
-        childs:["techtanite", "mShell", "nShell",
+        childs:["techtanite",
+          "mShell",
           {
             name: "missile",
             childs:["basicM", "empM"]
           },
+          "nShell",
           {
             name: "nuke",
             childs:["basicN", "empN"]
