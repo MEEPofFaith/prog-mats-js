@@ -35,7 +35,7 @@ missile.trailEffect = trail;
 missile.despawnEffect = boom;
 missile.riseSpin = 360;
 missile.fallSpin = 135;
-missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y);
+missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
 const emp = bul.strikeBullet(true, 30, 10, true, true, false);
 emp.sprite = "prog-mats-emp-strikeb";
