@@ -1,5 +1,5 @@
 module.exports = {
-  spark(statusName, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd){
+  spark(statusName, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotScl){
     const paralyze = extend(StatusEffect, statusName, {
       damageMultipler: dmgMult,
       healthMultiplier: healthMult,
@@ -15,7 +15,7 @@ module.exports = {
           var mount = unit.mounts[i];
           var weapon = mount.weapon;
           if(weapon.rotate){
-            mount.rotation += Mathf.range(rotRnd * strength);
+            mount.rotation += Mathf.range(weapon.rotateSpeed * rotScl * strength);
           }
         }
         if(unit.type.flying == true && !unit.dead){

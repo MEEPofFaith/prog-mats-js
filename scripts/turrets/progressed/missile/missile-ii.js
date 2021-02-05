@@ -23,10 +23,10 @@ missile.splashDamageRadius = 64;
 missile.speed = 2;
 missile.homingPower = 0.05;
 missile.homingRange = 320;
-missile.lifetime = 300;
-missile.elevation = 600;
-missile.riseTime = 90;
-missile.fallTime = 45;
+missile.lifetime = 150;
+missile.elevation = 300;
+missile.riseTime = 45;
+missile.fallTime = 25;
 missile.hitSound = Sounds.bang;
 missile.hitShake = 8;
 missile.trailParam = 5;
@@ -39,7 +39,7 @@ missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
 const emp = bul.strikeBullet(true, 30, 10, true, true, false);
 emp.sprite = "prog-mats-emp-strikeb";
-emp.reloadMultiplier = 0.75;
+emp.reloadMultiplier = 0.25;
 emp.riseEngineSize = 16;
 emp.fallEngineSize = 8;
 emp.trailSize = 0.7;
@@ -49,10 +49,10 @@ emp.splashDamageRadius = 48;
 emp.speed = 3;
 emp.homingPower = 0.075;
 emp.homingRange = 320;
-emp.lifetime = 240;
-emp.elevation = 600;
-emp.riseTime = 70;
-emp.fallTime = 30;
+emp.lifetime = 100;
+emp.elevation = 300;
+emp.riseTime = 35;
+emp.fallTime = 15;
 emp.hitSound = Sounds.bang;
 emp.hitShake = 8;
 emp.trailParam = 5;
@@ -64,7 +64,7 @@ emp.fallSpin = 90;
 emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
-emp.fragBullet = shock.spark("prog-mats-no", 0.9, 1, 0.04, 0.55, 10, 20);
+emp.fragBullet = shock.spark("prog-mats-no", 0.9, 1, 0.04, 0.55, 10, 8);
 
 const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});
 /**

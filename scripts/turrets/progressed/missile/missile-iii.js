@@ -38,7 +38,7 @@ missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
 const emp = bul.strikeBullet(true, 60, 20, true, true, false);
 emp.sprite = "prog-mats-emp-nukeb";
-emp.reloadMultiplier = 0.75;
+emp.reloadMultiplier = 0.25;
 emp.riseEngineSize = 24;
 emp.fallEngineSize = 14;
 emp.trailSize = 0.7;
@@ -64,7 +64,7 @@ emp.fallSpin = 180;
 emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
 // (dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
-emp.fragBullet = shock.spark("prog-mats-cease", 0.8, 0.9, 0.02, 0.5, 30, 30);
+emp.fragBullet = shock.spark("prog-mats-cease", 0.8, 0.9, 0.02, 0.5, 30, 15);
 emp.fragBullet.speed = 12;
 emp.fragBullet.lifetime = 48;
 emp.fragBullet.statusDuration = 60 * 12;
