@@ -75,11 +75,11 @@ const script = [
         childs:[
           {
             name: "eruptor",
-            childs: ["eruptor", "magmator", "hell"]
+            childs: ["eruptor-i", "eruptor-ii", "eruptor-iii"]
           },
           {
             name: "minigun",
-            childs: ["minigun", "miinigun", "mivnigun"]
+            childs: ["minigun-i", "minigun-ii", "minigun-iii"]
           },
           {
             name: "tesla",
