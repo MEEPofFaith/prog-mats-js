@@ -36,18 +36,36 @@ missile.trailEffect = trail;
 missile.despawnEffect = boom;
 // missile.rocketEffect = Fx.rocketSmokeLarge;
 
-const actualSwarmer = extendContent(ItemTurret, "missile-i", {
+const actualSwarmer = extend(ItemTurret, "missile-i", {
   load(){
     this.super$load();
     this.heatRegions = [];
     for(var i = 0; i < 9; i++){
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
-  }
+  },
+  health: 1430,
+  size: 3,
+  range: 160,
+  reloadTime: 75,
+  shootSound: Sounds.artillery,
+  cooldown: 0.005,
+  shootShake: 1,
+  targetAir: false,
+  burstSpacing: 7,
+  shots: 9,
+  inaccuracy: 30,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  maxAmmo: 36,
+  xOffsets: [-31/4, 0, 31/4, -29/4, 0, 29/4, -31/4, 0, 31/4],
+  yOffsets: [31/4, 29/4, 31/4, 0, 0, 0, -31/4, -29/4, -31/4],
+  rotateSpeed: 9999
 });
+actualSwarmer.ammo(Items.blastCompound, missile);
 
 actualSwarmer.buildType = ent => {
-  ent = extendContent(ItemTurret.ItemTurretBuild, actualSwarmer, {
+  ent = extend(ItemTurret.ItemTurretBuild, actualSwarmer, {
     setEffs(){
       this.heats = [];
       this.shot = [];
@@ -161,14 +179,3 @@ actualSwarmer.buildType = ent => {
 actualSwarmer.requirements = ItemStack.with(Items.copper, 69);
 actualSwarmer.category = Category.turret;
 actualSwarmer.buildVisibility = BuildVisibility.sandboxOnly;
-
-actualSwarmer.burstSpacing = 7;
-actualSwarmer.shots = 9;
-actualSwarmer.inaccuracy = 30;
-actualSwarmer.ammo(Items.blastCompound, missile);
-actualSwarmer.shootEffect = Fx.none;
-actualSwarmer.smokeEffect = Fx.none;
-actualSwarmer.maxAmmo = 36;
-actualSwarmer.xOffsets = [-31/4, 0, 31/4, -29/4, 0, 29/4, -31/4, 0, 31/4];
-actualSwarmer.yOffsets = [31/4, 29/4, 31/4, 0, 0, 0, -31/4, -29/4, -31/4];
-actualSwarmer.rotateSpeed = 9999;

@@ -64,7 +64,7 @@ module.exports = {
     const newMountListValue = require("libs/newMountListValue");
     const newBaseListValue = require("libs/newBaseListValue");
     
-    const multiTur = extendContent(ItemTurret, name, {
+    const multiTur = extend(ItemTurret, name, {
       load(){
         this.baseRegion = Core.atlas.find(this.name + "-base", "block-" + this.size);
         this.region = Core.atlas.find(this.name + "-baseTurret");
@@ -171,7 +171,7 @@ module.exports = {
     multiTur.mountInterval = 20;
     
     multiTur.buildType = ent => {
-      ent = extendContent(ItemTurret.ItemTurretBuild, multiTur, {
+      ent = extend(ItemTurret.ItemTurretBuild, multiTur, {
         setEffs(){
           this._reloads = [];
           this._heats = [];

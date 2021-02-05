@@ -103,7 +103,7 @@ hellPool.lightOpacity = 0.7;
 hellPool.lightColor = colors[2];
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
-const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
+const hellRiser = extend(PowerTurret, "eruptor-iii", {
   load(){
     this.caps = [];
     this.cells = [];
@@ -139,26 +139,35 @@ const hellRiser = extendContent(PowerTurret, "eruptor-iii", {
       Core.atlas.find("block-4"),
       Core.atlas.find(this.name + "-icon")
     ];
-  }
+  },
+  size: 4,
+  health: 1800,
+  powerUse: 15,
+  targetAir: true,
+  targetGround: true,
+  recoilAmount: 0,
+  cooldown: 0.01,
+  shootSound: Sounds.none,
+  ambientSound: Sounds.beam,
+  ambientSoundVolume: 2,
+  shootType: hellPool,
+  shootDuration: burnDuration,
+  range: 200,
+  reloadTime: 90,
+  shootCone: 360,
+  rotationSpeed: 8,
+  rotationWindUp: 0.1,
+  rotationWindDown: 0.005,
+  COA: 0.5,
+  recoil: 7,
+  sideHeight: 4,
+  cellHeight: 1,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  ammoUseEffect: Fx.none,
+  restitution: 0.01,
+  heatColor: Color.valueOf("f08913")
 });
-
-hellRiser.shootType = hellPool;
-hellRiser.shootDuration = burnDuration;
-hellRiser.range = 200;
-hellRiser.reloadTime = 90;
-hellRiser.shootCone = 360;
-hellRiser.rotationSpeed = 8;
-hellRiser.rotationWindUp = 0.1;
-hellRiser.rotationWindDown = 0.005;
-hellRiser.COA = 0.5;
-hellRiser.recoil = 7;
-hellRiser.sideHeight = 4;
-hellRiser.cellHeight = 1;
-hellRiser.shootEffect = Fx.none;
-hellRiser.smokeEffect = Fx.none;
-hellRiser.ammoUseEffect = Fx.none;
-hellRiser.restitution = 0.01;
-hellRiser.heatColor = Color.valueOf("f08913");
 
 /**
 requirements:[
@@ -185,7 +194,7 @@ const fLib = this.global.pm.funcLib;
 var rots = [0, 90, 180, 270];
 
 hellRiser.buildType = ent => {
-	ent = extendContent(PowerTurret.PowerTurretBuild, hellRiser, {
+	ent = extend(PowerTurret.PowerTurretBuild, hellRiser, {
     setEff(){
       this._bulletLife = 0;
       this._cellOpenAmounts = [0, 0];

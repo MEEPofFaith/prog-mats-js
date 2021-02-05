@@ -64,7 +64,7 @@ module.exports = {
       }
     }, objb);
     
-    const missileSilo = extendContent(type, name, obj);
+    const missileSilo = extend(type, name, obj);
     
     missileSilo.rotateSpeed = 9999;
     missileSilo.shootLength = 0;
@@ -73,7 +73,7 @@ module.exports = {
     missileSilo.outlineIcon = false;
     
     missileSilo.buildType = ent => {
-      ent = extendContent(build, missileSilo, clone(objb));
+      ent = extend(build, missileSilo, clone(objb));
       ent._speedScl = 0;
       return ent;
     }

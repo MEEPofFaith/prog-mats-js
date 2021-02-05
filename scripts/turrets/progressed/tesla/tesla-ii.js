@@ -49,7 +49,7 @@ coilZap.lightRadius = 24;
 coilZap.lightOpcaity = 0.7;
 coilZap.hittable = false;
 
-const teslaCoil = extendContent(PowerTurret, "tesla-ii", {
+const teslaCoil = extend(PowerTurret, "tesla-ii", {
   setStats(){
     this.super$setStats();
     
@@ -59,18 +59,23 @@ const teslaCoil = extendContent(PowerTurret, "tesla-ii", {
     //Something can get hit by multiple strikes since they all spawn in the same place.
     this.stats.remove(Stat.damage);
     this.stats.add(Stat.damage, teslaCoil.shootType.damage + " - " + teslaCoil.shootType.damage * teslaCoil.zaps);
-  }
+  },
+  health: 870,
+  powerUse: 4.8,
+  reloadTime: 40,
+  shootCone: 360,
+  heatColor: Color.valueOf("fff694"),
+  size: 2,
+  shootType: coilZap,
+  range: 130,
+  shots: 2,
+  zaps: 6,
+  inaccuracy: 28,
+  angleRand: 19,
+  lightningColor: lightningCol,
+  shootSound: Sounds.spark,
+  shootEffect: Fx.sparkShoot
 });
-
-teslaCoil.shootType = coilZap;
-teslaCoil.range = 130;
-teslaCoil.shots = 2;
-teslaCoil.zaps = 6;
-teslaCoil.inaccuracy = 28;
-teslaCoil.angleRand = 19;
-teslaCoil.lightningColor = lightningCol;
-teslaCoil.shootSound = Sounds.spark;
-teslaCoil.shootEffect = Fx.sparkShoot;
 
 /*
 requirements:[
@@ -90,7 +95,7 @@ const shootLoc = new Vec2();
 const inacc = new Vec2();
 
 teslaCoil.buildType = ent => {
-  ent = extendContent(PowerTurret.PowerTurretBuild, teslaCoil, {
+  ent = extend(PowerTurret.PowerTurretBuild, teslaCoil, {
     setEff(){
       this._currentTarget = 0;
       this._shootAngle = 0;

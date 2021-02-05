@@ -49,7 +49,27 @@ const hadron = extendContent(GenericCrafter, "mindron-collider", {
       Core.atlas.find(this.name + "-glass"),
       Core.atlas.find(this.name + "-top")
     ]
-  }
+  },
+  craftTime: 300,
+  ambientSound: Sounds.none,
+  hasPower: true,
+  baseExplosiveness: 5,
+  itemCapacity: 15,
+  outputItem: new ItemStack(Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 4),
+  size: 5,
+  collidePoint: 12,
+  collideSep: 3,
+  lengthStart: 4,
+  lengthEnd: 72,
+  strokeStart: 1.25,
+  strokeEnd: 0.75,
+  strokes: [1, 0.9, 0.75, 0.55],
+  particleSize: 1.05,
+  startRot: 540,
+  collideStart: 0.65,
+  collideEnd: 0.9,
+  cooldown: 0.03,
+  heatColor: Pal.accent
 });
 
 /**
@@ -66,19 +86,8 @@ hadron.requirements = ItemStack.with(Items.silicon, 150, Items.metaglass, 50, It
 hadron.category = Category.crafting;
 hadron.buildVisibility = BuildVisibility.shown;
 
-hadron.collidePoint = 12;
-hadron.collideSep = 3;
-hadron.lengthStart = 4;
-hadron.lengthEnd = 72;
-hadron.strokeStart = 1.25;
-hadron.strokeEnd = 0.75;
-hadron.strokes = [1, 0.9, 0.75, 0.55];
-hadron.particleSize = 1.05;
-hadron.startRot = 540;
-hadron.collideStart = 0.65;
-hadron.collideEnd = 0.9;
-hadron.cooldown = 0.03;
-hadron.heatColor = Pal.accent;
+hadron.consumes.power(14);
+hadron.consumes.items(ItemStack.with(Items.titanium, 7, Items.thorium, 7));
 
 const p1 = new Vec2();
 const p2 = new Vec2();

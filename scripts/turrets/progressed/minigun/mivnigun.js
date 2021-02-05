@@ -1,4 +1,4 @@
-const quadMinigun = extendContent(ItemTurret, "minigun-iii", {
+const quadMinigun = extend(ItemTurret, "minigun-iii", {
   load(){
     this.turretRegions = [];
     this.outlineRegions = [];
@@ -18,25 +18,29 @@ const quadMinigun = extendContent(ItemTurret, "minigun-iii", {
       Core.atlas.find("block-4"),	
       Core.atlas.find("prog-mats-minigun-iii-frame-0")	
     ];	
-  }
+  },
+  size: 4,
+  range: 225,
+  health: 1800,
+  shootCone: 20,
+  targetAir: true,
+  targetGround: true,
+  rotateSpeed: 2,
+  restitution: 0.02,
+  recoilAmount: 3,
+  cooldown: 0.11,
+  inaccuracy: 8,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  ammoUseEffect: Fx.none,
+  shootSound: Sounds.shootBig,
+  heatColor: Color.valueOf("f7956a"),
+  //Dummy stats to mess with the shots/sec stat
+  reloadTime: 3,
+  shots: 4
 });
-quadMinigun.turretRegions = [];
-quadMinigun.heatRegions = [];
 
-quadMinigun.size = 4;
-quadMinigun.restitution = 0.02;
-quadMinigun.recoilAmount = 3;
-quadMinigun.cooldown = 0.11;
-quadMinigun.inaccuracy = 8;
-quadMinigun.shootEffect = Fx.none;
-quadMinigun.smokeEffect = Fx.none;
-quadMinigun.ammoUseEffect = Fx.none;
-quadMinigun.shootSound = Sounds.shootBig;
-quadMinigun.heatColor = Color.valueOf("f7956a");
 
-//Dummy stats to mess with the shots/sec stat
-quadMinigun.reloadTime = 3;
-quadMinigun.shots = 4;
 
 const MiniCopper = extend(BasicBulletType,{});
 MiniCopper.sprite = "prog-mats-minigun-ball";
@@ -133,7 +137,7 @@ quadMinigun.category = Category.turret;
 quadMinigun.buildVisibility = BuildVisibility.shown;
 
 quadMinigun.buildType = ent => {
-  ent = extendContent(ItemTurret.ItemTurretBuild, quadMinigun, {
+  ent = extend(ItemTurret.ItemTurretBuild, quadMinigun, {
     setEffs(){
       this._barrelHeat = [0, 0, 0, 0];
       this._frame = 0;

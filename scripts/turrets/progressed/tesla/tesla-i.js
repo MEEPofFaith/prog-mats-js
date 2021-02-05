@@ -49,7 +49,7 @@ ringZap.lightRadius = 24;
 ringZap.lightOpcaity = 0.7;
 ringZap.hittable = false;
 
-const teslaRing = extendContent(PowerTurret, "tesla-i", {
+const teslaRing = extend(PowerTurret, "tesla-i", {
   setStats(){
     this.super$setStats();
     
@@ -59,18 +59,23 @@ const teslaRing = extendContent(PowerTurret, "tesla-i", {
     //Something can get hit by multiple strikes since they all spawn in the same place.
     this.stats.remove(Stat.damage);
     this.stats.add(Stat.damage, teslaRing.shootType.damage + " - " + teslaRing.shootType.damage * teslaRing.zaps);
-  }
+  },
+  size: 1,
+  health: 260,
+  powerUse: 3.6,
+  reloadTime: 60,
+  shootCone: 360,
+  heatColor: Color.valueOf("fff694"),
+  shootType: ringZap,
+  range: 72,
+  shots: 2,
+  zaps: 4,
+  inaccuracy: 32,
+  angleRand: 27,
+  lightningColor: lightningCol,
+  shootSound: Sounds.spark,
+  shootEffect: Fx.sparkShoot
 });
-
-teslaRing.shootType = ringZap;
-teslaRing.range = 72;
-teslaRing.shots = 2;
-teslaRing.zaps = 4;
-teslaRing.inaccuracy = 32;
-teslaRing.angleRand = 27;
-teslaRing.lightningColor = lightningCol;
-teslaRing.shootSound = Sounds.spark;
-teslaRing.shootEffect = Fx.sparkShoot;
 
 /*
   requirements:[
@@ -89,7 +94,7 @@ const shootLoc = new Vec2();
 const inacc = new Vec2();
 
 teslaRing.buildType = ent => {
-  ent = extendContent(PowerTurret.PowerTurretBuild, teslaRing, {
+  ent = extend(PowerTurret.PowerTurretBuild, teslaRing, {
     setEff(){
       this._currentTarget = 0;
       this._shootAngle = 0;

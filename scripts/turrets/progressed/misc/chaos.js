@@ -114,7 +114,7 @@ chaosBeam.sideAngle = 25;
 chaosBeam.sideWidth = width / 6;
 chaosBeam.sideLength = length / 1.5;
 
-const chaosArray = extendContent(PowerTurret, "chaos-array", {
+const chaosArray = extend(PowerTurret, "chaos-array", {
   load(){
     this.baseRegion = Core.atlas.find("prog-mats-block-8");
     this.region = Core.atlas.find(this.name);
@@ -128,24 +128,28 @@ const chaosArray = extendContent(PowerTurret, "chaos-array", {
     
     this.stats.remove(Stat.booster);
     this.stats.add(Stat.input, new BoosterListValue(chaosArray.reloadTime, chaosArray.consumes.get(ConsumeType.liquid).amount, chaosArray.coolantMultiplier, false, l => chaosArray.consumes.liquidfilters.get(l.id)));
-  }
+  },
+  powerUse: 3000,
+  range: 560,
+  recoilAmount: 8,
+  rotateSpeed: 0.3,
+  shootCone: 35,
+  cooldown: 0.0015,
+  restitution: 0.008,
+  shootType: chaosBeam,
+  reloadTime: 450,
+  chargeTime: chargeTime,
+  chargeSound: loadSound("chaosCharge"),
+  shootSound: loadSound("chaosBlast"),
+  chargeBeginEffect: chaosChargeBegin,
+  size: 8,
+  shootDuration: duration,
+  shots: 100,
+  inaccuracy: 45,
+  shootY: -16,
+  shootShake: 150,
+  coolantMultiplier: 1
 });
-
-chaosArray.shootType = chaosBeam;
-chaosArray.reloadTime = 450;
-chaosArray.chargeTime = chargeTime;
-chaosArray.chargeSound = loadSound("chaosCharge");
-chaosArray.shootSound = loadSound("chaosBlast");
-/*chaosArray.chargeSound = Sounds.lasercharge;
-chaosArray.shootSound = Sounds.laserblast;*/
-chaosArray.chargeBeginEffect = chaosChargeBegin;
-chaosArray.size = 8;
-chaosArray.shootDuration = duration;
-chaosArray.shots = 100;
-chaosArray.inaccuracy = 45;
-chaosArray.shootY = -16;
-chaosArray.shootShake = 150
-chaosArray.coolantMultiplier = 1;
 
 //16000 of every vanilla item + 16000 techtanite
 let stack = [];
@@ -180,7 +184,7 @@ chaosArray.heatDrawer = tile => {
 };
 
 chaosArray.buildType = ent => {
-	ent = extendContent(PowerTurret.PowerTurretBuild, chaosArray, {
+	ent = extend(PowerTurret.PowerTurretBuild, chaosArray, {
     setEff(){
       this._bulletLife = 0;
     },

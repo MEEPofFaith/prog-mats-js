@@ -7,7 +7,7 @@ sword.fadeTime = 25;
 sword.lifetime = 60;
 sword.colors = [Color.valueOf("E8D174").mul(1, 1, 1, 0.4), Color.valueOf("F3E979"), Color.white];
 
-const arthur = extendContent(PowerTurret, "excalibur", {
+const arthur = extend(PowerTurret, "excalibur", {
   load(){
     this.super$load();
     this.sides = [];
@@ -36,10 +36,33 @@ const arthur = extendContent(PowerTurret, "excalibur", {
       Core.atlas.find(this.baseRegion),
       Core.atlas.find(this.name + "-icon")
     ];
-  }
+  },
+  health: 4610,
+  range: 740,
+  reloadTime: 600,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  shootLength: 0,
+  cooldown: 0.0075,
+  heatColor: Color.valueOf("F3E979"),
+  chargeTime: 180,
+  chargeSound: loadSound("popeshadowCharge"),
+  shootSound: loadSound("popeshadowBlast"),
+  pullTime: 60,
+  closeTime: 90,
+  baseLightSpacing: 30,
+  holyLightDelay: 20,
+  holyLightSpacing: 10,
+  xOpen: 2,
+  yOpen: -3,
+  size: 6,
+  recoilAmount: 8,
+  restitution: 0.005,
+  shootType: sword
 });
+
 arthur.buildType = ent => {
-	ent = extendContent(PowerTurret.PowerTurretBuild, arthur, {
+	ent = extend(PowerTurret.PowerTurretBuild, arthur, {
     setEff(){
       this.openX = 0;
       this.openY = 0;
@@ -217,21 +240,6 @@ arthur.buildType = ent => {
 	ent.setEff();
   return ent;
 };
-arthur.heatColor = Color.valueOf("F3E979");
-arthur.chargeTime = 180;
-arthur.chargeSound = loadSound("popeshadowCharge");
-arthur.shootSound = loadSound("popeshadowBlast");
-arthur.pullTime = 60;
-arthur.closeTime = 90;
-arthur.baseLightSpacing = 30;
-arthur.holyLightDelay = 20;
-arthur.holyLightSpacing = 10;
-arthur.xOpen = 2;
-arthur.yOpen = -3;
-arthur.size = 6;
-arthur.recoilAmount = 8;
-arthur.restitution = 0.005;
-arthur.shootType = sword;
 
 /*
   requirements: [

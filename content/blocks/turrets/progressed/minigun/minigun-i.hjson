@@ -1,9 +1,0 @@
-size: 4
-range: 225
-health: 1800
-shootCone: 20
-shootSound: shootBig
-targetAir: true
-targetGround: true
-rotateSpeed: 2
-research: salvo

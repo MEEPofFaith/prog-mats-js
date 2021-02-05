@@ -69,7 +69,19 @@ emp.fragBullet.speed = 12;
 emp.fragBullet.lifetime = 48;
 emp.fragBullet.statusDuration = 60 * 12;
 
-const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {}, {});
+const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
+  health: 5950,
+  size: 7,
+  range: 4400,
+  shootSound: Sounds.explosionbig,
+  cooldown: 0.001,
+  shootShake: 10,
+  reloadTime: 1500,
+  shootLength: 0,
+  
+  maxAmmo: 2,
+  unitSort: (u, x, y) => -u.maxHealth
+}, {});
 /**
  * Easy to read research requirement list
  *
@@ -80,8 +92,4 @@ NUKE.requirements = ItemStack.with(Items.copper, 69);
 NUKE.category = Category.turret;
 NUKE.buildVisibility = BuildVisibility.sandboxOnly;
 
-NUKE.reloadTime = 1500;
-NUKE.shootLength = 0;
 NUKE.ammo(citem("basic-nuke"), missile, citem("emp-nuke"), emp);
-NUKE.maxAmmo = 2;
-NUKE.unitSort = (u, x, y) => -u.maxHealth;

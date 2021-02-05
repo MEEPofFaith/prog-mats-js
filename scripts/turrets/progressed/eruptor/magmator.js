@@ -107,7 +107,7 @@ magmaPool.lightOpacity = 0.7;
 magmaPool.lightColor = colors[2];
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
-const magmaRiser = extendContent(PowerTurret, "eruptor-ii", {
+const magmaRiser = extend(PowerTurret, "eruptor-ii", {
   load(){
     this.cells = [];
     this.heatRegions = [];
@@ -143,24 +143,34 @@ const magmaRiser = extendContent(PowerTurret, "eruptor-ii", {
       Core.atlas.find("block-4"),
       Core.atlas.find(this.name + "-icon")
     ];
-  }
+  },
+  size: 4,
+  health: 1800,
+  powerUse: 15,
+  shootCone: 10,
+  targetAir: true,
+  targetGround: true,
+  cooldown: 0.01,
+  restitution: 0.01,
+  shootSound: Sounds.none,
+  ambientSound: Sounds.beam,
+  ambientSoundVolume: 2,
+  shootType: magmaPool,
+  shootDuration: 240,
+  range: 280,
+  maxRange: 450,
+  reloadTime: 90,
+  rotateSpeed: 2.25,
+  recoilAmount: 4,
+  COA: 0.9,
+  cellHeight: 1,
+  firingMoveFract: 0.8,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  ammoUseEffect: Fx.none,
+  capClosing: 0.01,
+  heatColor: Color.valueOf("f08913")
 });
-
-magmaRiser.shootType = magmaPool;
-magmaRiser.shootDuration = 240;
-magmaRiser.range = 280;
-magmaRiser.maxRange = 450;
-magmaRiser.reloadTime = 90;
-magmaRiser.rotateSpeed = 2.25;
-magmaRiser.recoilAmount = 4;
-magmaRiser.COA = 0.9;
-magmaRiser.cellHeight = 1;
-magmaRiser.firingMoveFract = 0.8;
-magmaRiser.shootEffect = Fx.none;
-magmaRiser.smokeEffect = Fx.none;
-magmaRiser.ammoUseEffect = Fx.none;
-magmaRiser.capClosing = 0.01;
-magmaRiser.heatColor = Color.valueOf("f08913");
 
 /**
   * requirements:[
@@ -181,7 +191,7 @@ magmaRiser.buildVisibility = BuildVisibility.shown;
 const shootLoc = new Vec2();
 
 magmaRiser.buildType = ent => {
-	ent = extendContent(PowerTurret.PowerTurretBuild, magmaRiser, {
+	ent = extend(PowerTurret.PowerTurretBuild, magmaRiser, {
 		setEff(){
 			this._bullet = null;
 			this._bulletLife = 0;

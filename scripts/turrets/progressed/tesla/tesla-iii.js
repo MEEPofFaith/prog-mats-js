@@ -49,7 +49,7 @@ stormZap.lightRadius = 24;
 stormZap.lightOpcaity = 0.7;
 stormZap.hittable = false;
 
-const teslaStorm = extendContent(PowerTurret, "tesla-iii", {
+const teslaStorm = extend(PowerTurret, "tesla-iii", {
   load(){
     this.outlines = [];
     this.rotators = [];
@@ -80,22 +80,26 @@ const teslaStorm = extendContent(PowerTurret, "tesla-iii", {
       Core.atlas.find("block-3"),
       Core.atlas.find(this.name + "-icon")
     ];
-  }
+  },
+  health: 1540,
+  powerUse: 8.9,
+  reloadTime: 20,
+  shootCone: 360,
+  size: 3,
+  shootType: stormZap,
+  range: 130,
+  shots: 3,
+  zaps: 7,
+  angleRand: 13,
+  inaccuracy: 28,
+  rotateSpeed: 12,
+  lightningColor: lightningCol,
+  shootSound: Sounds.spark,
+  shootEffect: Fx.sparkShoot,
+  heatColor: Color.valueOf("fff694"),
+  coolantMultiplier: 1
 });
 
-teslaStorm.shootType = stormZap;
-teslaStorm.size = 3;
-teslaStorm.range = 130;
-teslaStorm.shots = 3;
-teslaStorm.zaps = 7;
-teslaStorm.angleRand = 13;
-teslaStorm.inaccuracy = 28;
-teslaStorm.rotateSpeed = 12;
-teslaStorm.lightningColor = lightningCol;
-teslaStorm.shootSound = Sounds.spark;
-teslaStorm.shootEffect = Fx.sparkShoot;
-teslaStorm.heatColor = Color.valueOf("fff694");
-teslaStorm.coolantMultiplier = 1;
 /*
   requirements:[
     copper/120
@@ -117,7 +121,7 @@ const shootLoc2 = new Vec2();
 const inacc = new Vec2();
 
 teslaStorm.buildType = ent => {
-  ent = extendContent(PowerTurret.PowerTurretBuild, teslaStorm, {
+  ent = extend(PowerTurret.PowerTurretBuild, teslaStorm, {
     setEff(){
       this._currentTarget = 0;
       this._shootAngle = 0;

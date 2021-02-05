@@ -107,7 +107,7 @@ lavaPool.lightOpacity = 0.7;
 lavaPool.lightColor = colors[2];
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
-const lavaRiser = extendContent(PowerTurret, "eruptor-i", {
+const lavaRiser = extend(PowerTurret, "eruptor-i", {
   load(){
     this.caps = [];
     this.outlines = [];
@@ -140,24 +140,35 @@ const lavaRiser = extendContent(PowerTurret, "eruptor-i", {
       Core.atlas.find("block-3"),
       Core.atlas.find(this.name + "-icon")
     ];
-  }
+  },
+  size: 3,
+  health: 1800,
+  powerUse: 10,
+  shootCone: 10,
+  targetAir: true,
+  targetGround: true,
+  cooldown: 0.01,
+  restitution: 0.01,
+  shootSound: Sounds.none,
+  ambientSound: Sounds.beam,
+  ambientSoundVolume: 2,
+  shootType: lavaPool,
+  shootDuration: 180,
+  range: 240,
+  maxRange: 360,
+  reloadTime: 60,
+  recoilAmount: 3,
+  COA: 0.75,
+  cellHeight: 1,
+  rotateSpeed: 3,
+  firingMoveFract: 0.8,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  ammoUseEffect: Fx.none,
+  capClosing: 0.01,
+  heatColor: Color.valueOf("f08913")
 });
 
-lavaRiser.shootType = lavaPool;
-lavaRiser.shootDuration = 180;
-lavaRiser.range = 240;
-lavaRiser.maxRange = 360;
-lavaRiser.reloadTime = 60;
-lavaRiser.recoilAmount = 3;
-lavaRiser.COA = 0.75;
-lavaRiser.cellHeight = 1;
-lavaRiser.rotateSpeed = 3;
-lavaRiser.firingMoveFract = 0.8;
-lavaRiser.shootEffect = Fx.none;
-lavaRiser.smokeEffect = Fx.none;
-lavaRiser.ammoUseEffect = Fx.none;
-lavaRiser.capClosing = 0.01;
-lavaRiser.heatColor = Color.valueOf("f08913");
 /**
   * requirements:[
   *   copper/200
@@ -176,7 +187,7 @@ lavaRiser.buildVisibility = BuildVisibility.shown;
 const shootLoc = new Vec2();
 
 lavaRiser.buildType = ent => {
-	ent = extendContent(PowerTurret.PowerTurretBuild, lavaRiser, {
+	ent = extend(PowerTurret.PowerTurretBuild, lavaRiser, {
     setEff(){
       this._bullet = null;
       this._bulletLife = 0;

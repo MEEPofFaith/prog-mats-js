@@ -21,7 +21,7 @@ const charge = new Effect(38, e => {
 const bh = require("libs/bulletTypes/blackHoleBulletType");
 const ballOfSucc = bh.newBlackHole(6, horizonColor, horizonRad, 25);
 
-const kugelblitz = extendContent(PowerTurret, "blackhole", {
+const kugelblitz = extend(PowerTurret, "blackhole", {
   setStats(){
     this.super$setStats();
     
@@ -33,20 +33,28 @@ const kugelblitz = extendContent(PowerTurret, "blackhole", {
     this.super$load();
     
     this.spaceRegion = Core.atlas.find(this.name + "-space");
-  }
+  },
+  size: 4,
+  range: 128,
+  health: 800,
+  reloadTime: 520,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  rotateSpeed: 1.25,
+  shootSound: Sounds.release,
+  shootType: ballOfSucc,
+  chargeEffect: charge,
+  chargeBeginEffect: chargeBegin,
+  chargeTime: 50,
+  chargeMaxDelay: 30,
+  chargeEffects: 16,
+  recoilAmount: 2,
+  heatColor: Color.valueOf("000000"),
+  restitution: 0.015,
+  cooldown: 0.005,
+  shootLength: 0
 });
 
-kugelblitz.shootType = ballOfSucc;
-kugelblitz.chargeEffect = charge;
-kugelblitz.chargeBeginEffect = chargeBegin;
-kugelblitz.chargeTime = 50;
-kugelblitz.chargeMaxDelay = 30;
-kugelblitz.chargeEffects = 16;
-kugelblitz.recoilAmount = 2;
-kugelblitz.heatColor = Color.valueOf("000000");
-kugelblitz.restitution = 0.015;
-kugelblitz.cooldown = 0.005;
-kugelblitz.shootLength = 0;
 /*
   requirements:[
     titanium/100
@@ -85,7 +93,7 @@ kugelblitz.heatDrawer = tile => {
 const spaceColor = new Color.valueOf("140017");
 
 kugelblitz.buildType = ent => {
-  ent = extendContent(PowerTurret.PowerTurretBuild, kugelblitz, {
+  ent = extend(PowerTurret.PowerTurretBuild, kugelblitz, {
     setEff(){
       this._spaceAlpha = 0;
     },

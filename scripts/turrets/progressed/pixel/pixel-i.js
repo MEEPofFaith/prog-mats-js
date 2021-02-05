@@ -34,3 +34,10 @@ bit.shootType = pew;
 bit.requirements = ItemStack.with(Items.copper, 50, Items.lead, 60, Items.silicon, 40, Items.titanium, 30);
 bit.category = Category.turret;
 bit.buildVisibility = BuildVisibility.shown;
+
+bit.reloadTime = 70;
+bit.recoilAmount = 4;
+bit.inaccuracy = 15;
+bit.range = 140;
+bit.powerUse = 1.35;
+bit.size = 2;

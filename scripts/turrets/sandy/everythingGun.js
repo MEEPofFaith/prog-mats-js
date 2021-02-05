@@ -11,7 +11,7 @@ const bfrit = (b, lifetime) => {
   }
 };
 
-const everythingGun = extendContent(PowerTurret, "everything-gun", {
+const everythingGun = extend(PowerTurret, "everything-gun", {
   load(){
     this.super$load();
     this.baseRegion = Core.atlas.find("prog-mats-block-" + this.size);
@@ -94,7 +94,7 @@ swirl.layer = Layer.turret;
 const max = 6000;
 
 everythingGun.buildType = ent => {
-  ent = extendContent(PowerTurret.PowerTurretBuild, everythingGun, {
+  ent = extend(PowerTurret.PowerTurretBuild, everythingGun, {
     setEffs(){
       this.drawBias = 0;
       this.bias = 0.1;

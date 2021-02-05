@@ -66,7 +66,19 @@ emp.fragVelocityMin = 0.5;
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
 emp.fragBullet = shock.spark("prog-mats-no", 0.9, 1, 0.04, 0.55, 10, 8);
 
-const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});
+const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {
+  health: 2870,
+  size: 4,
+  range: 280,
+  reloadTime: 180,
+  shootSound: Sounds.explosionbig,
+  cooldown: 0.001,
+  shootShake: 5,
+  inaccuracy: 5,
+  
+  maxAmmo: 5,
+  nitSort: (u, x, y) => -u.maxHealth
+}, {});
 /**
  * Easy to read research requirement list
  *
@@ -78,8 +90,6 @@ ohnoMissilesReturns.category = Category.turret;
 ohnoMissilesReturns.buildVisibility = BuildVisibility.sandboxOnly;
 
 ohnoMissilesReturns.ammo(citem("basic-missile"), missile, citem("emp-missile"), emp);
-ohnoMissilesReturns.maxAmmo = 5;
-ohnoMissilesReturns.unitSort = (u, x, y) => -u.maxHealth;
 
 /**
   * Plans:

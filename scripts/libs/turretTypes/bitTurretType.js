@@ -1,7 +1,7 @@
 const tr = new Vec2();
 module.exports = {
   new8BitTurret(name, sides, type, build, perRot){
-    const bit = extendContent(type, name, {
+    const bit = extend(type, name, {
       load(){
         this.super$load();
         this.bits = [];
@@ -28,7 +28,7 @@ module.exports = {
     });
     
     bit.buildType = ent => {
-      ent = extendContent(build, bit, {
+      ent = extend(build, bit, {
         draw(){
           Draw.rect(bit.baseRegion, this.x, this.y);
           Draw.color();
