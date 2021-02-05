@@ -18,7 +18,12 @@ module.exports = {
             mount.rotation += Mathf.range(rotRnd * strength);
           }
         }
-        this.super$update(unit, time);
+        if(unit.type.flying == true && !unit.dead){
+          unit.kill(); //Cut the engines. This can't possibly be op in any way.
+        }else if(unit.type.canBoost && unit.boosting != null){
+          unit.boosting = false;
+        }
+        if(!unit.dead) this.super$update(unit, time);
       }
     });
     

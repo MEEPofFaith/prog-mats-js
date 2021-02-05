@@ -39,7 +39,7 @@ missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
 const emp = bul.strikeBullet(true, 30, 10, true, true, false);
 emp.sprite = "prog-mats-emp-strikeb";
-emp.reloadMultiplier = 0.5;
+emp.reloadMultiplier = 0.75;
 emp.riseEngineSize = 16;
 emp.fallEngineSize = 8;
 emp.trailSize = 0.7;
@@ -64,7 +64,7 @@ emp.fallSpin = 90;
 emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
-emp.fragBullet = shock.spark("prog-mats-no", 0.9, 1, 0.25, 0.4, 0, 20);
+emp.fragBullet = shock.spark("prog-mats-no", 0.9, 1, 0.04, 0.55, 10, 20);
 
 const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {}, {});
 /**
