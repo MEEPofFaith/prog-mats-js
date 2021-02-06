@@ -1,5 +1,4 @@
 const sentryUnitType = require("libs/unit/sentryUnit");
-const register = require("libs/unit/register");
 
 const sentryI = sentryUnitType.sentryUnit("sentry-i");
 
@@ -16,5 +15,3 @@ cannon.ejectEffect = Fx.casing1;
 cannon.top = false;
 
 sentryI.weapons.add(cannon);
-
-register(sentryI);

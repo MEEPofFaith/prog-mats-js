@@ -1,4 +1,5 @@
 const ais = require("libs/ais");
+const register = require("libs/unit/register");
 
 module.exports = {
   sentryUnit(name){
@@ -60,7 +61,8 @@ module.exports = {
       healFract(amount){},
       cap(){
         return Infinity;
-      }
+      },
+      classId: () => sentryU.classId
     });
     sentryU.defaultController = ais.sentryAI;
 
@@ -74,6 +76,8 @@ module.exports = {
     sentryU.engineRotOffset = 45;
     sentryU.duration = 60 * 10;
     sentryU.isCounted = false;
+    
+    register(sentryU);
     
     return sentryU;
   }
