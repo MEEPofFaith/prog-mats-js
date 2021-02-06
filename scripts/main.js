@@ -53,6 +53,10 @@ const script = [
           {
             name: "nuke",
             childs:["basicN", "empN"]
+          },
+          {
+            name: "sentry",
+            childs:["basicSentry"]
           }
         ]
       }

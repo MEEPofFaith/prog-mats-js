@@ -64,7 +64,7 @@ hasPower
 
 shellPress.itemCapacity = 30;
 shellPress.liquidCapacity = 20;
-shellPress.size = 4;
+shellPress.size = 3;
 shellPress.health = 100;
 shellPress.craftEffect = Fx.pulverizeMedium;
 shellPress.updateEffect = Fx.none;

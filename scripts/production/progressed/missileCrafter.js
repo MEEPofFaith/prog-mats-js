@@ -15,7 +15,10 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
     },
     craftTime: 80,
   },*/
-  {//1 (Missile)
+  
+  //region missiles
+  
+  {//1 (Basic Missile)
     input: {
       items: ["prog-mats-missile-shell/1", "thorium/5", "blast-compound/5"],
       power: 3
@@ -25,13 +28,37 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
     },
     craftTime: 60
   },
-  {//2 (Nuke)
+  {//2 (Emp Missile)
     input: {
       items: ["prog-mats-missile-shell/1", "silicon/5", "copper/10", "lead/10"],
       power: 5
     },
     output:{
       items: ["prog-mats-emp-missile/1"]
+    },
+    craftTime: 90
+  },
+  
+  //endregion
+  //region nukes
+  
+  {//1 (Basic Nuke)
+    input: {
+      items: ["prog-mats-nuke-shell/1", "thorium/25", "phase-fabric/25", "techtanite/30"],
+      power: 3
+    },
+    output:{
+      items: ["prog-mats-basic-nuke/1"]
+    },
+    craftTime: 60
+  },
+  {//2 (Emp Nuke)
+    input: {
+      items: ["prog-mats-nuke-shell/1", "silicon/30", "surge-alloy/20", "techtanite/40"],
+      power: 5
+    },
+    output:{
+      items: ["prog-mats-emp-nuke/1"]
     },
     craftTime: 90
   }
@@ -62,8 +89,8 @@ hasLiquids
 hasPower
 */
 
-shellPress.itemCapacity = 30;
-shellPress.liquidCapacity = 20;
+shellPress.itemCapacity = 50;
+shellPress.liquidCapacity = 50;
 shellPress.size = 4;
 shellPress.health = 100;
 shellPress.craftEffect = Fx.pulverizeMedium;

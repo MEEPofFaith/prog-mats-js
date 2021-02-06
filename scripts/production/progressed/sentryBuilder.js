@@ -1,6 +1,6 @@
 const multiLib = require("multi-lib/library");
 
-const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafterBuild, "missile-crafter", [
+const sentryFactory = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafterBuild, "sentry-builder", [
   /*default form for each recipes. You can change values.
   {
     input: {
@@ -17,23 +17,13 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
   },*/
   {//1 (Missile)
     input: {
-      items: ["prog-mats-nuke-shell/1", "thorium/25", "blast-compound/25"],
+      items: ["silicon/5", "copper/5", "lead/5"],
       power: 3
     },
     output:{
-      items: ["prog-mats-basic-nuke/1"]
+      items: ["prog-mats-basis-sentry/2"]
     },
-    craftTime: 60
-  },
-  {//2 (Nuke)
-    input: {
-      items: ["prog-mats-nuke-shell/1", "silicon/30", "copper/50", "lead/60"],
-      power: 5
-    },
-    output:{
-      items: ["prog-mats-emp-nuke/1"]
-    },
-    craftTime: 90
+    craftTime: 30
   }
 ], {
   /*you can customize block here. ex) load()*/
@@ -62,15 +52,15 @@ hasLiquids
 hasPower
 */
 
-shellPress.itemCapacity = 30;
-shellPress.liquidCapacity = 20;
-shellPress.size = 6;
-shellPress.health = 100;
-shellPress.craftEffect = Fx.pulverizeMedium;
-shellPress.updateEffect = Fx.none;
+sentryFactory.itemCapacity = 30;
+sentryFactory.liquidCapacity = 20;
+sentryFactory.size = 4;
+sentryFactory.health = 100;
+sentryFactory.craftEffect = Fx.pulverizeMedium;
+sentryFactory.updateEffect = Fx.none;
 /*true: dump items and liquids of output according to button
 false: dump items and liquids of output unconditionally*/
-shellPress.dumpToggle = true;
-shellPress.category = Category.crafting;
-shellPress.buildVisibility = BuildVisibility.sandboxOnly;
-shellPress.requirements = ItemStack.with(Items.copper,75);
+sentryFactory.dumpToggle = true;
+sentryFactory.category = Category.crafting;
+sentryFactory.buildVisibility = BuildVisibility.sandboxOnly;
+sentryFactory.requirements = ItemStack.with(Items.copper,75);
