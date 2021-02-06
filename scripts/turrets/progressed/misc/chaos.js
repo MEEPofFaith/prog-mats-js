@@ -124,7 +124,13 @@ const chaosArray = extend(PowerTurret, "chaos-array", {
     this.super$setStats();
     
     this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, "oh no");
+    const ohno = new StatValue({
+      display(table){
+        let size = 8 * 2.5;
+        table.image(Core.atlas.find("error")).size(size * 2, size);
+      }
+    });
+    this.stats.add(Stat.damage, ohno);
     
     this.stats.remove(Stat.booster);
     this.stats.add(Stat.input, new BoosterListValue(chaosArray.reloadTime, chaosArray.consumes.get(ConsumeType.liquid).amount, chaosArray.coolantMultiplier, false, l => chaosArray.consumes.liquidfilters.get(l.id)));

@@ -59,6 +59,24 @@ const script = [
     ]
   },
   {
+    name: "liquids",
+    childs: [
+      {
+        name: "progressed",
+        childs:["magma"] //Should I make magma accesable? Incendiary missiles?
+      }
+    ]
+  },
+  {
+    name: "units",
+    childs: [
+      {
+        name: "progressed",
+        childs: ["sentry-i"]
+      }
+    ]
+  },
+  {
     name: "production",
     childs: [
       {
@@ -98,6 +116,10 @@ const script = [
             childs: ["multi-i"]
           },
           {
+            name: "sentry",
+            childs: ["engineer-i"]
+          },
+          {
             name: "pixel",
             childs: ["pixel-i"]
           }
@@ -106,15 +128,6 @@ const script = [
       {
         name: "sandy",
         childs: ["everythingGun"]
-      }
-    ]
-  },
-  {
-    name: "liquids",
-    childs: [
-      {
-        name: "progressed",
-        childs:["magma"]
       }
     ]
   },

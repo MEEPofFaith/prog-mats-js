@@ -67,7 +67,7 @@ const everythingGun = extend(PowerTurret, "everything-gun", {
   reloadTime: 1,
   size: 6,
   category: Category.turret,
-  requirements: ItemStack.with(),
+  requirements: ItemStack.empty,
   buildVisibility: BuildVisibility.sandboxOnly,
   powerUse: Mathf.PI,
   shootType: Bullets.standardCopper,
