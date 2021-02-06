@@ -38,6 +38,17 @@ module.exports = {
         out.health = out.maxHealth;
         out.add();
         return out;
+      },
+      setStats(){
+        this.super$setStats();
+        const dur = new StatValue({
+          display(table){
+            let durSec = sentryU.duration / 60;
+            let val = durSec + " " + StatUnit.seconds.localized();
+            table.add("(" + Core.bundle.get("stat.prog-mats.sentry-lifetime") + ": " + val + ")");
+          }
+        });
+        this.stats.add(Stat.abilities, dur);
       }
     });
 
