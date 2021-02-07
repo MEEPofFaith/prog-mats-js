@@ -156,10 +156,33 @@ for(var i = 0; i < loadedScript.res.length; i++){
 };
 
 if(!Vars.headless){
-  Core.app.post(() => {
-    var mod = Vars.mods.locateMod("prog-mats");
-    var change = "mod."+ mod.meta.name + ".";
-    mod.meta.displayName = Core.bundle.get(change + "name");
-    mod.meta.author = Core.bundle.get(change + "author");
+  Events.on(ClientLoadEvent, () => {
+    Core.app.post(() => {
+      var mod = Vars.mods.locateMod("prog-mats");
+      var change = "mod."+ mod.meta.name + ".";
+      mod.meta.displayName = Core.bundle.get(change + "name");
+      mod.meta.author = Core.bundle.get(change + "author");
+      
+      const duration = 1 * 60;
+      const importImage = new Table(Styles.black);
+      importImage.touchable = Touchable.disabled;
+      importImage.image(Core.atlas.find("prog-mats-importpls")).style(Styles.outlineLabel).labelAlign(Align.center);
+      importImage.update(() => importImage.setPosition(Core.graphics.getWidth()/2, Core.graphics.getHeight()/2, Align.center));
+      importImage.actions(Actions.fadeOut(duration, Interp.pow4In), Actions.remove());
+      importImage.pack();
+      importImage.act(0.1);
+      
+      if(Vars.mods.locateMod("multi-lib") == null){
+          Vars.ui.showCustomConfirm("$multi.title", "$multi.text", "@yes", "@ok", () => {
+            Core.settings.put("lastmod", "younggam/multi-lib");
+            Vars.ui.mods.show();
+            Core.scene.add(importImage);
+          }, () => {
+            Core.settings.put("lastmod", "younggam/multi-lib");
+            Vars.ui.mods.show();
+            Core.scene.add(importImage);
+          });
+        }
+    });
   });
 }
