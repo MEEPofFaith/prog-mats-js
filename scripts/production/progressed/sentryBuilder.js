@@ -15,15 +15,15 @@ const sentryFactory = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.Gener
     },
     craftTime: 80,
   },*/
-  {//1 (Missile)
+  {//1 (Basic Sentry)
     input: {
-      items: ["silicon/5", "copper/5", "lead/5"],
-      power: 3
+      items: ["copper/30", "lead/35", "titanium/20", "silicon/25"],
+      power: 4
     },
     output:{
-      items: ["prog-mats-basis-sentry/2"]
+      items: ["prog-mats-basic-sentry/3"]
     },
-    craftTime: 30
+    craftTime: 90
   }
 ], {
   /*you can customize block here. ex) load()*/
@@ -52,7 +52,7 @@ hasLiquids
 hasPower
 */
 
-sentryFactory.itemCapacity = 30;
+sentryFactory.itemCapacity = 50;
 sentryFactory.liquidCapacity = 20;
 sentryFactory.size = 4;
 sentryFactory.health = 100;

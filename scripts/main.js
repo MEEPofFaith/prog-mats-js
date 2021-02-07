@@ -85,7 +85,7 @@ const script = [
     childs: [
       {
         name: "progressed",
-        childs:["hadron", "shellPress", "missileCrafter"]
+        childs:["hadron", "shellPress", "missileCrafter", "sentryBuilder"]
       }
     ]
   },

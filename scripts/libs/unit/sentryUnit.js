@@ -29,16 +29,20 @@ module.exports = {
         Draw.color();
       },
       update(unit){
+        if(!unit.dead && unit.health > 0) unit.elevation = Mathf.clamp(unit.elevation + this.riseSpeed * Time.delta);
+        
         var sub = (unit.type.health / this.duration) * Time.delta;
         unit.health -= sub;
         this.super$update(unit);
       },
-      spawn(team, x, y){
-        let out = this.create(team);
-        out.set(x, y);
-        out.health = out.maxHealth;
-        out.add();
-        return out;
+      create(team){
+        let unit = sentryU.constructor.get();
+        unit.team = team;
+        unit.setType(this);
+        unit.ammo = sentryU.ammoCapacity;
+        unit.elevation = 0;
+        unit.health = unit.maxHealth;
+        return unit;
       },
       setStats(){
         this.super$setStats();
@@ -70,12 +74,14 @@ module.exports = {
     sentryU.speed = 0;
     sentryU.drag = 0.025;
     sentryU.flying = true;
+    sentryU.lowAltitude = true;
     sentryU.engineSize = 2;
     sentryU.engines = 4;
     sentryU.engineOffset = 6;
     sentryU.engineRotOffset = 45;
     sentryU.duration = 60 * 10;
     sentryU.isCounted = false;
+    sentryU.riseSpeed = 0.016;
     
     register(sentryU);
     
