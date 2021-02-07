@@ -75,7 +75,7 @@ emp.fragBullet.lifetime = 48;
 emp.fragBullet.statusDuration = 60 * 12;
 
 const clusterFrag = bul.strikeBullet(false, 15, false, 10, true, true, false);
-clusterFrag.sprite = "prog-mats-strikeb";
+clusterFrag.sprite = "prog-mats-cluster-nukeb-frag";
 clusterFrag.riseEngineSize = 16;
 clusterFrag.fallEngineSize = 8;
 clusterFrag.trailSize = 0.7;
