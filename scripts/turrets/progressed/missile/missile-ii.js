@@ -10,9 +10,9 @@ trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(1.5);
 
-//(autodrop, drop radius, stop radius, unstop?, start on owner, given data);
+//(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data);
 
-const missile = bul.strikeBullet(true, 15, 10, true, true, false);
+const missile = bul.strikeBullet(true, 15, true, 10, true, true, false);
 missile.sprite = "prog-mats-strikeb";
 missile.riseEngineSize = 16;
 missile.fallEngineSize = 8;
@@ -37,7 +37,7 @@ missile.riseSpin = 360;
 missile.fallSpin = 135;
 missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
-const emp = bul.strikeBullet(true, 30, 10, true, true, false);
+const emp = bul.strikeBullet(true, 30, true, 10, true, true, false);
 emp.sprite = "prog-mats-emp-strikeb";
 emp.reloadMultiplier = 0.25;
 emp.riseEngineSize = 16;

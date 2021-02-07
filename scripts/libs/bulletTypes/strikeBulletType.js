@@ -1,5 +1,5 @@
 module.exports = {
-  strikeBullet(autoDrop, autoDropRad, stopRad, resumeSeek, startOnOwner, givenData){
+  strikeBullet(autoDrop, autoDropRad, stop, stopRad, resumeSeek, startOnOwner, givenData){
     const strike = extend(BasicBulletType, {
       init(b){
         if(!b) return;
@@ -43,7 +43,7 @@ module.exports = {
           }
         }
         //Stop/Start when over target
-        if(target != null){
+        if(target != null && stop){
           var inRange = Mathf.within(b.x, b.y, target.x, target.y, stopRad);
           if(inRange && !b.data[3]){
             b.data[2] = b.vel.len();

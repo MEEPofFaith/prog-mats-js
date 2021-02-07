@@ -52,7 +52,7 @@ const script = [
           "nShell",
           {
             name: "nuke",
-            childs:["basicN", "empN"]
+            childs:["basicN", "empN", "clusterN"]
           },
           {
             name: "sentry",

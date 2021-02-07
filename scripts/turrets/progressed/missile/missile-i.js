@@ -6,7 +6,7 @@ trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(0.5);
 
-const missile = bul.strikeBullet(false, 0, 6, false, true, true);
+const missile = bul.strikeBullet(false, 0, false, 6, false, true, true);
 missile.sprite = "prog-mats-storm";
 missile.width = 6;
 missile.height = 8;
