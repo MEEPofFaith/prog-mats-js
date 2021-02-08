@@ -58,7 +58,7 @@ module.exports = {
       Drawf.light(e.data[0].x + Tmp.v1.x , e.data[0].y + Tmp.v1.y, (e.data[2] + horizonRad) * e.fout(), horizonColor, 0.7);
       Draw.reset();
     });
-    swirl.layer = Layer.bullet;
+    swirl.layer = Layer.max - 0.5;
     
     const poof = new Effect(24, e => {
       Draw.color(Color.valueOf("353535"), Color.valueOf("000000"), e.fin());
@@ -78,6 +78,7 @@ module.exports = {
         Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 4 + 1.5);
       });
     });
+    poof.layer = Layer.max - 0.5;
     
     const bulletDissapear = new Effect(24, e => {
       e.scaled(8, cons(s => {
@@ -125,7 +126,7 @@ module.exports = {
         Draw.reset();
       }
     });
-    bulletDissapear.layer = Layer.bullet;
+    bulletDissapear.layer = Layer.max - 0.25;
     
     //haha more stealing from Project Unity
     const absorb = new Effect(absorbEffectTime, 512, e => {
@@ -374,7 +375,7 @@ module.exports = {
         }
       },
       draw(b){
-        Draw.z(Layer.bullet + 0.5);
+        Draw.z(Layer.max - 0.01);
         Draw.color(Color.black);
         Draw.rect(this.backRegion, b.x, b.y, b.data[6][1], b.data[6][1], 0);
         
