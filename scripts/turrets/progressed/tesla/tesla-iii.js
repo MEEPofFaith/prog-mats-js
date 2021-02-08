@@ -55,6 +55,7 @@ const teslaStorm = extend(PowerTurret, "tesla-iii", {
     this.rotators = [];
     this.heatRegions = []
     
+    this.teamRegion = Core.atlas.find("error");
     this.region = Core.atlas.find(this.name + "-top");
     this.baseRegion = Core.atlas.find("block-3");
     for(var i = 0; i < 2; i++){

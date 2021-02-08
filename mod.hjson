@@ -19,5 +19,5 @@ description:
   
   The name definitely isn't made of the synonyms of "Advance" and "Content".
   '''
-version: 0.33
-minGameVersion: 123
+version: 0.34
+minGameVersion: 124

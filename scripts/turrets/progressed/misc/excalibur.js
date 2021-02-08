@@ -33,7 +33,7 @@ const arthur = extend(PowerTurret, "excalibur", {
   },
   icons(){
     return [
-      Core.atlas.find(this.baseRegion),
+      this.baseRegion,
       Core.atlas.find(this.name + "-icon")
     ];
   },

@@ -110,6 +110,7 @@ const hellRiser = extend(PowerTurret, "eruptor-iii", {
     this.heatRegions = [];
     this.outlines = [];
     
+    this.teamRegion = Core.atlas.find("error");
     this.baseRegion = Core.atlas.find("block-4");
     this.bottomRegion = Core.atlas.find(this.name + "-bottom");
     this.sideRegion = Core.atlas.find(this.name + "-side");
@@ -136,7 +137,7 @@ const hellRiser = extend(PowerTurret, "eruptor-iii", {
   },
   icons(){
     return [
-      Core.atlas.find("block-4"),
+      this.baseRegion,
       Core.atlas.find(this.name + "-icon")
     ];
   },

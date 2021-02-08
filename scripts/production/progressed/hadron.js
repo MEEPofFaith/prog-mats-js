@@ -33,6 +33,7 @@ const hadron = extendContent(GenericCrafter, "mindron-collider", {
     this.heatRegions = [];
     this.lightRegions = [];
     
+    this.teamRegion = Core.atlas.find("error");
     this.colliderRegion = Core.atlas.find(this.name + "-collider");
     for(var i = 0; i < 2; i++){
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);

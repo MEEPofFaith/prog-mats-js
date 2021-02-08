@@ -116,6 +116,7 @@ chaosBeam.sideLength = length / 1.5;
 
 const chaosArray = extend(PowerTurret, "chaos-array", {
   load(){
+    this.teamRegion = Core.atlas.find("error");
     this.baseRegion = Core.atlas.find("prog-mats-block-8");
     this.region = Core.atlas.find(this.name);
     this.heatRegion = Core.atlas.find(this.name + "-heat");

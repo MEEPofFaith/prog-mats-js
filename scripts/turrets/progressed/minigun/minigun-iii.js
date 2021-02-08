@@ -4,6 +4,7 @@ const quadMinigun = extend(ItemTurret, "minigun-iii", {
     this.outlineRegions = [];
     this.heatRegions = [];
     
+    this.teamRegion = Core.atlas.find("error");
     this.baseRegion = Core.atlas.find("block-4");
     for(var i = 0; i < 3; i++){
       this.turretRegions[i] = Core.atlas.find(this.name + "-frame-" + i);
@@ -13,11 +14,11 @@ const quadMinigun = extend(ItemTurret, "minigun-iii", {
       this.heatRegions[i] = Core.atlas.find(this.name + "-heat-" + i);
     }
   },
-  icons(){	
-    return[	
-      Core.atlas.find("block-4"),	
-      Core.atlas.find("prog-mats-minigun-iii-frame-0")	
-    ];	
+  icons(){
+    return[
+      this.baseRegion,
+      this.turretRegions[0]
+    ];
   },
   size: 4,
   range: 225,

@@ -66,6 +66,7 @@ module.exports = {
     
     const multiTur = extend(ItemTurret, name, {
       load(){
+        this.teamRegion = Core.atlas.find("error");
         this.baseRegion = Core.atlas.find(this.name + "-base", "block-" + this.size);
         this.region = Core.atlas.find(this.name + "-baseTurret");
         this.heatRegion = Core.atlas.find(this.name + "-heat");
@@ -106,7 +107,10 @@ module.exports = {
         }
       },
       icons(){
-        return[this.baseRegion, Core.atlas.find(this.name + "-icon")]
+        return[
+          this.baseRegion,
+          Core.atlas.find(this.name + "-icon")
+        ]
       },
       setStats(){
         this.super$setStats();

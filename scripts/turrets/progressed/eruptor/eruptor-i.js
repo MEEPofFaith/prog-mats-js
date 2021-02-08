@@ -113,6 +113,7 @@ const lavaRiser = extend(PowerTurret, "eruptor-i", {
     this.outlines = [];
     this.heatRegions = [];
     
+    this.teamRegion = Core.atlas.find("error");
     this.baseRegion = Core.atlas.find("block-3");
     this.turretRegion = Core.atlas.find(this.name + "-turret");
     this.cells = Core.atlas.find(this.name + "-cells");
@@ -137,7 +138,7 @@ const lavaRiser = extend(PowerTurret, "eruptor-i", {
   },
   icons(){
     return [
-      Core.atlas.find("block-3"),
+      this.baseRegion,
       Core.atlas.find(this.name + "-icon")
     ];
   },

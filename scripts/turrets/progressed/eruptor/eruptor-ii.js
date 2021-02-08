@@ -115,6 +115,7 @@ const magmaRiser = extend(PowerTurret, "eruptor-ii", {
     this.topCaps = [];
     this.outlines = [];
     
+    this.teamRegion = Core.atlas.find("error");
     this.baseRegion = Core.atlas.find("block-4");
     this.turretRegion = Core.atlas.find(this.name + "-turret");
     for(var i = 0; i < 3; i++){
@@ -140,7 +141,7 @@ const magmaRiser = extend(PowerTurret, "eruptor-ii", {
   },
   icons(){
     return [
-      Core.atlas.find("block-4"),
+      this.baseRegion,
       Core.atlas.find(this.name + "-icon")
     ];
   },
