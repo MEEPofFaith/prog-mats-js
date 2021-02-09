@@ -120,6 +120,7 @@ module.exports = {
         this.stats.remove(Stat.shootRange);
         this.stats.remove(Stat.inaccuracy);
         this.stats.remove(Stat.reload);
+        this.stats.remove(Stat.ammoUse);
         
         this.stats.remove(Stat.ammo);
         const ammoStat = new StatValue({
