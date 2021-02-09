@@ -26,7 +26,7 @@ module.exports = (weapon, icon, bullet, title) => {
         // this.sep(w, "[lightgray]" + Stat.targetsGround.localized() + ": [white]" + (!weapon.targetGround ? Core.bundle.get("no") : Core.bundle.get("yes")));
         
         w.row();
-        w.add("[lightgray]" + Stat.ammoUse.localized() + ": [white]" + weapon.ammoPerShot);
+        w.add("[lightgray]" + Stat.ammoUse.localized() + ": [white]" + weapon.ammoPerShot + StatUnit.perShot.localized());
         w.row();
         w.add("[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(60 / weapon.reloadTime * weapon.shots, 1));
         

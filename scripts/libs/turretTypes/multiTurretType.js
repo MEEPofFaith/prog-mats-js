@@ -231,8 +231,8 @@ module.exports = {
           var y = Tmp.v1.y;
           var rX = x + Tmp.v2.x;
           var rY = y + Tmp.v2.y;
-          var sX = rX + Tmp.v2.x;
-          var sY = rY + Tmp.v2.y;
+          var sX = rX + Tmp.v3.x;
+          var sY = rY + Tmp.v3.y;
           
           return [x, y, rX, rY, sX, sY];
         },
