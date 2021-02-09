@@ -174,56 +174,56 @@ module.exports = {
         Draw.reset();
       },
       drawLight(b){
-      }
+      },
+      sprite: "error",
+      trailChance: 0.5,
+      smokeTrailChance: 0.75,
+      teamTrail: true,
+      rocketEffect: Fx.rocketSmoke,
+      ammoMultiplier: 1,
+      
+      shadowRot: 0,
+      
+      weaveWidth: 0,
+      weaveSpeed: 0,
+      
+      targetRad: 1,
+      
+      riseEngineTime: 0,
+      riseEngineSize: 8,
+      fallEngineTime: 8,
+      fallEngineSize: 6,
+      engineOffset: 0,
+      
+      trailRnd: 3,
+      trailSize: 0.5,
+      
+      riseTime: 60,
+      fallTime: 20,
+      elevation: 200,
+      
+      collides: false,
+      hittable: false,
+      absorbable: false,
+      
+      hitEffect: Fx.blockExplosionSmoke,
+      despawnEffect: Fx.massiveExplosion,
+      shootEffect: Fx.none,
+      smokeEffect: Fx.none,
+      
+      lightRadius: 32,
+      lightOpacity: 0.6,
+      lightColor: Pal.engine,
+      
+      riseEngineLightRadius: 56,
+      fallEngineLightRadius: 42,
+      engineLightOpacity: 0.8,
+      engineLightColor: Pal.engine,
+      
+      riseSpin: 0,
+      fallSpin: 0
     });
-    strike.sprite = "nuke";
-    strike.trailChance = 0.5;
-    strike.smokeTrailChance = 0.75;
-    strike.teamTrail = true;
-    strike.rocketEffect = Fx.rocketSmoke;
-    
     strike.unitSort = (u, x, y) => Mathf.dst2(x, y, u.x, u.y);
-    
-    strike.shadowRot = 0;
-    
-    strike.weaveWidth = 0;
-    strike.weaveSpeed = 0;
-    
-    strike.targetRad = 1;
-    
-    strike.riseEngineTime = 0;
-    strike.riseEngineSize = 8;
-    strike.fallEngineTime = 8;
-    strike.fallEngineSize = 6;
-    strike.engineOffset = 0;
-    
-    strike.trailRnd = 3;
-    strike.trailSize = 0.5;
-    
-    strike.riseTime = 60;
-    strike.fallTime = 20;
-    strike.elevation = 200;
-    
-    strike.collides = false;
-    strike.hittable = false;
-    strike.absorbable = false;
-    
-    strike.hitEffect = Fx.blockExplosionSmoke;
-    strike.despawnEffect = Fx.massiveExplosion;
-    strike.shootEffect = Fx.none;
-    strike.smokeEffect = Fx.none;
-    
-    strike.lightRadius = 32;
-    strike.lightOpacity = 0.6;
-    strike.lightColor = Pal.engine;
-    
-    strike.riseEngineLightRadius = 56;
-    strike.fallEngineLightRadius = 42;
-    strike.engineLightOpacity = 0.8;
-    strike.engineLightColor = Pal.engine;
-    
-    strike.riseSpin = 0;
-    strike.fallSpin = 0;
     
     return strike;
   }

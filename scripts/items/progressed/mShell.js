@@ -1,2 +1,3 @@
-const casing = extendContent(Item, "missile-shell", {});
-casing.color = Color.valueOf("FEB380");
+const mShell = extendContent(Item, "missile-shell", {
+  color: Color.valueOf("FEB380")
+});

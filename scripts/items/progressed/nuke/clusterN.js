@@ -1,2 +1,3 @@
-const casing = extendContent(Item, "cluster-nuke", {});
-casing.color = Color.valueOf("EDF3A9");
+const clusterN = extendContent(Item, "cluster-nuke", {
+  color: Color.valueOf("EDF3A9")
+});

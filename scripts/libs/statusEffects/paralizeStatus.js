@@ -1,5 +1,5 @@
 module.exports = {
-  spark(statusName, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotScl){
+  paralizeStatus(statusName, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotScl, cooldown){
     const paralyze = extend(StatusEffect, statusName, {
       damageMultipler: dmgMult,
       healthMultiplier: healthMult,
@@ -10,7 +10,7 @@ module.exports = {
       effect: Fx.lightningCharge,
       update(unit, time){
         unit.apply(StatusEffects.shocked, 10);
-        var strength = Mathf.clamp(time / 120); //mmm yes steal
+        var strength = Mathf.clamp(time / cooldown); //mmm yes steal
         for(var i = 0; i < unit.mounts.length; i++){
           var mount = unit.mounts[i];
           var weapon = mount.weapon;
@@ -26,30 +26,6 @@ module.exports = {
         if(!unit.dead) this.super$update(unit, time);
       }
     });
-    
-    const emp = extend(BulletType, {
-      hittable: false,
-      absorbable: false,
-      reflectable: false,
-      collidesTiles: false,
-      pierce: true,
-      status: paralyze,
-      statusDuration: 60 * 5,
-      trailEffect: Fx.lightningCharge,
-      trailChance: 0.5,
-      hitColor: Pal.lancerLaser,
-      damage: 0,
-      speed: 8,
-      lifetime: 32,
-      hitEffect: Fx.none,
-      despawnEffect: Fx.none,
-      init(b){
-        if(!b) return;
-        b.fdata = -69420;
-        this.super$init(b);
-      }
-    });
-    
-    return emp;
+    return paralyze;
   }
 }

@@ -1,2 +1,3 @@
-const casing = extendContent(Item, "emp-nuke", {});
-casing.color = Color.valueOf("5757C1");
+const empN = extendContent(Item, "emp-nuke", {
+  color: Color.valueOf("5757C1")
+});

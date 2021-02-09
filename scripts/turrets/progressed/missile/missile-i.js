@@ -58,6 +58,7 @@ const actualSwarmer = extend(ItemTurret, "missile-i", {
   shootEffect: Fx.none,
   smokeEffect: Fx.none,
   maxAmmo: 36,
+  ammoPerShot: 9,
   xOffsets: [-31/4, 0, 31/4, -29/4, 0, 29/4, -31/4, 0, 31/4],
   yOffsets: [31/4, 29/4, 31/4, 0, 0, 0, -31/4, -29/4, -31/4],
   rotateSpeed: 9999
@@ -152,11 +153,11 @@ actualSwarmer.buildType = ent => {
           
           type.create(this, this.team, x, y, this.rotation + Mathf.range(actualSwarmer.inaccuracy), -1, 1 + Mathf.range(actualSwarmer.velocityInaccuracy), 1, [x, y, 0, false]);
           this.effects();
-          this.useAmmo();
           this.heats[sel] = 1;
           this.shot[sel] = true;
         });
       }
+      this.useAmmo();
       
       Time.run(actualSwarmer.burstSpacing * actualSwarmer.shots, () => {
         this.reload = 0;

@@ -47,7 +47,7 @@ const script = [
           "mShell",
           {
             name: "missile",
-            childs:["basicM", "empM"]
+            childs:["basicM", "empM", "quantumM"]
           },
           "nShell",
           {

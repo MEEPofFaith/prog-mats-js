@@ -41,78 +41,82 @@ const quadMinigun = extend(ItemTurret, "minigun-iii", {
   shots: 4
 });
 
+const MiniCopper = extend(BasicBulletType, {
+  sprite: "prog-mats-minigun-ball",
+  speed: 2.5,
+  damage: 21 * 0.8,
+  width: 1.5,
+  height: 1.5,
+  lifetime: 90
+});
 
+const MiniThorium = extend(BasicBulletType, {
+  sprite: "prog-mats-minigun-ball",
+  speed: 4,
+  damage: 46 * 0.8,
+  width: 2.5,
+  height: 2.5,
+  lifetime: 90,
+  shootEffect: Fx.shootBig,
+  smokeEffect: Fx.shootBigSmoke,
+  ammoMultiplier: 4
+});
 
-const MiniCopper = extend(BasicBulletType,{});
-MiniCopper.sprite = "prog-mats-minigun-ball";
-MiniCopper.speed = 2.5;
-MiniCopper.damage = 21 * (1/2);
-MiniCopper.width = 1.5;
-MiniCopper.height = 1.5;
-MiniCopper.lifetime = 90;
+const MiniGraphite = extend(BasicBulletType, {
+  sprite: "prog-mats-minigun-ball",
+  speed: 3.5,
+  damage: 28 * 0.8,
+  width: 2,
+  height: 2,
+  reloadMultiplier: 0.6,
+  ammoMultiplier: 4,
+  lifetime: 90,
+  pierce: true
+});
 
-const MiniThorium = extend(BasicBulletType,{});
-MiniThorium.sprite = "prog-mats-minigun-ball";
-MiniThorium.speed = 4;
-MiniThorium.damage = 46 * (1/2);
-MiniThorium.width = 2.5;
-MiniThorium.height = 2.5;
-MiniThorium.lifetime = 90;
-MiniThorium.shootEffect = Fx.shootBig;
-MiniThorium.smokeEffect = Fx.shootBigSmoke;
-MiniThorium.ammoMultiplier = 4;
+const MiniSilicon = extend(BasicBulletType, {
+  sprite: "prog-mats-minigun-ball",
+  speed: 3,
+  damage: 23 * 0.8,
+  width: 1.5,
+  height: 1.5,
+  homingPower: 5,
+  reloadMultiplier: 1.4,
+  ammoMultiplier: 5,
+  lifetime: 90
+});
 
-const MiniGraphite = extend(BasicBulletType,{});
-MiniGraphite.sprite = "prog-mats-minigun-ball";
-MiniGraphite.speed = 3.5;
-MiniGraphite.damage = 28 * (1/2);
-MiniGraphite.width = 2;
-MiniGraphite.height = 2;
-MiniGraphite.reloadMultiplier = 0.6;
-MiniGraphite.ammoMultiplier = 4;
-MiniGraphite.lifetime = 90;
-MiniGraphite.pierce = true;
+const MiniPyratite = extend(BasicBulletType, {
+  sprite: "prog-mats-minigun-ball",
+  speed: 3.2,
+  damage: 25 * 0.8,
+  width: 2,
+  height: 2,
+  frontColor: Pal.lightishOrange,
+  backColor: Pal.lightOrange,
+  status: StatusEffects.burning,
+  inaccuracy: 3,
+  lifetime: 90,
+  makeFire: true
+});
 
-const MiniSilicon = extend(BasicBulletType,{});
-MiniSilicon.sprite = "prog-mats-minigun-ball";
-MiniSilicon.speed = 3;
-MiniSilicon.damage = 23 * (1/2);
-MiniSilicon.width = 1.5;
-MiniSilicon.height = 1.5;
-MiniSilicon.homingPower = 5;
-MiniSilicon.reloadMultiplier = 1.4;
-MiniSilicon.ammoMultiplier = 5;
-MiniSilicon.lifetime = 90;
-
-const MiniPyratite = extend(BasicBulletType,{});
-MiniPyratite.sprite = "prog-mats-minigun-ball";
-MiniPyratite.speed = 3.2;
-MiniPyratite.damage = 25 * (1/2);
-MiniPyratite.width = 2;
-MiniPyratite.height = 2;
-MiniPyratite.frontColor = Pal.lightishOrange;
-MiniPyratite.backColor = Pal.lightOrange;
-MiniPyratite.status = StatusEffects.burning;
-MiniPyratite.inaccuracy = 3;
-MiniPyratite.lifetime = 90;
-MiniPyratite.makeFire = true;
-
-const MiniBlast = extend(BasicBulletType,{});
-MiniBlast.sprite = "prog-mats-minigun-ball";
-MiniBlast.speed = 3.5;
-MiniBlast.damage = 24 * (1/2);
-MiniBlast.width = 2.5;
-MiniBlast.height = 2.5;
-MiniBlast.hitEffect = Fx.blastExplosion;
-MiniBlast.despawnEffect = Fx.blastExplosion;
-MiniBlast.shootEffect = Fx.shootBig;
-MiniBlast.smokeEffect = Fx.shootBigSmoke;
-MiniBlast.hitSound = Sounds.explosion;
-MiniBlast.splashDamage = 34;
-MiniBlast.splashDamageRadius = 12;
-MiniBlast.inaccuracy = 3;
-MiniBlast.lifetime = 90;
-MiniBlast.ammoMultiplier = 3;
+const MiniBlast = extend(BasicBulletType, {
+  sprite: "prog-mats-minigun-ball",
+  speed: 3.5,
+  damage: 24 * 0.8,
+  width: 2.5,
+  height: 2.5,
+  hitEffect: Fx.blastExplosion,
+  despawnEffect: Fx.blastExplosion,
+  shootEffect: Fx.shootBig,
+  smokeEffect: Fx.shootBigSmoke,
+  hitSound: Sounds.explosion,
+  splashDamage: 34 * 0.8,
+  splashDamageRadius: 12,
+  inaccuracy: 3,
+  lifetime: 90,
+  ammoMultiplier: 3
+});
 
 quadMinigun.ammo(
   Items.copper, MiniCopper,

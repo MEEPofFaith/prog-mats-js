@@ -90,29 +90,28 @@ const chaosBeam = extend(LaserBulletType, {
     if(other.team != b.team){
       other.kill();
     }
-  }
+  },
+  colors: [Color.valueOf("F3E97966"), Color.valueOf("F3E979"), Color.white],
+  length: length,
+  width: 75,
+  lightStroke: lightStroke,
+  lightColor: colors[2],
+  damage: Number.MAX_VALUE,
+  lifetime: duration + 16,
+
+  lightningSpacing: 26.25,
+  lightningLength: 10,
+  lightningDelay: 0.825,
+  lightningLengthRand: 5,
+  lightningDamage: Number.MAX_VALUE,
+  lightningAngleRand: 45,
+  largeHit: true,
+  lightningColor: colors[2],
+
+  sideAngle: 25,
+  sideWidth: width / 6,
+  sideLength: length / 1.5
 });
-
-chaosBeam.colors = [Color.valueOf("F3E97966"), Color.valueOf("F3E979"), Color.white];
-chaosBeam.length = length;
-chaosBeam.width = 75;
-chaosBeam.lightStroke = lightStroke;
-chaosBeam.lightColor = colors[2];
-chaosBeam.damage = Number.MAX_VALUE;
-chaosBeam.lifetime = duration + 16;
-
-chaosBeam.lightningSpacing = 26.25;
-chaosBeam.lightningLength = 10;
-chaosBeam.lightningDelay = 0.825;
-chaosBeam.lightningLengthRand = 5;
-chaosBeam.lightningDamage = Number.MAX_VALUE;
-chaosBeam.lightningAngleRand = 45;
-chaosBeam.largeHit = true;
-chaosBeam.lightningColor = colors[2];
-
-chaosBeam.sideAngle = 25;
-chaosBeam.sideWidth = width / 6;
-chaosBeam.sideLength = length / 1.5;
 
 const chaosArray = extend(PowerTurret, "chaos-array", {
   load(){

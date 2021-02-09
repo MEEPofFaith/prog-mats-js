@@ -88,23 +88,22 @@ const magmaPool = extend(BasicBulletType, {
       
       Draw.reset();
     }
-  }
+  },
+  speed: 2,
+  lifetime: 10,
+  damage: 75,
+  collides: false,
+  collidesTiles: false,
+  hitEffect: Fx.fireballsmoke,
+  despawnEffect: Fx.none,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  hittable: false,
+  absorbable: false,
+  lightRadius: 2,
+  lightOpacity: 0.7,
+  lightColor: colors[2]
 });
-
-magmaPool.speed = 2;
-magmaPool.lifetime = 10;
-magmaPool.damage = 75;
-magmaPool.collides = false;
-magmaPool.collidesTiles = false;
-magmaPool.hitEffect = Fx.fireballsmoke;
-magmaPool.despawnEffect = Fx.none;
-magmaPool.shootEffect = Fx.none;
-magmaPool.smokeEffect = Fx.none;
-magmaPool.hittable = false;
-magmaPool.absorbable = false;
-magmaPool.lightRadius = 2;
-magmaPool.lightOpacity = 0.7;
-magmaPool.lightColor = colors[2];
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const magmaRiser = extend(PowerTurret, "eruptor-ii", {

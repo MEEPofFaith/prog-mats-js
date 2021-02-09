@@ -1,15 +1,16 @@
 const multiTLib = require("libs/turretTypes/multiTurretType");
 const effect = require("libs/effect");
 
-const unoBullet = extend(BasicBulletType, {});
-unoBullet.speed = 2;
-unoBullet.damage = 7;
-unoBullet.width = 3.5;
-unoBullet.height = 4.5;
-unoBullet.homingPower = 0.02;
-unoBullet.lifetime = 50;
-unoBullet.hitEffect = effect.scaledBasicHit(0.75);
-unoBullet.despawnEffect = effect.scaledBasicHit(0.6);
+const unoBullet = extend(BasicBulletType, {
+  speed: 2,
+  damage: 7,
+  width: 3.5,
+  height: 4.5,
+  homingPower: 0.02,
+  lifetime: 50,
+  hitEffect: effect.scaledBasicHit(0.75),
+  despawnEffect: effect.scaledBasicHit(0.6)
+});
 
 const unoMount = multiTLib.newWeapon(unoBullet, "prog-mats-unoM");
 unoMount.reloadTime = 15;
@@ -20,16 +21,17 @@ unoMount.recoilAmount = 1;
 unoMount.range = 9 * 8;
 unoMount.title = "Uno"
 
-const hailBullet = extend(ArtilleryBulletType, {});
-hailBullet.speed = 1.5;
-hailBullet.damage = 5;
-hailBullet.hitEffect = effect.scaledSmallBlast(0.75);
-hailBullet.knockback = 0.5;
-hailBullet.lifetime = 105;
-hailBullet.width = 5.5;
-hailBullet.height = 5.5;
-hailBullet.splashDamageRadius = 14;
-hailBullet.splashDamage = 18;
+const hailBullet = extend(ArtilleryBulletType, {
+  speed: 1.5,
+  damage: 5,
+  hitEffect: effect.scaledSmallBlast(0.75),
+  knockback: 0.5,
+  lifetime: 105,
+  width: 5.5,
+  height: 5.5,
+  splashDamageRadius: 14,
+  splashDamage: 18
+});
 
 const hailMount = multiTLib.newWeapon(hailBullet, "prog-mats-hailM");
 hailMount.targetAir = false;
@@ -42,12 +44,14 @@ hailMount.range = 18 * 8;
 hailMount.title = "Mini Hail"
 hailMount.shootSound = Sounds.bang;
 
-const miniSlag = extend(LiquidBulletType, {});
-miniSlag.collidesAir = false;
-miniSlag.liquid = Liquids.slag;
-miniSlag.damage = 1;
-miniSlag.drag = 0.03;
-miniSlag.puddleSize = 2;
+const miniSlag = extend(LiquidBulletType, {
+  collidesAir: false,
+  liquid: Liquids.slag,
+  damage: 1,
+  drag: 0.03,
+  puddleSize: 2,
+  orbSize: 1
+});
 
 const waveMount = multiTLib.newWeapon(miniSlag, "prog-mats-waveM");
 waveMount.targetAir = false;
@@ -63,15 +67,16 @@ waveMount.loopSound = Sounds.spray;
 
 const weapons = [unoMount, waveMount, hailMount];
 
-const mainBullet = extend(BasicBulletType, {});
-mainBullet.ammoMultiplier = 45;
-mainBullet.speed = 2.5;
-mainBullet.damage = 9;
-mainBullet.width = 5.5;
-mainBullet.height = 7;
-mainBullet.lifetime = 60;
-mainBullet.shootEffect = Fx.shootSmall;
-mainBullet.smokeEffect = Fx.shootSmallSmoke;
+const mainBullet = extend(BasicBulletType, {
+  ammoMultiplier: 45,
+  speed: 2.5,
+  damage: 9,
+  width: 5.5,
+  height: 7,
+  lifetime: 60,
+  shootEffect: Fx.shootSmall,
+  smokeEffect: Fx.shootSmallSmoke
+});
 
 //Aggregate -> Assimilation -> Amalgamation
 const jumble = multiTLib.newMultiTurret("multi-i", weapons, Items.graphite, mainBullet, 80, 20, "Aggregate");

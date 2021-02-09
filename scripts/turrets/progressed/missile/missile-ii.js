@@ -1,5 +1,7 @@
 const bul = require("libs/bulletTypes/strikeBulletType");
-const shock = require("libs/bulletTypes/empSparkBulletType");
+const particle = require("libs/bulletTypes/particleBulletType");
+const paralyze = require("libs/statusEffects/paralizeStatus");
+const suffering = require("libs/statusEffects/teleportStatus");
 const type = require("libs/turretTypes/missileTurretType");
 const eff = require("libs/effect");
 
@@ -23,7 +25,7 @@ missile.splashDamageRadius = 64;
 missile.speed = 2;
 missile.homingPower = 0.05;
 missile.homingRange = 320;
-missile.lifetime = 150;
+missile.lifetime = 175;
 missile.elevation = 300;
 missile.riseTime = 45;
 missile.fallTime = 25;
@@ -49,7 +51,7 @@ emp.splashDamageRadius = 48;
 emp.speed = 3;
 emp.homingPower = 0.075;
 emp.homingRange = 320;
-emp.lifetime = 100;
+emp.lifetime = 120;
 emp.elevation = 300;
 emp.riseTime = 35;
 emp.fallTime = 15;
@@ -64,7 +66,42 @@ emp.fallSpin = 90;
 emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
-emp.fragBullet = shock.spark("prog-mats-no", 0.9, 1, 0.04, 0.55, 10, 8);
+emp.fragBullet = particle.particleBullet(Pal.lancerLaser);
+emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-no", 0.9, 1, 0.04, 0.55, 3, 8, 60 * 10 / 2);
+emp.fragBullet.statusDuration = 60 * 10;
+
+const quantum = bul.strikeBullet(true, 30, true, 10, true, true, false);
+quantum.sprite = "prog-mats-quantum-strikeb";
+quantum.reloadMultiplier = 0.25;
+quantum.riseEngineSize = 16;
+quantum.fallEngineSize = 8;
+quantum.trailSize = 0.7;
+quantum.damage = 80;
+quantum.splashDamage = 60;
+quantum.splashDamageRadius = 48;
+quantum.speed = 2.3;
+quantum.homingPower = 0.075;
+quantum.homingRange = 320;
+quantum.lifetime = 135;
+quantum.elevation = 300;
+quantum.riseTime = 30;
+quantum.fallTime = 25;
+quantum.hitSound = Sounds.bang;
+quantum.hitShake = 8;
+quantum.trailParam = 5;
+quantum.trailChance = 0.2;
+quantum.trailEffect = trail;
+quantum.despawnEffect = boom;
+quantum.riseSpin = 270;
+quantum.fallSpin = 90;
+quantum.fragBullets = 360;
+quantum.fragVelocityMin = 0.5;
+// (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
+quantum.fragBullet = particle.particleBullet(Color.valueOf("EFE4CA"));
+quantum.fragBullet.status = suffering.teleportStatus("prog-mats-yeeteth", 1, 1, 1, 1, 20, 40, 60 * 10 / 2);
+quantum.fragBullet.statusDuration = 60 * 10;
+quantum.fragBullet.speed = 3;
+quantum.fragBullet.lifetime = 96;
 
 const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {
   health: 2870,
@@ -89,7 +126,7 @@ ohnoMissilesReturns.requirements = ItemStack.with(Items.copper, 69);
 ohnoMissilesReturns.category = Category.turret;
 ohnoMissilesReturns.buildVisibility = BuildVisibility.sandboxOnly;
 
-ohnoMissilesReturns.ammo(citem("basic-missile"), missile, citem("emp-missile"), emp);
+ohnoMissilesReturns.ammo(citem("basic-missile"), missile, citem("emp-missile"), emp, citem("quantum-missile"), quantum);
 
 /**
   * Plans:

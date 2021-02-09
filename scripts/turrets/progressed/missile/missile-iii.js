@@ -1,5 +1,6 @@
 const bul = require("libs/bulletTypes/strikeBulletType");
-const shock = require("libs/bulletTypes/empSparkBulletType");
+const particle = require("libs/bulletTypes/particleBulletType");
+const paralyze = require("libs/statusEffects/paralizeStatus");
 const type = require("libs/turretTypes/missileTurretType");
 const eff = require("libs/effect");
 
@@ -69,7 +70,8 @@ emp.fallSpin = 180;
 emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
 // (dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
-emp.fragBullet = shock.spark("prog-mats-cease", 0.8, 0.9, 0.02, 0.5, 30, 15);
+emp.fragBullet = particle.particleBullet(Pal.lancerLaser);
+emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-cease", 0.8, 0.9, 0.02, 0.5, 5, 15, 60 * 12 / 2);
 emp.fragBullet.speed = 12;
 emp.fragBullet.lifetime = 48;
 emp.fragBullet.statusDuration = 60 * 12;
@@ -86,7 +88,7 @@ clusterFrag.speed = 1;
 clusterFrag.homingPower = -1;
 clusterFrag.lifetime = 150;
 clusterFrag.elevation = 900;
-clusterFrag.riseTime = 0;
+clusterFrag.riseTime = -1;
 clusterFrag.fallTime = 75;
 clusterFrag.hitSound = Sounds.bang;
 clusterFrag.hitShake = 8;
@@ -99,7 +101,6 @@ clusterFrag.fallSpin = 135;
 
 const cluster = bul.strikeBullet(true, 30, true, 20, true, true, false);
 cluster.sprite = "prog-mats-cluster-nukeb";
-cluster.reloadMultiplier = 0.5;
 cluster.riseEngineSize = 24;
 cluster.fallEngineSize = 14;
 cluster.trailSize = 0.7;
@@ -112,7 +113,7 @@ cluster.homingRange = 4440;
 cluster.lifetime = 4500;
 cluster.elevation = 900;
 cluster.riseTime = 240;
-cluster.fallTime = 0;
+cluster.fallTime = -1;
 cluster.hitSound = Sounds.none;
 cluster.hitShake = 0;
 cluster.trailParam = 8;

@@ -20,7 +20,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
   
   {//1 (Basic Missile)
     input: {
-      items: ["prog-mats-missile-shell/1", "thorium/5", "blast-compound/5"],
+      items: ["prog-mats-missile-shell/1", "thorium/20", "blast-compound/25"],
       power: 3
     },
     output:{
@@ -30,11 +30,21 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
   },
   {//2 (Emp Missile)
     input: {
-      items: ["prog-mats-missile-shell/1", "copper/10", "lead/10", "silicon/5"],
+      items: ["prog-mats-missile-shell/1", "lead/30", "titanium/30", "silicon/25"],
       power: 4
     },
     output:{
       items: ["prog-mats-emp-missile/1"]
+    },
+    craftTime: 90
+  },
+  {//2 (Quantum Missile)
+    input: {
+      items: ["prog-mats-missile-shell/1", "thorium/10", "phase-fabric/15", "silicon/10"],
+      power: 7
+    },
+    output:{
+      items: ["prog-mats-quantum-missile/1"]
     },
     craftTime: 90
   },
@@ -65,7 +75,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
   {//3 (Cluster Nuke) (Nuke Exclusive)
     input: {
       items: ["prog-mats-nuke-shell/1", "prog-mats-basic-missile/5", "copper/30", "plastanium/15"],
-      power: 8
+      power: 6.25
     },
     output:{
       items: ["prog-mats-cluster-nuke/1"]

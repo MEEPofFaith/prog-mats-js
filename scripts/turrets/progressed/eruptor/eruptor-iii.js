@@ -47,6 +47,7 @@ var osc = 1;
 var tmpColor = new Color();
 const vec = new Vec2();
 const lavaBack = new Vec2();
+const burnDuration = 30;
 
 const hellPool = extend(BasicBulletType, {
   update(b){
@@ -83,24 +84,22 @@ const hellPool = extend(BasicBulletType, {
       
       Draw.reset();
     }
-  }
+  },
+  speed: 0.01,
+  damage: 62.5,
+  lifetime: burnDuration,
+  collides: false,
+  collidesTiles: false,
+  hitEffect: Fx.fireballsmoke,
+  despawnEffect: Fx.none,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  hittable: false,
+  absorbable: false,
+  lightRadius: 2,
+  lightOpacity: 0.7,
+  lightColor: colors[2]
 });
-const burnDuration = 30;
-
-hellPool.speed = 0.0001;
-hellPool.damage = 62.5;
-hellPool.lifetime = burnDuration;
-hellPool.collides = false;
-hellPool.collidesTiles = false;
-hellPool.hitEffect = Fx.fireballsmoke;
-hellPool.despawnEffect = Fx.none;
-hellPool.shootEffect = Fx.none;
-hellPool.smokeEffect = Fx.none;
-hellPool.hittable = false;
-hellPool.absorbable = false;
-hellPool.lightRadius = 2;
-hellPool.lightOpacity = 0.7;
-hellPool.lightColor = colors[2];
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const hellRiser = extend(PowerTurret, "eruptor-iii", {

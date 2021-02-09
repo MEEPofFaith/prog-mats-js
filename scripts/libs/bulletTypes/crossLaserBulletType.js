@@ -2,15 +2,16 @@ module.exports = {
   crossLaser(midLen, crossSection, border, crossBorder, crossWidth, crossLength, damage, collidesGround, collidesAir, largeHit){
     //Invisble bullet for doing the cross bar damage.
     const crossDamage = extend(LaserBulletType, {
-      draw(b){}
+      draw(b){},
+      drawLight(b){},
+      length: crossLength,
+      width: crossWidth,
+      damage: damage,
+      collidesGround: collidesGround,
+      collidesAir: collidesAir,
+      laserEffect: Fx.none,
+      largeHit: largeHit
     });
-    crossDamage.length = crossLength;
-    crossDamage.width = crossWidth;
-    crossDamage.damage = damage;
-    crossDamage.collidesGround = collidesGround;
-    crossDamage.collidesAir = collidesAir;
-    crossDamage.laserEffect = Fx.none;
-    crossDamage.largeHit = largeHit;
     
     const crossSpawn = new Vec2();
     const holyDestruction = extend(LaserBulletType, {
@@ -92,16 +93,16 @@ module.exports = {
         Tmp.v2.trns(b.rotation(), cross, cl[1]);
         Tmp.v2.add(b.x, b.y);
         Drawf.light(b.team, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, 15 * fin, this.colors[1], 0.6);
-      }
+      },
+      growTime: 5,
+      fadeTime: 5,
+      lifetime: 24,
+      damage: damage,
+      collidesGround: collidesGround,
+      collidesAir: collidesAir,
+      laserEffect: Fx.none,
+      largeHit: largeHit
     });
-    holyDestruction.growTime = 5;
-    holyDestruction.fadeTime = 5;
-    holyDestruction.lifetime = 24;
-    holyDestruction.damage = damage;
-    holyDestruction.collidesGround = collidesGround;
-    holyDestruction.collidesAir = collidesAir;
-    holyDestruction.laserEffect = Fx.none;
-    holyDestruction.largeHit = largeHit;
     
     return holyDestruction;
   }

@@ -1,2 +1,3 @@
-const casing = extendContent(Item, "basic-sentry", {});
-casing.color = Color.valueOf("FFA665");
+const basicSentry = extendContent(Item, "basic-sentry", {
+  color: Color.valueOf("FFA665")
+});

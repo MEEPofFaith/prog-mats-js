@@ -88,23 +88,22 @@ const lavaPool = extend(BasicBulletType, {
       
       Draw.reset();
     }
-  }
+  },
+  speed: 1,
+  damage: 50,
+  lifetime: 10,
+  collides: false,
+  collidesTiles: false,
+  hitEffect: Fx.fireballsmoke,
+  despawnEffect: Fx.none,
+  shootEffect: Fx.none,
+  smokeEffect: Fx.none,
+  hittable: false,
+  absorbable: false,
+  lightRadius: 2,
+  lightOpacity: 0.7,
+  lightColor: colors[2]
 });
-
-lavaPool.speed = 1;
-lavaPool.damage = 50;
-lavaPool.lifetime = 10;
-lavaPool.collides = false;
-lavaPool.collidesTiles = false;
-lavaPool.hitEffect = Fx.fireballsmoke;
-lavaPool.despawnEffect = Fx.none;
-lavaPool.shootEffect = Fx.none;
-lavaPool.smokeEffect = Fx.none;
-lavaPool.hittable = false;
-lavaPool.absorbable = false;
-lavaPool.lightRadius = 2;
-lavaPool.lightOpacity = 0.7;
-lavaPool.lightColor = colors[2];
 
 //Got some help from EoD for the turning LaserTurret into PowerTurret part
 const lavaRiser = extend(PowerTurret, "eruptor-i", {

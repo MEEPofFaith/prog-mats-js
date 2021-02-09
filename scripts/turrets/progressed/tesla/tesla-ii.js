@@ -31,23 +31,21 @@ const targetLightning = new Effect(10, 500, e => {
 	};
   Fill.circle(tV2.x, tV2.y, Lines.getStroke() / 2);
 });
-
-targetLightning.layer = 117;
+targetLightning.layer = Layer.bullet + 0.01;
 
 const lightningLine = new Vec2();
-
-const coilZap = extend(LightningBulletType, {});
-
 const lightningCol = Pal.surge;
 
-coilZap.damage = 12;
-coilZap.lightningLength = 6;
-coilZap.lightningLengthRand = 4;
-coilZap.lightningAngle = 0;
-coilZap.lightningColor = lightningCol;
-coilZap.lightRadius = 24;
-coilZap.lightOpcaity = 0.7;
-coilZap.hittable = false;
+const coilZap = extend(LightningBulletType, {
+  damage: 12,
+  lightningLength: 6,
+  lightningLengthRand: 4,
+  lightningAngle: 0,
+  lightningColor: lightningCol,
+  lightRadius: 24,
+  lightOpcaity: 0.7,
+  hittable: false
+});
 
 const teslaCoil = extend(PowerTurret, "tesla-ii", {
   setStats(){

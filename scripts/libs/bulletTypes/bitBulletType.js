@@ -73,16 +73,16 @@ module.exports = {
         Draw.color(c);
         Draw.z(Layer.bullet + 0.01)
         Fill.rect(b.x, b.y, size, size);
-      }
+      },
+      hitEffect: burst,
+      despawnEffect: burst,
+      trailEffect: trail,
+      shootEffect: Fx.none,
+      smokeEffect: Fx.none,
+      absorbable: false,
+      hittable: false,
+      hitSound: loadSound("bitHit"),
     });
-    bit.hitEffect = burst;
-    bit.despawnEffect = burst;
-    bit.trailEffect = trail;
-    bit.shootEffect = Fx.none;
-    bit.smokeEffect = Fx.none;
-    bit.absorbable = false;
-    bit.hittable = false;
-    bit.hitSound = loadSound("bitHit");
     
     return bit;
   }

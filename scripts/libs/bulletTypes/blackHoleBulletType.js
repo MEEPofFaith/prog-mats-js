@@ -135,7 +135,7 @@ module.exports = {
       Tmp.v1.trns(e.rotation - 90, 0, e.data[1] * e.fout());
       Tmp.v1.add(e.x, e.y);
       
-      fLib.simpleUnitDrawerStatic(e.data[0], false, Tmp.v1.x, Tmp.v1.y, e.fout(), e.data[2] - 90, e.data[3]);
+      fLib.simpleUnitDrawerStatic(e.data[0], false, Tmp.v1.x, Tmp.v1.y, e.fout(), e.data[2] - 90, e.data[0].mounts);
       
       Draw.color();
       Draw.mixcol();
@@ -252,14 +252,14 @@ module.exports = {
           Draw.color(b.data[1][1], Color.black, fHalfSlope);
           Fill.circle(b.x + x + Mathf.range(jiggle), b.y + y + Mathf.range(jiggle), size / 2);
         });
-      }
+      },
+      speed: 0.01,
+      lifetime: 60 * 60,
+      damage: 0,
+      collides: false,
+      hittable: false,
+      absorbable: false
     });
-    cataclysm.speed = 0;
-    cataclysm.lifetime = 60 * 60;
-    cataclysm.damage = 0;
-    cataclysm.collides = false;
-    cataclysm.hittable = false;
-    cataclysm.absorbable = false;
 
     const blackHole = extend(BasicBulletType, {
       load(){
@@ -343,7 +343,7 @@ module.exports = {
                 unit.maxHealth -= dealt * this.maxHealthReduction;
                 if(unit.maxHealth < 0) unit.maxHealth = 0.001;
                 
-                absorb.at(b.x, b.y, Angles.angle(b.x, b.y, unit.x, unit.y), [unit, Mathf.dst(b.x, b.y, unit.x, unit.y), unit.rotation, unit.mounts]);
+                absorb.at(b.x, b.y, Angles.angle(b.x, b.y, unit.x, unit.y), [unit, Mathf.dst(b.x, b.y, unit.x, unit.y), unit.rotation]);
                 
                 for(var i = 2; i < 6; i++){
                   b.data[i] += b.data[i] * this.strengthIncreasePercent * interp;
@@ -392,49 +392,49 @@ module.exports = {
           this.hitEffect.at(b.x, b.y, b.rotation(), b.team.color);
           b.remove();
         }
-      }
+      },
+      damage: 575 / 30,
+      buildingDamageTicks: 10,
+      unitAbsorbChance: 0.4,
+      maxHealthReduction: 0.5,
+      bulletAbsorbPercent: 0.05,
+      damageIncreasePercent: 0.005,
+      strengthIncreasePercent: 0.005,
+      
+      speed: 0.5,
+      lifetime: 420,
+      collides: false,
+      collidesTiles: true,
+      hitEffect: Fx.none,
+      despawnEffect: poof,
+      succEffect: bulletDissapear,
+      shootEffect: Fx.none,
+      smokeEffect: Fx.none,
+      
+      cataclysmRadius: 15, //In tiles
+
+      succRadius: 64,
+      blackholeSize: size,
+      damageRadius: 24,
+      swirlAngle: 480,
+      swirlSize: 2,
+
+      force: 35,
+      scaledForce: 500,
+
+      bulletForce: 0.5,
+      bulletForceReduction: 0.5,
+      
+      cataclysmForceMul: 1,
+      cataclysmRangeMul: 1.5,
+
+      hittable: false,
+      absorbable: false,
+
+      lightColor: horizonColor,
+      lightRadius: size / 2 + horizonRad,
+      lightOpacity: 0.7
     });
-    blackHole.damage = 575 / 30;
-    blackHole.buildingDamageTicks = 10;
-    blackHole.unitAbsorbChance = 0.4;
-    blackHole.maxHealthReduction = 0.5;
-    blackHole.bulletAbsorbPercent = 0.05;
-    blackHole.damageIncreasePercent = 0.005;
-    blackHole.strengthIncreasePercent = 0.005;
-    
-    blackHole.speed = 0.5;
-    blackHole.lifetime = 420;
-    blackHole.collides = false;
-    blackHole.collidesTiles = true;
-    blackHole.hitEffect = Fx.none;
-    blackHole.despawnEffect = poof;
-    blackHole.succEffect = bulletDissapear;
-    blackHole.shootEffect = Fx.none;
-    blackHole.smokeEffect = Fx.none;
-    
-    blackHole.cataclysmRadius = 15; //In tiles
-
-    blackHole.succRadius = 64;
-    blackHole.blackholeSize = size;
-    blackHole.damageRadius = 24;
-    blackHole.swirlAngle = 480;
-    blackHole.swirlSize = 2;
-
-    blackHole.force = 35;
-    blackHole.scaledForce = 500;
-
-    blackHole.bulletForce = 0.5;
-    blackHole.bulletForceReduction = 0.5;
-    
-    blackHole.cataclysmForceMul = 1;
-    blackHole.cataclysmRangeMul = 1.5;
-
-    blackHole.hittable = false;
-    blackHole.absorbable = false;
-
-    blackHole.lightColor = horizonColor;
-    blackHole.lightRadius = size / 2 + horizonRad;
-    blackHole.lightOpacity = 0.7;
     
     return blackHole;
   }
