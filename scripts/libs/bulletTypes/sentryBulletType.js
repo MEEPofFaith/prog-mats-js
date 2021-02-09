@@ -17,40 +17,44 @@ module.exports = {
       update(b){
         if(!b) return;
         
-        let slope = Interp.pow2Out.apply(b.fslope()) * (b.lifetime/b.type.lifetime);
+        let scl = b.lifetime / b.type.lifetime;
+        let slope = b.fin() * (1 - b.fin());
+        let scale = this.scaleAmount * slope * scl + 1;
+        let trail = this.trailSize * scale;
         if(b.timer.get(0, (3 + slope * 2) * this.trailTimeMul)){
-          this.trailEffect.at(b.x, b.y, sentryUnit.hitSize * this.trailSizeMul * (slope + 1), this.backColor);
+          this.trailEffect.at(b.x, b.y, trail, this.backColor);
         }
+        print("scl = " + scl);
+        print("slope = " + slope);
+        print("scale = " + scale);
+        print("trail = " + trail);
+        print("---");
         this.super$update(b);
       },
       draw(b){
         if(!b) return;
-        var offset = -90 + (this.spin != 0 ? b.fout() * (this.spin + Mathf.randomSeed(b.id, 360)) : 0);
-        var scale = 1 + Interp.pow2Out.apply(b.fslope()) * this.scaleAmount * (b.lifetime/b.type.lifetime);
-        var shadow = this.shadowOffset * scale * Interp.pow2Out.apply(b.fslope());
+        let offset = -90 + (this.spin != 0 ? b.fout() * (this.spin + Mathf.randomSeed(b.id, 360)) : 0);
+        let scl = b.lifetime / b.type.lifetime;
+        let slope = b.fin() * (1 - b.fin());
+        let scale = this.scaleAmount * slope * scl + 1;
+        let shadow = this.shadowOffset * scale;
         
         Draw.z(Layer.flyingUnit + 1);
-        
-        Draw.color(Pal.shadow);
-        Draw.rect(this.boxRegion, b.x - shadow, b.y - shadow, this.boxRegion.width / 4 * scale, this.boxRegion.height / 4 * scale, b.rotation() + offset);
-        Draw.color();
+        Drawf.shadow(this.boxRegion, b.x - shadow, b.y - shadow, b.rotation() + offset);
         
         Draw.z(Layer.flyingUnit + 2);
         Draw.rect(this.boxRegion, b.x, b.y, this.boxRegion.width / 4 * scale, this.boxRegion.height / 4 * scale, b.rotation() + offset);
         
         Draw.z(Layer.flyingUnit + 1);
-        // Drawf.shadow(this.region, b.x - shadow, b.y - shadow, this.region.width / 4 * scale, this.region.height / 4 * scale, b.rotation() + offset);
-        Draw.color(Pal.shadow);
-        Draw.rect(this.region, b.x - shadow, b.y - shadow, this.region.width / 4 * scale, this.region.height / 4 * scale, b.rotation() + offset);
-        Draw.color();
+        Drawf.shadow(this.region, b.x - shadow, b.y - shadow, b.rotation() + offset);
         
         Draw.z(Layer.flyingUnit + 2);
         Draw.rect(this.region, b.x, b.y, this.region.width / 4 * scale, this.region.height / 4 * scale, b.rotation() + offset);
       },
-      drawSize: 240,
+      drawSize: 800,
       sprite: "clear",
       scaleVelocity: true,
-      scaleAmount: 0.5,
+      scaleAmount: 1,
       shadowOffset: 16,
       abosrbable: false,
       hittable: false,
@@ -59,7 +63,7 @@ module.exports = {
       hitEffect: Fx.none,
       despawnEffect: Fx.spawn,
       trailTimeMul: 1,
-      trailSizeMul: 0.25,
+      trailSize: sentryUnit.hitSize * 0.75,
       ammoMultiplier: 1
     });
     return sentryB;

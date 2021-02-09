@@ -171,8 +171,11 @@ if(!Vars.headless){
       yes.setFillParent(false);
       yes.buttons.button("@yes", () => {
         yes.hide();
-        Core.settings.put("lastmod", "younggam/multi-lib");
         Vars.ui.mods.show();
+        Vars.ui.mods.children.get(1).children.get(1).children.get(0).fireClick();
+        Core.scene.dialog.children.get(1).children.get(0).children.get(1).fireClick();
+        Core.scene.dialog.children.get(2).children.get(0).remove();
+        Core.settings.put("lastmod", "younggam/multi-lib");
       });
       
       if(Vars.mods.locateMod("multi-lib") == null){
