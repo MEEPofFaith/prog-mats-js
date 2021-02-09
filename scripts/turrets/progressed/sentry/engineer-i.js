@@ -2,8 +2,8 @@ const sBul = require("libs/bulletTypes/sentryBulletType");
 const eff = require("libs/effect");
 const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + name);
 
-const trail = eff.trailEffect(150, -1);
-trail.layer = Layer.bullet;
+const trail = eff.trailEffect(150, 240, -1);
+trail.layer = Layer.effect + 0.001;
 
 const unit = Vars.content.getByName(ContentType.unit, "prog-mats-sentry-i");
 const sentry = sBul.sentryBullet(unit, true);

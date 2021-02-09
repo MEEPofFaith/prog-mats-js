@@ -101,8 +101,8 @@ module.exports = {
     
     return nukeBlast;
   },
-  trailEffect(lifetime, border){
-    let trail = new Effect(lifetime, e => {
+  trailEffect(lifetime, clip, border){
+    let trail = new Effect(lifetime, clip, e => {
       if(border > 0){
         Draw.color(Pal.gray);
         Fill.circle(e.x, e.y, e.rotation * e.fout() + border);
