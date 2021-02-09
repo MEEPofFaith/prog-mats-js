@@ -161,9 +161,9 @@ module.exports = {
             
             //Mounts
             table.table(null, w => {
-              for(var i = 0; i < amount; i++){
-                var mount = mounts[i];
-                const baseT = newTurretStatListValue(mount, Core.atlas.find(mount.name + "-full"), mount.bullet, mount.title);
+              for(let i = 0; i < amount; i++){
+                let mount = mounts[i];
+                let baseT = newTurretStatListValue(mount, Core.atlas.find(mount.name + "-full"), mount.bullet, mount.title);
                 baseT.display(w);
                 table.row();
               }
