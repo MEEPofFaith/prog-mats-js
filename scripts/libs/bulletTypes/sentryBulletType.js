@@ -24,11 +24,6 @@ module.exports = {
         if(b.timer.get(0, (3 + slope * 2) * this.trailTimeMul)){
           this.trailEffect.at(b.x, b.y, trail, this.backColor);
         }
-        print("scl = " + scl);
-        print("slope = " + slope);
-        print("scale = " + scale);
-        print("trail = " + trail);
-        print("---");
         this.super$update(b);
       },
       draw(b){
