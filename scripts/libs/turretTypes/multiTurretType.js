@@ -61,8 +61,7 @@ module.exports = {
   newMultiTurret(name, mounts, ammoItem, mainBullet, rangeTime, fadeTime, title){
     const amount = mounts.length;
     const totalRangeTime = rangeTime * amount;
-    const newMountListValue = require("libs/newMountListValue");
-    const newBaseListValue = require("libs/newBaseListValue");
+    const newTurretStatListValue = require("libs/newTurretStatListValue");
     
     const multiTur = extend(ItemTurret, name, {
       load(){
@@ -74,11 +73,14 @@ module.exports = {
         this.baseTurret = Core.atlas.find(this.name + "-baseTurret");
         this.turrets = [];
         for(var i = 0; i < amount; i++){
-          //[Sprite, Outline, Heat, Fade Mask]
-          var sprites = [Core.atlas.find(mounts[i].name), 
-          Core.atlas.find(mounts[i].name + "-outline"),
-          Core.atlas.find(mounts[i].name + "-heat"), 
-          Core.atlas.find(mounts[i].name + "-mask")];
+          //[Sprite, Outline, Heat, Fade Mask, Full]
+          let mount = mounts[i];
+          var sprites = [
+            Core.atlas.find(mount.name), 
+            Core.atlas.find(mount.name + "-outline"),
+            Core.atlas.find(mount.name + "-heat"), 
+            Core.atlas.find(mount.name + "-mask")
+          ];
           this.turrets[i] = sprites;
         }
         
@@ -148,7 +150,7 @@ module.exports = {
             
             //Base Turret
             table.table(null, w => {
-              const baseT = newBaseListValue(multiTur, multiTur.baseTurret, mainBullet, title);
+              const baseT = newTurretStatListValue(multiTur, multiTur.baseTurret, mainBullet, title);
               baseT.display(w);
               table.row();
             });
@@ -159,9 +161,12 @@ module.exports = {
             
             //Mounts
             table.table(null, w => {
-              const baseT = newMountListValue(mounts);
-              baseT.display(w);
-              table.row();
+              for(var i = 0; i < amount; i++){
+                var mount = mounts[i];
+                const baseT = newTurretStatListValue(mount, Core.atlas.find(mount.name + "-full"), mount.bullet, mount.title);
+                baseT.display(w);
+                table.row();
+              }
             });
           }
         });

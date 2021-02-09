@@ -72,7 +72,7 @@ emp.fragBullet.statusDuration = 60 * 10;
 
 const quantum = bul.strikeBullet(true, 30, true, 10, true, true, false);
 quantum.sprite = "prog-mats-quantum-strikeb";
-quantum.reloadMultiplier = 0.25;
+quantum.reloadMultiplier = 0.1;
 quantum.riseEngineSize = 16;
 quantum.fallEngineSize = 8;
 quantum.trailSize = 0.7;
