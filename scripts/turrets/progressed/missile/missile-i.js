@@ -1,7 +1,7 @@
 const bul = require("libs/bulletTypes/strikeBulletType");
 const eff = require("libs/effect");
 
-const trail = eff.trailEffect(50, false, 1);
+const trail = eff.trailEffect(50, -1);
 trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(0.5);

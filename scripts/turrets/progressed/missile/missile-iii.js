@@ -6,9 +6,9 @@ const eff = require("libs/effect");
 
 const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + name);
 
-const smallTrail = eff.trailEffect(120, false, 1);
+const smallTrail = eff.trailEffect(120, -1);
 smallTrail.layer = Layer.bullet;
-const trail = eff.trailEffect(240, false, 1);
+const trail = eff.trailEffect(240, -1);
 trail.layer = Layer.bullet;
 
 const smallBoom = eff.scaledLargeBlast(1.5);
