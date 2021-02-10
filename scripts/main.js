@@ -168,16 +168,18 @@ if(!Vars.headless){
       yes.cont.add("$multi.text").width(500).wrap().pad(4).get().setAlignment(Align.center, Align.center);
       yes.cont.image(Core.atlas.find("prog-mats-importpls")).pad(4).get();
       yes.row();
-      yes.buttons.defaults().size(200, 54).pad(2);
+      yes.buttons.defaults().size(64, 64).pad(2);
       yes.setFillParent(false);
-      yes.buttons.button("@yes", () => {
-        yes.hide();
-        Vars.ui.mods.show();
-        Vars.ui.mods.children.get(1).children.get(1).children.get(0).fireClick();
-        Core.scene.dialog.children.get(1).children.get(0).children.get(1).fireClick();
-        Core.scene.dialog.children.get(2).children.get(0).remove();
-        Core.settings.put("lastmod", "younggam/multi-lib");
-      });
+      for(var i = 0; i < 45; i++){
+        yes.buttons.button("[#" + Color.red.cpy().shiftHue(Time.time * 3 + i * 8).toString() + "]" + Core.bundle.get("yes"), () => {
+          yes.hide();
+          Vars.ui.mods.show();
+          Vars.ui.mods.children.get(1).children.get(1).children.get(0).fireClick();
+          Core.scene.dialog.children.get(1).children.get(0).children.get(1).fireClick();
+          Core.scene.dialog.children.get(2).children.get(0).remove();
+          Core.settings.put("lastmod", "younggam/multi-lib");
+        });
+      }
       
       if(Vars.mods.locateMod("multi-lib") == null){
         yes.show();
