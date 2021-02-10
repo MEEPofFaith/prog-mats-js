@@ -98,7 +98,7 @@ quantum.fragBullets = 360;
 quantum.fragVelocityMin = 0.5;
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
 quantum.fragBullet = particle.particleBullet(Color.valueOf("EFE4CA"));
-quantum.fragBullet.status = suffering.teleportStatus("prog-mats-yeeteth", 1, 1, 1, 1, 20, 40, 60 * 10 / 2);
+quantum.fragBullet.status = suffering.teleportStatus("prog-mats-yeeteth", 1, 1, 1, 1, 0, 40, 0.5, 60 * 10 / 2);
 quantum.fragBullet.statusDuration = 60 * 10;
 quantum.fragBullet.speed = 3;
 quantum.fragBullet.lifetime = 96;
