@@ -69,7 +69,7 @@ const everythingGun = extend(PowerTurret, "everything-gun", {
   category: Category.turret,
   requirements: ItemStack.empty,
   buildVisibility: BuildVisibility.sandboxOnly,
-  powerUse: Mathf.PI,
+  powerUse: 800000000/60,
   shootType: Bullets.standardCopper,
   range: 4400,
   shootLength: 0,
