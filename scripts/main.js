@@ -90,6 +90,15 @@ const script = [
     ]
   },
   {
+    name: "power",
+    childs: [
+      {
+        name: "sandy",
+        childs: ["strobeInf"]
+      }
+    ]
+  },
+  {
     name: "turrets",
     childs:[
       {

@@ -18,7 +18,7 @@ module.exports = {
         if(!b) return;
         
         let scl = b.lifetime / b.type.lifetime;
-        let slope = b.fin() * (1 - b.fin());
+        let slope = b.fin() * (1 - b.fin()) * 4;
         let scale = this.scaleAmount * slope * scl + 1;
         let trail = this.trailSize * scale;
         if(b.timer.get(0, (3 + slope * 2) * this.trailTimeMul)){
@@ -30,7 +30,7 @@ module.exports = {
         if(!b) return;
         let offset = -90 + (this.spin != 0 ? b.fout() * (this.spin + Mathf.randomSeed(b.id, 360)) : 0);
         let scl = b.lifetime / b.type.lifetime;
-        let slope = b.fin() * (1 - b.fin());
+        let slope = b.fin() * (1 - b.fin()) * 4;
         let shadowScl = slope * scl;
         let shadowOff = this.shadowStart + this.shadowOffset * shadowScl;
         let scale = this.scaleAmount * shadowScl + 1;
@@ -50,9 +50,9 @@ module.exports = {
       drawSize: 800,
       sprite: "clear",
       scaleVelocity: true,
-      scaleAmount: 0.5,
+      scaleAmount: 0.2,
       shadowStart: 0,
-      shadowOffset: 32,
+      shadowOffset: 10,
       abosrbable: false,
       hittable: false,
       damage: 0,
