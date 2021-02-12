@@ -94,7 +94,7 @@ const script = [
     childs: [
       {
         name: "sandy",
-        childs: ["strobeInf"]
+        childs: ["rainbowPower"]
       }
     ]
   },

@@ -113,7 +113,7 @@ everythingGun.buildType = ent => {
       this.drawRot = Mathf.mod(this.drawRot - Time.delta * (this.bias / (max / 110)), 360);
       
       if(this.isShooting() && this.consValid()){
-        this.bias = Mathf.clamp(this.bias * Mathf.pow(1.003, Time.delta), 0, max);
+        this.bias = Mathf.clamp(this.bias * Mathf.pow(1.003, this.edelta()), 0, max);
       }else{
         this.bias = Mathf.lerpDelta(this.bias, 0.1, everythingGun.scaledowm);
       }
