@@ -133,7 +133,7 @@ cluster.fragLifeMin = 0.8;
 cluster.fragLifeMax = 1.2;
 
 const sentryUnit = Vars.content.getByName(ContentType.unit, "prog-mats-sentry-i");
-const items = [Items.blastCompound, Items.pyratite]
+const items = [Items.blastCompound, Items.pyratite, Items.pyratite]
 
 const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true, {
   init(b){
@@ -168,9 +168,9 @@ const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true,
 unitDrop.sprite = "clear";
 unitDrop.riseEngineSize = -1;
 unitDrop.fallEngineSize = -1;
-unitDrop.damage = 40;
+unitDrop.damage = 20;
 unitDrop.splashDamageRadius = -1;
-unitDrop.speed = 1.5;
+unitDrop.speed = 1;
 unitDrop.homingPower = -1;
 unitDrop.lifetime = 75;
 unitDrop.elevation = 900;
@@ -211,12 +211,12 @@ dropPod.hitEffect = Fx.none;
 dropPod.riseSpin = 720;
 dropPod.fallSpin = 180;
 dropPod.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
-dropPod.fragBullets = 60;
+dropPod.fragBullets = 30;
 dropPod.fragBullet = unitDrop;
 dropPod.fragVelocityMin = 0.1;
-dropPod.fragVelocityMax = 1.3;
-dropPod.fragLifeMin = 0.5;
-dropPod.fragLifeMax = 1.5;
+dropPod.fragVelocityMax = 1;
+dropPod.fragLifeMin = 1;
+dropPod.fragLifeMax = 1.2;
 
 const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
   health: 5950,

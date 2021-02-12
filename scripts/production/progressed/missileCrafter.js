@@ -36,7 +36,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
     output:{
       items: ["prog-mats-emp-missile/1"]
     },
-    craftTime: 65
+    craftTime: 75
   },
   {//2 (Quantum Missile) (Missile Exclusive)
     input: {
@@ -85,7 +85,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
   },
   {//4 (Drop Pod Nuke) (Nuke Exclusive)
     input: {
-      items: ["prog-mats-nuke-shell/1", "prog-mats-basic-sentry/30", "blast-compound/40"],
+      items: ["prog-mats-nuke-shell/1", "prog-mats-basic-sentry/30", "pyratite/20", "blast-compound/10"],
       power: 5.5
     },
     output:{
