@@ -160,7 +160,7 @@ const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true,
     sentry.vel.add(b.vel); //It just fell from the sky, it's got to have quite a bit of velocity.
     sentry.vel.add(b.vel);
     sentry.vel.add(b.vel);
-    if(Mathf.chance(0.5)) sentry.killed();
+    if(Mathf.chance(0.25)) sentry.killed();
     
     this.super$despawned(b);
   }
