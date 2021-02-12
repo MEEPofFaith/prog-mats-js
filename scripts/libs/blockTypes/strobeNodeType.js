@@ -33,14 +33,14 @@ module.exports = {
         Draw.rect(strobe.colorRegion, x * Vars.tilesize + strobe.offset, y * Vars.tilesize + strobe.offset);
         Draw.reset();
       },
-      laserColor1: Color.valueOf("FFCCCC"),
-      laserColor2: Color.red
+      laserColor1: Color.red,
+      laserColor2: Color.red.cpy().mul(0.3)
     }, obj);
     
     objb = Object.assign({
       draw(){
         Draw.z(Layer.block + 0.01);
-        Draw.color(strobe.laserColor1.cpy().shiftHue(Time.time * speed));
+        Draw.color(strobe.laserColor1.cpy().shiftHue(Time.time * speed), strobe.laserColor2.cpy().shiftHue(Time.time * speed), (1 - this.power.graph.getSatisfaction()) * 0.86 + Mathf.absin(3, 0.1));
         Draw.alpha(1);
         Draw.rect(strobe.colorRegion, this.x, this.y);
         Draw.reset();
