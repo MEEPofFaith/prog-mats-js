@@ -66,6 +66,9 @@ module.exports = {
       cap(){
         return Infinity;
       },
+      prefRotation(){
+        return this.rotation; //Don't turn to velocity, just turn and shoot emediately.
+      },
       classId: () => sentryU.classId
     });
     sentryU.defaultController = ais.sentryAI;

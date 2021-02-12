@@ -33,8 +33,8 @@ module.exports = {
         Draw.reset();
         this.super$drawPlace(x, y, rot, val);
       },
-      laserColor1: Color.red,
-      laserColor2: Color.red.cpy().mul(0.5)
+      laserColor1: Color.valueOf("FFCCCC"),
+      laserColor2: Color.valueOf("fb6767")
     }, obj);
     
     objb = Object.assign({
