@@ -45,15 +45,9 @@ const script = [
         name: "progressed",
         childs:["techtanite",
           "mShell",
-          {
-            name: "missile",
-            childs:["basicM", "empM", "quantumM"]
-          },
+          "missiles",
           "nShell",
-          {
-            name: "nuke",
-            childs:["basicN", "empN", "clusterN"]
-          },
+          "nukes",
           {
             name: "sentry",
             childs:["basicSentry"]

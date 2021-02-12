@@ -82,6 +82,7 @@ module.exports = {
     sentryU.duration = 60 * 10;
     sentryU.isCounted = false;
     sentryU.riseSpeed = 0.016;
+    sentryU.itemCapacity = 10;
     
     register(sentryU);
     

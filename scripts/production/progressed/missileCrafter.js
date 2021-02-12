@@ -36,9 +36,9 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
     output:{
       items: ["prog-mats-emp-missile/1"]
     },
-    craftTime: 90
+    craftTime: 65
   },
-  {//2 (Quantum Missile)
+  {//2 (Quantum Missile) (Missile Exclusive)
     input: {
       items: ["prog-mats-missile-shell/1", "thorium/8", "phase-fabric/15", "silicon/13"],
       liquids: ["water/20"],
@@ -47,7 +47,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
     output:{
       items: ["prog-mats-quantum-missile/1"]
     },
-    craftTime: 90
+    craftTime: 120
   },
   
   //endregion
@@ -61,7 +61,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
     output:{
       items: ["prog-mats-basic-nuke/1"]
     },
-    craftTime: 60
+    craftTime: 90
   },
   {//2 (Emp Nuke)
     input: {
@@ -71,7 +71,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
     output:{
       items: ["prog-mats-emp-nuke/1"]
     },
-    craftTime: 90
+    craftTime: 105
   },
   {//3 (Cluster Nuke) (Nuke Exclusive)
     input: {
@@ -81,7 +81,17 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
     output:{
       items: ["prog-mats-cluster-nuke/1"]
     },
-    craftTime: 90
+    craftTime: 120
+  },
+  {//4 (Drop Pod Nuke) (Nuke Exclusive)
+    input: {
+      items: ["prog-mats-nuke-shell/1", "prog-mats-basic-sentry/30", "blast-compound/40"],
+      power: 5.5
+    },
+    output:{
+      items: ["prog-mats-sentry-nuke/1"]
+    },
+    craftTime: 150
   }
 ], {
   /*you can customize block here. ex) load()*/

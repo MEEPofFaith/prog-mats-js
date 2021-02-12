@@ -11,7 +11,7 @@ const clone = obj => {
 }
 
 module.exports = {
-  strikeBullet(autoDrop, autoDropRad, stop, stopRad, resumeSeek, startOnOwner, givenData, obj){
+  strikeBullet(autoDrop, autoDropRad, stop, stopRad, resumeSeek, startOnOwner, givenData, snapRot, obj){
     if(obj == undefined) obj = {};
     obj = Object.assign({
       init(b){
@@ -103,7 +103,7 @@ module.exports = {
         var rH = this.height * (1 + rise);
         var fW = this.width * (1 + fall);
         var fH = this.height * (1 + fall);
-        var rot = rise * this.riseSpin + fadeIn * this.fallSpin;
+        var rot = snapRot ? b.rotation() + 90 : rise * this.riseSpin + fadeIn * this.fallSpin;
         Tmp.v1.trns(225, rise * this.elevation * 2);
         Tmp.v2.trns(225, fall * this.elevation * 2);
         var rY = y + rise * this.elevation;
@@ -128,16 +128,18 @@ module.exports = {
           Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * dropAlpha);
           Fill.circle(b.x, b.y, autoDropRad);
         }
-        Draw.z(Layer.bullet + 0.002);
-        Draw.color(Pal.gray, target);
-        Lines.stroke(3);
-        Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
-        Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
-        Draw.color(b.team.color, target);
-        Lines.stroke(1);
-        Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
-        Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
-        Draw.reset;
+        if(this.targetRad > 0){
+          Draw.z(Layer.bullet + 0.002);
+          Draw.color(Pal.gray, target);
+          Lines.stroke(3);
+          Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+          Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+          Draw.color(b.team.color, target);
+          Lines.stroke(1);
+          Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+          Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+          Draw.reset;
+        }
         
         //Missile
         if(fadeOut > 0 && fadeIn == 0){

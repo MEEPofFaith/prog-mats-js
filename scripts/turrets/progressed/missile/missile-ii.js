@@ -12,9 +12,9 @@ trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(1.5);
 
-//(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data);
+//(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
-const missile = bul.strikeBullet(true, 15, true, 10, true, true, false, {});
+const missile = bul.strikeBullet(true, 15, true, 10, true, true, false, false, {});
 missile.sprite = "prog-mats-strikeb";
 missile.riseEngineSize = 16;
 missile.fallEngineSize = 8;
@@ -39,7 +39,7 @@ missile.riseSpin = 360;
 missile.fallSpin = 135;
 missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
-const emp = bul.strikeBullet(true, 30, true, 10, true, true, false, {});
+const emp = bul.strikeBullet(true, 30, true, 10, true, true, false, false, {});
 emp.sprite = "prog-mats-emp-strikeb";
 emp.reloadMultiplier = 0.25;
 emp.riseEngineSize = 16;
@@ -70,7 +70,7 @@ emp.fragBullet = particle.particleBullet(Pal.lancerLaser);
 emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-no", 0.9, 1, 0.04, 0.55, 3, 8, 60 * 10 / 2);
 emp.fragBullet.statusDuration = 60 * 10;
 
-const quantum = bul.strikeBullet(true, 30, true, 10, true, true, false, {});
+const quantum = bul.strikeBullet(true, 30, true, 10, true, true, false, false, {});
 quantum.sprite = "prog-mats-quantum-strikeb";
 quantum.reloadMultiplier = 0.1;
 quantum.riseEngineSize = 16;
