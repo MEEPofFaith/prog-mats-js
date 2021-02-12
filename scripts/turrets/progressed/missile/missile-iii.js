@@ -16,7 +16,7 @@ const boom = eff.scaledNuclearExplosion(4, 0.75, 80, true);
 
 //(autodrop, drop radius, stop? stop radius, unstop?, start on owner, given data, rise animation, fall animation);
 
-const missile = bul.strikeBullet(true, 30, true, 20, true, true, false);
+const missile = bul.strikeBullet(true, 30, true, 20, true, true, false, {});
 missile.sprite = "prog-mats-nukeb";
 missile.riseEngineSize = 24;
 missile.fallEngineSize = 14;
@@ -42,7 +42,7 @@ missile.riseSpin = 720;
 missile.fallSpin = 180;
 missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
-const emp = bul.strikeBullet(true, 60, true, 20, true, true, false);
+const emp = bul.strikeBullet(true, 60, true, 20, true, true, false, {});
 emp.sprite = "prog-mats-emp-nukeb";
 emp.reloadMultiplier = 0.25;
 emp.riseEngineSize = 24;
@@ -76,7 +76,7 @@ emp.fragBullet.speed = 12;
 emp.fragBullet.lifetime = 48;
 emp.fragBullet.statusDuration = 60 * 12;
 
-const clusterFrag = bul.strikeBullet(false, 15, false, 10, true, true, false);
+const clusterFrag = bul.strikeBullet(false, 15, false, 10, true, true, false, {});
 clusterFrag.sprite = "prog-mats-cluster-nukeb-frag";
 clusterFrag.riseEngineSize = 16;
 clusterFrag.fallEngineSize = 8;
@@ -99,7 +99,7 @@ clusterFrag.despawnEffect = smallBoom;
 clusterFrag.riseSpin = 360;
 clusterFrag.fallSpin = 135;
 
-const cluster = bul.strikeBullet(true, 30, true, 20, true, true, false);
+const cluster = bul.strikeBullet(true, 30, true, 20, true, true, false, {});
 cluster.sprite = "prog-mats-cluster-nukeb";
 cluster.riseEngineSize = 24;
 cluster.fallEngineSize = 14;

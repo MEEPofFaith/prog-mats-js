@@ -1,6 +1,19 @@
+//Haha code steal go brrrr
+const clone = obj => {
+    if(obj === null || typeof(obj) !== 'object') return obj;
+    var copy = obj.constructor();
+    for(var attr in obj) {
+        if(obj.hasOwnProperty(attr)) {
+            copy[attr] = obj[attr];
+        }
+    };
+    return copy;
+}
+
 module.exports = {
-  strikeBullet(autoDrop, autoDropRad, stop, stopRad, resumeSeek, startOnOwner, givenData){
-    const strike = extend(BasicBulletType, {
+  strikeBullet(autoDrop, autoDropRad, stop, stopRad, resumeSeek, startOnOwner, givenData, obj){
+    if(obj == undefined) obj = {};
+    obj = Object.assign({
       init(b){
         if(!b) return;
         this.super$init(b);
@@ -222,7 +235,9 @@ module.exports = {
       
       riseSpin: 0,
       fallSpin: 0
-    });
+    }, obj);
+    
+    const strike = extend(BasicBulletType, obj);
     strike.unitSort = (u, x, y) => Mathf.dst2(x, y, u.x, u.y);
     
     return strike;
