@@ -1,5 +1,5 @@
 module.exports = {
-  paralizeStatus(statusName, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotScl, cooldown){
+  paralizeStatus(statusName, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotScl, flyingInstakill, cooldown){
     const paralyze = extend(StatusEffect, statusName, {
       damageMultipler: dmgMult,
       healthMultiplier: healthMult,
@@ -18,10 +18,8 @@ module.exports = {
             mount.rotation += Mathf.range(weapon.rotateSpeed * rotScl * strength);
           }
         }
-        if(unit.type.flying == true && !unit.dead){
+        if(unit.type.flying == true && !unit.dead && flyingInstakill){
           unit.kill(); //Cut the engines. This can't possibly be op in any way.
-        }else if(unit.type.canBoost && unit.boosting != null){
-          unit.boosting = false;
         }
         if(!unit.dead) this.super$update(unit, time);
       }

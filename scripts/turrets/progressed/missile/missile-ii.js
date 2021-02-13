@@ -39,7 +39,7 @@ missile.riseSpin = 360;
 missile.fallSpin = 135;
 missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
-const emp = bul.strikeBullet(true, 30, true, 10, true, true, false, false, {});
+const emp = bul.strikeBullet(true, 35, true, 10, true, true, false, false, {});
 emp.sprite = "prog-mats-emp-strikeb";
 emp.reloadMultiplier = 0.25;
 emp.riseEngineSize = 16;
@@ -67,10 +67,10 @@ emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
 emp.fragBullet = particle.particleBullet(Pal.lancerLaser);
-emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-no", 0.9, 1, 0.04, 0.55, 3, 8, 60 * 10 / 2);
+emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-no", 0.9, 1, 0.04, 0.55, 3, 8, false, 60 * 10 / 2);
 emp.fragBullet.statusDuration = 60 * 10;
 
-const quantum = bul.strikeBullet(true, 30, true, 10, true, true, false, false, {});
+const quantum = bul.strikeBullet(true, 25, true, 10, true, true, false, false, {});
 quantum.sprite = "prog-mats-quantum-strikeb";
 quantum.reloadMultiplier = 0.1;
 quantum.riseEngineSize = 16;

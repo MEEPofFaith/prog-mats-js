@@ -71,7 +71,7 @@ emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
 // (dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
 emp.fragBullet = particle.particleBullet(Pal.lancerLaser);
-emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-cease", 0.8, 0.9, 0.02, 0.5, 5, 15, 60 * 12 / 2);
+emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-cease", 0.8, 0.9, 0.02, 0.5, 5, 15, false, 60 * 12 / 2);
 emp.fragBullet.speed = 12;
 emp.fragBullet.lifetime = 48;
 emp.fragBullet.statusDuration = 60 * 12;
@@ -99,7 +99,7 @@ clusterFrag.despawnEffect = smallBoom;
 clusterFrag.riseSpin = 360;
 clusterFrag.fallSpin = 135;
 
-const cluster = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {});
+const cluster = bul.strikeBullet(true, 45, true, 20, true, true, false, false, {});
 cluster.sprite = "prog-mats-cluster-nukeb";
 cluster.riseEngineSize = 24;
 cluster.fallEngineSize = -1;
@@ -170,9 +170,9 @@ unitDrop.riseEngineSize = -1;
 unitDrop.fallEngineSize = -1;
 unitDrop.damage = 20;
 unitDrop.splashDamageRadius = -1;
-unitDrop.speed = 1;
+unitDrop.speed = 0.5;
 unitDrop.homingPower = -1;
-unitDrop.lifetime = 75;
+unitDrop.lifetime = 140;
 unitDrop.elevation = 900;
 unitDrop.riseTime = -1;
 unitDrop.fallTime = 75;
@@ -184,7 +184,7 @@ unitDrop.despawnEffect = Fx.none;
 unitDrop.riseSpin = 0;
 unitDrop.fallSpin = 0;
 
-const dropPod = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {});
+const dropPod = bul.strikeBullet(true, 90, true, 20, true, true, false, false, {});
 dropPod.sprite = "prog-mats-drop-podb";
 dropPod.reloadMultiplier = 1.5;
 dropPod.riseEngineSize = 24;
@@ -215,7 +215,7 @@ dropPod.fragBullets = 30;
 dropPod.fragBullet = unitDrop;
 dropPod.fragVelocityMin = 0.1;
 dropPod.fragVelocityMax = 1;
-dropPod.fragLifeMin = 1;
+dropPod.fragLifeMin = 0.5;
 dropPod.fragLifeMax = 1.2;
 
 const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
