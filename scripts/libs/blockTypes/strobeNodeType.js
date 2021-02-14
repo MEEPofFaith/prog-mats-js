@@ -11,7 +11,7 @@ const clone = obj => {
 }
 
 module.exports = {
-  strobeNode(type, build, speed, name, obj, objb){
+  strobeNode(type, build, speed, lerpSpeed, name, obj, objb){
     if(obj == undefined) obj = {};
     if(objb == undefined) objb = {};
     obj = Object.assign({
@@ -22,7 +22,8 @@ module.exports = {
         this.laserEnd = Core.atlas.find("prog-mats-rainbow-laser-end");
       },
       setupColor(satisfaction){
-        Draw.color(strobe.laserColor1.cpy().shiftHue(Time.time * speed), strobe.laserColor2.cpy().shiftHue(Time.time * speed), (1 - satisfaction) * 0.86 + Mathf.absin(3, 0.1));
+        let c1 = strobe.laserColor1.cpy().lerp(strobe.laserColor3, Mathf.absin(Time.time * lerpSpeed, 1, 1));
+        Draw.color(c1.shiftHue(Time.time * speed), strobe.laserColor2.cpy().shiftHue(Time.time * speed), 1 - satisfaction);
         Draw.alpha(Renderer.laserOpacity);
       },
       drawPlace(x, y, rot, val){
@@ -34,13 +35,15 @@ module.exports = {
         this.super$drawPlace(x, y, rot, val);
       },
       laserColor1: Color.valueOf("FFCCCC"),
-      laserColor2: Color.valueOf("fb6767")
+      laserColor2: Color.valueOf("fb6767"),
+      laserColor3: Color.red
     }, obj);
     
     objb = Object.assign({
       draw(){
         Draw.z(Layer.block + 0.01);
-        Draw.color(strobe.laserColor1.cpy().shiftHue(Time.time * speed), strobe.laserColor2.cpy().shiftHue(Time.time * speed), (1 - this.power.graph.getSatisfaction()) * 0.86 + Mathf.absin(3, 0.1));
+        let c1 = strobe.laserColor1.cpy().lerp(strobe.laserColor3, Mathf.absin(Time.time * lerpSpeed, 1, 1));
+        Draw.color(c1.shiftHue(Time.time * speed), strobe.laserColor2.cpy().shiftHue(Time.time * speed), 1 - this.power.graph.getSatisfaction());
         Draw.alpha(1);
         Draw.rect(strobe.colorRegion, this.x, this.y);
         Draw.reset();

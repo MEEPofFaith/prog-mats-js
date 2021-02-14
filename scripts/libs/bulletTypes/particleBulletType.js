@@ -1,5 +1,17 @@
+//Haha code steal go brrrr
+const clone = obj => {
+    if(obj === null || typeof(obj) !== 'object') return obj;
+    var copy = obj.constructor();
+    for(var attr in obj) {
+        if(obj.hasOwnProperty(attr)) {
+            copy[attr] = obj[attr];
+        }
+    };
+    return copy;
+}
+
 module.exports = {
-  particleBullet(color){
+  particleBullet(color, uSound, uSoundChance, uSoundMinPitch, uSoundMaxPitch, obj){
     const particleEffect = new Effect(38, e => {
       Draw.color(color);
 
@@ -8,7 +20,8 @@ module.exports = {
       });
     });
     
-    const particle = extend(BulletType, {
+    if(obj == undefined) obj = {};
+    obj = Object.assign({
       hittable: false,
       absorbable: false,
       reflectable: false,
@@ -26,8 +39,14 @@ module.exports = {
         if(!b) return;
         b.fdata = -69420;
         this.super$init(b);
+      },
+      update(b){
+        if(Mathf.chanceDelta(uSoundChance)) uSound.at(b.x, b.y, Mathf.random(uSoundMinPitch, uSoundMaxPitch), 1);
+        this.super$update(b);
       }
-    });
+    }, obj);
+    
+    const particle = extend(BulletType, obj);
     
     return particle;
   }

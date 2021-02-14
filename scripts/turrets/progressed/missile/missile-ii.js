@@ -66,7 +66,7 @@ emp.fallSpin = 90;
 emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
-emp.fragBullet = particle.particleBullet(Pal.lancerLaser);
+emp.fragBullet = particle.particleBullet(Pal.lancerLaser, Sounds.spark, 0.5, 0.7, 1, {});
 emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-no", 0.9, 1, 0.04, 0.55, 3, 8, false, 60 * 10 / 2);
 emp.fragBullet.statusDuration = 60 * 10;
 
@@ -97,11 +97,11 @@ quantum.fallSpin = 90;
 quantum.fragBullets = 360;
 quantum.fragVelocityMin = 0.5;
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
-quantum.fragBullet = particle.particleBullet(Color.valueOf("EFE4CA"));
+quantum.fragBullet = particle.particleBullet(Color.valueOf("EFE4CA"), Sounds.sap, 0.25, 0.7, 1, {});
 quantum.fragBullet.status = suffering.teleportStatus("prog-mats-yeeteth", 1, 1, 1, 1, 0, 40, 0.5, 60 * 10 / 2);
 quantum.fragBullet.statusDuration = 60 * 10;
 quantum.fragBullet.speed = 3;
-quantum.fragBullet.lifetime = 96;
+quantum.fragBullet.lifetime = 48;
 
 const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {
   health: 2870,

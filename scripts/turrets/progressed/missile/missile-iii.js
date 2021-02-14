@@ -70,7 +70,7 @@ emp.fallSpin = 180;
 emp.fragBullets = 360;
 emp.fragVelocityMin = 0.5;
 // (dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
-emp.fragBullet = particle.particleBullet(Pal.lancerLaser);
+emp.fragBullet = particle.particleBullet(Pal.lancerLaser, Sounds.spark, 1, 0.4, 0.7, {});
 emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-cease", 0.8, 0.9, 0.02, 0.5, 5, 15, false, 60 * 12 / 2);
 emp.fragBullet.speed = 12;
 emp.fragBullet.lifetime = 48;
