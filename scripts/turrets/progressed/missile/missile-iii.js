@@ -27,7 +27,7 @@ missile.splashDamageRadius = 240;
 missile.speed = 1;
 missile.homingPower = 0.05;
 missile.homingRange = 4440;
-missile.lifetime = 4500;
+missile.lifetime = 2250;
 missile.elevation = 900;
 missile.riseTime = 240;
 missile.fallTime = 90;
@@ -42,7 +42,7 @@ missile.riseSpin = 720;
 missile.fallSpin = 180;
 missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
-const emp = bul.strikeBullet(true, 60, true, 20, true, true, false, false, {});
+const emp = bul.strikeBullet(true, 80, true, 20, true, true, false, false, {});
 emp.sprite = "prog-mats-emp-nukeb";
 emp.reloadMultiplier = 0.25;
 emp.riseEngineSize = 24;
@@ -54,7 +54,7 @@ emp.splashDamageRadius = 170;
 emp.speed = 2;
 emp.homingPower = 0.075;
 emp.homingRange = 4440;
-emp.lifetime = 3600;
+emp.lifetime = 1125;
 emp.elevation = 900;
 emp.riseTime = 180;
 emp.fallTime = 70;
@@ -99,7 +99,7 @@ clusterFrag.despawnEffect = smallBoom;
 clusterFrag.riseSpin = 360;
 clusterFrag.fallSpin = 135;
 
-const cluster = bul.strikeBullet(true, 45, true, 20, true, true, false, false, {});
+const cluster = bul.strikeBullet(true, 60, true, 20, true, true, false, false, {});
 cluster.sprite = "prog-mats-cluster-nukeb";
 cluster.riseEngineSize = 24;
 cluster.fallEngineSize = -1;
@@ -110,7 +110,7 @@ cluster.splashDamageRadius = 0;
 cluster.speed = 1;
 cluster.homingPower = 0.05;
 cluster.homingRange = 4440;
-cluster.lifetime = 4500;
+cluster.lifetime = 2250;
 cluster.elevation = 900;
 cluster.riseTime = 240;
 cluster.fallTime = -1;
@@ -127,12 +127,13 @@ cluster.fallSpin = 180;
 cluster.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 cluster.fragBullets = 20;
 cluster.fragBullet = clusterFrag;
-cluster.fragVelocityMin = 0.1;
-cluster.fragVelocityMax = 1.2;
+cluster.fragVelocityMin = 0.3;
+cluster.fragVelocityMax = 1.5;
 cluster.fragLifeMin = 0.8;
-cluster.fragLifeMax = 1.2;
+cluster.fragLifeMax = 1;
 
-const sentryUnit = Vars.content.getByName(ContentType.unit, "prog-mats-sentry-i");
+const cUnit = name => Vars.content.getByName(ContentType.unit, "prog-mats-" + name);
+const sentryUnits = [cUnit("sentry-i")]; //TODO when I add more sentrys add them to this list.
 const items = [Items.blastCompound, Items.pyratite, Items.pyratite]
 
 const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true, {
@@ -148,22 +149,22 @@ const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true,
     b.fdata = -69420;
     
     this.drawSize = this.elevation + 24;
-    this.backRegion = sentryUnit.icon(Cicon.full);
+    this.unit = sentryUnits[Mathf.round(Mathf.random(sentryUnits.length - 1))];
+    this.backRegion = this.unit.icon(Cicon.full);
   },
   despawned(b){
     if(!b) return;
     
-    let sentry = sentryUnit.spawn(b.team, b.x, b.y);
+    let sentry = this.unit.spawn(b.team, b.x, b.y);
     sentry.rotation = b.rotation();
     let randomItem = items[Mathf.round(Mathf.random(items.length - 1))];
     sentry.addItem(randomItem, Mathf.random(Math.min(1, sentry.maxAccepted(randomItem)), sentry.maxAccepted(randomItem)));
-    sentry.vel.add(b.vel); //It just fell from the sky, it's got to have quite a bit of velocity.
-    sentry.vel.add(b.vel);
-    sentry.vel.add(b.vel);
+    for(var i = 0; i < 4; i++) sentry.vel.add(b.vel); //It just fell from the sky, it's got to have quite a bit of velocity.
     if(Mathf.chance(0.25)) sentry.killed();
     
     this.super$despawned(b);
-  }
+  },
+  unit: null
 });
 unitDrop.sprite = "clear";
 unitDrop.riseEngineSize = -1;
@@ -184,7 +185,7 @@ unitDrop.despawnEffect = Fx.none;
 unitDrop.riseSpin = 0;
 unitDrop.fallSpin = 0;
 
-const dropPod = bul.strikeBullet(true, 90, true, 20, true, true, false, false, {});
+const dropPod = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {});
 dropPod.sprite = "prog-mats-drop-podb";
 dropPod.reloadMultiplier = 1.5;
 dropPod.riseEngineSize = 24;
@@ -193,10 +194,10 @@ dropPod.trailSize = 0.7;
 dropPod.damage = 0;
 dropPod.splashDamage = -1;
 dropPod.splashDamageRadius = 0;
-dropPod.speed = 3;
+dropPod.speed = 2.25;
 dropPod.homingPower = 0.05;
 dropPod.homingRange = 4440;
-dropPod.lifetime = 2700;
+dropPod.lifetime = 1000;
 dropPod.elevation = 900;
 dropPod.riseTime = 240;
 dropPod.fallTime = -1;
@@ -214,14 +215,14 @@ dropPod.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 dropPod.fragBullets = 30;
 dropPod.fragBullet = unitDrop;
 dropPod.fragVelocityMin = 0.1;
-dropPod.fragVelocityMax = 1;
+dropPod.fragVelocityMax = 1.2;
 dropPod.fragLifeMin = 0.5;
-dropPod.fragLifeMax = 1.2;
+dropPod.fragLifeMax = 1.5;
 
 const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
   health: 5950,
   size: 7,
-  range: 4400,
+  range: 2200,
   shootSound: Sounds.explosionbig,
   cooldown: 0.001,
   shootShake: 10,

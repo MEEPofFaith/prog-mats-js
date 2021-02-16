@@ -25,7 +25,7 @@ missile.splashDamageRadius = 64;
 missile.speed = 2;
 missile.homingPower = 0.05;
 missile.homingRange = 320;
-missile.lifetime = 175;
+missile.lifetime = 180;
 missile.elevation = 300;
 missile.riseTime = 45;
 missile.fallTime = 25;
@@ -79,10 +79,10 @@ quantum.trailSize = 0.7;
 quantum.damage = 80;
 quantum.splashDamage = 60;
 quantum.splashDamageRadius = 48;
-quantum.speed = 2.3;
+quantum.speed = 1.8;
 quantum.homingPower = 0.075;
 quantum.homingRange = 320;
-quantum.lifetime = 135;
+quantum.lifetime = 200;
 quantum.elevation = 300;
 quantum.riseTime = 30;
 quantum.fallTime = 25;
@@ -106,7 +106,7 @@ quantum.fragBullet.lifetime = 48;
 const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-ii", {
   health: 2870,
   size: 4,
-  range: 280,
+  range: 330,
   reloadTime: 180,
   shootSound: Sounds.explosionbig,
   cooldown: 0.001,
