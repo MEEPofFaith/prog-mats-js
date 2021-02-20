@@ -118,10 +118,10 @@ const script = [
             name: "missile",
             childs: ["missile-i", "missile-ii", "missile-iii"]
           },
-          {
+          /*{
             name: "multi",
             childs: ["multi-i"]
-          },
+          },*/
           {
             name: "sentry",
             childs: ["engineer-i"]
