@@ -166,7 +166,7 @@ teslaStorm.buildType = ent => {
         this._rotationSpeed = Mathf.lerpDelta(this._rotationSpeed, 1, 0.005 * this.peekAmmo().reloadMultiplier * liquid.heatCapacity * teslaStorm.coolantMultiplier * this.delta());
       }
       
-      this.rotation = this.rotation - this._rotationSpeed * teslaStorm.rotateSpeed;
+      this.rotation -= this._rotationSpeed * teslaStorm.rotateSpeed * Time.delta;
     },
     shoot(type){
       //I have ascended to stealing code from myself.
