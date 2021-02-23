@@ -6,23 +6,24 @@ const bul = extend(BasicBulletType, {
   sprite: "bullet",
   damage: 20,
   speed: 3,
-  width: 3,
-  height: 4,
+  width: 7,
+  height: 9,
   homingPower: 0.11,
   homingRange: 128,
   lifetime: 80
 });
 
-const cannon = extendContent(Weapon, "large-weapon", {});
-cannon.bullet = bul;
-cannon.rotate = false;
-cannon.reload = 6;
-cannon.alternate = true;
-cannon.x = 16/4;
-cannon.y = 9/4;
-cannon.recoil = 7/4;
-cannon.shootX = -2.5/4;
-cannon.ejectEffect = Fx.casing1;
-cannon.top = false;
+const cannon = extendContent(Weapon, "large-weapon", {
+  bullet: bul,
+  rotate: false,
+  reload: 6,
+  alternate: true,
+  x: 16/4,
+  y: 9/4,
+  recoil: 7/4,
+  shootX: -2.5/4,
+  ejectEffect: Fx.casing1,
+  top: false
+});
 
 sentryI.weapons.add(cannon);
