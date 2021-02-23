@@ -83,7 +83,7 @@ clusterFrag.fallEngineSize = 8;
 clusterFrag.trailSize = 0.7;
 clusterFrag.damage = 80;
 clusterFrag.splashDamage = 3000;
-clusterFrag.splashDamageRadius = 32;
+clusterFrag.splashDamageRadius = 40;
 clusterFrag.speed = 1;
 clusterFrag.homingPower = -1;
 clusterFrag.lifetime = 150;
@@ -101,7 +101,6 @@ clusterFrag.fallSpin = 135;
 
 const cluster = bul.strikeBullet(true, 60, true, 20, true, true, false, false, {});
 cluster.sprite = "prog-mats-cluster-nukeb";
-cluster.reloadMultiplier = 0.875;
 cluster.riseEngineSize = 24;
 cluster.fallEngineSize = -1;
 cluster.trailSize = 0.7;
