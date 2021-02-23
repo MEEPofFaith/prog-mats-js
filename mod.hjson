@@ -20,5 +20,5 @@ description:
   The name definitely isn't made of the synonyms of "Advance" and "Content".
   '''
 version: 0.37
-minGameVersion: 124
+minGameVersion: 125.1
 repo: MEEPofFaith/progressed-materials

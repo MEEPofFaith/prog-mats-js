@@ -83,7 +83,7 @@ clusterFrag.fallEngineSize = 8;
 clusterFrag.trailSize = 0.7;
 clusterFrag.damage = 80;
 clusterFrag.splashDamage = 3000;
-clusterFrag.splashDamageRadius = 96;
+clusterFrag.splashDamageRadius = 32;
 clusterFrag.speed = 1;
 clusterFrag.homingPower = -1;
 clusterFrag.lifetime = 150;
@@ -101,6 +101,7 @@ clusterFrag.fallSpin = 135;
 
 const cluster = bul.strikeBullet(true, 60, true, 20, true, true, false, false, {});
 cluster.sprite = "prog-mats-cluster-nukeb";
+cluster.reloadMultiplier = 0.875;
 cluster.riseEngineSize = 24;
 cluster.fallEngineSize = -1;
 cluster.trailSize = 0.7;
@@ -127,9 +128,9 @@ cluster.fallSpin = 180;
 cluster.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 cluster.fragBullets = 20;
 cluster.fragBullet = clusterFrag;
-cluster.fragVelocityMin = 0.3;
-cluster.fragVelocityMax = 1.5;
-cluster.fragLifeMin = 0.8;
+cluster.fragVelocityMin = 0.1;
+cluster.fragVelocityMax = 1;
+cluster.fragLifeMin = 0.5;
 cluster.fragLifeMax = 1;
 
 const cUnit = name => Vars.content.getByName(ContentType.unit, "prog-mats-" + name);
@@ -173,7 +174,7 @@ unitDrop.damage = 20;
 unitDrop.splashDamageRadius = -1;
 unitDrop.speed = 0.5;
 unitDrop.homingPower = -1;
-unitDrop.lifetime = 140;
+unitDrop.lifetime = 150;
 unitDrop.elevation = 900;
 unitDrop.riseTime = -1;
 unitDrop.fallTime = 75;
@@ -215,9 +216,9 @@ dropPod.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 dropPod.fragBullets = 30;
 dropPod.fragBullet = unitDrop;
 dropPod.fragVelocityMin = 0.1;
-dropPod.fragVelocityMax = 1.2;
+dropPod.fragVelocityMax = 1.5;
 dropPod.fragLifeMin = 0.5;
-dropPod.fragLifeMax = 1.5;
+dropPod.fragLifeMax = 1;
 
 const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
   health: 5950,

@@ -88,7 +88,7 @@ actualSwarmer.buildType = ent => {
               let x = actualSwarmer.xOffsets[i] + this.x;
               let y = actualSwarmer.yOffsets[i] + this.y;
               let missileRegion = Core.atlas.find(this.peekAmmo().sprite);
-              Drawf.construct(x, y, missileRegion, 0, this.reload / actualSwarmer.reloadTime, this._speedScl, this.reload);
+              Drawf.construct(x, y, missileRegion, this.team.color, 0, this.reload / actualSwarmer.reloadTime, this._speedScl, this.reload);
             }
           }
         });

@@ -28,7 +28,7 @@ module.exports = {
         if(this.hasAmmo() && this.peekAmmo() != null){
           Draw.draw(Draw.z(), () => {
             let missileRegion = Core.atlas.find(this.peekAmmo().sprite);
-            Drawf.construct(this.x, this.y, missileRegion, 0, this.reload / missileSilo.reloadTime, this._speedScl, this.reload);
+            Drawf.construct(this.x, this.y, missileRegion, this.team.color, 0, this.reload / missileSilo.reloadTime, this._speedScl, this.reload);
           });
         }
         
