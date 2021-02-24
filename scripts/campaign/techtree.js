@@ -29,7 +29,7 @@ node(Items.surgeAlloy, citem("techtanite"), null, null);
 // node(citem("nuke-shell"), citem("basic-nuke"), ItemStack.with(), Seq.with(new Objectives.Research(cblock("missile-iii"))));
 
 /** Production */
-node(Blocks.plastaniumCompressor, cblock("mindron-collider"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.impact0078)));
+node(Blocks.surgeSmelter, cblock("mindron-collider"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.impact0078)));
 // node(cblock("mindron-collider"), cblock("shell-press"), null, Seq.with(new Objectives.Research(cblock("missile-i"))));
 // node(cblock("shell-press"), cblock("missile-crafter"), null, Seq.with(new Objectives.Research(cblock("missile-i"))));
 // node(cblock("missile-crafter"), cblock("nuke-crafter"), null, Seq.with(new Objectives.Research(cblock("missile-ii"))));
@@ -56,12 +56,9 @@ node(Blocks.foreshadow, cblock("chaos-array"), null, sectors);
 //node(Blocks.foreshadow, cblock("excalibur"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.nuclearComplex)));
 
 // Missile
-//node(Blocks.ripple, cblock("missile-i"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078))); // Yes, you canonically ripped this out of the wreakage.
+node(Blocks.ripple, cblock("missile-i"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078))); // Yes, you canonically ripped this out of the wreakage.
 //node(cblock("missile-i"), cblock("missile-ii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.nuclearComplex), new Objectives.Research(citem("missile-shell"))));
 //node(cblock("missile-ii"), cblock("missile-iii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.Research(Blocks.interplanetaryAccelerator), new Objectives.SectorComplete(SectorPresets.planetaryTerminal))); // Big nuke big pad
-
-//Multi
-node(Blocks.hail, cblock("multi-i"), null, Seq.with(new Objectives.Research(Blocks.duo), new Objectives.Research(Blocks.wave)));
 
 //Pixel
 node(Blocks.lancer, cblock("pixel-i"), null, null);
