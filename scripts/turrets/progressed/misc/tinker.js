@@ -20,6 +20,8 @@ const engi = extend(ItemTurret, "tinker", {
   size: 3,
   reloadTime: 60 * 10,
   range: 40 * Vars.tilesize,
+  inaccuracy: 12,
+  velocityInaccuracy: 0.2,
   category: Category.turret,
   requirements: ItemStack.empty,
   buildVisibility: BuildVisibility.sandboxOnly

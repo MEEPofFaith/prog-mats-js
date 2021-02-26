@@ -8,9 +8,10 @@ const boom = eff.scaledLargeBlast(0.5);
 
 //(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
-const missile = bul.strikeBullet(false, 0, false, 6, false, true, true, false, {
+const missile = bul.strikeBullet(false, 0, true, 4, false, true, true, false, {
   sprite: "prog-mats-storm",
-  engineSize: 5,
+  riseEngineSize: 5,
+  fallEngineSize: 5,
   trailSize: 0.2,
   damage: 28,
   splashDamage: 72,
@@ -20,7 +21,7 @@ const missile = bul.strikeBullet(false, 0, false, 6, false, true, true, false, {
   homingRange: 200,
   cooldown: 0.001,
   lifetime: 90,
-  elevation: 300,
+  elevation: 150,
   riseTime: 30,
   fallTime: 20,
   ammmoMultiplier: 4,
@@ -59,8 +60,7 @@ const actualSwarmer = extend(ItemTurret, "missile-i", {
   maxAmmo: 36,
   ammoPerShot: 9,
   xOffsets: [-31/4, 0, 31/4, -29/4, 0, 29/4, -31/4, 0, 31/4],
-  yOffsets: [31/4, 29/4, 31/4, 0, 0, 0, -31/4, -29/4, -31/4],
-  rotateSpeed: 9999
+  yOffsets: [31/4, 29/4, 31/4, 0, 0, 0, -31/4, -29/4, -31/4]
 });
 actualSwarmer.ammo(Items.blastCompound, missile);
 
@@ -165,6 +165,9 @@ actualSwarmer.buildType = ent => {
           this.shot[i] = false;
         }
       });
+    },
+    turnToTarget(targetRot){
+      this.rotation = targetRot;
     }
   });
   ent.setEffs();

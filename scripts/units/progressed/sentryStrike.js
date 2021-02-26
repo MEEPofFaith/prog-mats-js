@@ -11,17 +11,18 @@ const boom = eff.scaledLargeBlast(0.5);
 
 const mis = strike.strikeBullet(true, 8, true, 4, true, false, true, false, {
   sprite: "prog-mats-storm",
-  engineSize: 5,
+  riseEngineSize: 5,
+  fallEngineSize: 5,
   trailSize: 0.2,
-  damage: 28,
-  splashDamage: 72,
-  splashDamageRadius: 30,
+  damage: 31,
+  splashDamage: 80,
+  splashDamageRadius: 34,
   speed: 2.4,
   homingPower: 0.035,
   homingRange: 200,
   cooldown: 0.001,
   lifetime: 90,
-  elevation: 300,
+  elevation: 150,
   riseTime: 30,
   fallTime: 20,
   ammmoMultiplier: 4,
@@ -40,12 +41,13 @@ const silo = extendContent(Weapon, sentryStrike.name + "-hole", {
   mirror: false,
   alternate: false,
   top: false,
-  reload: 15,
+  reload: 20,
   x: 0,
   y: 0,
   recoil: 0,
   shootY: 0,
   shootCone: 360,
+  inaccuracy: 30,
   shootSound: Sounds.missile
 });
 
