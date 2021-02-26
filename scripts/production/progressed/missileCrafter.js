@@ -85,7 +85,7 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
   },
   {//4 (Drop Pod Nuke) (Nuke Exclusive)
     input: {
-      items: ["prog-mats-nuke-shell/1", "prog-mats-basic-sentry/30", "pyratite/20", "blast-compound/10"],
+      items: ["prog-mats-nuke-shell/1", "prog-mats-basic-sentry-box/10", "prog-mats-strike-sentry-box/5", "pyratite/10", "blast-compound/5"],
       power: 5.5
     },
     output:{

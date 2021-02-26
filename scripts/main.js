@@ -48,10 +48,7 @@ const script = [
           "missiles",
           "nShell",
           "nukes",
-          {
-            name: "sentry",
-            childs:["basicSentry"]
-          }
+          "sentries"
         ]
       }
     ]
@@ -70,7 +67,7 @@ const script = [
     childs: [
       {
         name: "progressed",
-        childs: ["sentry-i"]
+        childs: ["sentryBasic", "sentryStrike"]
       }
     ]
   },
@@ -112,15 +109,11 @@ const script = [
           },
           {
             name: "misc",
-            childs: ["blackhole", "chaos", "excalibur"]
+            childs: ["blackhole", "chaos", "excalibur", "tinker"]
           },
           {
             name: "missile",
             childs: ["missile-i", "missile-ii", "missile-iii"]
-          },
-          {
-            name: "sentry",
-            childs: ["engineer-i"]
           },
           {
             name: "pixel",

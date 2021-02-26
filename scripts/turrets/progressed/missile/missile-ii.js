@@ -14,88 +14,91 @@ const boom = eff.scaledLargeBlast(1.5);
 
 //(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
-const missile = bul.strikeBullet(true, 15, true, 10, true, true, false, false, {});
-missile.sprite = "prog-mats-strikeb";
-missile.riseEngineSize = 16;
-missile.fallEngineSize = 8;
-missile.trailSize = 0.7;
-missile.damage = 80;
-missile.splashDamage = 750;
-missile.splashDamageRadius = 64;
-missile.speed = 2;
-missile.homingPower = 0.05;
-missile.homingRange = 330;
-missile.lifetime = 180;
-missile.elevation = 300;
-missile.riseTime = 45;
-missile.fallTime = 25;
-missile.hitSound = Sounds.bang;
-missile.hitShake = 8;
-missile.trailParam = 5;
-missile.trailChance = 0.2;
-missile.trailEffect = trail;
-missile.despawnEffect = boom;
-missile.riseSpin = 360;
-missile.fallSpin = 135;
+const missile = bul.strikeBullet(true, 15, true, 10, true, true, false, false, {
+  sprite: "prog-mats-strikeb",
+  riseEngineSize: 16,
+  fallEngineSize: 8,
+  trailSize: 0.7,
+  damage: 80,
+  splashDamage: 750,
+  splashDamageRadius: 64,
+  speed: 2,
+  homingPower: 0.05,
+  homingRange: 330,
+  lifetime: 180,
+  elevation: 300,
+  riseTime: 45,
+  fallTime: 25,
+  hitSound: Sounds.bang,
+  hitShake: 8,
+  trailParam: 5,
+  trailChance: 0.2,
+  trailEffect: trail,
+  despawnEffect: boom,
+  riseSpin: 360,
+  fallSpin: 135
+});
 missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
-const emp = bul.strikeBullet(true, 35, true, 10, true, true, false, false, {});
-emp.sprite = "prog-mats-emp-strikeb";
-emp.reloadMultiplier = 0.25;
-emp.riseEngineSize = 16;
-emp.fallEngineSize = 8;
-emp.trailSize = 0.7;
-emp.damage = 80;
-emp.splashDamage = 150;
-emp.splashDamageRadius = 48;
-emp.speed = 3;
-emp.homingPower = 0.075;
-emp.homingRange = 330;
-emp.lifetime = 120;
-emp.elevation = 300;
-emp.riseTime = 35;
-emp.fallTime = 15;
-emp.hitSound = Sounds.bang;
-emp.hitShake = 8;
-emp.trailParam = 5;
-emp.trailChance = 0.2;
-emp.trailEffect = trail;
-emp.despawnEffect = boom;
-emp.riseSpin = 270;
-emp.fallSpin = 90;
-emp.fragBullets = 360;
-emp.fragVelocityMin = 0.5;
+const emp = bul.strikeBullet(true, 35, true, 10, true, true, false, false, {
+  sprite: "prog-mats-emp-strikeb",
+  reloadMultiplier: 0.25,
+  riseEngineSize: 16,
+  fallEngineSize: 8,
+  trailSize: 0.7,
+  damage: 80,
+  splashDamage: 150,
+  splashDamageRadius: 48,
+  speed: 3,
+  homingPower: 0.075,
+  homingRange: 330,
+  lifetime: 120,
+  elevation: 300,
+  riseTime: 35,
+  fallTime: 15,
+  hitSound: Sounds.bang,
+  hitShake: 8,
+  trailParam: 5,
+  trailChance: 0.2,
+  trailEffect: trail,
+  despawnEffect: boom,
+  riseSpin: 270,
+  fallSpin: 90,
+  fragBullets: 360,
+  fragVelocityMin: 0.5
+});
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
 emp.fragBullet = particle.particleBullet(Pal.lancerLaser, Sounds.spark, 0.5, 0.7, 1, {});
 emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-no", 0.9, 1, 0.04, 0.55, 3, 8, false, 60 * 10 / 2);
 emp.fragBullet.statusDuration = 60 * 10;
 
-const quantum = bul.strikeBullet(true, 25, true, 10, true, true, false, false, {});
-quantum.sprite = "prog-mats-quantum-strikeb";
-quantum.reloadMultiplier = 0.1;
-quantum.riseEngineSize = 16;
-quantum.fallEngineSize = 8;
-quantum.trailSize = 0.7;
-quantum.damage = 80;
-quantum.splashDamage = 60;
-quantum.splashDamageRadius = 48;
-quantum.speed = 1.8;
-quantum.homingPower = 0.075;
-quantum.homingRange = 330;
-quantum.lifetime = 200;
-quantum.elevation = 300;
-quantum.riseTime = 30;
-quantum.fallTime = 25;
-quantum.hitSound = Sounds.bang;
-quantum.hitShake = 8;
-quantum.trailParam = 5;
-quantum.trailChance = 0.2;
-quantum.trailEffect = trail;
-quantum.despawnEffect = boom;
-quantum.riseSpin = 270;
-quantum.fallSpin = 90;
-quantum.fragBullets = 360;
-quantum.fragVelocityMin = 0.5;
+const quantum = bul.strikeBullet(true, 25, true, 10, true, true, false, false, {
+  sprite: "prog-mats-quantum-strikeb",
+  reloadMultiplier: 0.1,
+  riseEngineSize: 16,
+  fallEngineSize: 8,
+  trailSize: 0.7,
+  damage: 80,
+  splashDamage: 60,
+  splashDamageRadius: 48,
+  speed: 1.8,
+  homingPower: 0.075,
+  homingRange: 330,
+  lifetime: 200,
+  elevation: 300,
+  riseTime: 30,
+  fallTime: 25,
+  hitSound: Sounds.bang,
+  hitShake: 8,
+  trailParam: 5,
+  trailChance: 0.2,
+  trailEffect: trail,
+  despawnEffect: boom,
+  riseSpin: 270,
+  fallSpin: 90,
+  fragBullets: 360,
+  fragVelocityMin: 0.5
+});
 // (name, dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
 quantum.fragBullet = particle.particleBullet(Color.valueOf("EFE4CA"), Sounds.sap, 0.25, 0.7, 1, {});
 quantum.fragBullet.status = suffering.teleportStatus("prog-mats-yeeteth", 1, 1, 1, 1, 0, 40, 0.5, 60 * 10 / 2);

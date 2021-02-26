@@ -1,6 +1,6 @@
 const sentryUnitType = require("libs/unit/sentryUnit");
 
-const sentryI = sentryUnitType.sentryUnit("sentry-i");
+const sentryBasic = sentryUnitType.sentryUnit("basic-sentry");
 
 const bul = extend(BasicBulletType, {
   sprite: "bullet",
@@ -26,4 +26,4 @@ const cannon = extendContent(Weapon, "large-weapon", {
   top: false
 });
 
-sentryI.weapons.add(cannon);
+sentryBasic.weapons.add(cannon);

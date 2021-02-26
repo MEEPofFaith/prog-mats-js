@@ -21,9 +21,19 @@ const sentryFactory = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.Gener
       power: 4
     },
     output:{
-      items: ["prog-mats-basic-sentry/3"]
+      items: ["prog-mats-basic-sentry-box/3"]
     },
     craftTime: 90
+  },
+  {//2 (Strike Sentry)
+    input: {
+      items: ["copper/40", "lead/40", "titanium/25", "silicon/30", "blast-compound/10"],
+      power: 4.5
+    },
+    output:{
+      items: ["prog-mats-strike-sentry-box/3"]
+    },
+    craftTime: 120
   }
 ], {
   /*you can customize block here. ex) load()*/

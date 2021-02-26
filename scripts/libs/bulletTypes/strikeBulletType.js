@@ -99,10 +99,6 @@ module.exports = {
         var rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.riseEngineTime, this.riseTime));
         var fRocket = Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime - this.fallTime + this.fallEngineTime));
         var target = Mathf.curve(b.time, 0, 8) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
-        var rW = this.width * (1 + rise);
-        var rH = this.height * (1 + rise);
-        var fW = this.width * (1 + fall);
-        var fH = this.height * (1 + fall);
         var rot = snapRot ? b.rotation() + 90 : rise * this.riseSpin + fadeIn * this.fallSpin;
         Tmp.v1.trns(225, rise * this.elevation * 2);
         Tmp.v2.trns(225, fall * this.elevation * 2);
@@ -196,6 +192,7 @@ module.exports = {
       teamTrail: true,
       rocketEffect: Fx.rocketSmoke,
       ammoMultiplier: 1,
+      backMove: false,
       
       shadowRot: 0,
       

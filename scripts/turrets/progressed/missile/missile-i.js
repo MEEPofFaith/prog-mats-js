@@ -6,35 +6,34 @@ trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(0.5);
 
-const missile = bul.strikeBullet(false, 0, false, 6, false, true, true, false, {});
-missile.sprite = "prog-mats-storm";
-missile.width = 6;
-missile.height = 8;
-missile.engineSize = 5;
-missile.trailSize = 0.2;
-missile.bulletOffset = 4;
-missile.damage = 28;
-missile.splashDamage = 72;
-missile.splashDamageRadius = 30;
-missile.speed = 2.4;
-missile.homingPower = 0.035;
-missile.homingRange = 200;
-missile.cooldown = 0.001;
-missile.lifetime = 90;
-missile.elevation = 300;
-missile.riseTime = 30;
-missile.fallTime = 20;
-missile.ammmoMultiplier = 4;
-missile.targetRad = 0.5;
-missile.hitSound = Sounds.explosion;
-missile.collidesAir = false;
-missile.hitShake = 3;
-missile.weaveWidth = 12;
-missile.weaveSpeed = 1;
-missile.trailParam = 3;
-missile.trailEffect = trail;
-missile.despawnEffect = boom;
-// missile.rocketEffect = Fx.rocketSmokeLarge;
+//(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
+
+const missile = bul.strikeBullet(false, 0, false, 6, false, true, true, false, {
+  sprite: "prog-mats-storm",
+  engineSize: 5,
+  trailSize: 0.2,
+  damage: 28,
+  splashDamage: 72,
+  splashDamageRadius: 30,
+  speed: 2.4,
+  homingPower: 0.035,
+  homingRange: 200,
+  cooldown: 0.001,
+  lifetime: 90,
+  elevation: 300,
+  riseTime: 30,
+  fallTime: 20,
+  ammmoMultiplier: 4,
+  targetRad: 0.5,
+  hitSound: Sounds.explosion,
+  collidesAir: false,
+  hitShake: 3,
+  weaveWidth: 12,
+  weaveSpeed: 1,
+  trailParam: 3,
+  trailEffect: trail,
+  despawnEffect: boom
+});
 
 const actualSwarmer = extend(ItemTurret, "missile-i", {
   load(){
@@ -48,7 +47,7 @@ const actualSwarmer = extend(ItemTurret, "missile-i", {
   size: 3,
   range: 160,
   reloadTime: 75,
-  shootSound: Sounds.artillery,
+  shootSound: Sounds.missile,
   cooldown: 0.005,
   shootShake: 1,
   targetAir: false,

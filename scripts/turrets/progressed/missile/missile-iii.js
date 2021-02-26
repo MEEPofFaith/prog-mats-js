@@ -16,59 +16,61 @@ const boom = eff.scaledNuclearExplosion(4, 0.75, 80, true);
 
 //(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
-const missile = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {});
-missile.sprite = "prog-mats-nukeb";
-missile.riseEngineSize = 24;
-missile.fallEngineSize = 14;
-missile.trailSize = 0.7;
-missile.damage = 300;
-missile.splashDamage = 27000;
-missile.splashDamageRadius = 240;
-missile.speed = 1;
-missile.homingPower = 0.05;
-missile.homingRange = 800;
-missile.lifetime = 2250;
-missile.elevation = 900;
-missile.riseTime = 240;
-missile.fallTime = 90;
-missile.hitSound = Sounds.bang;
-missile.hitShake = 30;
-missile.trailParam = 8;
-missile.targetRad = 2;
-missile.trailChance = 0.2;
-missile.trailEffect = trail;
-missile.despawnEffect = boom;
-missile.riseSpin = 720;
-missile.fallSpin = 180;
+const missile = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {
+  sprite: "prog-mats-nukeb",
+  riseEngineSize: 24,
+  fallEngineSize: 14,
+  trailSize: 0.7,
+  damage: 300,
+  splashDamage: 27000,
+  splashDamageRadius: 240,
+  speed: 1,
+  homingPower: 0.05,
+  homingRange: 800,
+  lifetime: 2250,
+  elevation: 900,
+  riseTime: 240,
+  fallTime: 90,
+  hitSound: Sounds.bang,
+  hitShake: 30,
+  trailParam: 8,
+  targetRad: 2,
+  trailChance: 0.2,
+  trailEffect: trail,
+  despawnEffect: boom,
+  riseSpin: 720,
+  fallSpin: 180
+});
 missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
-const emp = bul.strikeBullet(true, 80, true, 20, true, true, false, false, {});
-emp.sprite = "prog-mats-emp-nukeb";
-emp.reloadMultiplier = 0.25;
-emp.riseEngineSize = 24;
-emp.fallEngineSize = 14;
-emp.trailSize = 0.7;
-emp.damage = 300;
-emp.splashDamage = 1700;
-emp.splashDamageRadius = 170;
-emp.speed = 2;
-emp.homingPower = 0.075;
-emp.homingRange = 2200;
-emp.lifetime = 1125;
-emp.elevation = 900;
-emp.riseTime = 180;
-emp.fallTime = 70;
-emp.hitSound = Sounds.bang;
-emp.hitShake = 30;
-emp.trailParam = 8;
-emp.targetRad = 2;
-emp.trailChance = 0.2;
-emp.trailEffect = trail;
-emp.despawnEffect = boom;
-emp.riseSpin = 720;
-emp.fallSpin = 180;
-emp.fragBullets = 360;
-emp.fragVelocityMin = 0.5;
+const emp = bul.strikeBullet(true, 80, true, 20, true, true, false, false, {
+  sprite: "prog-mats-emp-nukeb",
+  reloadMultiplier: 0.25,
+  riseEngineSize: 24,
+  fallEngineSize: 14,
+  trailSize: 0.7,
+  damage: 300,
+  splashDamage: 1700,
+  splashDamageRadius: 170,
+  speed: 2,
+  homingPower: 0.075,
+  homingRange: 2200,
+  lifetime: 1125,
+  elevation: 900,
+  riseTime: 180,
+  fallTime: 70,
+  hitSound: Sounds.bang,
+  hitShake: 30,
+  trailParam: 8,
+  targetRad: 2,
+  trailChance: 0.2,
+  trailEffect: trail,
+  despawnEffect: boom,
+  riseSpin: 720,
+  fallSpin: 180,
+  fragBullets: 360,
+  fragVelocityMin: 0.5
+});
 // (dmgMult, healthMult, speedMult, reloadMult, dmgTick, rotRnd)
 emp.fragBullet = particle.particleBullet(Pal.lancerLaser, Sounds.spark, 1, 0.4, 0.7, {});
 emp.fragBullet.status = paralyze.paralizeStatus("prog-mats-cease", 0.8, 0.9, 0.02, 0.5, 5, 15, false, 60 * 12 / 2);
@@ -76,64 +78,66 @@ emp.fragBullet.speed = 12;
 emp.fragBullet.lifetime = 48;
 emp.fragBullet.statusDuration = 60 * 12;
 
-const clusterFrag = bul.strikeBullet(false, 15, false, 10, true, true, false, false, {});
-clusterFrag.sprite = "prog-mats-cluster-nukeb-frag";
-clusterFrag.riseEngineSize = -1;
-clusterFrag.fallEngineSize = 8;
-clusterFrag.trailSize = 0.7;
-clusterFrag.damage = 80;
-clusterFrag.splashDamage = 3000;
-clusterFrag.splashDamageRadius = 40;
-clusterFrag.speed = 1;
-clusterFrag.homingPower = -1;
-clusterFrag.lifetime = 150;
-clusterFrag.elevation = 900;
-clusterFrag.riseTime = -1;
-clusterFrag.fallTime = 75;
-clusterFrag.hitSound = Sounds.bang;
-clusterFrag.hitShake = 8;
-clusterFrag.trailParam = 5;
-clusterFrag.trailChance = 0.2;
-clusterFrag.trailEffect = smallTrail;
-clusterFrag.despawnEffect = smallBoom;
-clusterFrag.riseSpin = 360;
-clusterFrag.fallSpin = 135;
+const clusterFrag = bul.strikeBullet(false, 15, false, 10, true, true, false, false, {
+  sprite: "prog-mats-cluster-nukeb-frag",
+  riseEngineSize: -1,
+  fallEngineSize: 8,
+  trailSize: 0.7,
+  damage: 80,
+  splashDamage: 3000,
+  splashDamageRadius: 40,
+  speed: 1,
+  homingPower: -1,
+  lifetime: 150,
+  elevation: 900,
+  riseTime: -1,
+  fallTime: 75,
+  hitSound: Sounds.bang,
+  hitShake: 8,
+  trailParam: 5,
+  trailChance: 0.2,
+  trailEffect: smallTrail,
+  despawnEffect: smallBoom,
+  riseSpin: 360,
+  fallSpin: 135
+});
 
-const cluster = bul.strikeBullet(true, 60, true, 20, true, true, false, false, {});
-cluster.sprite = "prog-mats-cluster-nukeb";
-cluster.riseEngineSize = 24;
-cluster.fallEngineSize = -1;
-cluster.trailSize = 0.7;
-cluster.damage = 0;
-cluster.splashDamage = -1;
-cluster.splashDamageRadius = 0;
-cluster.speed = 1;
-cluster.homingPower = 0.05;
-cluster.homingRange = 800;
-cluster.lifetime = 2250;
-cluster.elevation = 900;
-cluster.riseTime = 240;
-cluster.fallTime = -1;
-cluster.hitSound = Sounds.none;
-cluster.hitShake = 0;
-cluster.trailParam = 8;
-cluster.targetRad = 2;
-cluster.trailChance = 0.2;
-cluster.trailEffect = trail;
-cluster.despawnEffect = Fx.none;
-cluster.hitEffect = Fx.none;
-cluster.riseSpin = 720;
-cluster.fallSpin = 180;
+const cluster = bul.strikeBullet(true, 60, true, 20, true, true, false, false, {
+  sprite: "prog-mats-cluster-nukeb",
+  riseEngineSize: 24,
+  fallEngineSize: -1,
+  trailSize: 0.7,
+  damage: 0,
+  splashDamage: -1,
+  splashDamageRadius: 0,
+  speed: 1,
+  homingPower: 0.05,
+  homingRange: 800,
+  lifetime: 2250,
+  elevation: 900,
+  riseTime: 240,
+  fallTime: -1,
+  hitSound: Sounds.none,
+  hitShake: 0,
+  trailParam: 8,
+  targetRad: 2,
+  trailChance: 0.2,
+  trailEffect: trail,
+  despawnEffect: Fx.none,
+  hitEffect: Fx.none,
+  riseSpin: 720,
+  fallSpin: 180,
+  fragBullets: 20,
+  fragBullet: clusterFrag,
+  fragVelocityMin: 0.1,
+  fragVelocityMax: 1,
+  fragLifeMin: 0.5,
+  fragLifeMax: 1
+});
 cluster.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
-cluster.fragBullets = 20;
-cluster.fragBullet = clusterFrag;
-cluster.fragVelocityMin = 0.1;
-cluster.fragVelocityMax = 1;
-cluster.fragLifeMin = 0.5;
-cluster.fragLifeMax = 1;
 
 const cUnit = name => Vars.content.getByName(ContentType.unit, "prog-mats-" + name);
-const sentryUnits = [cUnit("sentry-i")]; //TODO when I add more sentrys add them to this list.
+const sentryUnits = [cUnit("basic-sentry"), cUnit("basic-sentry"), cUnit("strike-sentry")]; //TODO when I add more sentrys add them to this list.
 const items = [Items.blastCompound, Items.pyratite, Items.pyratite]
 
 const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true, {
@@ -145,17 +149,16 @@ const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true,
     // Owner coords are placed in data in case it dies while the bullet is still active. Don't want null errors.
     var x = b.owner.x;
     var y = b.owner.y;
-    b.data = [x, y, 0, false];
+    b.data = [x, y, 0, false, sentryUnits[Mathf.round(Mathf.random(sentryUnits.length - 1))]];
     b.fdata = -69420;
     
     this.drawSize = this.elevation + 24;
-    this.unit = sentryUnits[Mathf.round(Mathf.random(sentryUnits.length - 1))];
-    this.backRegion = this.unit.icon(Cicon.full);
+    this.backRegion = b.data[4].icon(Cicon.full);
   },
   despawned(b){
     if(!b) return;
     
-    let sentry = this.unit.spawn(b.team, b.x, b.y);
+    let sentry = b.data[4].spawn(b.team, b.x, b.y);
     sentry.rotation = b.rotation();
     let randomItem = items[Mathf.round(Mathf.random(items.length - 1))];
     sentry.addItem(randomItem, Mathf.random(Math.min(1, sentry.maxAccepted(randomItem)), sentry.maxAccepted(randomItem)));
@@ -164,60 +167,61 @@ const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true,
     
     this.super$despawned(b);
   },
-  unit: null
+  
+  sprite: "clear",
+  riseEngineSize: -1,
+  fallEngineSize: -1,
+  damage: 20,
+  splashDamageRadius: -1,
+  speed: 0.5,
+  homingPower: -1,
+  lifetime: 150,
+  elevation: 900,
+  riseTime: -1,
+  fallTime: 75,
+  hitSound: Sounds.none,
+  hitShake: 0,
+  targetRad: 0.5,
+  trailEffect: Fx.none,
+  despawnEffect: Fx.none,
+  riseSpin: 0,
+  fallSpin: 0
 });
-unitDrop.sprite = "clear";
-unitDrop.riseEngineSize = -1;
-unitDrop.fallEngineSize = -1;
-unitDrop.damage = 20;
-unitDrop.splashDamageRadius = -1;
-unitDrop.speed = 0.5;
-unitDrop.homingPower = -1;
-unitDrop.lifetime = 150;
-unitDrop.elevation = 900;
-unitDrop.riseTime = -1;
-unitDrop.fallTime = 75;
-unitDrop.hitSound = Sounds.none;
-unitDrop.hitShake = 0;
-unitDrop.targetRad = 0.5;
-unitDrop.trailEffect = Fx.none;
-unitDrop.despawnEffect = Fx.none;
-unitDrop.riseSpin = 0;
-unitDrop.fallSpin = 0;
 
-const dropPod = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {});
-dropPod.sprite = "prog-mats-drop-podb";
-dropPod.reloadMultiplier = 1.5;
-dropPod.riseEngineSize = 24;
-dropPod.fallEngineSize = 14;
-dropPod.trailSize = 0.7;
-dropPod.damage = 0;
-dropPod.splashDamage = -1;
-dropPod.splashDamageRadius = 0;
-dropPod.speed = 2.25;
-dropPod.homingPower = 0.05;
-dropPod.homingRange = 800;
-dropPod.lifetime = 1000;
-dropPod.elevation = 900;
-dropPod.riseTime = 240;
-dropPod.fallTime = -1;
-dropPod.hitSound = Sounds.none;
-dropPod.hitShake = 0;
-dropPod.trailParam = 8;
-dropPod.targetRad = 2;
-dropPod.trailChance = 0.2;
-dropPod.trailEffect = trail;
-dropPod.despawnEffect = Fx.none;
-dropPod.hitEffect = Fx.none;
-dropPod.riseSpin = 720;
-dropPod.fallSpin = 180;
+const dropPod = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {
+  sprite: "prog-mats-drop-podb",
+  reloadMultiplier: 1.5,
+  riseEngineSize: 24,
+  fallEngineSize: 14,
+  trailSize: 0.7,
+  damage: 0,
+  splashDamage: -1,
+  splashDamageRadius: 0,
+  speed: 2.25,
+  homingPower: 0.05,
+  homingRange: 800,
+  lifetime: 1000,
+  elevation: 900,
+  riseTime: 240,
+  fallTime: -1,
+  hitSound: Sounds.none,
+  hitShake: 0,
+  trailParam: 8,
+  targetRad: 2,
+  trailChance: 0.2,
+  trailEffect: trail,
+  despawnEffect: Fx.none,
+  hitEffect: Fx.none,
+  riseSpin: 720,
+  fallSpin: 180,
+  fragBullets: 30,
+  fragBullet: unitDrop,
+  fragVelocityMin: 0.1,
+  fragVelocityMax: 1.5,
+  fragLifeMin: 0.5,
+  fragLifeMax: 1
+});
 dropPod.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
-dropPod.fragBullets = 30;
-dropPod.fragBullet = unitDrop;
-dropPod.fragVelocityMin = 0.1;
-dropPod.fragVelocityMax = 1.5;
-dropPod.fragLifeMin = 0.5;
-dropPod.fragLifeMax = 1;
 
 const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
   health: 5950,
