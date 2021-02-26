@@ -41,7 +41,7 @@ const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuil
     let l = this.power.links;
     for(let i = 0; i < l.size; i++){
       let b = Vars.world.tile(l.items[i]).build;
-      if(b != null && b.block.canOverdrive) b.applyBoost(uberInfiniteGay.speedBoost, 2 * Time.delta);
+      if(b != null) b.applyBoost(uberInfiniteGay.speedBoost, 2 * Time.delta);
     }
     this.super$updateTile();
   }
