@@ -1,4 +1,4 @@
-const multiLib = require("multi-lib/library");
+const multiLib = require("libs/blockTypes/younggamMultiLib");
 
 const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafterBuild, "missile-crafter", [
   /*default form for each recipes. You can change values.

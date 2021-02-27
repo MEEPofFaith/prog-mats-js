@@ -1,4 +1,4 @@
-const multiLib = require("multi-lib/library");
+const multiLib = require("libs/blockTypes/younggamMultiLib");
 
 const sentryFactory = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafterBuild, "sentry-builder", [
   /*default form for each recipes. You can change values.

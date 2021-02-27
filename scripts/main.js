@@ -173,9 +173,9 @@ if(!Vars.headless){
         });
       }
       
-      if(Vars.mods.locateMod("multi-lib") == null){
+      /*if(Vars.mods.locateMod("multi-lib") == null){
         yes.show();
-      }
+      }*/
     });
   });
 }
