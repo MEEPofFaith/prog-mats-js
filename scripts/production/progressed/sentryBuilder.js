@@ -72,5 +72,5 @@ sentryFactory.updateEffect = Fx.none;
 false: dump items and liquids of output unconditionally*/
 sentryFactory.dumpToggle = true;
 sentryFactory.category = Category.crafting;
-sentryFactory.buildVisibility = BuildVisibility.sandboxOnly;
-sentryFactory.requirements = ItemStack.with(Items.copper,75);
+sentryFactory.buildVisibility = BuildVisibility.shown;
+sentryFactory.requirements = ItemStack.with(Items.copper, 90, Items.silicon, 150, Items.titanium, 50);

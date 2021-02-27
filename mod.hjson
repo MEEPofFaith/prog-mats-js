@@ -15,10 +15,10 @@ author:
   '''
 description:
   '''
-  Just a hell hole of script chaos. The end.
+  My main Mindustry mod. Everything is scripted and I'n just experimenting with what I can do with turrets.
   
   The name definitely isn't made of the synonyms of "Advance" and "Content".
   '''
-version: 0.38
+version: 0.39
 minGameVersion: 125.1
 repo: MEEPofFaith/progressed-materials

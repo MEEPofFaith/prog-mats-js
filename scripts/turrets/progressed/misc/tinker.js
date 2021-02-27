@@ -23,8 +23,9 @@ const engi = extend(ItemTurret, "tinker", {
   inaccuracy: 12,
   velocityInaccuracy: 0.2,
   category: Category.turret,
-  requirements: ItemStack.empty,
-  buildVisibility: BuildVisibility.sandboxOnly
+  ammoCapacity: 3,
+  requirements: ItemStack.with(Items.copper, 125, Items.lead, 75, Items.silicon, 30, Items.titanium, 50),
+  buildVisibility: BuildVisibility.shown
 });
 
 engi.ammo(citem("basic-sentry-box"), sentryBasic, citem("strike-sentry-box"), sentryStrike);

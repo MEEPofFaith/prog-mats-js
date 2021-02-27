@@ -60,7 +60,15 @@ const actualSwarmer = extend(ItemTurret, "missile-i", {
   maxAmmo: 36,
   ammoPerShot: 9,
   xOffsets: [-31/4, 0, 31/4, -29/4, 0, 29/4, -31/4, 0, 31/4],
-  yOffsets: [31/4, 29/4, 31/4, 0, 0, 0, -31/4, -29/4, -31/4]
+  yOffsets: [31/4, 29/4, 31/4, 0, 0, 0, -31/4, -29/4, -31/4],
+  /**
+   * Easy to read research requirement list
+   *
+   * copper/69
+  **/
+  requirements: ItemStack.with(Items.copper, 160, Items.graphite, 125, Items.silicon, 50, Items.titanium, 70),
+  category: Category.turret,
+  buildVisibility: BuildVisibility.shown
 });
 actualSwarmer.ammo(Items.blastCompound, missile);
 
@@ -173,12 +181,3 @@ actualSwarmer.buildType = ent => {
   ent.setEffs();
   return ent;
 };
-/**
- * Easy to read research requirement list
- *
- * copper/69
-**/
-// actualSwarmer.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
-actualSwarmer.requirements = ItemStack.with(Items.copper, 69);
-actualSwarmer.category = Category.turret;
-actualSwarmer.buildVisibility = BuildVisibility.sandboxOnly;
