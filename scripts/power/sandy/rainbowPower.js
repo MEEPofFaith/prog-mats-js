@@ -1,6 +1,9 @@
 const node = require("libs/blockTypes/strobeNodeType");
 
-const gay = node.strobeNode(PowerNode, PowerNode.PowerNodeBuild, 1.5, 0.005, "rainbow-power-node", {
+const speed = 1.5;
+const lerpSpeed = 0.005;
+
+const gay = node.strobeNode(PowerNode, PowerNode.PowerNodeBuild, speed, lerpSpeed, "rainbow-power-node", {
   health: 10000,
   maxNodes: 65535,
   laserRange: 200,
@@ -10,7 +13,7 @@ const gay = node.strobeNode(PowerNode, PowerNode.PowerNodeBuild, 1.5, 0.005, "ra
   alwaysUnlocked: true
 }, {});
 
-const infiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, 1.5, 0.005, "rainbow-power-source", {
+const infiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, speed, lerpSpeed, "rainbow-power-source", {
   health: 10000,
   powerProduction: 2000000000/60,
   maxNodes: 65535,
@@ -21,7 +24,7 @@ const infiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, 1
   alwaysUnlocked: true
 }, {});
 
-const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, 1.5, 0.005, "rainbow-power-boost", {
+const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, speed, lerpSpeed, "rainbow-power-boost", {
   health: 10000,
   powerProduction: 2000000000/60,
   size: 2,
@@ -35,6 +38,10 @@ const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuil
   setStats(){
     this.stats.add(Stat.speedIncrease, (100 * this.speedBoost), StatUnit.percent);
     this.super$setStats();
+  },
+  setBars(){
+    this.super$setBars();
+    this.bars.add("boost", () => new Bar(() => Core.bundle.get("stat.prog-mats.gay") + " " + (this.speedBoost * 100) + "%", () => this.laserColor1.cpy().lerp(this.laserColor3, Mathf.absin(Time.time * lerpSpeed, 1, 1)).shiftHue(Time.time * speed), () => 100));
   }
 }, {
   updateTile(){
