@@ -42,7 +42,7 @@ missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
 const emp = bul.strikeBullet(true, 35, true, 10, true, true, false, false, {
   sprite: "prog-mats-emp-strikeb",
-  reloadMultiplier: 0.25,
+  reloadMultiplier: 0.75,
   riseEngineSize: 16,
   fallEngineSize: 8,
   trailSize: 0.7,
@@ -74,7 +74,7 @@ emp.fragBullet.statusDuration = 60 * 10;
 
 const quantum = bul.strikeBullet(true, 25, true, 10, true, true, false, false, {
   sprite: "prog-mats-quantum-strikeb",
-  reloadMultiplier: 0.1,
+  reloadMultiplier: 0.5,
   riseEngineSize: 16,
   fallEngineSize: 8,
   trailSize: 0.7,
@@ -117,35 +117,21 @@ const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.Ite
   inaccuracy: 5,
   
   maxAmmo: 5,
-  nitSort: (u, x, y) => -u.maxHealth
+  unitSort: (u, x, y) => -u.maxHealth
 }, {});
 /**
  * Easy to read research requirement list
  *
- * copper/69
+ * copper/700
+ * lead/350
+ * graphite/300
+ * silicon/300
+ * titanium/250
+ * techtanite/120
 **/
 // ohnoMissilesReturns.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
-ohnoMissilesReturns.requirements = ItemStack.with(Items.copper, 69);
+ohnoMissilesReturns.requirements = ItemStack.with(Items.copper, 700, Items.lead, 350, Items.graphite, 300, Items.silicon, 300, Items.titanium, 250, citem("techtanite"), 120);
 ohnoMissilesReturns.category = Category.turret;
-ohnoMissilesReturns.buildVisibility = BuildVisibility.sandboxOnly;
+ohnoMissilesReturns.buildVisibility = BuildVisibility.shown;
 
 ohnoMissilesReturns.ammo(citem("basic-missile"), missile, citem("emp-missile"), emp, citem("quantum-missile"), quantum);
-
-/**
-  * Plans:
-  *
-  * Swarm Missiles (3x3 / 4x4 idk)
-  * Name: 
-  * Info: Quick, 9 firing silos, lower homing and start in random directions. Shorter lifetime. Don't resume seek. Faster target. Only targets ground.
-  * Research: impact0078
-  *
-  * Strike Missiles (4x4) (this)
-  * Name: Strikedown
-  * Info: Moderate speed, fires single high damage missile. Longer lifetime. Instantly drops when over target.
-  * Research: NPC, launchpad
-  *
-  * Nuclear Missiles (6x6)
-  * Name: Arbiter
-  * Info: Slow. Does as the name says. F u c k i n g   n u k e s   e v e r y t h i n g . Slower target.
-  * Research: ILC, interplanetary accelerator
-**/

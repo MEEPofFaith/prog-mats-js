@@ -72,8 +72,8 @@ node(Blocks.ripple, cblock("tinker"), addStacks([cblock("tinker").researchRequir
 
 // Missile
 node(Blocks.ripple, cblock("missile-i"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078))); // Yes, you canonically ripped this out of the wreakage.
-//node(cblock("missile-i"), cblock("missile-ii"), addStacks([cblock("missile-ii").researchRequirements(), cblock("shell-press").researchRequirements(), cblock("missile-crafter").researchRequirements()]), Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.nuclearComplex), new Objectives.Research(citem("missile-shell"))));
-//node(cblock("missile-ii"), cblock("missile-iii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.Research(Blocks.interplanetaryAccelerator), new Objectives.SectorComplete(SectorPresets.planetaryTerminal))); // Big nuke big pad
+node(cblock("missile-i"), cblock("missile-ii"), addStacks([cblock("missile-ii").researchRequirements(), cblock("shell-press").researchRequirements(), cblock("missile-crafter").researchRequirements()]), Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.nuclearComplex), new Objectives.Research(citem("missile-shell"))));
+node(cblock("missile-ii"), cblock("missile-iii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.Research(Blocks.interplanetaryAccelerator), new Objectives.SectorComplete(SectorPresets.planetaryTerminal))); // Big nuke big pad
 
 //Pixel
 node(Blocks.lancer, cblock("pixel-i"), null, null);
@@ -89,8 +89,8 @@ node(cblock("tesla-ii"), cblock("tesla-iii"), null, Seq.with(new Objectives.Rese
 
 node(Blocks.surgeSmelter, cblock("mindron-collider"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.impact0078)));
 node(cblock("tinker"), cblock("sentry-builder"), ItemStack.empty, Seq.with(new Objectives.Research(cblock("tinker"))));
-// node(cblock("missile-ii"), cblock("shell-press"), ItemStack.empty, Seq.with(new Objectives.Research(cblock("missile-ii"))));
-// node(cblock("shell-press"), cblock("missile-crafter"), ItemStack.empty, Seq.with(new Objectives.Research(cblock("missile-ii"))));
+node(cblock("missile-ii"), cblock("shell-press"), ItemStack.empty, Seq.with(new Objectives.Research(cblock("missile-ii"))));
+node(cblock("shell-press"), cblock("missile-crafter"), ItemStack.empty, Seq.with(new Objectives.Research(cblock("missile-ii"))));
 
 /** ================================================================================================================================== */
 
@@ -98,10 +98,17 @@ node(cblock("tinker"), cblock("sentry-builder"), ItemStack.empty, Seq.with(new O
 node(Items.surgeAlloy, citem("techtanite"), null, Seq.with(new Objectives.Produce(citem("techtanite"))));
 node(cblock("sentry-builder"), citem("basic-sentry-box"), null, Seq.with(new Objectives.Produce(citem("basic-sentry-box"))));
 node(cblock("sentry-builder"), citem("strike-sentry-box"), null, Seq.with(new Objectives.Produce(citem("strike-sentry-box"))));
-// node(Items.thorium, citem("missile-shell"), ItemStack.with(), Seq.with(new Objectives.Research(cblock("missile-ii"))));
-// node(citem("missile-shell"), citem("basic-missile"), ItemStack.with(), Seq.with(new Objectives.Research(cblock("missile-ii"))));
-// node(citem("missile-shell"), citem("nuke-shell"), ItemStack.with(), Seq.with(new Objectives.Research(cblock("missile-iii"))));
-// node(citem("nuke-shell"), citem("basic-nuke"), ItemStack.with(), Seq.with(new Objectives.Research(cblock("missile-iii"))));
+
+node(cblock("shell-press"), citem("missile-shell"), null, Seq.with(new Objectives.Produce(citem("missile-shell"))));
+node(citem("missile-shell"), citem("basic-missile"), null, Seq.with(new Objectives.Produce(citem("basic-missile"))));
+node(citem("missile-shell"), citem("emp-missile"), null, Seq.with(new Objectives.Produce(citem("emp-missile"))));
+node(citem("missile-shell"), citem("quantum-missile"), null, Seq.with(new Objectives.Produce(citem("quantum-missile"))));
+
+node(citem("missile-shell"), citem("nuke-shell"), null, Seq.with(new Objectives.Produce(citem("nuke-shell"))));
+node(citem("nuke-shell"), citem("basic-nuke"), null, Seq.with(new Objectives.Produce(citem("basic-nuke"))));
+node(citem("nuke-shell"), citem("emp-nuke"), null, Seq.with(new Objectives.Produce(citem("emp-nuke"))));
+node(citem("nuke-shell"), citem("cluster-nuke"), null, Seq.with(new Objectives.Produce(citem("cluster-nuke"))));
+node(citem("nuke-shell"), citem("sentry-nuke"), null, Seq.with(new Objectives.Produce(citem("sentry-nuke"))));
 
 /** ================================================================================================================================== */
 

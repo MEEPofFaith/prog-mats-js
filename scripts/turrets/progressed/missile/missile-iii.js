@@ -45,7 +45,7 @@ missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
 const emp = bul.strikeBullet(true, 80, true, 20, true, true, false, false, {
   sprite: "prog-mats-emp-nukeb",
-  reloadMultiplier: 0.25,
+  reloadMultiplier: 0.75,
   riseEngineSize: 24,
   fallEngineSize: 14,
   trailSize: 0.7,
@@ -190,7 +190,7 @@ const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true,
 
 const dropPod = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {
   sprite: "prog-mats-drop-podb",
-  reloadMultiplier: 1.5,
+  reloadMultiplier: 1.25,
   riseEngineSize: 24,
   fallEngineSize: 14,
   trailSize: 0.7,
@@ -239,11 +239,17 @@ const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "
 /**
  * Easy to read research requirement list
  *
- * copper/69
+ * copper/4000
+ * graphite/2200
+ * silicon/2000
+ * titanium/1300
+ * thorium/650
+ * surge-alloy/200
+ * techtanite/800
 **/
 // NUKE.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
-NUKE.requirements = ItemStack.with(Items.copper, 69);
+NUKE.requirements = ItemStack.with(Items.copper, 4000, Items.graphite, 2200, Items.silicon, 2000, Items.titanium, 1300, Items.thorium, 650, Items.surgeAlloy, 200, citem("techtanite"), 800);
 NUKE.category = Category.turret;
-NUKE.buildVisibility = BuildVisibility.sandboxOnly;
+NUKE.buildVisibility = BuildVisibility.shown;
 
 NUKE.ammo(citem("basic-nuke"), missile, citem("emp-nuke"), emp, citem("cluster-nuke"), cluster, citem("sentry-nuke"), dropPod);

@@ -8,7 +8,7 @@ const boom = eff.scaledLargeBlast(0.5);
 
 //(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
-const missile = bul.strikeBullet(false, 0, true, 4, false, true, true, false, {
+const missile = bul.strikeBullet(false, 0, true, 8, false, true, true, false, {
   sprite: "prog-mats-storm",
   riseEngineSize: 5,
   fallEngineSize: 5,
@@ -30,7 +30,7 @@ const missile = bul.strikeBullet(false, 0, true, 4, false, true, true, false, {
   collidesAir: false,
   hitShake: 3,
   weaveWidth: 12,
-  weaveSpeed: 1,
+  weaveSpeed: 0.5,
   trailParam: 3,
   trailEffect: trail,
   despawnEffect: boom
@@ -54,7 +54,7 @@ const actualSwarmer = extend(ItemTurret, "missile-i", {
   targetAir: false,
   burstSpacing: 7,
   shots: 9,
-  inaccuracy: 30,
+  inaccuracy: 15,
   shootEffect: Fx.none,
   smokeEffect: Fx.none,
   maxAmmo: 36,
@@ -64,9 +64,12 @@ const actualSwarmer = extend(ItemTurret, "missile-i", {
   /**
    * Easy to read research requirement list
    *
-   * copper/69
+   * copper/180
+   * graphite/140
+   * silicon/65
+   * titanium/70
   **/
-  requirements: ItemStack.with(Items.copper, 160, Items.graphite, 125, Items.silicon, 50, Items.titanium, 70),
+  requirements: ItemStack.with(Items.copper, 180, Items.graphite, 140, Items.silicon, 65, Items.titanium, 70),
   category: Category.turret,
   buildVisibility: BuildVisibility.shown
 });

@@ -9,7 +9,7 @@ trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(0.5);
 
-const mis = strike.strikeBullet(true, 8, true, 4, true, false, true, false, {
+const mis = strike.strikeBullet(true, 12, true, 8, true, false, true, false, {
   sprite: "prog-mats-storm",
   riseEngineSize: 5,
   fallEngineSize: 5,
@@ -47,7 +47,7 @@ const silo = extendContent(Weapon, sentryStrike.name + "-hole", {
   recoil: 0,
   shootY: 0,
   shootCone: 360,
-  inaccuracy: 30,
+  inaccuracy: 15,
   shootSound: Sounds.missile
 });
 

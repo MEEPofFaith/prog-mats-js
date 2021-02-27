@@ -68,18 +68,18 @@ module.exports = {
           }
         }
         
+        if(this.homingPower > 0 && b.time >= this.homingDelay){
+          if(target != null){
+            b.vel.setAngle(Mathf.slerpDelta(b.rotation(), b.angleTo(target), this.homingPower));
+          }
+        }
+
+        if(this.weaveMag > 0){
+          var scl = Mathf.randomSeed(b.id, 0.9, 1.1);
+          b.vel.rotate(Mathf.sin(b.time + Mathf.PI * this.weaveScale/2 * scl, this.weaveScale * scl, this.weaveMag) * Time.delta);
+        }
+        
         if(!b.data[3]){
-          if(this.homingPower > 0 && b.time >= this.homingDelay){
-            if(target != null){
-              b.vel.setAngle(Mathf.slerpDelta(b.rotation(), b.angleTo(target), this.homingPower));
-            }
-          }
-
-          if(this.weaveMag > 0){
-            var scl = Mathf.randomSeed(b.id, 0.9, 1.1);
-            b.vel.rotate(Mathf.sin(b.time + Mathf.PI * this.weaveScale/2 * scl, this.weaveScale * scl, this.weaveMag) * Time.delta);
-          }
-
           if(this.trailChance > 0){
             if(Mathf.chanceDelta(this.trailChance)){
               this.trailEffect.at(b.x, b.y, this.trailParam, this.teamTrail ? b.team.color : this.trailColor);
