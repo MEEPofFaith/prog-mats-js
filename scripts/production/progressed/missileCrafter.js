@@ -94,7 +94,10 @@ const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericC
     craftTime: 150
   }
 ], {
-  /*you can customize block here. ex) load()*/
+  load(){
+    this.super$load();
+    this.colorRegion = Core.atlas.find(this.name + "-color");
+  }
 },
 /*this is Object constructor. This way is much better than literal way{a:123}
 you can replace this with {} if you don't want to modify entity*/
@@ -110,6 +113,17 @@ function Extra(){
   this.setMyProp=function(a){
       this._myProp=a;
   };*/
+
+  this.draw = function(){
+    this.super$draw();
+    let current = this._toggle;
+    if(current >= 0){
+      let recs = this.block.getRecipes();
+      let outputItems = recs[current].output.items;
+      Draw.color(outputItems[0].item.color);
+      Draw.rect(shellPress.colorRegion, this.x, this.y);
+    }
+  }
 });
 /*
 YOU MUST NOT MODIFY VALUE OF THESE
