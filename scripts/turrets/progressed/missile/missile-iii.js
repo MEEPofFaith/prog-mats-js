@@ -14,6 +14,8 @@ trail.layer = Layer.bullet;
 const smallBoom = eff.scaledLargeBlast(1.5);
 const boom = eff.scaledNuclearExplosion(4, 0.75, 80, true);
 
+const rangeMul = 2;
+
 //(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
 const missile = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {
@@ -26,8 +28,8 @@ const missile = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {
   splashDamageRadius: 240,
   speed: 1,
   homingPower: 0.05,
-  homingRange: 800,
-  lifetime: 2250,
+  homingRange: 1100 * rangeMul,
+  lifetime: 2250 * rangeMul,
   elevation: 900,
   riseTime: 240,
   fallTime: 90,
@@ -54,8 +56,8 @@ const emp = bul.strikeBullet(true, 80, true, 20, true, true, false, false, {
   splashDamageRadius: 170,
   speed: 2,
   homingPower: 0.075,
-  homingRange: 2200,
-  lifetime: 1125,
+  homingRange: 1100 * rangeMul,
+  lifetime: 1125 * rangeMul,
   elevation: 900,
   riseTime: 180,
   fallTime: 70,
@@ -112,8 +114,8 @@ const cluster = bul.strikeBullet(true, 60, true, 20, true, true, false, false, {
   splashDamageRadius: 0,
   speed: 1,
   homingPower: 0.05,
-  homingRange: 800,
-  lifetime: 2250,
+  homingRange: 1100 * rangeMul,
+  lifetime: 2250 * rangeMul,
   elevation: 900,
   riseTime: 240,
   fallTime: -1,
@@ -199,8 +201,8 @@ const dropPod = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {
   splashDamageRadius: 0,
   speed: 2.25,
   homingPower: 0.05,
-  homingRange: 800,
-  lifetime: 1000,
+  homingRange: 1100 * rangeMul,
+  lifetime: 1000 * rangeMul,
   elevation: 900,
   riseTime: 240,
   fallTime: -1,
@@ -226,7 +228,7 @@ dropPod.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "missile-iii", {
   health: 5950,
   size: 7,
-  range: 2200,
+  range: 2200 * rangeMul,
   shootSound: Sounds.explosionbig,
   cooldown: 0.001,
   shootShake: 10,
