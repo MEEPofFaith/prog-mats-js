@@ -9,7 +9,7 @@ trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(0.5);
 
-const mis = strike.strikeBullet(true, 12, true, 8, true, false, true, false, {
+const mis = strike.strikeBullet(12, 8, true, false, true, false, {
   sprite: "prog-mats-storm",
   riseEngineSize: 5,
   fallEngineSize: 5,

@@ -6,9 +6,9 @@ trail.layer = Layer.bullet;
 
 const boom = eff.scaledLargeBlast(0.5);
 
-//(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
+//(drop radius, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
-const missile = bul.strikeBullet(false, 0, true, 8, false, true, true, false, {
+const missile = bul.strikeBullet(0, 8, false, true, true, false, {
   sprite: "prog-mats-storm",
   riseEngineSize: 5,
   fallEngineSize: 5,

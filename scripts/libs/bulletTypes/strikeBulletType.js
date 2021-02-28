@@ -11,8 +11,12 @@ const clone = obj => {
 }
 
 module.exports = {
-  strikeBullet(autoDrop, autoDropRad, stop, stopRad, resumeSeek, startOnOwner, givenData, snapRot, obj){
+  strikeBullet(autoDropRad, stopRad, resumeSeek, startOnOwner, givenData, snapRot, obj){
     if(obj == undefined) obj = {};
+
+    let autoDrop = autoDropRad > 0;
+    let stop = stopRad > 0;
+
     obj = Object.assign({
       init(b){
         if(!b) return;

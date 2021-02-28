@@ -18,7 +18,7 @@ const rangeMul = 2;
 
 //(autodrop, drop radius, stop?, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
-const missile = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {
+const missile = bul.strikeBullet(30, 20, true, true, false, false, {
   sprite: "prog-mats-nukeb",
   riseEngineSize: 24,
   fallEngineSize: 14,
@@ -45,7 +45,7 @@ const missile = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {
 });
 missile.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
-const emp = bul.strikeBullet(true, 80, true, 20, true, true, false, false, {
+const emp = bul.strikeBullet(80, 40, true, true, false, false, {
   sprite: "prog-mats-emp-nukeb",
   reloadMultiplier: 0.75,
   riseEngineSize: 24,
@@ -80,7 +80,7 @@ emp.fragBullet.speed = 12;
 emp.fragBullet.lifetime = 48;
 emp.fragBullet.statusDuration = 60 * 12;
 
-const clusterFrag = bul.strikeBullet(false, 15, false, 10, true, true, false, false, {
+const clusterFrag = bul.strikeBullet(0, 0, true, true, false, false, {
   sprite: "prog-mats-cluster-nukeb-frag",
   riseEngineSize: -1,
   fallEngineSize: 8,
@@ -104,7 +104,7 @@ const clusterFrag = bul.strikeBullet(false, 15, false, 10, true, true, false, fa
   fallSpin: 135
 });
 
-const cluster = bul.strikeBullet(true, 60, true, 20, true, true, false, false, {
+const cluster = bul.strikeBullet(60, 20, true, true, false, false, {
   sprite: "prog-mats-cluster-nukeb",
   riseEngineSize: 24,
   fallEngineSize: -1,
@@ -142,7 +142,7 @@ const cUnit = name => Vars.content.getByName(ContentType.unit, "prog-mats-" + na
 const sentryUnits = [cUnit("basic-sentry"), cUnit("basic-sentry"), cUnit("strike-sentry")]; //TODO when I add more sentrys add them to this list.
 const items = [Items.blastCompound, Items.pyratite, Items.pyratite]
 
-const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true, {
+const unitDrop = bul.strikeBullet(0, 0, true, true, false, true, {
   init(b){
     if(!b) return;
     this.super$init(b);
@@ -190,7 +190,7 @@ const unitDrop = bul.strikeBullet(false, 15, false, 10, true, true, false, true,
   fallSpin: 0
 });
 
-const dropPod = bul.strikeBullet(true, 30, true, 20, true, true, false, false, {
+const dropPod = bul.strikeBullet(30, 20, true, true, false, false, {
   sprite: "prog-mats-drop-podb",
   reloadMultiplier: 1.25,
   riseEngineSize: 24,
