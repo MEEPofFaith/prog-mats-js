@@ -1,5 +1,5 @@
 module.exports = {
-  crossLaser(midLen, crossSection, border, crossBorder, crossWidth, crossLength, damage, collidesGround, collidesAir, largeHit){
+  crossLaser(midLen, crossSection, border, crossBorder, crossWidth, crossLength, damage, collidesGround, collidesAir, largeHit, obj){
     //Invisble bullet for doing the cross bar damage.
     const crossDamage = extend(LaserBulletType, {
       draw(b){},
@@ -12,9 +12,9 @@ module.exports = {
       laserEffect: Fx.none,
       largeHit: largeHit
     });
-    
-    const crossSpawn = new Vec2();
-    const holyDestruction = extend(LaserBulletType, {
+
+    if(obj == undefined) obj = {};
+    obj = Object.assign({
       init(b){
         if(!b) return;
         this.super$init(b);
@@ -102,7 +102,10 @@ module.exports = {
       collidesAir: collidesAir,
       laserEffect: Fx.none,
       largeHit: largeHit
-    });
+    }, obj);
+    
+    const crossSpawn = new Vec2();
+    const holyDestruction = extend(LaserBulletType, obj);
     
     return holyDestruction;
   }

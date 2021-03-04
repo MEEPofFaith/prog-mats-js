@@ -34,7 +34,7 @@ const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuil
   buildVisibility: BuildVisibility.sandboxOnly,
   category: Category.power,
   alwaysUnlocked: true,
-  speedBoost: 10,
+  speedBoost: 100,
   setStats(){
     this.stats.add(Stat.speedIncrease, (100 * this.speedBoost), StatUnit.percent);
     this.super$setStats();

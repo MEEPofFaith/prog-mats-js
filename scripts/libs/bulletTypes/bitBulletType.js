@@ -1,5 +1,5 @@
 module.exports = {
-  newBitBullet(color1, color2, fadeSpeed, size, hueShift, strokes, stroke, length, burstTime, burstSize, trailTime, trailDelay){
+  bitBullet(color1, color2, fadeSpeed, size, hueShift, strokes, stroke, length, burstTime, burstSize, trailTime, trailDelay, obj){
     const burst = new Effect(burstTime, e => {
       var set = [];
       set[0] = Mathf.curve(e.time, 0, e.lifetime * 2/3);
@@ -43,8 +43,9 @@ module.exports = {
       Fill.rect(e.x, e.y, size * e.fout(), size * e.fout());
     });
     trail.layer = Layer.bullet;
-    
-    const bit = extend(BulletType, {
+
+    if(obj == undefined) obj = {};
+    obj = Object.assign({
       update(b){
         if(!b) return;
         this.super$update(b);
@@ -81,8 +82,10 @@ module.exports = {
       smokeEffect: Fx.none,
       absorbable: false,
       hittable: false,
-      hitSound: loadSound("bitHit"),
-    });
+      hitSound: loadSound("bitHit")
+    }, obj);
+    
+    const bit = extend(BulletType, obj);
     
     return bit;
   }

@@ -1,11 +1,12 @@
 const bul = require("libs/bulletTypes/crossLaserBulletType");
-const sword = bul.crossLaser(0.3, 0.7, 3.5, 2, 18, 300, 5000, true, true, true);
-sword.length = 800;
-sword.width = 26;
-sword.growTime = 10;
-sword.fadeTime = 25;
-sword.lifetime = 60;
-sword.colors = [Color.valueOf("E8D174").mul(1, 1, 1, 0.4), Color.valueOf("F3E979"), Color.white];
+const sword = bul.crossLaser(0.3, 0.7, 3.5, 2, 18, 300, 5000, true, true, true, {
+  length: 800,
+  width: 26,
+  growTime: 10,
+  fadeTime: 25,
+  lifetime: 60,
+  colors: [Color.valueOf("E8D174").mul(1, 1, 1, 0.4), Color.valueOf("F3E979"), Color.white]
+});
 
 const arthur = extend(PowerTurret, "excalibur", {
   load(){

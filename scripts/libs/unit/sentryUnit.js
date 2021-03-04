@@ -1,4 +1,4 @@
-const ais = require("libs/ais");
+const ais = require("libs/unit/ais");
 const register = require("libs/unit/register");
 
 module.exports = {
@@ -54,7 +54,21 @@ module.exports = {
           }
         });
         this.stats.add(Stat.abilities, dur);
-      }
+      },
+      
+      accel: 0,
+      speed: 0,
+      drag: 0.025,
+      flying: true,
+      lowAltitude: true,
+      engineSize: 2,
+      engines: 4,
+      engineOffset: 6,
+      engineRotOffset: 45,
+      duration: 60 * 10,
+      isCounted: false,
+      riseSpeed: 0.016,
+      itemCapacity: 10
     });
 
     sentryU.constructor = () => extend(UnitEntity, {
@@ -72,20 +86,6 @@ module.exports = {
       classId: () => sentryU.classId
     });
     sentryU.defaultController = ais.sentryAI;
-
-    sentryU.accel = 0;
-    sentryU.speed = 0;
-    sentryU.drag = 0.025;
-    sentryU.flying = true;
-    sentryU.lowAltitude = true;
-    sentryU.engineSize = 2;
-    sentryU.engines = 4;
-    sentryU.engineOffset = 6;
-    sentryU.engineRotOffset = 45;
-    sentryU.duration = 60 * 10;
-    sentryU.isCounted = false;
-    sentryU.riseSpeed = 0.016;
-    sentryU.itemCapacity = 10;
     
     register(sentryU);
     

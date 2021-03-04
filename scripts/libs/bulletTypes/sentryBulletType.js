@@ -1,6 +1,7 @@
 module.exports = {
-  sentryBullet(sentryUnit, addVel){ //Do not put anything that isn't a BasicBulletType or its children as its type.
-    const sentryB = extend(ArtilleryBulletType, {
+  sentryBullet(sentryUnit, addVel, obj){
+    if(obj == undefined) obj = {};
+    obj = Object.assign({
       load(){
         this.region = sentryUnit.icon(Cicon.full);
         this.boxRegion = Core.atlas.find(this.sprite);
@@ -63,7 +64,9 @@ module.exports = {
       trailTimeMul: 1,
       trailSize: sentryUnit.hitSize * 0.75,
       ammoMultiplier: 1
-    });
+    }, obj);
+
+    const sentryB = extend(ArtilleryBulletType, obj);
     return sentryB;
   }
 }

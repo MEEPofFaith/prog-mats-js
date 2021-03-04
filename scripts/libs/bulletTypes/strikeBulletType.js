@@ -1,22 +1,9 @@
-//Haha code steal go brrrr
-const clone = obj => {
-    if(obj === null || typeof(obj) !== 'object') return obj;
-    var copy = obj.constructor();
-    for(var attr in obj) {
-        if(obj.hasOwnProperty(attr)) {
-            copy[attr] = obj[attr];
-        }
-    };
-    return copy;
-}
-
 module.exports = {
   strikeBullet(autoDropRad, stopRad, resumeSeek, startOnOwner, givenData, snapRot, obj){
-    if(obj == undefined) obj = {};
-
     let autoDrop = autoDropRad > 0;
     let stop = stopRad > 0;
 
+    if(obj == undefined) obj = {};
     obj = Object.assign({
       init(b){
         if(!b) return;

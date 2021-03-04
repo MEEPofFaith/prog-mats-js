@@ -1,7 +1,7 @@
 const fLib = this.global.pm.funcLib;
 
 module.exports = {
-  newBlackHole(size, horizonColor, horizonRad, absorbEffectTime){
+  newBlackHole(size, horizonColor, horizonRad, absorbEffectTime, obj){
     const clearBullet = (b, succEffect) => {
       var bWidth = b.type.width * ((1 - b.type.shrinkX) + b.type.shrinkX * b.fout());
       var bHeight = b.type.height * ((1 - b.type.shrinkY) + b.type.shrinkY * b.fout());
@@ -261,7 +261,8 @@ module.exports = {
       absorbable: false
     });
 
-    const blackHole = extend(BasicBulletType, {
+    if(obj == undefined) obj = {};
+    obj = Object.assign({
       load(){
         this.backRegion = Core.atlas.find("prog-mats-backhole-back"); //not funny
         this.front = [];
@@ -434,7 +435,9 @@ module.exports = {
       lightColor: horizonColor,
       lightRadius: size / 2 + horizonRad,
       lightOpacity: 0.7
-    });
+    }, obj);
+
+    const blackHole = extend(BasicBulletType, obj);
     
     return blackHole;
   }

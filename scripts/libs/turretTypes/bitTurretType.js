@@ -1,7 +1,21 @@
+//Haha code steal go brrrr
+const clone = obj => {
+  if(obj === null || typeof(obj) !== 'object') return obj;
+  var copy = obj.constructor();
+  for(var attr in obj) {
+      if(obj.hasOwnProperty(attr)) {
+          copy[attr] = obj[attr];
+      }
+  };
+  return copy;
+}
+
 const tr = new Vec2();
 module.exports = {
-  new8BitTurret(name, sides, type, build, perRot){
-    const bit = extend(type, name, {
+  new8BitTurret(name, sides, type, build, perRot, obj, objb){
+    if(obj == undefined) obj = {};
+    if(objb == undefined) objb = {};
+    obj = Object.assign({
       load(){
         this.super$load();
         this.bits = [];
@@ -25,64 +39,68 @@ module.exports = {
           Core.atlas.find(this.name + "-side-0")
         ];
       }
-    });
-    
-    bit.buildType = ent => {
-      ent = extend(build, bit, {
-        draw(){
-          Draw.rect(bit.baseRegion, this.x, this.y);
-          Draw.color();
+    }, obj);
 
-          Draw.z(Layer.turret);
+    objb = Object.assign({
+      draw(){
+        Draw.rect(bit.baseRegion, this.x, this.y);
+        Draw.color();
+
+        Draw.z(Layer.turret);
+        
+        if(perRot){
+          var drawRot = this.rotation - 90;
+          drawRot = drawRot >= 360 ? drawRot - 360 : drawRot < 0 ? drawRot + 360 : drawRot;
+          var rot = Mathf.round(drawRot + (360 / sides / 2), 360 / sides);
+          rot = rot >= 360 ? rot - 360 : rot < 0 ? rot + 360 : rot;
+          var curRot = Mathf.round(rot / (360 / sides));
+          tr.trns(rot + 90, -this.recoil);
+          tr.add(this.x, this.y);
           
-          if(perRot){
-            var drawRot = this.rotation - 90;
-            drawRot = drawRot >= 360 ? drawRot - 360 : drawRot < 0 ? drawRot + 360 : drawRot;
-            var rot = Mathf.round(drawRot + (360 / sides / 2), 360 / sides);
-            rot = rot >= 360 ? rot - 360 : rot < 0 ? rot + 360 : rot;
-            var curRot = Mathf.round(rot / (360 / sides));
-            tr.trns(rot + 90, -this.recoil);
-            tr.add(this.x, this.y);
-            
-            //Debug
-            /*for(var i = 0; i < sides; i++){
-              Lines.lineAngle(this.x, this.y, i * (360 / sides) + 90 + (360 / sides / 2), 80);
-            }*/
-            //End Debug
-            
-            Drawf.shadow(bit.outlines[curRot], tr.x - (bit.size / 2), tr.y - (bit.size / 2), 0);
-            Draw.rect(bit.outlines[curRot], tr.x, tr.y, 0);
-            Draw.rect(bit.bits[curRot], tr.x, tr.y, 0);
+          //Debug
+          /*for(var i = 0; i < sides; i++){
+            Lines.lineAngle(this.x, this.y, i * (360 / sides) + 90 + (360 / sides / 2), 80);
+          }*/
+          //End Debug
+          
+          Drawf.shadow(bit.outlines[curRot], tr.x - (bit.size / 2), tr.y - (bit.size / 2), 0);
+          Draw.rect(bit.outlines[curRot], tr.x, tr.y, 0);
+          Draw.rect(bit.bits[curRot], tr.x, tr.y, 0);
 
-            if(bit.heats[curRot] != Core.atlas.find("error") && this.heat > 0.0001){
-              Draw.color(bit.heatColor, this.heat);
-              Draw.blend(Blending.additive);
-              Draw.rect(bit.heats[curRot], tr.x, tr.y, 0);
-              Draw.blend();
-              Draw.color();
-            }
-          }else{
-            var drawRot = this.rotation - 90;
-            drawRot = drawRot >= 360 ? drawRot - 360 : drawRot < 0 ? drawRot + 360 : drawRot;
-            var rot = Mathf.round(drawRot + (360 / sides / 2), 360 / sides);
-            rot = rot >= 360 ? rot - 360 : rot < 0 ? rot + 360 : rot;
-            tr.trns(rot + 90, -this.recoil);
-            tr.add(this.x, this.y);
-            
-            Drawf.shadow(bit.outlines[0], tr.x - (bit.size / 2), tr.y - (bit.size / 2), rot);
-            Draw.rect(bit.outlines[0], tr.x, tr.y, rot);
-            Draw.rect(bit.bits[0], tr.x, tr.y, rot);
+          if(bit.heats[curRot] != Core.atlas.find("error") && this.heat > 0.0001){
+            Draw.color(bit.heatColor, this.heat);
+            Draw.blend(Blending.additive);
+            Draw.rect(bit.heats[curRot], tr.x, tr.y, 0);
+            Draw.blend();
+            Draw.color();
+          }
+        }else{
+          var drawRot = this.rotation - 90;
+          drawRot = drawRot >= 360 ? drawRot - 360 : drawRot < 0 ? drawRot + 360 : drawRot;
+          var rot = Mathf.round(drawRot + (360 / sides / 2), 360 / sides);
+          rot = rot >= 360 ? rot - 360 : rot < 0 ? rot + 360 : rot;
+          tr.trns(rot + 90, -this.recoil);
+          tr.add(this.x, this.y);
+          
+          Drawf.shadow(bit.outlines[0], tr.x - (bit.size / 2), tr.y - (bit.size / 2), rot);
+          Draw.rect(bit.outlines[0], tr.x, tr.y, rot);
+          Draw.rect(bit.bits[0], tr.x, tr.y, rot);
 
-            if(bit.heats[0] != Core.atlas.find("error") && this.heat > 0.0001){
-              Draw.color(bit.heatColor, this.heat);
-              Draw.blend(Blending.additive);
-              Draw.rect(bit.heats[0], tr.x, tr.y, rot);
-              Draw.blend();
-              Draw.color();
-            }
+          if(bit.heats[0] != Core.atlas.find("error") && this.heat > 0.0001){
+            Draw.color(bit.heatColor, this.heat);
+            Draw.blend(Blending.additive);
+            Draw.rect(bit.heats[0], tr.x, tr.y, rot);
+            Draw.blend();
+            Draw.color();
           }
         }
-      });
+      }
+    }, objb);
+
+    const bit = extend(type, name, obj);
+    
+    bit.buildType = ent => {
+      ent = extend(build, bit, clone(objb));
       return ent;
     }
     bit.shootSound = loadSound("bitShoot");
