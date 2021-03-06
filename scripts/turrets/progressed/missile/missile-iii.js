@@ -139,8 +139,9 @@ const cluster = bul.strikeBullet(60, 20, true, true, false, false, {
 cluster.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
 const cUnit = name => Vars.content.getByName(ContentType.unit, "prog-mats-" + name);
-const sentryUnits = [cUnit("basic-sentry"), cUnit("basic-sentry"), cUnit("strike-sentry")]; //TODO when I add more sentrys add them to this list.
-const items = [Items.blastCompound, Items.pyratite, Items.pyratite]
+//Repeat values to increase weight on the value
+const sentryUnits = [cUnit("basic-sentry"), cUnit("basic-sentry"), cUnit("strike-sentry"), cUnit("dash-sentry")]; //TODO when I add more sentrys add them to this list.
+const items = [Items.blastCompound, Items.pyratite, Items.pyratite];
 
 const unitDrop = bul.strikeBullet(0, 0, true, true, false, true, {
   init(b){

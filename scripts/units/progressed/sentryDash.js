@@ -15,6 +15,7 @@ const dash = extend(LaserBulletType, {
   length: len,
   recoil: -5,
   colors: [Color.valueOf("f3e97966"), col, Color.white],
+  itemCapacity: 15,
   range(){
     return this.length * 6;
   }
