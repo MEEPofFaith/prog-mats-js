@@ -86,13 +86,13 @@ module.exports = {
 
         Tmp.v1.trns(b.rotation(), l);
         Tmp.v1.add(b.x, b.y);
-        Drawf.light(b.team, b.x, b.y, Tmp.v1.x, Tmp.v1.y, 15 * fin, this.colors[1], 0.6);
+        Drawf.light(b.team, b.x, b.y, Tmp.v1.x, Tmp.v1.y, this.width * 2 * fin * fout, this.colors[1], 0.6);
         
         Tmp.v1.trns(b.rotation(), cross, -cl[0]);
         Tmp.v1.add(b.x, b.y);
         Tmp.v2.trns(b.rotation(), cross, cl[1]);
         Tmp.v2.add(b.x, b.y);
-        Drawf.light(b.team, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, 15 * fin, this.colors[1], 0.6);
+        Drawf.light(b.team, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, crossWidth * 2 * fin * fout, this.colors[1], 0.6);
       },
       growTime: 5,
       fadeTime: 5,

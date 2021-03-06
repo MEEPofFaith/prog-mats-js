@@ -3,8 +3,8 @@ const sword = bul.crossLaser(0.3, 0.7, 3.5, 2, 18, 300, 5000, true, true, true, 
   length: 800,
   width: 26,
   growTime: 10,
-  fadeTime: 25,
-  lifetime: 60,
+  fadeTime: 40,
+  lifetime: 70,
   colors: [Color.valueOf("E8D174").mul(1, 1, 1, 0.4), Color.valueOf("F3E979"), Color.white]
 });
 
@@ -185,27 +185,12 @@ arthur.buildType = ent => {
     },
     updateCooling(){
       if(!this.activeAnim){
-        const liquid = this.liquids.current();
-        var maxUsed = arthur.consumes.get(ConsumeType.liquid).amount;
-
-        var used = Math.min(Math.min(this.liquids.get(liquid), maxUsed * Time.delta), Math.max(0, ((arthur.reloadTime - this.reload) / arthur.coolantMultiplier) / liquid.heatCapacity)) * this.baseReloadSpeed();
-        this.reload += used * liquid.heatCapacity * arthur.coolantMultiplier;
-        this.liquids.remove(liquid, used);
-
-        if(Mathf.chance(0.06 * used)){
-          arthur.coolEffect.at(this.x + Mathf.range(arthur.size * Vars.tilesize / 2), this.y + Mathf.range(arthur.size * Vars.tilesize / 2));
-        }
+        this.super$updateCooling();
       }
     },
     updateShooting(){
-      if(this.reload > arthur.reloadTime && !this.activeAnim){
-        var type = this.peekAmmo();
-        
-        this.shoot(type);
-        
-        this.reload = 0;
-      }else if(!this.activeAnim){
-        this.reload += Time.delta * this.peekAmmo().reloadMultiplier * this.baseReloadSpeed();
+      if(!this.activeAnim){
+        this.super$updateShooting();
       }
     },
     shoot(type){
