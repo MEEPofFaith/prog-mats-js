@@ -3,8 +3,8 @@ module.exports = {
     if(obj == undefined) obj = {};
     obj = Object.assign({
       load(){
-        this.region = sentryUnit.icon(Cicon.full);
-        this.boxRegion = Core.atlas.find(this.sprite);
+        this.frontRegion = sentryUnit.icon(Cicon.full);
+        this.backRegion = Core.atlas.find(this.sprite);
       },
       despawned(b){
         if(!b) return;
@@ -38,16 +38,16 @@ module.exports = {
         let scale = this.scaleAmount * shadowScl + 1;
         
         Draw.z(Layer.flyingUnit + 1);
-        Drawf.shadow(this.boxRegion, b.x - shadowOff, b.y - shadowOff, b.rotation() + offset);
+        Drawf.shadow(this.backRegion, b.x - shadowOff, b.y - shadowOff, b.rotation() + offset);
         
         Draw.z(Layer.flyingUnit + 2);
-        Draw.rect(this.boxRegion, b.x, b.y, this.boxRegion.width / 4 * scale, this.boxRegion.height / 4 * scale, b.rotation() + offset);
+        Draw.rect(this.backRegion, b.x, b.y, this.backRegion.width / 4 * scale, this.backRegion.height / 4 * scale, b.rotation() + offset);
         
         Draw.z(Layer.flyingUnit + 1);
-        Drawf.shadow(this.region, b.x - shadowOff, b.y - shadowOff, b.rotation() + offset);
+        Drawf.shadow(this.frontRegion, b.x - shadowOff, b.y - shadowOff, b.rotation() + offset);
         
         Draw.z(Layer.flyingUnit + 2);
-        Draw.rect(this.region, b.x, b.y, this.region.width / 4 * scale, this.region.height / 4 * scale, b.rotation() + offset);
+        Draw.rect(this.frontRegion, b.x, b.y, this.frontRegion.width / 4 * scale, this.frontRegion.height / 4 * scale, b.rotation() + offset);
       },
       drawSize: 800,
       sprite: "clear",
