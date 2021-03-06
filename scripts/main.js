@@ -67,7 +67,7 @@ const script = [
     childs: [
       {
         name: "progressed",
-        childs: ["sentryBasic", "sentryStrike"]
+        childs: ["sentryBasic", "sentryStrike", "sentryDash"]
       }
     ]
   },

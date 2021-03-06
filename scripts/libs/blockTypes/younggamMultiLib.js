@@ -318,6 +318,16 @@ function MultiCrafterBuild() {
             return;
         };
         var current = this._toggle;
+
+        var oItems = this.block.getRecipes()[value].output.items;
+        for(let i = 0; i < oItems.length; i++){
+            if(!oItems[i].item.unlocked) return;
+        }
+        var oLiquids = this.block.getRecipes()[value].output.liquids;
+        for(let i = 0; i < oLiquids.length; i++){
+            if(!oLiquids[i].liquid.unlocked) return;
+        }
+
         if(current >= 0) this.progressArr[current] = this.progress;
         if(value == -1) {
             this._condValid = false;
@@ -327,8 +337,6 @@ function MultiCrafterBuild() {
             this.toOutputItemSet.clear();
             this.toOutputLiquidset.clear();
             if(value > -1) {
-                var oItems = this.block.getRecipes()[value].output.items;
-                var oLiquids = this.block.getRecipes()[value].output.liquids;
                 for(var i = 0, len = oItems.length; i < len; i++) {
                     var item = oItems[i].item;
                     if(this.items.has(item)) this.toOutputItemSet.add(item);

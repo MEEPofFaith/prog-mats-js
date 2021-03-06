@@ -2,7 +2,9 @@ const sentryUnitType = require("libs/unit/sentryUnit");
 const strike = require("libs/bulletTypes/strikeBulletType");
 const eff = require("libs/effect");
 
-const sentryStrike = sentryUnitType.sentryUnit("strike-sentry");
+const sentryStrike = sentryUnitType.sentryUnit("strike-sentry", {
+  health: 150
+});
 
 const trail = eff.trailEffect(50, 100, -1);
 trail.layer = Layer.bullet;

@@ -18,6 +18,13 @@ const node = (parent, contentType, requirements, objectives) => {
     print(parent + " or " + contentType + " is null.");
   }
 };
+const unitCost = (stacks) => {
+  let out = [];
+  for(let i = 0; i < stacks.length; i++){
+    out[i] = new ItemStack(stacks[i].item, Vars.ui.roundAmount(Mathf.round(Math.pow(stacks[i].amount, 1.1) * 50)));
+  }
+  return out;
+};
 const addStacks = (stacks) => {
   let combine = new Seq();
   for(let i = 0; i < stacks.length; i++){
@@ -68,7 +75,10 @@ Vars.content.sectors().each(e => {
 });
 node(Blocks.foreshadow, cblock("chaos-array"), null, sectors);
 //node(Blocks.foreshadow, cblock("excalibur"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.nuclearComplex)));
-node(Blocks.ripple, cblock("tinker"), addStacks([cblock("tinker").researchRequirements(), cblock("sentry-builder").researchRequirements()]), Seq.with(new Objectives.SectorComplete(SectorPresets.windsweptIslands)));
+let basicCost = unitCost(ItemStack.with(Items.copper, 30, Items.lead, 35, Items.titanium, 15, Items.silicon, 25));
+let strikeCost = unitCost(ItemStack.with(Items.copper, 40, Items.lead, 40, Items.titanium, 20, Items.silicon, 30, Items.blastCompound, 10));
+let dashCost = unitCost(ItemStack.with(Items.copper, 30, Items.lead, 30, Items.titanium, 30, Items.graphite, 15, Items.silicon, 35));
+//node(Blocks.ripple, cblock("tinker"), addStacks([cblock("tinker").researchRequirements(), cblock("sentry-builder").researchRequirements(), basicCost, strikeCost, dashCost]), Seq.with(new Objectives.SectorComplete(SectorPresets.windsweptIslands)));
 
 // Missile
 node(Blocks.ripple, cblock("missile-i"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078))); // Yes, you canonically ripped this out of the wreakage.
@@ -96,8 +106,9 @@ node(cblock("shell-press"), cblock("missile-crafter"), ItemStack.empty, Seq.with
 
 /** Items */
 node(Items.surgeAlloy, citem("techtanite"), null, Seq.with(new Objectives.Produce(citem("techtanite"))));
-node(cblock("sentry-builder"), citem("basic-sentry-box"), null, Seq.with(new Objectives.Produce(citem("basic-sentry-box"))));
-node(cblock("sentry-builder"), citem("strike-sentry-box"), null, Seq.with(new Objectives.Produce(citem("strike-sentry-box"))));
+node(cblock("sentry-builder"), citem("basic-sentry-box"), null, Seq.with(new Objectives.Research(cblock("tinker"))));
+node(citem("basic-sentry-box"), citem("strike-sentry-box"), null, Seq.with(new Objectives.Research(cblock("tinker"))));
+node(citem("basic-sentry-box"), citem("dash-sentry-box"), null, Seq.with(new Objectives.Research(cblock("tinker"))));
 
 node(cblock("shell-press"), citem("missile-shell"), null, Seq.with(new Objectives.Produce(citem("missile-shell"))));
 node(citem("missile-shell"), citem("basic-missile"), null, Seq.with(new Objectives.Produce(citem("basic-missile"))));
@@ -114,5 +125,6 @@ node(citem("nuke-shell"), citem("sentry-nuke"), null, Seq.with(new Objectives.Pr
 
 /** Unit */
 
-node(citem("basic-sentry-box"), cunit("basic-sentry"), ItemStack.empty, Seq.with(new Objectives.Produce(citem("basic-sentry-box"))));
-node(citem("strike-sentry-box"), cunit("strike-sentry"), ItemStack.empty, Seq.with(new Objectives.Produce(citem("strike-sentry-box"))));
+node(citem("basic-sentry-box"), cunit("basic-sentry"), null, Seq.with(new Objectives.Research(cblock("tinker"))));
+node(citem("strike-sentry-box"), cunit("strike-sentry"), null, Seq.with(new Objectives.Research(cblock("tinker"))));
+node(citem("dash-sentry-box"), cunit("dash-sentry"), null, Seq.with(new Objectives.Research(cblock("tinker"))));

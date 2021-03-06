@@ -1,6 +1,6 @@
 const sBul = require("libs/bulletTypes/sentryBulletType");
 const eff = require("libs/effect");
-const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + name);
+const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + name + "-sentry-box");
 const cunit = name => Vars.content.getByName(ContentType.unit, "prog-mats-" + name);
 
 const trail = eff.trailEffect(150, 240, -1);
@@ -18,6 +18,12 @@ const sentryStrike = sBul.sentryBullet(cunit("strike-sentry"), true, {
   trailEffect: trail
 });
 
+const sentryDash = sBul.sentryBullet(cunit("dash-sentry"), true, {
+  lifetime: 120,
+  speed: 2.25,
+  trailEffect: trail
+});
+
 const engi = extend(ItemTurret, "tinker", {
   size: 3,
   reloadTime: 60 * 10,
@@ -30,4 +36,4 @@ const engi = extend(ItemTurret, "tinker", {
   buildVisibility: BuildVisibility.shown
 });
 
-engi.ammo(citem("basic-sentry-box"), sentryBasic, citem("strike-sentry-box"), sentryStrike);
+engi.ammo(citem("basic"), sentryBasic, citem("strike"), sentryStrike, citem("dash"), sentryDash);

@@ -1,8 +1,8 @@
 const multiLib = require("libs/blockTypes/younggamMultiLib");
 
 const cunit = name => Vars.content.getByName(ContentType.unit, "prog-mats-" + name);
-const sprite = sentryUnit => cunit(sentryUnit).icon(Cicon.full);
-const spriteNames = ["basic-sentry", "strike-sentry"]
+const sprite = sentryUnit => cunit(sentryUnit + "-sentry").icon(Cicon.full);
+const spriteNames = ["basic", "strike", "dash"]
 
 const sFac = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafterBuild, "sentry-builder", [
   /*default form for each recipes. You can change values.
@@ -21,7 +21,7 @@ const sFac = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafter
   },*/
   {//1 (Basic Sentry)
     input: {
-      items: ["copper/30", "lead/35", "titanium/20", "silicon/25"],
+      items: ["copper/30", "lead/35", "titanium/15", "silicon/25"],
       power: 4
     },
     output:{
@@ -31,13 +31,23 @@ const sFac = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafter
   },
   {//2 (Strike Sentry)
     input: {
-      items: ["copper/40", "lead/40", "titanium/25", "silicon/30", "blast-compound/10"],
+      items: ["copper/40", "lead/40", "titanium/20", "silicon/30", "blast-compound/10"],
       power: 4.5
     },
     output:{
       items: ["prog-mats-strike-sentry-box/3"]
     },
     craftTime: 120
+  },
+  {//2 (Dash Sentry)
+    input: {
+      items: ["copper/30", "lead/30", "titanium/30", "graphite/15", "silicon/35"],
+      power: 4.5
+    },
+    output:{
+      items: ["prog-mats-dash-sentry-box/3"]
+    },
+    craftTime: 105
   }
 ], {
   load(){

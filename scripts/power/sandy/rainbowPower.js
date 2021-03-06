@@ -7,7 +7,7 @@ const gay = node.strobeNode(PowerNode, PowerNode.PowerNodeBuild, speed, lerpSpee
   health: 10000,
   maxNodes: 65535,
   laserRange: 200,
-  requirements: ItemStack.with(),
+  requirements: ItemStack.empty,
   buildVisibility: BuildVisibility.sandboxOnly,
   category: Category.power,
   alwaysUnlocked: true
@@ -18,7 +18,7 @@ const infiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, s
   powerProduction: 2000000000/60,
   maxNodes: 65535,
   laserRange: 200,
-  requirements: ItemStack.with(),
+  requirements: ItemStack.empty,
   buildVisibility: BuildVisibility.sandboxOnly,
   category: Category.power,
   alwaysUnlocked: true
@@ -30,7 +30,7 @@ const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuil
   size: 2,
   maxNodes: 65535,
   laserRange: 200,
-  requirements: ItemStack.with(),
+  requirements: ItemStack.empty,
   buildVisibility: BuildVisibility.sandboxOnly,
   category: Category.power,
   alwaysUnlocked: true,

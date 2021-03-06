@@ -2,8 +2,9 @@ const ais = require("libs/unit/ais");
 const register = require("libs/unit/register");
 
 module.exports = {
-  sentryUnit(name){
-    let sentryU = extend(UnitType, name, {
+  sentryUnit(name, obj){
+    if(obj == undefined) obj = {};
+    obj = Object.assign({
       drawEngine(unit){
         if(!unit.isFlying()) return;
         
@@ -68,8 +69,11 @@ module.exports = {
       duration: 60 * 10,
       isCounted: false,
       riseSpeed: 0.016,
-      itemCapacity: 10
-    });
+      itemCapacity: 10,
+      health: 200
+    }, obj);
+
+    let sentryU = extend(UnitType, name, obj);
 
     sentryU.constructor = () => extend(UnitEntity, {
       damaged(){
