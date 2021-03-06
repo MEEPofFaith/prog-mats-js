@@ -21,7 +21,7 @@ module.exports = {
         
         b.data = [0, 0];
         
-        const cross = Damage.findLaserLength(b, this.length) * crossSection;
+        const cross = b.fdata * crossSection;
         Time.run(this.growTime, () => {
           crossSpawn.trns(b.rotation(), cross);
           var crossBullets = [];
@@ -43,7 +43,7 @@ module.exports = {
         var mid = l * midLen;
         var cross = l * crossSection;
         var cblock = [b.data[0] / crossLength, b.data[1] / crossLength]
-        var cl = [b.data[0] * cfin * cblock[0], b.data[1] * cfin * cblock[1]];
+        var cl = [b.data[0] * cfin, b.data[1] * cfin];
         var cw = [crossWidth/2 * cfin * cblock[0], crossWidth/2 * cfin * cblock[1]];
         
         for(var i = 0; i < this.colors.length; i++){
@@ -67,7 +67,7 @@ module.exports = {
           Fill.tri(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y);
           Fill.tri(Tmp.v4.x, Tmp.v4.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y);
           
-          // Cross
+          // Cross Beam
           for(var j = 0; j < 2; j++){
             //Point
             Tmp.v1.trns(b.rotation(), cross, cl[j] * Mathf.signs[j]);
@@ -84,15 +84,22 @@ module.exports = {
           Draw.reset();
         }
 
+        // Main light
         Tmp.v1.trns(b.rotation(), l);
         Tmp.v1.add(b.x, b.y);
-        Drawf.light(b.team, b.x, b.y, Tmp.v1.x, Tmp.v1.y, this.width * 2 * fin * fout, this.colors[1], 0.6);
+        Drawf.light(b.team, b.x, b.y, Tmp.v1.x, Tmp.v1.y, w * 2 * fin * fout, this.colors[1], 0.6);
         
-        Tmp.v1.trns(b.rotation(), cross, -cl[0]);
-        Tmp.v1.add(b.x, b.y);
-        Tmp.v2.trns(b.rotation(), cross, cl[1]);
-        Tmp.v2.add(b.x, b.y);
-        Drawf.light(b.team, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, crossWidth * 2 * fin * fout, this.colors[1], 0.6);
+        // Cross Beam Light
+        for(var i = 0; i < 2; i++){
+          //Point
+          Tmp.v1.trns(b.rotation(), cross, cl[i] * Mathf.signs[i]);
+          Tmp.v1.add(b.x, b.y);
+          //Base
+          Tmp.v2.trns(b.rotation(), cross);
+          Tmp.v2.add(b.x, b.y);
+
+          Drawf.light(b.team, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, cw[i] * 2 * fin * fout, this.colors[1], 0.6);
+        }
       },
       growTime: 5,
       fadeTime: 5,
