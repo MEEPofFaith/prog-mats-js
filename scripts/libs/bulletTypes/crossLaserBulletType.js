@@ -42,13 +42,13 @@ module.exports = {
         var w = this.width/2 * fin * block;
         var mid = l * midLen;
         var cross = l * crossSection;
-        var cblock = [b.data[0] / crossLength, b.data[1] / crossLength]
+        var cblock = (b.data[0] / crossLength + b.data[1] / crossLength) / 2;
         var cl = [b.data[0] * cfin, b.data[1] * cfin];
-        var cw = [crossWidth/2 * cfin * cblock[0], crossWidth/2 * cfin * cblock[1]];
+        var cw = [crossWidth/2 * cfin * cblock, crossWidth/2 * cfin * cblock];
         
         for(var i = 0; i < this.colors.length; i++){
           var bord = border * i * fin * block;
-          var cbord = [crossBorder * i * cfin * cblock[0], crossBorder * i * cfin * cblock[1]];
+          var cbord = [crossBorder * i * cfin * cblock, crossBorder * i * cfin * cblock];
           Draw.color(this.colors[i], fout);
           
           // Main
