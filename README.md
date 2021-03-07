@@ -20,3 +20,6 @@ https://www.reddit.com/r/Mindustry/comments/iyelg3/the_true_power_of_the_duo
 Also known as "Popeshadow."
 ### Missiles:
 It's just like `MEEPofFaith/ohno-missiles`, just that it's not quite like `MEEPofFaith/ohno-missiles`.
+
+## Addons
+[Progressed Factorio](https://github.com/Voz-Duh/progressed-factorio) dependencies: [Factoriodustry](https://github.com/Xeloboyo/Factoriodustry)
