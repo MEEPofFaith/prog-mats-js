@@ -127,18 +127,12 @@ minigun.ammo(
   Items.thorium, MiniThorium
 );
 
-/*
-  requirements:[
-    copper/200
-    graphite/175
-    titanium/100
-    thorium/80
-  ]
-*/
-// minigun.requirements(Category.turret, ItemStack.with(Items.copper, 200, Items.graphite, 175, Items.titanium, 100, Items.thorium, 80));
-minigun.requirements = ItemStack.with(Items.copper, 200, Items.graphite, 175, Items.titanium, 100, Items.thorium, 80);
-minigun.category = Category.turret;
-minigun.buildVisibility = BuildVisibility.shown;
+minigun.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 200,
+  Items.graphite, 175,
+  Items.titanium, 100,
+  Items.thorium, 80
+));
 
 minigun.buildType = ent => {
   ent = extend(ItemTurret.ItemTurretBuild, minigun, {

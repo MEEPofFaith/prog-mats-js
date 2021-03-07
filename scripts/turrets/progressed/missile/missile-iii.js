@@ -239,20 +239,15 @@ const NUKE = type.missileTurret(false, ItemTurret, ItemTurret.ItemTurretBuild, "
   maxAmmo: 2,
   unitSort: (u, x, y) => -u.maxHealth
 }, {});
-/**
- * Easy to read research requirement list
- *
- * copper/4000
- * graphite/2200
- * silicon/2000
- * titanium/1300
- * thorium/650
- * surge-alloy/200
- * techtanite/800
-**/
-// NUKE.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
-NUKE.requirements = ItemStack.with(Items.copper, 4000, Items.graphite, 2200, Items.silicon, 2000, Items.titanium, 1300, Items.thorium, 650, Items.surgeAlloy, 200, citem("techtanite"), 800);
-NUKE.category = Category.turret;
-NUKE.buildVisibility = BuildVisibility.shown;
+
+NUKE.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 4000,
+  Items.graphite, 2200,
+  Items.silicon, 2000,
+  Items.titanium, 1300,
+  Items.thorium, 650,
+  Items.surgeAlloy, 200,
+  citem("techtanite"), 800
+));
 
 NUKE.ammo(citem("basic-nuke"), missile, citem("emp-nuke"), emp, citem("cluster-nuke"), cluster, citem("sentry-nuke"), dropPod);

@@ -119,19 +119,14 @@ const ohnoMissilesReturns = type.missileTurret(false, ItemTurret, ItemTurret.Ite
   maxAmmo: 5,
   unitSort: (u, x, y) => -u.maxHealth
 }, {});
-/**
- * Easy to read research requirement list
- *
- * copper/700
- * lead/350
- * graphite/300
- * silicon/300
- * titanium/250
- * techtanite/120
-**/
-// ohnoMissilesReturns.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
-ohnoMissilesReturns.requirements = ItemStack.with(Items.copper, 700, Items.lead, 350, Items.graphite, 300, Items.silicon, 300, Items.titanium, 250, citem("techtanite"), 120);
-ohnoMissilesReturns.category = Category.turret;
-ohnoMissilesReturns.buildVisibility = BuildVisibility.shown;
+
+ohnoMissilesReturns.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 700,
+  Items.lead, 350,
+  Items.graphite, 300,
+  Items.silicon, 300,
+  Items.titanium, 250,
+  citem("techtanite"), 120
+));
 
 ohnoMissilesReturns.ammo(citem("basic-missile"), missile, citem("emp-missile"), emp, citem("quantum-missile"), quantum);

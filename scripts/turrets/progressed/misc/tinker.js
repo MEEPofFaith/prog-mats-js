@@ -30,10 +30,13 @@ const engi = extend(ItemTurret, "tinker", {
   range: 40 * Vars.tilesize,
   inaccuracy: 12,
   velocityInaccuracy: 0.35,
-  category: Category.turret,
-  maxAmmo: 3,
-  requirements: ItemStack.with(Items.copper, 125, Items.lead, 75, Items.silicon, 30, Items.titanium, 50),
-  buildVisibility: BuildVisibility.shown
+  maxAmmo: 3
 });
 
+engi.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 125,
+  Items.lead, 75,
+  Items.silicon, 30,
+  Items.titanium, 50
+));
 engi.ammo(citem("basic"), sentryBasic, citem("strike"), sentryStrike, citem("dash"), sentryDash);

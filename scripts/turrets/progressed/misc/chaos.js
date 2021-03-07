@@ -159,14 +159,18 @@ const chaosArray = extend(PowerTurret, "chaos-array", {
 });
 
 //16000 of every vanilla item + 16000 techtanite
-let stack = [];
+let stacks = new Seq();
 Vars.content.items().each(e => {
-  if(e.minfo.mod === null) stack.push(new ItemStack(e, 1));
+  if(e.minfo.mod === null || e === Vars.content.getByName(ContentType.item, "prog-mats-technetium")){
+    let rand = Mathf.random();
+    let repeats = rand > 0.45 ? 1 : rand > 0.2 ? 2 : 4;
+    for(let i = 0; i < repeats; i++){
+      stacks.add(new ItemStack(e, 16000 / repeats));
+    }
+  }
 });
-stack.push(new ItemStack(Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 1));
-chaosArray.requirements = new ItemStack.mult(stack, 16000);
-chaosArray.category = Category.turret;
-chaosArray.buildVisibility = BuildVisibility.shown;
+stacks.shuffle();
+chaosArray.setupRequirements(Category.turret, new ItemStack.mult(stacks.toArray(ItemStack), 1));
 
 const liquidPerSec = 150 / 60;
 chaosArray.consumes.add(new ConsumeLiquidFilter(l => l.temperature <= 0.5 && l.flammability < 0.1, liquidPerSec)).update(false);

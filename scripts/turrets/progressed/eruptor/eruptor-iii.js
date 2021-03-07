@@ -169,22 +169,16 @@ const hellRiser = extend(PowerTurret, "eruptor-iii", {
   heatColor: Color.valueOf("f08913")
 });
 
-/**
-requirements:[
-  copper/700
-  lead/950
-  graphite/750
-  silicon/800
-  titanium/600
-  thorium/800
-  surge-alloy/650
-  techtanite/500
-]
-*/
-// hellRiser.requirements(Category.turret, ItemStack.with(Items.copper, 700, Items.lead, 950, Items.graphite, 750, Items.silicon, 800, Items.titanium, 600, Items.thorium, 800, Items.surgeAlloy, 650, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 500));
-hellRiser.requirements = ItemStack.with(Items.copper, 700, Items.lead, 950, Items.graphite, 750, Items.silicon, 800, Items.titanium, 600, Items.thorium, 800, Items.surgeAlloy, 650, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 500);
-hellRiser.category = Category.turret;
-hellRiser.buildVisibility = BuildVisibility.shown;
+hellRiser.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 700,
+  Items.lead, 950,
+  Items.graphite, 750,
+  Items.silicon, 800,
+  Items.titanium, 600,
+  Items.thorium, 800,
+  Items.surgeAlloy, 650,
+  Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 500
+));
 
 const side = new Vec2();
 const open = new Vec2();

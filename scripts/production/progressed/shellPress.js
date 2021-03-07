@@ -71,6 +71,9 @@ shellPress.updateEffect = Fx.none;
 /*true: dump items and liquids of output according to button
 false: dump items and liquids of output unconditionally*/
 shellPress.dumpToggle = true;
-shellPress.category = Category.crafting;
-shellPress.buildVisibility = BuildVisibility.sandboxOnly;
-shellPress.requirements = ItemStack.with(Items.copper,75);
+shellPress.setupRequirements(Category.crafting, ItemStack.with(
+  Items.copper, 75,
+  Items.lead, 100,
+  Items.titanium, 100,
+  Items.silicon, 80
+));

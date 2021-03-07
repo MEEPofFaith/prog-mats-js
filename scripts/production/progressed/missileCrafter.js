@@ -1,6 +1,6 @@
 const multiLib = require("libs/blockTypes/younggamMultiLib");
 
-const shellPress = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafterBuild, "missile-crafter", [
+const missileAssembly = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.GenericCrafterBuild, "missile-crafter", [
   /*default form for each recipes. You can change values.
   {
     input: {
@@ -121,7 +121,7 @@ function Extra(){
       let recs = this.block.getRecipes();
       let outputItems = recs[current].output.items;
       Draw.color(outputItems[0].item.color);
-      Draw.rect(shellPress.colorRegion, this.x, this.y);
+      Draw.rect(missileAssembly.colorRegion, this.x, this.y);
     }
   }
 });
@@ -134,15 +134,20 @@ hasLiquids
 hasPower
 */
 
-shellPress.itemCapacity = 50;
-shellPress.liquidCapacity = 50;
-shellPress.size = 4;
-shellPress.health = 100;
-shellPress.craftEffect = Fx.pulverizeMedium;
-shellPress.updateEffect = Fx.none;
+missileAssembly.itemCapacity = 50;
+missileAssembly.liquidCapacity = 50;
+missileAssembly.size = 4;
+missileAssembly.health = 100;
+missileAssembly.craftEffect = Fx.pulverizeMedium;
+missileAssembly.updateEffect = Fx.none;
 /*true: dump items and liquids of output according to button
 false: dump items and liquids of output unconditionally*/
-shellPress.dumpToggle = true;
-shellPress.category = Category.crafting;
-shellPress.buildVisibility = BuildVisibility.sandboxOnly;
-shellPress.requirements = ItemStack.with(Items.copper,75);
+missileAssembly.dumpToggle = true;
+missileAssembly.setupRequirements(Category.crafting, ItemStack.with(
+  Items.copper, 300,
+  Items.lead, 200,
+  Items.silicon, 200,
+  Items.plastanium, 150,
+  Items.thorium, 100,
+  Items.surgeAlloy, 110
+));

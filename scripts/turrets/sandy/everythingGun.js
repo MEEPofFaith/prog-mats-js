@@ -66,9 +66,6 @@ const everythingGun = extend(PowerTurret, "everything-gun", {
   health: 12345,
   reloadTime: 1,
   size: 6,
-  category: Category.turret,
-  requirements: ItemStack.empty,
-  buildVisibility: BuildVisibility.sandboxOnly,
   powerUse: 800000000/60,
   shootType: Bullets.standardCopper,
   range: 4400,
@@ -81,6 +78,8 @@ const everythingGun = extend(PowerTurret, "everything-gun", {
   shootEffect: Fx.none,
   smokeEffect: Fx.none
 });
+
+everythingGun.setupRequirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.empty);
 
 const swirl = new Effect(120, 1000, e => {
   Tmp.v1.trns(Mathf.randomSeed(e.id, 360) + e.rotation * e.fin(), (16 + e.data[1]) * e.fin());

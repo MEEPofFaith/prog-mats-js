@@ -127,19 +127,13 @@ dualMinigun.ammo(
   Items.thorium, MiniThorium
 );
 
-/*
-  requirements:[
-    copper/350
-    graphite/300
-    plastanium/175
-    thorium/80
-    techtanite/80
-  ]
-*/
-// dualMinigun.requirements(Category.turret, ItemStack.with(Items.copper, 350, Items.graphite, 300, Items.plastanium, 175, Items.thorium, 80, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 80));
-dualMinigun.requirements = ItemStack.with(Items.copper, 350, Items.graphite, 300, Items.plastanium, 175, Items.thorium, 80, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 80);
-dualMinigun.category = Category.turret;
-dualMinigun.buildVisibility = BuildVisibility.shown;
+dualMinigun.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 350,
+  Items.graphite, 300,
+  Items.plastanium, 175,
+  Items.thorium, 80,
+  Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 80
+));
 
 dualMinigun.buildType = ent => {
   ent = extend(ItemTurret.ItemTurretBuild, dualMinigun, {

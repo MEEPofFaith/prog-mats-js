@@ -7,22 +7,20 @@ const gay = node.strobeNode(PowerNode, PowerNode.PowerNodeBuild, speed, lerpSpee
   health: 10000,
   maxNodes: 65535,
   laserRange: 200,
-  requirements: ItemStack.empty,
-  buildVisibility: BuildVisibility.sandboxOnly,
-  category: Category.power,
   alwaysUnlocked: true
 }, {});
+
+gay.setupRequirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);
 
 const infiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, speed, lerpSpeed, "rainbow-power-source", {
   health: 10000,
   powerProduction: 2000000000/60,
   maxNodes: 65535,
   laserRange: 200,
-  requirements: ItemStack.empty,
-  buildVisibility: BuildVisibility.sandboxOnly,
-  category: Category.power,
   alwaysUnlocked: true
 }, {});
+
+infiniteGay.setupRequirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);
 
 const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, speed, lerpSpeed, "rainbow-power-boost", {
   health: 10000,
@@ -30,9 +28,6 @@ const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuil
   size: 2,
   maxNodes: 65535,
   laserRange: 200,
-  requirements: ItemStack.empty,
-  buildVisibility: BuildVisibility.sandboxOnly,
-  category: Category.power,
   alwaysUnlocked: true,
   speedBoost: 100,
   setStats(){
@@ -53,3 +48,5 @@ const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuil
     this.super$updateTile();
   }
 });
+
+uberInfiniteGay.setupRequirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);

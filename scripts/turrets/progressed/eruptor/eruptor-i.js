@@ -169,20 +169,14 @@ const lavaRiser = extend(PowerTurret, "eruptor-i", {
   heatColor: Color.valueOf("f08913")
 });
 
-/**
-  * requirements:[
-  *   copper/200
-  *   lead/300
-  *   graphite/300
-  *   silicon/325
-  *   titanium/200
-  *   thorium/200
-  * ]
-*/
-// lavaRiser.requirements(Category.turret, ItemStack.with(Items.copper, 200, Items.lead, 300, Items.graphite, 300, Items.silicon, 325, Items.titanium, 200, Items.thorium, 200));
-lavaRiser.requirements = ItemStack.with(Items.copper, 200, Items.lead, 300, Items.graphite, 300, Items.silicon, 325, Items.titanium, 200, Items.thorium, 200);
-lavaRiser.category = Category.turret;
-lavaRiser.buildVisibility = BuildVisibility.shown;
+lavaRiser.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 200,
+  Items.lead, 300,
+  Items.graphite, 300,
+  Items.silicon, 325,
+  Items.titanium, 200,
+  Items.thorium, 200
+));
 
 const shootLoc = new Vec2();
 

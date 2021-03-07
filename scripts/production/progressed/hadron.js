@@ -73,19 +73,13 @@ const hadron = extendContent(GenericCrafter, "mindron-collider", {
   heatColor: Pal.accent
 });
 
-/**
-  * requirements:[
-  *   silicon/150
-  *   metaglass/50
-  *   plastanium/80
-  *   thorium/100
-  *   surge-alloy/110
-  * ] 
-*/
-// hadron.requirements(Category.crafting, ItemStack.with(Items.silicon, 150, Items.metaglass, 50, Items.plastanium, 80, Items.thorium, 100, Items.surgeAlloy, 110));
-hadron.requirements = ItemStack.with(Items.silicon, 150, Items.metaglass, 50, Items.plastanium, 80, Items.thorium, 100, Items.surgeAlloy, 110);
-hadron.category = Category.crafting;
-hadron.buildVisibility = BuildVisibility.shown;
+hadron.setupRequirements(Category.crafting, ItemStack.with(
+  Items.silicon, 150,
+  Items.metaglass, 50,
+  Items.plastanium, 80,
+  Items.thorium, 100,
+  Items.surgeAlloy, 110
+));
 
 hadron.consumes.power(14);
 hadron.consumes.items(ItemStack.with(Items.titanium, 7, Items.thorium, 7));

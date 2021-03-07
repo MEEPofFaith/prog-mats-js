@@ -22,4 +22,4 @@ Also known as "Popeshadow."
 It's just like `MEEPofFaith/ohno-missiles`, just that it's not quite like `MEEPofFaith/ohno-missiles`.
 
 ## Addons
-[Progressed Factorio](https://github.com/Voz-Duh/progressed-factorio) dependencies: [Factoriodustry](https://github.com/Xeloboyo/Factoriodustry)
+For VozDuh's Factorio-Styled texture pack, install [Voz-Duh/progressed-factorio](https://github.com/Voz-Duh/progressed-factorio) (Requires [Xeloboyo/Factoriodustry](https://github.com/Xeloboyo/Factoriodustry))

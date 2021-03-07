@@ -108,7 +108,9 @@ sFac.updateEffect = Fx.none;
 /*true: dump items and liquids of output according to button
 false: dump items and liquids of output unconditionally*/
 sFac.dumpToggle = true;
-sFac.category = Category.crafting;
-sFac.buildVisibility = BuildVisibility.shown;
-sFac.requirements = ItemStack.with(Items.copper, 90, Items.silicon, 150, Items.titanium, 50);
 sFac.craftEffect = Fx.none;
+sFac.setupRequirements(Category.crafting, ItemStack.with(
+  Items.copper, 90,
+  Items.silicon, 150,
+  Items.titanium, 50
+));

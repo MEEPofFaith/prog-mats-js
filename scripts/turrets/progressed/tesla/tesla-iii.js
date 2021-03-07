@@ -99,21 +99,15 @@ const teslaStorm = extend(PowerTurret, "tesla-iii", {
   coolantMultiplier: 1
 });
 
-/*
-  requirements:[
-    copper/120
-    lead/150
-    graphite/55
-    silicon/105
-    titanium/90
-    surge-alloy/40
-    techtanite/50
-  ]
-*/
-// teslaStorm.requirements(Category.turret, ItemStack.with(Items.copper, 120, Items.lead, 150, Items.graphite, 55, Items.silicon, 105, Items.titanium, 90, Items.surgeAlloy, 40, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 50));
-teslaStorm.requirements = ItemStack.with(Items.copper, 120, Items.lead, 150, Items.graphite, 55, Items.silicon, 105, Items.titanium, 90, Items.surgeAlloy, 40, Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 50);
-teslaStorm.category = Category.turret;
-teslaStorm.buildVisibility = BuildVisibility.shown;
+teslaStorm.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 120,
+  Items.lead, 150,
+  Items.graphite, 55,
+  Items.silicon, 105,
+  Items.titanium, 90,
+  Items.surgeAlloy, 40,
+  Vars.content.getByName(ContentType.item, "prog-mats-techtanite"), 50
+));
 
 const shootLoc = new Vec2();
 const shootLoc2 = new Vec2();

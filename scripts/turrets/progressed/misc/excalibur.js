@@ -227,12 +227,14 @@ arthur.buildType = ent => {
   return ent;
 };
 
-/*
-  requirements: [
-    copper/69
-  ]
-*/
-// arthur.requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.with(Items.copper, 69));
-arthur.requirements = ItemStack.with(Items.copper, 69);
-arthur.category = Category.turret;
-arthur.buildVisibility = BuildVisibility.sandboxOnly;
+arthur.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 1200,
+  Items.lead, 1100,
+  Items.graphite, 800,
+  Items.silicon, 1500,
+  Items.titanium, 800,
+  Items.thorium, 700,
+  Items.plastanium, 350,
+  Items.surgeAlloy, 450,
+  Vars.content.getByName(ContentType.item, "prog-mats-technetium"), 800
+));

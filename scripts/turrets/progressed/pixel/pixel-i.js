@@ -29,15 +29,9 @@ const bit = bitLib.new8BitTurret("pixel-i", 8, PowerTurret, PowerTurret.PowerTur
   shootType: pew
 }, {});
 
-/*
-  requirements: [
-    copper/50
-    lead/60
-    silicon/40
-    titanium/30
-  ]
-*/
-// bit.requirements(Category.turret, ItemStack.with(Items.copper, 50, Items.lead, 60, Items.silicon, 40, Items.titanium, 30));
-bit.requirements = ItemStack.with(Items.copper, 50, Items.lead, 60, Items.silicon, 40, Items.titanium, 30);
-bit.category = Category.turret;
-bit.buildVisibility = BuildVisibility.shown;
+bit.setupRequirements(Category.turret, ItemStack.with(
+  Items.copper, 50,
+  Items.lead, 60,
+  Items.silicon, 40,
+  Items.titanium, 30
+));
