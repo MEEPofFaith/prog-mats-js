@@ -85,7 +85,7 @@ function Extra(){
       Draw.color();
 
       Draw.draw(Draw.z(), () => {
-        Drawf.construct(this.x, this.y, sFac.sentrySprites[current], this.team.color, 0, this.progress, this.warmup, this.progress * recs[current].craftTime);
+        Drawf.construct(this.x, this.y, sFac.sentrySprites[current], this.team.color, 0, this.progress, this.warmup, this.totalProgress);
       });
     }
   }
