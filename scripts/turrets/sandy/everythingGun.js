@@ -18,6 +18,8 @@ const everythingGun = extend(PowerTurret, "everything-gun", {
   },
   init(){
     this.super$init();
+
+    // Bullet Loader
     Vars.content.units().each(u => {
       u.weapons.each(w => {
         if(w.bullet != null){
@@ -56,7 +58,18 @@ const everythingGun = extend(PowerTurret, "everything-gun", {
     });
     
     this.bullets.sort(floatf(b => {return bfrit(b[0], b[2])}));
-    // this.bullets.each(b => print("Bullet " + b[0] + " deals " + bfrit(b[0], b[2]) + " total damage."));
+    
+    // Random amounts of every item. it's sandboxOnly anyways so it doesn't matter.
+    let stacks = new Seq();
+    Vars.content.items().each(e => {
+      let rand = Mathf.random();
+      let repeats = rand > 0.05 ? 1 : rand > 0.02 ? 2 : 4;
+      for(let i = 0; i < repeats; i++){
+        stacks.add(new ItemStack(e, Mathf.round(Mathf.random(100000))));
+      }
+    });
+    stacks.shuffle();
+    this.requirements = ItemStack.mult(stacks.toArray(ItemStack), 1);
   },
   setStats(){
     this.super$setStats();

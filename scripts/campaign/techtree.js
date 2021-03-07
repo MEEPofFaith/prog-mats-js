@@ -73,8 +73,8 @@ var sectors = new Seq();
 Vars.content.sectors().each(e => {
   if(e.minfo.mod === null) sectors.add(new Objectives.SectorComplete(e));
 });
-node(Blocks.foreshadow, cblock("chaos-array"), addStacks([cblock("chaos-array").researchRequirements()]), sectors);
-//node(Blocks.foreshadow, cblock("excalibur"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.nuclearComplex)));
+node(Blocks.foreshadow, cblock("chaos-array"), null, sectors);
+node(Blocks.foreshadow, cblock("excalibur"), null, Seq.with(new Objectives.SectorComplete(SectorPresets.nuclearComplex)));
 let basicCost = unitCost(ItemStack.with(Items.copper, 30, Items.lead, 35, Items.titanium, 15, Items.silicon, 25));
 let strikeCost = unitCost(ItemStack.with(Items.copper, 40, Items.lead, 40, Items.titanium, 20, Items.silicon, 30, Items.blastCompound, 10));
 let dashCost = unitCost(ItemStack.with(Items.copper, 30, Items.lead, 30, Items.titanium, 30, Items.graphite, 15, Items.silicon, 35));

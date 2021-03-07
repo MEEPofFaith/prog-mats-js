@@ -120,6 +120,23 @@ const chaosArray = extend(PowerTurret, "chaos-array", {
     this.region = Core.atlas.find(this.name);
     this.heatRegion = Core.atlas.find(this.name + "-heat");
   },
+  init(){
+    this.super$init();
+
+    //16000 of every vanilla item + 16000 techtanite, but more cursed
+    let stacks = new Seq();
+    Vars.content.items().each(e => {
+      if(e.minfo.mod === null || e === Vars.content.getByName(ContentType.item, "prog-mats-technetium")){
+        let rand = Mathf.random();
+        let repeats = rand > 0.45 ? 1 : rand > 0.2 ? 2 : 4;
+        for(let i = 0; i < repeats; i++){
+          stacks.add(new ItemStack(e, 16000 / repeats));
+        }
+      }
+    });
+    stacks.shuffle();
+    this.requirements = ItemStack.mult(stacks.toArray(ItemStack), 1);
+  },
   setStats(){
     this.super$setStats();
     
@@ -162,15 +179,10 @@ const chaosArray = extend(PowerTurret, "chaos-array", {
 let stacks = new Seq();
 Vars.content.items().each(e => {
   if(e.minfo.mod === null || e === Vars.content.getByName(ContentType.item, "prog-mats-technetium")){
-    let rand = Mathf.random();
-    let repeats = rand > 0.45 ? 1 : rand > 0.2 ? 2 : 4;
-    for(let i = 0; i < repeats; i++){
-      stacks.add(new ItemStack(e, 16000 / repeats));
-    }
+    stacks.add(new ItemStack(e, 16000));
   }
 });
-stacks.shuffle();
-chaosArray.setupRequirements(Category.turret, new ItemStack.mult(stacks.toArray(ItemStack), 1));
+chaosArray.setupRequirements(Category.turret, ItemStack.mult(stacks.toArray(ItemStack), 1));
 
 const liquidPerSec = 150 / 60;
 chaosArray.consumes.add(new ConsumeLiquidFilter(l => l.temperature <= 0.5 && l.flammability < 0.1, liquidPerSec)).update(false);
