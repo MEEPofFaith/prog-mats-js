@@ -17,7 +17,7 @@ const engi = launch.launchTurret(ItemTurret, ItemTurret.ItemTurretBuild, "tinker
   maxAmmo: 3,
   cooldown: 0.03,
   recoilAmount: 6,
-  restitution, 0.02,
+  restitution: 0.02,
   shootShake: 2
 }, {});
 
