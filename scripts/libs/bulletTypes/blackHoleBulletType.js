@@ -1,7 +1,7 @@
 const fLib = this.global.pm.funcLib;
 
 module.exports = {
-  newBlackHole(size, horizonColor, horizonRad, absorbEffectTime, obj){
+  blackHole(size, horizonColor, horizonRad, absorbEffectTime, obj){
     const clearBullet = (b, succEffect) => {
       var bWidth = b.type.width * ((1 - b.type.shrinkX) + b.type.shrinkX * b.fout());
       var bHeight = b.type.height * ((1 - b.type.shrinkY) + b.type.shrinkY * b.fout());

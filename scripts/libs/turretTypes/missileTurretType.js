@@ -1,13 +1,13 @@
 //Haha code steal go brrrr
 const clone = obj => {
-    if(obj === null || typeof(obj) !== 'object') return obj;
-    var copy = obj.constructor();
-    for(var attr in obj) {
-        if(obj.hasOwnProperty(attr)) {
-            copy[attr] = obj[attr];
-        }
-    };
-    return copy;
+  if(obj === null || typeof(obj) !== 'object') return obj;
+  var copy = obj.constructor();
+  for(var attr in obj) {
+    if(obj.hasOwnProperty(attr)) {
+      copy[attr] = obj[attr];
+    }
+  };
+  return copy;
 }
 
 module.exports = {
@@ -44,9 +44,9 @@ module.exports = {
         this.super$updateTile();
         
         if(this.reload < missileSilo.reloadTime && this.hasAmmo() && this.consValid()){
-          this._speedScl = Mathf.lerpDelta(this._speedScl, 1, 0.05);
+          this._speedScl = Mathf.lerpDelta(this._speedScl, 1, 0.02);
         }else{
-          this._speedScl = Mathf.lerpDelta(this._speedScl, 0, 0.05);
+          this._speedScl = Mathf.lerpDelta(this._speedScl, 0, 0.02);
         }
       },
       updateCooling(){
