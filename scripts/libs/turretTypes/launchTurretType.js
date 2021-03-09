@@ -25,7 +25,7 @@ module.exports = {
         this.topRegion = Core.atlas.find(this.name + "-top");
       },
       
-      chargeTime: 20,
+      chargeTime: 10,
       shootEffect: Fx.none,
       smokeEffect: Fx.none,
 
