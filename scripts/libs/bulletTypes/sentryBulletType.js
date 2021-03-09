@@ -63,7 +63,8 @@ module.exports = {
       despawnEffect: Fx.spawn,
       trailTimeMul: 1,
       trailSize: sentryUnit.hitSize * 0.75,
-      ammoMultiplier: 1
+      ammoMultiplier: 1,
+      backMove: false
     }, obj);
 
     const sentryB = extend(ArtilleryBulletType, obj);

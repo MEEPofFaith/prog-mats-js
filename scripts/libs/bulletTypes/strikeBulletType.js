@@ -12,8 +12,8 @@ module.exports = {
         // (Owner x, Owner y, angle, reset speed)
         // Owner coords are placed in data in case it dies while the bullet is still active. Don't want null errors.
         if(!givenData || givenData && b.data == null){
-          var x = startOnOwner ? b.owner.x : b.x;
-          var y = startOnOwner ? b.owner.y : b.y;
+          let x = startOnOwner ? b.owner.x : b.x;
+          let y = startOnOwner ? b.owner.y : b.y;
           b.data = [x, y, 0, false];
         }
         b.fdata = -69420;
@@ -23,24 +23,19 @@ module.exports = {
       update(b){
         if(!b) return;
         
-        var owner = b.owner;
-        var x = b.data[0];
-        var y = b.data[1];
-        var rise = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseTime));
-        var rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.riseEngineTime, this.riseTime));
-        if(this.weaveWidth > 0){
-          var weave = Mathf.sin(b.time * this.weaveSpeed) * this.weaveWidth * Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1))] * rise;
-        }else{
-          var weave = 0;
-        }
+        let x = b.data[0];
+        let y = b.data[1];
+        let rise = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseTime));
+        let rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.riseEngineTime, this.riseTime));
+        let weave = this.weaveWidth > 0 ? Mathf.sin(b.time * this.weaveSpeed) * this.weaveWidth * Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1))] * rise : 0;
         if(rise < 0.999 && Mathf.chanceDelta(this.smokeTrailChance)){
           this.rocketEffect.at(x + weave + Mathf.range(this.trailRnd * rRocket), y + rise * this.elevation + this.engineOffset + Mathf.range(this.trailRnd * rRocket), this.trailSize * rRocket);
         }
         
-        var target = Units.bestTarget(b.team, b.x, b.y, this.homingRange, e => !e.dead && (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), b => true, this.unitSort);
+        let target = Units.bestTarget(b.team, b.x, b.y, this.homingRange, e => !e.dead && (e.isGrounded() && this.collidesGround) || (e.isFlying() && this.collidesAir), b => true, this.unitSort);
         
         //Instant drop
-        var dropTime = (1 - Mathf.curve(b.time, 0, this.riseTime)) + Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime);
+        let dropTime = (1 - Mathf.curve(b.time, 0, this.riseTime)) + Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime);
         if(autoDrop && dropTime == 0 && target != null){
           if(Mathf.within(b.x, b.y, target.x, target.y, autoDropRad)){
             b.time = b.lifetime - this.fallTime;
@@ -48,12 +43,12 @@ module.exports = {
         }
         //Stop/Start when over target
         if(target != null && stop){
-          var inRange = Mathf.within(b.x, b.y, target.x, target.y, stopRad);
+          let inRange = Mathf.within(b.x, b.y, target.x, target.y, stopRad);
           if(inRange && !b.data[3]){
             b.data[2] = b.vel.len();
             b.data[3] = true;
             b.vel.trns(b.vel.angle(), 0.001);
-          }else if(!inRange && resumeSeek && b.data[3]){
+          }else if(resumeSeek && (!inRange || target.dead || target.health < 0) && b.data[3]){
             b.vel.trns(b.vel.angle(), b.data[2]);
             b.data[3] = false;
           }
@@ -66,7 +61,7 @@ module.exports = {
         }
 
         if(this.weaveMag > 0){
-          var scl = Mathf.randomSeed(b.id, 0.9, 1.1);
+          let scl = Mathf.randomSeed(b.id, 0.9, 1.1);
           b.vel.rotate(Mathf.sin(b.time + Mathf.PI * this.weaveScale/2 * scl, this.weaveScale * scl, this.weaveMag) * Time.delta);
         }
         
@@ -80,37 +75,32 @@ module.exports = {
       },
       draw(b){
         //Variables
-        var x = b.data[0];
-        var y = b.data[1];
-        var rise = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseTime));
-        var fadeOut = 1 - rise;
-        var fadeIn = Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime);
-        var fall = 1 - fadeIn;
-        var a = fadeOut + Interp.pow5Out.apply(fadeIn);
-        var rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.riseEngineTime, this.riseTime));
-        var fRocket = Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime - this.fallTime + this.fallEngineTime));
-        var target = Mathf.curve(b.time, 0, 8) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
-        var rot = snapRot ? b.rotation() + 90 : rise * this.riseSpin + fadeIn * this.fallSpin;
+        let x = b.data[0];
+        let y = b.data[1];
+        let rise = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseTime));
+        let fadeOut = 1 - rise;
+        let fadeIn = Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime);
+        let fall = 1 - fadeIn;
+        let a = fadeOut + Interp.pow5Out.apply(fadeIn);
+        let rRocket = Interp.pow5In.apply(Mathf.curve(b.time, 0, this.riseEngineTime)) - Interp.pow5In.apply(Mathf.curve(b.time, this.riseEngineTime, this.riseTime));
+        let fRocket = Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime - this.fallTime + this.fallEngineTime));
+        let target = Mathf.curve(b.time, 0, 8) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
+        let rot = snapRot ? b.rotation() + 90 : rise * this.riseSpin + fadeIn * this.fallSpin;
         Tmp.v1.trns(225, rise * this.elevation * 2);
         Tmp.v2.trns(225, fall * this.elevation * 2);
-        var rY = y + rise * this.elevation;
-        var fY = b.y + fall * this.elevation;
-        var side = Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1))];
-        var weave = Mathf.sin(b.time * this.weaveSpeed) * this.weaveWidth * side;
-        if(this.weaveWidth > 0){
-          var rWeave = weave * rise;
-          var fWeave = weave * fall;
-        }else{
-          var rWeave = 0;
-          var fWeave = 0;
-        }
-        var rX = x + rWeave;
-        var fX = b.x + fWeave;
+        let rY = y + rise * this.elevation;
+        let fY = b.y + fall * this.elevation;
+        let side = Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1))];
+        let weave = Mathf.sin(b.time * this.weaveSpeed) * this.weaveWidth * side;
+        let rWeave = this.weaveWidth > 0 ? weave * rise : 0;
+        let fWeave = this.weaveWidth > 0 ? weave * fall : 0;
+        let rX = x + rWeave;
+        let fX = b.x + fWeave;
         
         //Target
-        var radius = this.targetRad * target;
+        let radius = this.targetRad * target;
         if(autoDrop){
-          var dropAlpha = Mathf.curve(b.time, this.riseTime * 2/3, this.riseTime) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
+          let dropAlpha = Mathf.curve(b.time, this.riseTime * 2/3, this.riseTime) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
           Draw.z(Layer.bullet + 0.001);
           Draw.color(Color.red, (0.25 + 0.5 * Mathf.absin(16, 1)) * dropAlpha);
           Fill.circle(b.x, b.y, autoDropRad);
@@ -135,7 +125,7 @@ module.exports = {
             Draw.z(Layer.effect + 0.001);
             Draw.color(this.engineLightColor);
             Fill.light(rX, rY, 10, this.riseEngineSize * 1.5625 * rRocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, rRocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
-            for(var i = 0; i < 4; i++){
+            for(let i = 0; i < 4; i++){
               Drawf.tri(rX, rY, this.riseEngineSize * 0.375, this.riseEngineSize * 2.5 * rRocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id, 360)));
             }
             Drawf.light(b.team, rX, rY, this.riseEngineLightRadius * rRocket, this.engineLightColor, this.engineLightOpacity * rRocket);
@@ -162,7 +152,7 @@ module.exports = {
             Draw.z(Layer.weather - 1);
             Draw.color(this.engineLightColor);
             Fill.light(fX, fY, 10, this.fallEngineSize * 1.5625 * fRocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, fRocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
-            for(var i = 0; i < 4; i++){
+            for(let i = 0; i < 4; i++){
               Drawf.tri(fX, fY, this.fallEngineSize * 0.375, this.fallEngineSize * 2.5 * fRocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id + 2, 360)));
             }
             Drawf.light(b.team, fX, fY, this.fallEngineLightRadius * fRocket, this.engineLightColor, this.engineLightOpacity * fRocket);
