@@ -13,7 +13,7 @@ const col = Pal.surge;
 const dash = extend(LaserBulletType, {
   damage: 90,
   length: len,
-  recoil: -5,
+  recoil: -10,
   colors: [Color.valueOf("f3e97966"), col, Color.white],
   itemCapacity: 15,
   range(){
@@ -23,13 +23,16 @@ const dash = extend(LaserBulletType, {
 
 const laser = extendContent(Weapon, sentryDash.name + "-laser", {
   bullet: dash,
-  rotate: false,
-  reload: 40,
+  rotate: true,
+  rotateSpeed: 60,
+  reload: 20,
   x: 0,
-  shootY: 9/4,
+  y: -8/4,
+  shootY: 17/4,
   mirror: false,
   top: true,
-  shootCone: 2
+  shootCone: 2,
+  shootSound: Sounds.laser
 });
 
 sentryDash.weapons.add(laser);

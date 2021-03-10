@@ -12,7 +12,7 @@ const engi = launch.launchTurret(ItemTurret, ItemTurret.ItemTurretBuild, "tinker
   reloadTime: 60 * 10,
   minRange: 5 * Vars.tilesize,
   range: 40 * Vars.tilesize,
-  velocityInaccuracy: 0.1,  
+  velocityInaccuracy: 0.2,  
   maxAmmo: 3,
   cooldown: 0.03,
   recoilAmount: 6,

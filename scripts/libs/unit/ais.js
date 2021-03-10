@@ -1,5 +1,5 @@
 const sentryAIL = prov(() => {
-  var ai = extend(GroundAI, {
+  var ai = extend(FlyingAI, {
     updateMovement(){ //Just don't move, but still turn.
       if(!Units.invalidateTarget(this.target, this.unit, this.unit.range()) && this.unit.type.rotateShooting){
         if(this.unit.type.hasWeapons()){
@@ -8,7 +8,7 @@ const sentryAIL = prov(() => {
       }
     },
     retarget(){
-      return this.timer.get(this.timerTarget, this.target == null ? 10 : 40);
+      return this.timer.get(this.timerTarget, this.target == null ? 10 : 20);
     }
   });
   return ai;

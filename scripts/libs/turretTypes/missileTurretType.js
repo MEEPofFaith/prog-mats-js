@@ -49,11 +49,15 @@ module.exports = {
           this._speedScl = Mathf.lerpDelta(this._speedScl, 0, 0.02);
         }
       },
-      updateCooling(){
-        if(this.hasAmmo() && this.consValid()) this.super$updateCooling();
-      },
       updateShooting(){
         if(this.hasAmmo() && this.consValid()) this.super$updateShooting();
+      },
+      updateCooling(){
+        if(this.hasAmmo() && this.consValid()){
+          this.super$updateCooling();
+        }else{
+          this.reload = 0;
+        }
       },
       handleItem(source, item){
         this.reload = 0; //Sorry, but you can't just turn a half-built missile into a different type of missile. Gotta restart construction.

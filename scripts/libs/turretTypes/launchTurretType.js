@@ -28,6 +28,7 @@ module.exports = {
       chargeTime: 10,
       shootEffect: Fx.none,
       smokeEffect: Fx.none,
+      shootSound: Sounds.artillery,
 
       arrows: 5,
       warmup: 0.05,
@@ -35,7 +36,11 @@ module.exports = {
       speed: 0.05,
       sep: 0.5,
       back: 0,
-      end: -6
+      end: -6,
+      pauseTime: 1.25,
+
+      launchEffect: Fx.none,
+      launchSmokeEffect: Fx.none
     }, obj);
     
     objb = Object.assign({
@@ -80,19 +85,23 @@ module.exports = {
         Draw.rect(launch.topRegion, x, y, this.rotation - 90);
       },
       updateShooting(){
-        if(this.reload >= launch.reloadTime && !this.charging){
-          let type = this.peekAmmo();
+        if(this.consValid()){
+          if(this.reload >= launch.reloadTime && !this.charging){
+            let type = this.peekAmmo();
 
-          this.shoot(type);
+            this.shoot(type);
 
-          this.reload = 0;
-        }else if(this.hasAmmo()){
-          this.reload += this.delta() * this.peekAmmo().reloadMultiplier * this.baseReloadSpeed();
+            this.reload = 0;
+          }else if(this.hasAmmo()){
+            this.reload += this.delta() * this.peekAmmo().reloadMultiplier * this.baseReloadSpeed();
+          }
         }
       },
       updateCooling(){
-        if(this.hasAmmo()){
+        if(this.hasAmmo() && this.consValid()){
           this.super$updateCooling();
+        }else{
+          this.reload = 0;
         }
       },
       updateTile(){
@@ -115,7 +124,7 @@ module.exports = {
           this.offset = Mathf.lerp(launch.back, launch.shootLength + sentryRegion.height / 8, this.charge);
         }else{
           this.charge = 0;
-          this.offset = Mathf.lerp(launch.end, launch.back, Mathf.clamp(this.reload / launch.reloadTime * 2));
+          this.offset = Mathf.lerp(launch.end, launch.back, Mathf.clamp(this.reload / launch.reloadTime * launch.pauseTime));
         }
 
         this.super$updateTile();
@@ -154,6 +163,19 @@ module.exports = {
         if(launch.shootShake > 0){
           Effect.shake(launch.shootShake, launch.shootShake, this);
         }
+
+        if(this.hasAmmo()){
+          let sentryRegion = this.peekAmmo().frontRegion;
+          Tmp.v1.trns(this.rotation, launch.back - sentryRegion.height / 8 - this.recoil);
+
+          let x = this.x + Tmp.v1.x;
+          let y = this.y + Tmp.v1.y;
+    
+          launch.launchEffect.at(x, y, this.rotation);	
+          launch.launchSmokeEffect.at(x, y, this.rotation);	
+          
+          launch.shootSound.at(x, y, Mathf.random(0.9, 1.1));
+        }
       },
       effects(){
         const fshootEffect = launch.shootEffect == Fx.none ? this.peekAmmo().shootEffect : launch.shootEffect;
@@ -164,7 +186,6 @@ module.exports = {
   
         fshootEffect.at(x, y, this.rotation);	
         fsmokeEffect.at(x, y, this.rotation);	
-        launch.shootSound.at(x, y, Mathf.random(0.9, 1.1));
       },
       clipRegion(bounds, sprite, region){ //Just gonna steal this from payload conveyors don't mind me.
         let over = Tmp.r3;
@@ -188,6 +209,10 @@ module.exports = {
         }
 
         return out;
+      },
+      handleItem(source, item){
+        this.reload = 0; //Sorry, but you can't just turn a half-built sentry into a different type of sentry. Gotta restart construction.
+        this.super$handleItem(source, item);
       }
     }, objb);
 
