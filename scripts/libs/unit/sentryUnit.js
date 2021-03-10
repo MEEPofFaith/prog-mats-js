@@ -54,7 +54,9 @@ module.exports = {
             table.add("(" + Core.bundle.get("stat.prog-mats.sentry-lifetime") + ": " + val + ")");
           }
         });
-        this.stats.add(Stat.abilities, dur);
+        this.stats.add(Stat.health, dur);
+        this.stats.remove(Stat.speed);
+        this.stats.remove(Stat.itemCapacity);
       },
       
       accel: 0,
@@ -70,7 +72,8 @@ module.exports = {
       isCounted: false,
       riseSpeed: 0.016,
       itemCapacity: 10,
-      health: 200
+      health: 200,
+      commandLimit: 2
     }, obj);
 
     let sentryU = extend(UnitType, name, obj);

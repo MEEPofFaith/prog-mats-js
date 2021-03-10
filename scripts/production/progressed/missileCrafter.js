@@ -85,7 +85,7 @@ const missileAssembly = multiLib.MultiCrafter(GenericCrafter, GenericCrafter.Gen
   },
   {//4 (Drop Pod Nuke) (Nuke Exclusive)
     input: {
-      items: ["prog-mats-nuke-shell/1", "prog-mats-basic-sentry-box/6", "prog-mats-strike-sentry-box/3", "prog-mats-dash-sentry-box/3", "pyratite/10", "blast-compound/5"],
+      items: ["prog-mats-nuke-shell/1", "prog-mats-basic-sentry-box/3", "prog-mats-strike-sentry-box/3", "prog-mats-dash-sentry-box/3", "pyratite/10", "blast-compound/5"],
       power: 5.5
     },
     output:{

@@ -140,7 +140,7 @@ cluster.unitSort = (u, x, y) => -u.maxHealth + Mathf.dst2(x, y, u.x, u.y)/1000;
 
 const cUnit = name => Vars.content.getByName(ContentType.unit, "prog-mats-" + name);
 //Repeat values to increase weight on the value
-const sentryUnits = [cUnit("basic-sentry"), cUnit("basic-sentry"), cUnit("strike-sentry"), cUnit("dash-sentry")]; //TODO when I add more sentrys add them to this list.
+const sentryUnits = [cUnit("basic-sentry"), cUnit("strike-sentry"), cUnit("dash-sentry")]; //TODO when I add more sentrys add them to this list.
 const items = [Items.blastCompound, Items.pyratite, Items.pyratite];
 
 const unitDrop = bul.strikeBullet(0, 0, true, true, false, true, {
@@ -148,8 +148,9 @@ const unitDrop = bul.strikeBullet(0, 0, true, true, false, true, {
     if(!b) return;
     this.super$init(b);
     
-    // (Owner x, Owner y, angle, reset speed)
+    // [Owner x, Owner y, angle, reset speed, unit]
     // Owner coords are placed in data in case it dies while the bullet is still active. Don't want null errors.
+    // Does not matter in this scenario but whatever
     var x = b.owner.x;
     var y = b.owner.y;
     b.data = [x, y, 0, false, sentryUnits[Mathf.round(Mathf.random(sentryUnits.length - 1))]];
@@ -163,8 +164,11 @@ const unitDrop = bul.strikeBullet(0, 0, true, true, false, true, {
     
     let sentry = b.data[4].spawn(b.team, b.x, b.y);
     sentry.rotation = b.rotation();
+
     let randomItem = items[Mathf.round(Mathf.random(items.length - 1))];
-    sentry.addItem(randomItem, Mathf.random(Math.min(1, sentry.maxAccepted(randomItem)), sentry.maxAccepted(randomItem)));
+    let amount = Mathf.round(Mathf.random(0, 10));
+    if(amount > 0) sentry.addItem(randomItem, amount);
+
     for(var i = 0; i < 4; i++) sentry.vel.add(b.vel); //It just fell from the sky, it's got to have quite a bit of velocity.
     if(Mathf.chance(0.25)) sentry.killed();
     
