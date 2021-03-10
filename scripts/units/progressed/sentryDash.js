@@ -5,7 +5,8 @@ const len = 96;
 const sentryDash = sentryUnitType.sentryUnit("dash-sentry", {
   health: 450,
   rotateSpeed: 30,
-  range: len * 6
+  range: len * 6,
+  duration: 19 * 60
 });
 
 const col = Pal.surge;

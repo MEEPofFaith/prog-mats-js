@@ -1,6 +1,8 @@
 const sentryUnitType = require("libs/unit/sentryUnit");
 
-const sentryBasic = sentryUnitType.sentryUnit("basic-sentry", {});
+const sentryBasic = sentryUnitType.sentryUnit("basic-sentry", {
+  duration: 15 * 60
+});
 
 const bul = extend(BasicBulletType, {
   sprite: "bullet",

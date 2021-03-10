@@ -36,13 +36,13 @@ const sentryBasic = sBul.sentryBullet(cunit("basic-sentry"), true, {
 
 const sentryStrike = sBul.sentryBullet(cunit("strike-sentry"), true, {
   lifetime: 120,
-  speed: 1.5,
+  speed: 2,
   trailEffect: trail
 });
 
 const sentryDash = sBul.sentryBullet(cunit("dash-sentry"), true, {
   lifetime: 120,
-  speed: 2.25,
+  speed: 2,
   trailEffect: trail
 });
 
