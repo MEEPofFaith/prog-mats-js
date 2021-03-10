@@ -148,16 +148,12 @@ const unitDrop = bul.strikeBullet(0, 0, true, true, false, true, {
     if(!b) return;
     this.super$init(b);
     
-    // [Owner x, Owner y, angle, reset speed, unit]
-    // Owner coords are placed in data in case it dies while the bullet is still active. Don't want null errors.
-    // Does not matter in this scenario but whatever
-    var x = b.owner.x;
-    var y = b.owner.y;
-    b.data = [x, y, 0, false, sentryUnits[Mathf.round(Mathf.random(sentryUnits.length - 1))]];
+    // [x, y, angle, reset speed, unit, sprite]
+    b.data = [0, 0, 0, false, sentryUnits[Mathf.round(Mathf.random(sentryUnits.length - 1))]];
     b.fdata = -69420;
     
     this.drawSize = this.elevation + 24;
-    this.backRegion = b.data[4].icon(Cicon.full);
+    b.data[5] = b.data[4].icon(Cicon.full);
   },
   despawned(b){
     if(!b) return;
@@ -173,6 +169,60 @@ const unitDrop = bul.strikeBullet(0, 0, true, true, false, true, {
     if(Mathf.chance(0.25)) sentry.killed();
     
     this.super$despawned(b);
+  },
+  draw(b){ //Yes the entire thing copied here is just for drawing the different units.
+    //Variables
+    let fadeIn = Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime);
+    let fall = 1 - fadeIn;
+    let a = Interp.pow5Out.apply(fadeIn);
+    let fRocket = Interp.pow5In.apply(Mathf.curve(b.time, b.lifetime - this.fallTime, b.lifetime - this.fallTime + this.fallEngineTime));
+    let target = Mathf.curve(b.time, 0, 8) - Mathf.curve(b.time, b.lifetime - 8, b.lifetime);
+    let rot = b.rotation() + 90;
+    Tmp.v2.trns(225, fall * this.elevation * 2);
+    let fY = b.y + fall * this.elevation;
+    let side = Mathf.signs[Mathf.round(Mathf.randomSeed(b.id, 1))];
+    let weave = Mathf.sin(b.time * this.weaveSpeed) * this.weaveWidth * side;
+    let fWeave = this.weaveWidth > 0 ? weave * fall : 0;
+    let fX = b.x + fWeave;
+    
+    //Target
+    let radius = this.targetRad * target;
+    if(this.targetRad > 0){
+      Draw.z(Layer.bullet + 0.002);
+      Draw.color(Pal.gray, target);
+      Lines.stroke(3);
+      Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+      Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+      Draw.color(b.team.color, target);
+      Lines.stroke(1);
+      Lines.poly(b.x, b.y, 4, 7 * radius, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+      Lines.spikes(b.x, b.y, 3 * radius, 6 * radius, 4, Time.time * 1.5 + Mathf.randomSeed(b.id, 360));
+      Draw.reset;
+    }
+    
+    //Missile
+    Draw.z(Layer.weather - 2);
+    Draw.color();
+    Draw.alpha(a);
+    Draw.rect(b.data[5], fX, fY, b.data[5].width * Draw.scl, b.data[5].height * Draw.scl, rot + 180);
+    Drawf.light(b.team, fX, fY, this.lightRadius, this.lightColor, this.lightOpacity);
+    //Engine stolen from launchpad
+    if(this.fallEngineSize > 0){
+      Draw.z(Layer.weather - 1);
+      Draw.color(this.engineLightColor);
+      Fill.light(fX, fY, 10, this.fallEngineSize * 1.5625 * fRocket, Tmp.c1.set(Pal.engine).mul(1, 1, 1, fRocket), Tmp.c2.set(Pal.engine).mul(1, 1, 1, 0));
+      for(let i = 0; i < 4; i++){
+        Drawf.tri(fX, fY, this.fallEngineSize * 0.375, this.fallEngineSize * 2.5 * fRocket, i * 90 + (Time.time * 1.5 + Mathf.randomSeed(b.id + 2, 360)));
+      }
+      Drawf.light(b.team, fX, fY, this.fallEngineLightRadius * fRocket, this.engineLightColor, this.engineLightOpacity * fRocket);
+    }
+    //Missile shadow
+    Draw.z(Layer.flyingUnit + 1);
+    Draw.color(0, 0, 0, 0.22 * a);
+    Draw.rect(b.data[5], fX + Tmp.v2.x, fY + Tmp.v2.y, b.data[5].width * Draw.scl, b.data[5].height * Draw.scl, rot + this.shadowRot + 180 + Mathf.randomSeed(b.id + 3, 360));
+
+
+    Draw.reset();
   },
   
   sprite: "clear",
