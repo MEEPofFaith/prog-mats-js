@@ -10,8 +10,6 @@ const gay = node.strobeNode(PowerNode, PowerNode.PowerNodeBuild, speed, lerpSpee
   alwaysUnlocked: true
 }, {});
 
-gay.setupRequirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);
-
 const infiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, speed, lerpSpeed, "rainbow-power-source", {
   health: 10000,
   powerProduction: 2000000000/60,
@@ -19,8 +17,6 @@ const infiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, s
   laserRange: 200,
   alwaysUnlocked: true
 }, {});
-
-infiniteGay.setupRequirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);
 
 const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuild, speed, lerpSpeed, "rainbow-power-boost", {
   health: 10000,
@@ -48,5 +44,3 @@ const uberInfiniteGay = node.strobeNode(PowerSource, PowerSource.PowerSourceBuil
     this.super$updateTile();
   }
 });
-
-uberInfiniteGay.setupRequirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);

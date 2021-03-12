@@ -96,6 +96,10 @@ const script = [
         name: "progressed",
         childs:[
           {
+            name: "crit",
+            childs: ["crit-i"]
+          },
+          {
             name: "eruptor",
             childs: ["eruptor-i", "eruptor-ii", "eruptor-iii"]
           },

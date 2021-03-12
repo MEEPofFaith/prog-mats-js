@@ -58,6 +58,8 @@ module.exports = {
       ent = extend(build, strobe, clone(objb));
       return ent;
     }
+
+    strobe.setupRequirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);
     
     return strobe;
   }

@@ -112,5 +112,20 @@ module.exports = {
     });
     
     return trail;
+  },
+  sparkleEffect(lifetime, clip, amount, dist, diameter){
+    let sparkle = new Effect(lifetime, clip, e => {
+      Draw.color(e.color);
+      Draw.alpha(e.fout());
+      Angles.randLenVectors(e.id, amount, dist * e.fin(), (x, y) => {
+        for(let i = 0; i < 2; i++){
+          let rot = Mathf.randomSeed(e.id * 2, 360) + 90 * i;
+          Fill.rect(e.x + x, e.y + y, 1 * diameter, 0.25 * diameter, rot);
+        }
+      });
+      Draw.reset();
+    });
+
+    return sparkle;
   }
 }
