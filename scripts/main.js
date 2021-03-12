@@ -43,7 +43,7 @@ const script = [
     childs: [
       {
         name: "progressed",
-        childs:["techtanite",
+        childs: ["techtanite",
           "mShell",
           "missiles",
           "nShell",
@@ -58,7 +58,7 @@ const script = [
     childs: [
       {
         name: "progressed",
-        childs:["magma"] //Should I make magma accesable? Incendiary missiles?
+        childs: ["magma"] //Should I make magma accesable? Incendiary missiles?
       }
     ]
   },
@@ -72,11 +72,20 @@ const script = [
     ]
   },
   {
+    name: "defense",
+    childs: [
+      {
+        name: "sandy",
+        childs: ["sandboxWalls"]
+      }
+    ]
+  },
+  {
     name: "production",
     childs: [
       {
         name: "progressed",
-        childs:["hadron", "shellPress", "missileCrafter", "sentryBuilder"]
+        childs: ["hadron", "shellPress", "missileCrafter", "sentryBuilder"]
       }
     ]
   },
@@ -91,10 +100,10 @@ const script = [
   },
   {
     name: "turrets",
-    childs:[
+    childs: [
       {
         name: "progressed",
-        childs:[
+        childs: [
           {
             name: "crit",
             childs: ["crit-i"]
