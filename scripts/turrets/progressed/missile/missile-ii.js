@@ -10,7 +10,7 @@ const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + na
 const trail = eff.trailEffect(120, 300, -1);
 trail.layer = Layer.bullet;
 
-const boom = eff.scaledNuclearExplosion(1.5, 0.4, 30, true);
+const boom = eff.scaledNuclearExplosion(1.5, 0.35, 50, true);
 
 //(drop radius, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
