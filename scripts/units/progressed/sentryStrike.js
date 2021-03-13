@@ -1,6 +1,6 @@
 const sentryUnitType = require("libs/unit/sentryUnit");
 const strike = require("libs/bulletTypes/strikeBulletType");
-const eff = require("libs/effect");
+const eff = require("libs/PMfx");
 
 const sentryStrike = sentryUnitType.sentryUnit("strike-sentry", {
   health: 150

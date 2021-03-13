@@ -127,5 +127,28 @@ module.exports = {
     });
 
     return sparkle;
+  },
+  mushroomCloud(lifetime, clip, size){
+    let mush = new Effect(lifetime, clip, e => {
+      let colorFin = e.fin(Interp.pow2Out);
+      let slopeFin = e.fin(Interp.pow3Out);
+      let slopeFout = 1 - e.fin(Interp.pow3In);
+
+      Angles.randLenVectors(e.id, 300, 140 * size * slopeFin, (x, y) => {
+        Draw.color(Color.white, Color.gray, colorFin);
+        Fill.circle(e.x + x, e.y + y, 8 * size * slopeFout);
+      });
+
+      Draw.color(Color.orange.cpy().lerp([Color.yellow, Color.lightGray], colorFin));
+      Lines.stroke(6 * size * e.fout());
+      Lines.circle(e.x, e.y, 180 * size * slopeFin);
+
+      Angles.randLenVectors(e.id * 2, 400, 60 * size * slopeFin, (x, y) => {
+        Draw.color(Color.yellow.cpy().lerp([Color.orange, Color.crimson, Color.gray, Color.darkGray], colorFin));
+        Fill.circle(e.x + x, e.y + y, 8 * size * slopeFout);
+      });
+    });
+
+    return mush;
   }
 }

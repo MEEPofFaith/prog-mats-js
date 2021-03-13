@@ -1,6 +1,6 @@
 const sBul = require("libs/bulletTypes/sentryBulletType");
 const launch = require("libs/turretTypes/launchTurretType");
-const eff = require("libs/effect");
+const eff = require("libs/PMfx");
 const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + name + "-sentry-box");
 const cunit = name => Vars.content.getByName(ContentType.unit, "prog-mats-" + name);
 

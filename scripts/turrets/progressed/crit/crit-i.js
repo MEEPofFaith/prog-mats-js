@@ -1,5 +1,5 @@
 const bul = require("libs/bulletTypes/critBulletType");
-const eff = require("libs/effect");
+const eff = require("libs/PMfx");
 
 const sparkle = eff.sparkleEffect(15, 240, 4, 8, 4);
 

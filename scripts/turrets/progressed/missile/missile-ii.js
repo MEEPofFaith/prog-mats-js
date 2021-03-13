@@ -3,14 +3,14 @@ const particle = require("libs/bulletTypes/particleBulletType");
 const paralyze = require("libs/statusEffects/paralizeStatus");
 const suffering = require("libs/statusEffects/teleportStatus");
 const type = require("libs/turretTypes/missileTurretType");
-const eff = require("libs/effect");
+const eff = require("libs/PMfx");
 
 const citem = name => Vars.content.getByName(ContentType.item, "prog-mats-" + name);
 
 const trail = eff.trailEffect(120, 300, -1);
 trail.layer = Layer.bullet;
 
-const boom = eff.scaledLargeBlast(1.5);
+const boom = eff.scaledNuclearExplosion(1.5, 0.4, 30, true);
 
 //(drop radius, stop radius, unstop?, start on owner, given data, snap rot, extra stuff);
 
