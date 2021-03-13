@@ -11,7 +11,7 @@ smallTrail.layer = Layer.bullet;
 const trail = eff.trailEffect(240, 400, -1);
 trail.layer = Layer.bullet;
 
-const smallBoom = eff.scaledNuclearExplosion(1.5, 0.35, 50, true);
+const smallBoom = eff.scaledNuclearExplosion(1.5, 0.25, 50, true);
 const boom = eff.mushroomCloud(450, 800, 1);
 
 const rangeMul = 2;

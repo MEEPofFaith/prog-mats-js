@@ -139,12 +139,12 @@ module.exports = {
         Fill.circle(e.x + x, e.y + y, 8 * size * slopeFout);
       });
 
-      Draw.color(Color.orange.cpy().lerp([Color.yellow, Color.lightGray], colorFin));
+      Draw.color(Color.yellow, Color.lightGray, colorFin);
       Lines.stroke(6 * size * e.fout());
       Lines.circle(e.x, e.y, 180 * size * slopeFin);
 
       Angles.randLenVectors(e.id * 2, 400, 60 * size * slopeFin, (x, y) => {
-        Draw.color(Color.yellow.cpy().lerp([Color.orange, Color.crimson, Color.gray, Color.darkGray], colorFin));
+        Draw.color(Color.orange.cpy().lerp([Color.orange, Color.red, Color.crimson, Color.darkGray], colorFin));
         Fill.circle(e.x + x, e.y + y, 8 * size * slopeFout);
       });
     });
