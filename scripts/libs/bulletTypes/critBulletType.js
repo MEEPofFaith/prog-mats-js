@@ -83,8 +83,8 @@ module.exports = {
         }
       },
 
-      critChance: 0.1,
-      critMultiplier: 30,
+      critChance: 0.25,
+      critMultiplier: 5,
       critEffect: Fx.none
     }, obj);
 
