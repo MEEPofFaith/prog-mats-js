@@ -113,14 +113,19 @@ module.exports = {
     
     return trail;
   },
-  sparkleEffect(lifetime, clip, amount, dist, diameter){
+  critSparkle(lifetime, clip, amount, dist, length, diameter){
     let sparkle = new Effect(lifetime, clip, e => {
       Draw.color(e.color);
       Draw.alpha(e.fout());
-      Angles.randLenVectors(e.id, amount, dist * e.fin(), (x, y) => {
+
+      Tmp.v1.trns(e.rotation + 90, 0, length * e.fin(Interp.pow2Out));
+
+      Angles.randLenVectors(e.id, amount, dist, (x, y) => {
         for(let i = 0; i < 2; i++){
-          let rot = Mathf.randomSeed(e.id * 2, 360) + 90 * i;
-          Fill.rect(e.x + x, e.y + y, 1 * diameter, 0.25 * diameter, rot);
+          let rot = Mathf.randomSeed(e.id + x + y, 360) + 90 * i;
+          let tx = x * e.fin(Interp.pow2Out);
+          let ty = y * e.fin(Interp.pow2Out);
+          Fill.rect(e.x + tx + Tmp.v1.x, e.y + ty + Tmp.v1.y, 1 * diameter, 0.25 * diameter, rot);
         }
       });
       Draw.reset();

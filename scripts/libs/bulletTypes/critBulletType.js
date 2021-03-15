@@ -19,7 +19,7 @@ module.exports = {
       update(b){
         if(!b) return;
         if(Mathf.chanceDelta(1) && b.data){
-          this.critEffect.at(b.x, b.y, 0, b.team.color);
+          this.critEffect.at(b.x, b.y, b.rotation(), b.team.color);
         }
 
         this.super$update(b);

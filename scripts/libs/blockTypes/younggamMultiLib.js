@@ -1,3 +1,5 @@
+//Multi Lib by Younggam
+
 const customValue = method => new StatValue() {
     display: method
 }
