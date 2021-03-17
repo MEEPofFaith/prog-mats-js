@@ -168,6 +168,7 @@ if(!Vars.headless){
       mod.meta.displayName = Core.bundle.get(change + "name");
       mod.meta.author = Core.bundle.get(change + "author");
       mod.meta.version = Core.bundle.get(change + "version");
+      mod.meta.description = Core.bundle.get(change + "description");
       
       const yes = new BaseDialog("$multi.title");
       yes.cont.add("$multi.text").width(500).wrap().pad(4).get().setAlignment(Align.center, Align.center);
