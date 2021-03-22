@@ -82,7 +82,7 @@ let dashCost = unitCost(ItemStack.with(Items.copper, 30, Items.lead, 30, Items.t
 
 // Missile
 node(Blocks.ripple, cblock("missile-i"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.impact0078))); // Yes, you canonically ripped this out of the wreakage.
-node(cblock("missile-i"), cblock("missile-ii"), addStacks([cblock("missile-ii").researchRequirements(), cblock("shell-press").researchRequirements(), cblock("missile-crafter").researchRequirements()]), Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.nuclearComplex), new Objectives.Research(citem("missile-shell"))));
+node(cblock("missile-i"), cblock("missile-ii"), addStacks([cblock("missile-ii").researchRequirements(), cblock("shell-press").researchRequirements(), cblock("missile-crafter").researchRequirements()]), Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.SectorComplete(SectorPresets.nuclearComplex)));
 node(cblock("missile-ii"), cblock("missile-iii"), null, Seq.with(new Objectives.Research(Blocks.launchPad), new Objectives.Research(Blocks.interplanetaryAccelerator), new Objectives.SectorComplete(SectorPresets.planetaryTerminal))); // Big nuke big pad
 
 //Pixel
