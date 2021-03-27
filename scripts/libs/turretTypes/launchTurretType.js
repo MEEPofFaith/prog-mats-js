@@ -30,6 +30,8 @@ module.exports = {
       smokeEffect: Fx.none,
       shootSound: Sounds.artillery,
 
+      arrowTop: false,
+
       arrows: 5,
       warmup: 0.05,
       chargeup: 0.07,
@@ -59,6 +61,7 @@ module.exports = {
         Draw.rect(launch.region, x, y, this.rotation - 90);
 
         if(this.warmup > 0.01){
+          if(launch.arrowTop) Draw.z(Layer.turret + 0.01);
           Draw.color(this.team.color);
           for(let i = 0; i < launch.arrows; i++){
             Draw.alpha(Mathf.clamp(Mathf.sin(this.current - i * launch.sep, 1, this.warmup)));
@@ -66,6 +69,8 @@ module.exports = {
           }
         }
         Draw.color();
+
+        Draw.z(Layer.turret);
         
         if(this.hasAmmo()){
           let sentryRegion = this.peekAmmo().frontRegion;
