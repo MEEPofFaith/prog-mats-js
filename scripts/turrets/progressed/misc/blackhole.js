@@ -24,10 +24,6 @@ const ballOfSucc = bh.blackHole(6, horizonColor, horizonRad, 25, {});
 const kugelblitz = extend(PowerTurret, "blackhole", {
   setStats(){
     this.super$setStats();
-    
-    //damages every 5 ticks
-    this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, this.shootType.damage * 30, StatUnit.perSecond);
   },
   load(){
     this.super$load();

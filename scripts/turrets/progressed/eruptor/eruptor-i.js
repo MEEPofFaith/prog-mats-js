@@ -89,6 +89,9 @@ const lavaPool = extend(BasicBulletType, {
       Draw.reset();
     }
   },
+  continuousDamage(){
+    return this.damage / 5 * 60;
+  },
   speed: 1,
   damage: 50,
   lifetime: 10,
@@ -130,10 +133,6 @@ const lavaRiser = extend(PowerTurret, "eruptor-i", {
     this.super$setStats();
     
     this.stats.remove( Stat.inaccuracy);
-    
-    //damages every 5 ticks
-    this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, lavaRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
   },
   icons(){
     return [

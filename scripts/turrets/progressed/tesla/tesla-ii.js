@@ -53,10 +53,6 @@ const teslaCoil = extend(PowerTurret, "tesla-ii", {
     
     this.stats.remove(Stat.inaccuracy);
     this.stats.add(Stat.inaccuracy, teslaCoil.inaccuracy / 8, StatUnit.blocks);
-    
-    //Something can get hit by multiple strikes since they all spawn in the same place.
-    this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, teslaCoil.shootType.damage + " - " + teslaCoil.shootType.damage * teslaCoil.zaps);
   },
   health: 870,
   powerUse: 4.8,

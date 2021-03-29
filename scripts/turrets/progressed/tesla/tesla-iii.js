@@ -69,10 +69,6 @@ const teslaStorm = extend(PowerTurret, "tesla-iii", {
     
     this.stats.remove(Stat.inaccuracy);
     this.stats.add(Stat.inaccuracy, teslaStorm.inaccuracy / 8, StatUnit.blocks);
-    
-    //Something can get hit by multiple strikes since they all spawn in the same place.
-    this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, teslaStorm.shootType.damage + " - " + teslaStorm.shootType.damage * teslaStorm.zaps);
   },
   icons(){
     return [

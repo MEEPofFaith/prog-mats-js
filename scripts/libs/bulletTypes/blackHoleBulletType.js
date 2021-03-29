@@ -394,6 +394,9 @@ module.exports = {
           b.remove();
         }
       },
+      continuousDamage(){
+        return this.damage / 2 * 60;
+      },
       damage: 575 / 30,
       buildingDamageTicks: 10,
       unitAbsorbChance: 0.4,

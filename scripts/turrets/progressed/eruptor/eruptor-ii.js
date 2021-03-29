@@ -89,6 +89,9 @@ const magmaPool = extend(BasicBulletType, {
       Draw.reset();
     }
   },
+  continuousDamage(){
+    return this.damage / 5 * 60;
+  },
   speed: 2,
   lifetime: 10,
   damage: 75,
@@ -133,10 +136,6 @@ const magmaRiser = extend(PowerTurret, "eruptor-ii", {
     this.super$setStats();
     
     this.stats.remove(Stat.inaccuracy);
-    
-    //damages every 5 ticks
-    this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, magmaRiser.shootType.damage * 60 / 5, StatUnit.perSecond);
   },
   icons(){
     return [
