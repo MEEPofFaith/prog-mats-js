@@ -1,5 +1,5 @@
 const bul = require("libs/bulletTypes/strikeBulletType");
-const eff = require("libs/effect");
+const eff = require("libs/PMfx");
 
 const trail = eff.trailEffect(50, 100, -1);
 trail.layer = Layer.bullet;

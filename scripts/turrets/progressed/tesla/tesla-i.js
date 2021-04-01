@@ -53,10 +53,6 @@ const teslaRing = extend(PowerTurret, "tesla-i", {
     
     this.stats.remove(Stat.inaccuracy);
     this.stats.add(Stat.inaccuracy, teslaRing.inaccuracy / 8, StatUnit.blocks);
-    
-    //Something can get hit by multiple strikes since they all spawn in the same place.
-    this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, teslaRing.shootType.damage + " - " + teslaRing.shootType.damage * teslaRing.zaps);
   },
   size: 1,
   health: 260,

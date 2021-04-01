@@ -85,6 +85,9 @@ const hellPool = extend(BasicBulletType, {
       Draw.reset();
     }
   },
+  continuousDamage(){
+    return this.damage / 5 * 60;
+  },
   speed: 0.01,
   damage: 62.5,
   lifetime: burnDuration,
@@ -129,10 +132,6 @@ const hellRiser = extend(PowerTurret, "eruptor-iii", {
     
     this.stats.remove(Stat.inaccuracy);
     this.stats.add(Stat.shots, "The number of enemies in range (oh no)");
-    
-    //damages every 5 ticks
-    this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, hellRiser.shootType.damage * 12, StatUnit.perSecond);
   },
   icons(){
     return [

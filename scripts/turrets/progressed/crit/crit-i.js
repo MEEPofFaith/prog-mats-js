@@ -1,7 +1,7 @@
 const bul = require("libs/bulletTypes/critBulletType");
 const eff = require("libs/PMfx");
 
-const sparkle = eff.sparkleEffect(120, 240, 12, 32, 7);
+const sparkle = eff.critSparkle(120, 240, 12, 24, 48, 4);
 
 const crit = bul.critBullet(BasicBulletType, {
   critEffect: sparkle,
@@ -20,7 +20,7 @@ const sniper = extend(ItemTurret, "sniper", {
   split: 3,
   chargeTime: 300,
   shootLength: 12 + 6,
-  chargeMoveFract: 0.5,
+  chargeMoveFract: 0.9,
 
   load(){
     this.super$load();

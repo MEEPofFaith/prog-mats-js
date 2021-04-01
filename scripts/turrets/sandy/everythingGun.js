@@ -71,11 +71,6 @@ const everythingGun = extend(PowerTurret, "everything-gun", {
     stacks.shuffle();
     this.requirements = ItemStack.mult(stacks.toArray(ItemStack), 1);
   },
-  setStats(){
-    this.super$setStats();
-    this.stats.remove(Stat.damage);
-    this.stats.add(Stat.damage, "[accent]yes[]");
-  },
   health: 12345,
   reloadTime: 1,
   size: 6,
