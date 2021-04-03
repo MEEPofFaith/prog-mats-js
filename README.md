@@ -1,5 +1,6 @@
 # This is the JS version
-## To get the full experience of Progressed Materials, please install `MEEPofFaith/progressed-materials` instead.
+## To get the full experience of Progressed Materials, please install `MEEPofFaith/prog-mats-java` instead.
+## This will no longer remain on the mod browser.
 
 # Progressed Materials
 Adds a bunch of scripted stuff. The name definitely made up of synonyms of "Advance" and "Content."
