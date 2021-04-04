@@ -1,5 +1,5 @@
 name: prog-mats
-displayName: "[accent]Progressed Materials"
+displayName: "[accent]Progressed Materials (JS)"
 author:
   '''
   [accent]Creator:
@@ -21,6 +21,6 @@ description:
   
   The name definitely isn't made of the synonyms of "Advance" and "Content".
   '''
-version: 0.39
+version: 0.40 FINAL JS UPDATE
 minGameVersion: 126.2
-repo: MEEPofFaith/progressed-materials
+repo: MEEPofFaith/prog-mats-js
